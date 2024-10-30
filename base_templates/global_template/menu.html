@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'global_static/css/menu.css' %} ">
+        {% block css %}
+        {% endblock  %}
+        <title>Dashboard</title>
+
+    </head>
+    <body>
+        <header>
+            <!-- <div class="header-main"> -->
+                <div class="logo-left">
+                    <a class="image-button" href="{% url 'index' %}">
+                        <div >
+                            <img class="logo" src="{% static 'global_static/images/logo.jpg'%}" alt="Eletro Cezar">
+                        </div>
+                    </a>
+                    <button class="toggle-menu">
+                        <div class="bar-container">
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                        </div>
+                    </button>
+                </div>
+                <div class="header-user">
+                    <button class="toggle-menu">
+                        <div class="user-image">
+                            <img src="{% static 'images/user.png'%}" alt="foto do usuario">
+                        </div>
+                    </button>
+                </div>
+            <!-- </div> -->
+        </header>
+        <div class="sidebar">
+            <!-- <h2>Menu</h2> -->
+            <ul>
+                <li>
+                    <a href="#" class="toggle"><h3>Cadastros</h3></a>
+                    <ul class="sub-menu">
+                        <li><a href="{% url 'users' %}"><h5>Usuarios</h5></a></li>
+                        <li><a href="{% url 'users' %}"><h5>Fornecedor</h5></a></li>
+                        <li><a href="{% url 'users' %}"><h5>Cliente</h5></a></li>
+                        <li><a href="{% url 'users' %}"><h5>Tecnicos</h5></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="toggle"><h3>Produtos</h3></a>
+                    <ul class="sub-menu">
+                        <li><a href="#"><h5>Gerenciar Produtos</h5></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="toggle"><h3>Vendas</h3></a>
+                    <ul class="sub-menu">
+                        <li><a href="#"><h5>Pedidos</h5></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="toggle"><h3>Configuração</h3></a>
+                    <ul class="sub-menu">
+                        <li><a href="#"><h5>Situação</h5></a></li>
+                        <li><a href="#"><h5>Forma de Pagamento</h5></a></li>
+                        <li><a href="#"><h5>Cargos</h5></a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <main>
+            {% block content%}
+            {% endblock %}
+        </main>
+        <script type="text/javascript" src="{% static 'global_static/js/menu.js' %}"></script>
+    </body>
+</html>
+
+{% comment %} {% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'css/menu.css' %}">
+
+        <title>Dashboard</title>
+    </head>
+    <body>
+        <header>
+            <!-- <div class="header-main"> -->
+                <div class="logo-left">
+                    <button class="image-button">
+                        <div >
+                            <img class="logo" src="{% static 'images/logo.jpg'%}" alt="Eletro Cezar">
+                        </div>
+                    </button>
+                    <button class="toggle-menu">
+                        <div class="bar-container">
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                        </div>
+                    </button>
+                </div>
+                <div class="header-user">
+                    <button class="toggle-menu">
+                        <div class="user-image">
+                            <img src="{% static 'images/user.png'%}" alt="foto do usuario">
+                        </div>
+                    </button>
+                </div>
+            <!-- </div> -->
+        </header>
+        <div class="sidebar">
+            <!-- <h2>Menu</h2> -->
+            <ul>
+                <li>
+                    <a href="#" class="toggle"><h3>Cadastros</h3></a>
+                    <ul class="sub-menu">
+                        <li><a href="{% url 'users' %}"><h5>Cliente</h5></a></li>
+                        <li><a href="#"><h5>Fornecedor</h5></a></li>
+                        <li><a href="#"><h5>Usuarios</h5></a></li>
+                        <li><a href="#"><h5>Tecnicos</h5></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="toggle"><h3>Produtos</h3></a>
+                    <ul class="sub-menu">
+                        <li><a href="#"><h5>Gerenciar Produtos</h5></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="toggle"><h3>Vendas</h3></a>
+                    <ul class="sub-menu">
+                        <li><a href="#"><h5>Pedidos</h5></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="toggle"><h3>Configuração</h3></a>
+                    <ul class="sub-menu">
+                        <li><a href="#"><h5>Situação</h5></a></li>
+                        <li><a href="#"><h5>Forma de Pagamento</h5></a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <main>
+            {% block content%}
+            {% endblock %}
+        </main>
+        <script type="text/javascript" src="{% static 'js/menu.js' %}"></script>
+        
+    </body>
+</html> {% endcomment %}
