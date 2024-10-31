@@ -55,7 +55,7 @@ ROOT_URLCONF = 'sigec.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ BASE_DIR / 'base_static', BASE_DIR / 'base_templates' ],
+        'DIRS': [ 'base_static', 'base_templates' ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

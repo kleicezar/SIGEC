@@ -6,7 +6,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         {% block css %}
-        <link rel="stylesheet" href="{% static 'css/Table.css' %}">
+            <link rel="stylesheet" href="{% static 'css/Table.css' %}">
         {% endblock  %}
         <title>Formulário</title>
     </head>
@@ -18,25 +18,27 @@
                     <input type="text" placeholder="Pesquisar..." class="search-input">
                     <button class="search-button">Pesquisar</button>
                 </div>
-                <a href="{% url 'PaymentMethodForm' %}">
+                <a href="">
                     <button class="register-button">Cadastrar</button>
                 </a>
             </div>
-            <table>
+            <table >
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Forma de Pagamento</th>
-                        <th>Ativo</th>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Cargo</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
-                {% for PaymentMethod in PaymentMethods %}
+                {% for user in users %}
                 <tr>
-                    <td>{{ PaymentMethod.id }}</td>
-                    <td>{{ PaymentMethod.name }}</td>
-                    <td>{{ PaymentMethod.isActive }}</td>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.id_FisicPerson_fk.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.id_Position_fk.name_position }}</td>
                     <td>
                         <button>Editar</button>
                         <button>Deletar</button>

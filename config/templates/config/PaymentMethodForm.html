@@ -1,0 +1,53 @@
+{% extends 'global_template/menu.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>  
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block css %}
+        <link rel="stylesheet" href="{% static 'css/Table.css' %}">
+        {% endblock  %}
+        <title>Formulário</title>
+    </head>
+    <body>
+        {% block content %}
+        <div class='content'>
+            <div class="container">
+                <div class="form-group">
+                    <input type="text" placeholder="Pesquisar..." class="search-input">
+                    <button class="search-button">Pesquisar</button>
+                </div>
+                <a href="{% url 'PaymentMethodForm' %}">
+                    <button class="register-button">Cadastrar</button>
+                </a>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Forma de Pagamento</th>
+                        <th>Ativo</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for PaymentMethod in PaymentMethods %}
+                <tr>
+                    <td>{{ PaymentMethod.id }}</td>
+                    <td>{{ PaymentMethod.name }}</td>
+                    <td>{{ PaymentMethod.isActive }}</td>
+                    <td>
+                        <button>Editar</button>
+                        <button>Deletar</button>
+                        <button>Mais</button>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div> 
+        {% endblock %}
+        <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+    </body>
+    </html>
