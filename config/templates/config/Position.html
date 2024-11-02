@@ -26,19 +26,17 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Nome</th>
-                        <th>Email</th>
                         <th>Cargo</th>
+                        <th>Ativo</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
-                <tbody>
-                {% for user in users %}
+                <tbody>  
+                {% for Position in Positions %}
                 <tr>
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.id_FisicPerson_fk.name }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.id_Position_fk.name_position }}</td>
+                    <td>{{ Position.id }}</td>
+                    <td>{{ Position.name_position }}</td>
+                    <td>{{ Position.is_Active }}</td>
                     <td>
                         <button>Editar</button>
                         <button>Deletar</button>

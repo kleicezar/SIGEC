@@ -32,11 +32,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% for PaymentMethod in PaymentMethods %}
+                {% for Situation in Situations %}
                 <tr>
-                    <td>{{ PaymentMethod.id }}</td>
-                    <td>{{ PaymentMethod.name_paymentMethod }}</td>
-                    <td>{{ PaymentMethod.is_Active }}</td>
+                    <td>{{ Situation.id }}</td>
+                    <td>{{ Situation.name_situation }}</td>
+                    <td>{{ Situation.is_Active }}</td>
                     <td>
                         <button>Editar</button>
                         <button>Deletar</button>
