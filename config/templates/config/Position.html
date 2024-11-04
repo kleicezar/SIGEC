@@ -14,13 +14,13 @@
         {% block content %}
         <div class='content'>
             <div class="container">
+                <a href="{% url 'PositionForm' %}">
+                    <button class="register-button">Cadastrar</button>
+                </a>
                 <div class="form-group">
                     <input type="text" placeholder="Pesquisar..." class="search-input">
                     <button class="search-button">Pesquisar</button>
                 </div>
-                <a href="">
-                    <button class="register-button">Cadastrar</button>
-                </a>
             </div>
             <table >
                 <thead>
@@ -36,11 +36,14 @@
                 <tr>
                     <td>{{ Position.id }}</td>
                     <td>{{ Position.name_position }}</td>
-                    <td>{{ Position.is_Active }}</td>
+                    <td>{{ Position.is_Active|yesno:"Sim,Não" }}</td>
                     <td>
-                        <button>Editar</button>
-                        <button>Deletar</button>
-                        <button>Mais</button>
+                        <a href="{% url 'updatePosition' id_position=Position.id %}">
+                            <button>Editar</button>
+                        </a>
+                        <button class="delete-button" data-id="{{ Position.id }}">Deletar</button>
+                        {% comment %} <button>Deletar</button> {% endcomment %}
+                        {% comment %} <button>Mais</button> {% endcomment %}
                     </td>
                 </tr>
                 {% endfor %}

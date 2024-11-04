@@ -36,7 +36,44 @@ tr:hover {
     background-color: #ddd; /* Cor de fundo ao passar o mouse */
 }
 
-.form-group{
+
+.container {
+    display: flex; /* Ativa o Flexbox */
+    flex-direction: row; /* Alinha os itens em linha */
+    justify-content: space-between; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    height: 10vh; /* Altura total da tela */
+    /* background-color: ; Cor de fundo opcional */
     width: 80%; /* Largura da tabela */
     margin: 20px auto; /* Centraliza a tabela */
+}
+
+.form-group {
+    display: flex; /* Alinha os widgets dentro do form-group em linha */
+    gap: 10px; /* Espaçamento entre os widgets */
+}
+
+.search-input {
+    padding: 10px; /* Adiciona padding ao input */
+    border: 1px solid #ccc; /* Borda do input */
+    border-radius: 4px; /* Cantos arredondados */
+    flex-grow: 1; /* Faz o input crescer para ocupar o espaço disponível */
+    min-width: 400px; /* Largura mínima para o input */
+}
+
+.search-button, .register-button {
+    padding: 10px 15px; /* Adiciona padding aos botões */
+    border: none; /* Remove borda padrão */
+    border-radius: 4px; /* Cantos arredondados */
+    cursor: pointer; /* Muda o cursor ao passar por cima */
+}
+
+.search-button {
+    background-color: #007BFF; /* Cor de fundo do botão de pesquisar */
+    color: white; /* Cor do texto */
+}
+
+.register-button {
+    background-color: #28A745; /* Cor de fundo do botão de cadastrar */
+    color: white; /* Cor do texto */
 }

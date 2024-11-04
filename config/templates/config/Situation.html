@@ -7,6 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         {% block css %}
         <link rel="stylesheet" href="{% static 'css/Table.css' %}">
+        <link rel="stylesheet" href="{% static 'css/delete.css' %}">
         {% endblock  %}
         <title>Formulário</title>
     </head>
@@ -14,19 +15,19 @@
         {% block content %}
         <div class='content'>
             <div class="container">
+                <a href="{% url 'SituationForm' %}">
+                    <button class="register-button">Cadastrar</button>
+                </a>
                 <div class="form-group">
                     <input type="text" placeholder="Pesquisar..." class="search-input">
                     <button class="search-button">Pesquisar</button>
                 </div>
-                <a href="{% url 'PaymentMethodForm' %}">
-                    <button class="register-button">Cadastrar</button>
-                </a>
             </div>
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Forma de Pagamento</th>
+                        <th>Situação Personalizada</th>
                         <th>Ativo</th>
                         <th>Ações</th>
                     </tr>
@@ -35,12 +36,17 @@
                 {% for Situation in Situations %}
                 <tr>
                     <td>{{ Situation.id }}</td>
-                    <td>{{ Situation.name_situation }}</td>
-                    <td>{{ Situation.is_Active }}</td>
+                    <td>{{ Situation.name_Situation }}</td>
+                    <td>{{ Situation.is_Active|yesno:"Sim,Não" }}</td>
                     <td>
-                        <button>Editar</button>
-                        <button>Deletar</button>
-                        <button>Mais</button>
+                        <a href="{% url 'updateSituation' id_situation=Situation.id %}">
+                            <button>Editar</button>
+                        </a>
+                        <button class="delete-button" data-id="{{ Situation.id }}">Deletar</button>
+                        {% comment %} <a href="{% url 'deleteSituation' id_situation=Situation.id %}">
+                            <button>Deletar</button>
+                        </a> {% endcomment %}
+                        {% comment %} <button>Mais</button> {% endcomment %}
                     </td>
                 </tr>
                 {% endfor %}
@@ -48,6 +54,9 @@
             </table>
         </div> 
         {% endblock %}
+
+        {% block script %}
         <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+        {% endblock %}
     </body>
     </html>
