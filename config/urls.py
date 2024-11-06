@@ -5,11 +5,6 @@ from .views import *
 urlpatterns = [
     path('', index, name='index'),
 
-    # path('suppliers/', supplier, name='Supplier'),  # Listar todos os fornecedores
-    # path('suppliers/new/', supplierForm, name='supplierForm'),  # Criar novo fornecedor
-    # path('suppliers/update/<int:id_supplier>/', updateSupplier, name='updateSupplier'),  # Atualizar fornecedor
-    # path('suppliers/delete/<int:id>/', deleteSupplier, name='deleteSupplier'),  # Deletar fornecedor
-
     path('Spl/', supplier, name='Supplier'),
     path('SplForm/', supplierForm, name='SupplierForm'),
     path('Spl/upt/<int:id_supplier>/', updateSupplier, name='updateSupplier'),
@@ -44,4 +39,15 @@ urlpatterns = [
     path('StnForm/', SituationForm, name='SituationForm'),
     path('Stn/upt/<int:id_situation>/', updateSituation, name='updateSituation'),
     path('Stn/dlt/<int:id_situation>/', deleteSituation, name='deleteSituation'),
+
+    path('clients/', client_list, name='Client'),
+    path('create/client/', create_client, name='create_client'),
+    path('client/update/<int:id_client>/', update_client, name='update_client'),  # Atualizar cliente
+    path('client/delete/<int:id_client>/', delete_client, name='delete_client'),
+
+    path('venda/', venda_list, name='venda_list'),
+    path('venda/create/', venda_create, name='venda_create'),
+    path('venda/update/<int:pk>/', venda_update, name='venda_update'),
+    path('venda/delete/<int:pk>/', venda_delete, name='venda_delete'),
+    path('venda/<int:venda_pk>/item/create/', venda_item_create, name='venda_item_create'),
     ]

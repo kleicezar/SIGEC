@@ -1,0 +1,54 @@
+{% extends 'global_template/menu.html' %}
+{% load bootstrap4 %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block css %}
+            <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
+        {% endblock %}
+        <title>Formulário</title>
+        {% bootstrap_css %}
+    </head>
+    <body>
+        <main>
+            {% bootstrap_messages %}
+            {% block content %}
+            <div class='content'>
+                <div class='center'>
+                    <h1>Cadastro de Cliente</h1>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <!-- Formulário de Endereço -->
+                        <fieldset>
+                            <legend>Endereço</legend>
+                            {{ form.address_form.as_p }}
+                        </fieldset>
+                
+                        <!-- Formulário de Pessoa Física -->
+                        <fieldset>
+                            <legend>Informações Pessoais</legend>
+                            {{ form.fisic_person_form.as_p }}
+                        </fieldset>
+                
+                        <!-- Formulário de Cliente -->
+                        <fieldset>
+                            <legend>Informações do Cliente</legend>
+                            {{ form.client_form.as_p }}
+                        </fieldset>
+                
+                        <button type="submit">Cadastrar</button>
+                    </form>
+                </div>
+            </div>
+            {% endblock %}
+        </main>
+        
+        
+        <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+    </body>
+</html>

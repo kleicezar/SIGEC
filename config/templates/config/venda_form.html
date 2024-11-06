@@ -1,0 +1,235 @@
+{% extends 'global_template/menu.html' %}
+{% load bootstrap4 %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block css %}
+            <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
+        {% endblock %}
+        <title>Formulário</title>
+        {% bootstrap_css %}
+    </head>
+    <body>
+        <main>
+            {% bootstrap_messages %}
+            {% block content %}
+            <div class='content'>
+                <div class='center'>
+                    <h2>{% if venda_form.instance.pk %}Editar{% else %}Criar{% endif %} Venda</h2>
+
+                    <form method="post" id="vendaForm">
+                        {% csrf_token %}
+                        
+                        <!-- Formulário de Venda -->
+                        <div>
+                            {{ venda_form.as_p }}
+                        </div>
+                    
+                        <!-- Formulário de Itens de Venda -->
+                        <div id="itemsContainer">
+                            <h3>Itens da Venda</h3>
+                    
+                            <!-- Renderiza os campos para os itens da venda (VendaItemForm) -->
+                            {% for item_form in venda_items %}
+                                <div class="itemForm">
+                                    <h4>Item {{ forloop.counter }}</h4>
+                                    {{ item_form.as_p }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    
+                        <!-- Botão para adicionar mais itens -->
+                        <button type="button" id="addItemButton">Adicionar Item</button>
+                    
+                        <button type="submit">Salvar</button>
+                    </form>
+                    
+                    <!-- Script para adicionar novos campos de item dinamicamente -->
+                    <script type="text/javascript">
+                        document.addEventListener('DOMContentLoaded', function () {
+                            let itemCount = {{ venda_items|length }};  // Conta o número de itens renderizados inicialmente
+                            const addItemButton = document.getElementById('addItemButton');
+                            const itemsContainer = document.getElementById('itemsContainer');
+                            
+                            // Array com todos os produtos (será usado para preencher os selects)
+                            const products = [
+                                {% for product in products %}
+                                    { id: {{ product.id }}, descricao: "{{ product.descricao }}" },
+                                {% endfor %}
+                            ];
+                    
+                            addItemButton.addEventListener('click', function() {
+                                itemCount++;
+                                
+                                // Cria um novo campo para o item
+                                const newItemDiv = document.createElement('div');
+                                newItemDiv.classList.add('itemForm');
+                                newItemDiv.innerHTML = `
+                                    <h4>Item ${itemCount}</h4>
+                                    <div>
+                                        <label for="id_item_${itemCount}-product">Produto:</label>
+                                        <select name="item_${itemCount}-product" required>
+                                            <option value="">Escolha um Produto</option>
+                                            ${products.map(product => `<option value="${product.id}">${product.descricao}</option>`).join('')}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="id_item_${itemCount}-quantidade">Quantidade:</label>
+                                        <input type="number" name="item_${itemCount}-quantidade" required>
+                                    </div>
+                                    <div>
+                                        <label for="id_item_${itemCount}-preco_unitario">Preço Unitário:</label>
+                                        <input type="number" step="0.01" name="item_${itemCount}-preco_unitario" required>
+                                    </div>
+                                `;
+                                itemsContainer.appendChild(newItemDiv);
+                            });
+                        });
+                    </script>
+
+{% comment %} 
+<form method="post" id="vendaForm">
+    {% csrf_token %}
+    
+    <!-- Formulário de Venda -->
+    <div>
+        {{ venda_form.as_p }}
+    </div>
+
+    <!-- Formulário de Itens de Venda -->
+    <div id="itemsContainer">
+        <h3>Itens da Venda</h3>
+
+        {% for item_form in venda_items %}
+        <div class="itemForm">
+            <h4>Item {{ forloop.counter }}</h4>
+            {{ item_form.as_p }}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Botão para adicionar mais itens -->
+    <button type="button" id="addItemButton">Adicionar Item</button>
+
+    <button type="submit">Salvar</button>
+</form>
+
+<!-- Script para adicionar novos campos de item dinamicamente -->
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        let itemCount = {{ venda_items|length }};  // Conta o número de itens renderizados inicialmente
+        const addItemButton = document.getElementById('addItemButton');
+        const itemsContainer = document.getElementById('itemsContainer');
+        
+        // Array com todos os produtos (será usado para preencher os selects)
+        const products = [
+            {% for product in products %}
+                { id: {{ product.id }}, descricao: "{{ product.descricao }}" },
+            {% endfor %}
+        ];
+
+        addItemButton.addEventListener('click', function() {
+            itemCount++;
+            
+            // Cria um novo campo para o item
+            const newItemDiv = document.createElement('div');
+            newItemDiv.classList.add('itemForm');
+            newItemDiv.innerHTML = `
+                <h4>Item ${itemCount}</h4>
+                <div>
+                    <label for="id_item_${itemCount}-product">Produto:</label>
+                    <select name="item_${itemCount}-product" required>
+                        <option value="">Escolha um Produto</option>
+                        ${products.map(product => `<option value="${product.id}">${product.descricao}</option>`).join('')}
+                    </select>
+                </div>
+                <div>
+                    <label for="id_item_${itemCount}-quantidade">Quantidade:</label>
+                    <input type="number" name="item_${itemCount}-quantidade" required>
+                </div>
+                <div>
+                    <label for="id_item_${itemCount}-preco_unitario">Preço Unitário:</label>
+                    <input type="number" step="0.01" name="item_${itemCount}-preco_unitario" required>
+                </div>
+            `;
+            itemsContainer.appendChild(newItemDiv);
+        });
+    });
+</script> {% endcomment %}
+
+                    {% comment %} <h2>{% if venda_form.instance.pk %}Editar{% else %}Criar{% endif %} Venda</h2> {% endcomment %}
+
+            {% comment %} <form method="post" id="vendaForm">
+                {% csrf_token %}
+                
+                <!-- Formulário de Venda -->
+                <div>
+                    {{ venda_form.as_p }}
+                </div>
+
+                <!-- Formulário de Itens de Venda -->
+                <div id="itemsContainer">
+                    <h3>Itens da Venda</h3>
+
+                    {% for item_form in venda_items %}
+                    <div class="itemForm">
+                        <h4>Item {{ forloop.counter }}</h4>
+                        {{ item_form.as_p }}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Botão para adicionar mais itens -->
+                <button type="button" id="addItemButton">Adicionar Item</button>
+
+                <button type="submit">Salvar</button>
+            </form>
+
+<!-- Script para adicionar novos campos de item dinamicamente -->
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        let itemCount = {{ venda_items|length }};  // Conta o número de itens renderizados inicialmente
+        const addItemButton = document.getElementById('addItemButton');
+        const itemsContainer = document.getElementById('itemsContainer');
+        
+        addItemButton.addEventListener('click', function() {
+            itemCount++;
+            
+            // Cria um novo campo para o item
+            const newItemDiv = document.createElement('div');
+            newItemDiv.classList.add('itemForm');
+            newItemDiv.innerHTML = `
+                <h4>Item ${itemCount}</h4>
+                <div>
+                    <label for="id_item_${itemCount}-product">Produto:</label>
+                    <select name="item_${itemCount}-product" required>
+                        {% for product in products %}
+                            <option value="{{ product.id }}">{{ product.descricao }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="id_item_${itemCount}-quantidade">Quantidade:</label>
+                    <input type="number" name="item_${itemCount}-quantidade" required>
+                </div>
+                <div>
+                    <label for="id_item_${itemCount}-preco_unitario">Preço Unitário:</label>
+                    <input type="number" step="0.01" name="item_${itemCount}-preco_unitario" required>
+                </div>
+            `;
+            itemsContainer.appendChild(newItemDiv);
+        });
+    });
+</script> {% endcomment %}
+                </div>
+            </div>
+            {% endblock %}
+        </main>
+        
+        
+        <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+    </body>
+</html>

@@ -14,38 +14,44 @@
         {% block content %}
         <div class='content'>
             <div class="container">
-                <a href="{% url 'SupplierForm' %}">
+                <a href="{% url 'create_client' %}">
                     <button class="register-button">Cadastrar</button>
                 </a>
                 <div class="form-group">
-                    <input type="text" placeholder="Pesquisar..." class="search-input">
-                    <button class="search-button">Pesquisar</button>
+                    <form method="GET" action="{% url 'Client' %}">
+                        {% csrf_token %}
+                        <div>
+                            {{ form.as_p }}
+                            <button type="submit">Pesquisar</button>
+                        </div>
+                    </form>
                 </div>
             </div>
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Fornecedor</th>
-                        <th>Telefone para contato</th>
-                        <th>Telefone para contato</th>
+                        <th>Nome</th>
+                        <th>Telefone Pessoal</th>
+                        <th>Telefone de Trabalho</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
-                {% for Supplier in Suppliers %}
+                {% for client in clients %}
                 <tr>
-                    <td>{{ Supplier.id }}</td>
-                    <td>{{ Supplier.LegalPerson.fantasyName }}</td>
-                    <td>{{ Supplier.PersonalPhone }}</td>
-                    <td>{{ Supplier.WorkPhone }}</td>
+                    <td>{{ client.id }}</td>
+                    <td>{{ client.pessoa_fisica.name }}</td>
+                    <td>{{ client.telefone_pessoal }}</td>
+                    <td>{{ client.telefone_trabalho }}</td>
                     <td>
-                        <a href="{% url 'updateSupplier' id_paymentMethod=Supplier.id %}">
+                        <a href="{% url 'update_client' id_client=client.id %}">
                             <button>Editar</button>
                         </a>
-                        <button class="delete-button" data-id="{{ Supplier.id }}">Deletar</button>
-                        {% comment %} <button>Deletar</button> {% endcomment %}
-                        {% comment %} <button>Mais</button> {% endcomment %}
+                        <form action="{% url 'delete_client' id_client=client.id %}" method="POST" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
+                        </form>
                     </td>
                 </tr>
                 {% endfor %}
@@ -55,4 +61,4 @@
         {% endblock %}
         <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
     </body>
-    </html>
+</html>
