@@ -40,7 +40,7 @@ class FisicPerson(models.Model):
     name = models.CharField('Nome', max_length=100)
     cpf = models.CharField('Cadastro de Pessoa Fisica - CPF', max_length=100)
     rg = models.CharField('Registro Geral - RG', max_length=100)
-    dateOfBirth = models.DateField('Data de Aniversario', max_length=100)
+    dateOfBirth = models.CharField('Data de Aniversario', max_length=14)
     id_address_fk = models.ForeignKey ('Address', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -148,3 +148,16 @@ class VendaItem(models.Model):
 
     def __str__(self):
         return f"{self.product.description} - {self.quantidade} unidades"
+
+class Compra(models.Model):
+    # usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    data = models.DateTimeField(auto_now_add=True)
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    forma_pagamento = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True)
+    
+    def calcular_total(self):
+        self.total = sum(item.subtotal() for item in self.itens.all())
+        self.save()
+
+    def __str__(self):
+        return f"Compra {self.id} por {self.usuario.username}"

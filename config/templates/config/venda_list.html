@@ -31,8 +31,8 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Data da Venda</th>
                         <th>Pessoa</th>
+                        <th>Data da Venda</th>
                         <th>Situação</th>
                         <th>Ativo</th>
                         <th>Ações</th>
@@ -42,8 +42,8 @@
                     {% for venda in vendas %}
                     <tr>
                         <td>{{ venda.id }}</td>
-                        <td>{{ venda.data_da_venda }}</td>
-                        <td>{{ venda.pessoa }}</td>
+                        <td>{{ venda.pessoa.pessoa_fisica.name }}</td>
+                        <td>{{ venda.data_da_venda|date:"d/m/Y" }}</td>
                         <td>{{ venda.situacao }}</td>
                         <td>{{ venda.is_active }}</td>
                         <td>

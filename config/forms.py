@@ -36,6 +36,12 @@ class FisicPersonForm(forms.ModelForm):
         model = FisicPerson
         fields = ["name","cpf","rg","dateOfBirth"]
 
+    def __init__(self, *args, **kargs):
+        super().__init__(*args, **kargs)
+        self.fields['dateOfBirth'].widget.attrs.update({'class': 'mask-date'})
+        self.fields['cpf'].widget.attrs.update({'class': 'mask-cpf'})
+
+
 class AddressForm(forms.ModelForm):
     class Meta:
         model = Address
@@ -198,7 +204,11 @@ class VendaForm(forms.ModelForm):
 class VendaItemForm(forms.ModelForm):
     class Meta:
         model = VendaItem
-        fields = ['venda', 'product', 'quantidade', 'preco_unitario']
+        fields = ['product', 'quantidade', 'preco_unitario']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['product'].queryset = Product.objects.all()
 
     def clean(self):
         cleaned_data = super().clean()
@@ -207,3 +217,15 @@ class VendaItemForm(forms.ModelForm):
         if preco_unitario and quantidade:
             cleaned_data['total'] = preco_unitario * quantidade
         return cleaned_data
+    
+class VendaFormSet(forms.BaseFormSet):
+    def clean(self):
+        if any(self.errors):
+            return
+        total = 0
+        for form in self.forms:
+            if form.cleaned_data:
+                total += form.cleaned_data['quantidade'] * form.cleaned_data['preco_unitario']
+        venda = self.form_kwargs['venda']
+        venda.total = total
+        venda.save()

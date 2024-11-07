@@ -22,19 +22,19 @@
 
                     <form method="POST">
                         {% csrf_token %}
+
+                        <!-- Formulário de Pessoa Física -->
+                        <fieldset>
+                            <legend>Informações Pessoais</legend>
+                            {{ form.fisic_person_form.as_p }}
+                        </fieldset>
                         
                         <!-- Formulário de Endereço -->
                         <fieldset>
                             <legend>Endereço</legend>
                             {{ form.address_form.as_p }}
                         </fieldset>
-                
-                        <!-- Formulário de Pessoa Física -->
-                        <fieldset>
-                            <legend>Informações Pessoais</legend>
-                            {{ form.fisic_person_form.as_p }}
-                        </fieldset>
-                
+                        
                         <!-- Formulário de Cliente -->
                         <fieldset>
                             <legend>Informações do Cliente</legend>
@@ -48,7 +48,9 @@
             {% endblock %}
         </main>
         
-        
-        <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+        <script src="{% static 'js/jquery-3.7.1.js' %}"></script>
+        <script src="{% static 'js/jquery.mask.min.js' %}"></script>
+        <script src="{% static 'js/mask.js' %}"></script>
+       
     </body>
 </html>
