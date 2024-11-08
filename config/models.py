@@ -129,17 +129,19 @@ class Venda(models.Model):
     observacao_sistema = models.TextField(verbose_name="Observações do Sistema",blank=True,null=True)
     situacao = models.ForeignKey(Situation,on_delete=models.CASCADE,verbose_name="Situação",related_name="vendas")
     is_active = models.BooleanField(default=True, verbose_name='Está Ativo')  # está ativo
+    total = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Total", blank=True, null=True)
 
     def __str__(self):
         return f"Venda {self.id} - {self.pessoa}"
     
+
+        
 
 class VendaItem(models.Model):
     venda = models.ForeignKey(Venda, on_delete=models.CASCADE, verbose_name="Venda")
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Produto")
     quantidade = models.PositiveIntegerField(verbose_name="Quantidade do Produto")
     preco_unitario = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Preço Unitário")
-    total = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Total", blank=True, null=True)
 
     # Calcula o total automaticamente ao salvar a instância
     def save(self, *args, **kwargs):
@@ -149,15 +151,36 @@ class VendaItem(models.Model):
     def __str__(self):
         return f"{self.product.description} - {self.quantidade} unidades"
 
-class Compra(models.Model):
-    # usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-    data = models.DateTimeField(auto_now_add=True)
-    total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    forma_pagamento = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True)
-    
+class Purchase(models.Model):
+    datePurchase = models.CharField(max_length=10, verbose_name='Data da Compra')
+    total = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Total", blank=True, null=True)
+    id_fornecedor_fk = models.ForeignKey(Person, on_delete=models.SET_NULL, null=True, verbose_name="Fornecedor")
+    id_Situation_fk = models.ForeignKey(Situation, on_delete=models.SET_NULL, null=True, verbose_name="Situação")
+
+
     def calcular_total(self):
         self.total = sum(item.subtotal() for item in self.itens.all())
         self.save()
 
     def __str__(self):
         return f"Compra {self.id} por {self.usuario.username}"
+    
+class PurchaseItem(models.Model):
+    compra = models.ForeignKey(Venda, on_delete=models.SET_NULL, null=True, verbose_name="Venda")
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, verbose_name="Produto")
+    quantidade = models.PositiveIntegerField(verbose_name="Quantidade do Produto")
+    preco_unitario = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Preço Unitário")
+
+    # Calcula o total automaticamente ao salvar a instância
+    def save(self, *args, **kwargs):
+        self.total = self.quantidade * self.preco_unitario  # Calcula o total
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.product.description} - {self.quantidade} unidades"
+
+class PaymentMethod_Purchase(models.Model):
+    compra = models.ForeignKey(Purchase, on_delete=models.SET_NULL, null=True, verbose_name='id_compra')
+    forma_pagamento = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True, verbose_name='id_forma_de_pagamento')
+    expirationDate = models.CharField(max_length=50, verbose_name='Data de Vencimento')
+    valor = models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor Pago:')

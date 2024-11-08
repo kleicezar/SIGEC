@@ -1,9 +1,32 @@
+// Script para adicionar novos itens dinamicamente
 function addItem() {
+    // Obtém o container onde os itens serão adicionados
     const container = document.getElementById('itens-container');
-    const formset = {{ formset.management_form|safe }};
-    const newForm = formset.forms[0].cloneNode(true);  // Clona o primeiro formulário
-    container.appendChild(newForm);  // Adiciona ao container
-}   
+
+    // Obtém o template do formulário vazio
+    const template = document.getElementById('empty-form-template');
+    const newForm = template.content.cloneNode(true);  // Clona o formulário vazio
+
+    // Ajusta o número total de formulários no management_form
+    const totalForms = document.querySelector('#id_form-TOTAL_FORMS');
+    totalForms.value = parseInt(totalForms.value) + 1;
+
+    // Adiciona o novo formulário ao container
+    container.appendChild(newForm);
+}
+
+
+// function addItem() {
+//     const container = document.getElementById('itens-container');
+//     const formset = {{ formset.management_form|safe }};
+//     const newForm = formset.forms[0].cloneNode(true);  // Clona o primeiro formulário
+//     container.appendChild(newForm);  // Adiciona ao container
+// }  
+
+
+
+
+
 // document.addEventListener('DOMContentLoaded', function () {
 //     // let itemCount = {{ venda_items|length }};  // Conta o número de itens renderizados inicialmente
 //     let itemCount = document.getElementById('itemCount').getAttribute('data-count');

@@ -201,6 +201,12 @@ class VendaForm(forms.ModelForm):
         model = Venda
         fields = ['data_da_venda',  'pessoa', 'situacao', 'is_active','observacao_pessoas', 'observacao_sistema']
 
+    def __init__(self, *args, **kwargs):
+        super(VendaForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            self.fields['data_da_venda'].initial = self.instance.data_da_venda
+            self.fields['data_da_venda'].widget.attrs['readonly'] = True
+
 class VendaItemForm(forms.ModelForm):
     class Meta:
         model = VendaItem
@@ -229,3 +235,37 @@ class VendaFormSet(forms.BaseFormSet):
         venda = self.form_kwargs['venda']
         venda.total = total
         venda.save()
+
+class CompraForm(forms.ModelForm):
+    class Meta:
+        model = Purchase
+        fields = ['id_fornecedor_fk', 'id_Situation_fk','datePurchase']
+
+# class CompraItemForm(forms.ModelForm):
+#     class Meta:
+#         model = PurchaseItem
+#         fields = ['id_fornecedor_fk', 'id_Situation_fk','datePurchase']
+
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.fields['product'].queryset = Product.objects.all()
+
+#     def clean(self):
+#         cleaned_data = super().clean()
+#         preco_unitario = cleaned_data.get('preco_unitario')
+#         quantidade = cleaned_data.get('quantidade')
+#         if preco_unitario and quantidade:
+#             cleaned_data['total'] = preco_unitario * quantidade
+#         return cleaned_data
+
+# class CompraFormSet(forms.BaseFormSet):
+#     def clean(self):
+#         if any(self.errors):
+#             return
+#         total = 0
+#         for form in self.forms:
+#             if form.cleaned_data:
+#                 total += form.cleaned_data['quantidade'] * form.cleaned_data['preco_unitario']
+#         venda = self.form_kwargs['venda']
+#         venda.total = total
+#         venda.save()

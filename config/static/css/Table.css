@@ -48,6 +48,18 @@ tr:hover {
     margin: 20px auto; /* Centraliza a tabela */
 }
 
+.container_entrebuttons {
+    display: flex; /* Ativa o Flexbox */
+    flex-direction: row; /* Alinha os itens em linha */
+    justify-content: space-between; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    height: 10vh; /* Altura total da tela */
+    /* background-color: ; Cor de fundo opcional */
+    width: 80%; /* Largura da tabela */
+    margin: 20px auto; /* Centraliza a tabela */
+}
+
+
 .form-group {
     display: flex; /* Alinha os widgets dentro do form-group em linha */
     gap: 10px; /* Espaçamento entre os widgets */

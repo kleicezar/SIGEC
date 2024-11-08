@@ -247,10 +247,8 @@ def updateProduct(request, id_product):
 
 def deleteProduct(request, id_product):
     product = get_object_or_404(Product, id=id_product)
-    if request.method == 'POST':
-        product.delete()
-        return redirect('Product')
-    return render(request, 'config/product_confirm_delete.html', {'product': product})
+    product.delete()
+    return redirect('Product')
 
 ### CLIENT
 
@@ -304,11 +302,7 @@ def update_client(request, id_client):
 def delete_client(request, id_client):
     # Recupera o cliente com o id fornecido
     client = get_object_or_404(Client, id=id_client)
-
-    # Deleta o cliente
     client.delete()
-
-    # Redireciona para a lista de clientes após a exclusão
     return redirect('Client')
 
 ### SALE
@@ -355,35 +349,50 @@ def venda_list(request):
 
 def venda_create(request):
     VendaItemFormSet = modelformset_factory(VendaItem, form=VendaItemForm, extra=1)
-
     if request.method == 'POST':
         venda_form = VendaForm(request.POST)
         formset = VendaItemFormSet(request.POST)
 
         if venda_form.is_valid() and formset.is_valid():
-            # Criação da venda
-            venda = venda_form.save()
-
-            # Salvar os itens da venda
+            # Verificar se a quantidade em estoque é suficiente
+            estoque_suficiente = True  # Flag para verificar se o estoque é suficiente
             for form in formset:
                 if form.cleaned_data:
-                    produto = form.cleaned_data['produto']
+                    produto = form.cleaned_data['product']
                     quantidade = form.cleaned_data['quantidade']
-                    preco_unitario = form.cleaned_data['preco_unitario']
 
-                    # Criar um novo item de venda
-                    VendaItem.objects.create(
-                        venda=venda,
-                        produto=produto,
-                        quantidade=quantidade,
-                        preco_unitario=preco_unitario
-                    )
+                    # Verifica se a quantidade solicitada é maior do que a quantidade em estoque
+                    if produto.current_quantity < quantidade:
+                        estoque_suficiente = False
+                        form.add_error('quantidade', f'Não há estoque suficiente para o produto {produto.description}. Estoque disponível: {produto.current_quantity}.')
 
-                    # Ajustar a quantidade do produto
-                    produto.quantidade -= quantidade
-                    produto.save()
+            if not estoque_suficiente:
+                # Se houver erro de estoque, a venda não será salva
+                formset._non_form_errors.append("Alguns produtos não têm estoque suficiente.")
+            else:
+                # Se o estoque for suficiente, salvar a venda
+                venda = venda_form.save()
 
-            return redirect('venda_list')  # Redireciona para a lista de vendas
+                # Salvar os itens da venda
+                for form in formset:
+                    if form.cleaned_data:
+                        produto = form.cleaned_data['product']
+                        quantidade = form.cleaned_data['quantidade']
+                        preco_unitario = form.cleaned_data['preco_unitario']
+
+                        # Criar um novo item de venda
+                        VendaItem.objects.create(
+                            venda=venda,
+                            product=produto,
+                            quantidade=quantidade,
+                            preco_unitario=preco_unitario
+                        )
+
+                        # Atualiza o estoque do produto
+                        produto.current_quantity -= quantidade
+                        produto.save()
+
+                return redirect('venda_list')  # Redireciona para a lista de vendas
 
     else:
         venda_form = VendaForm()
@@ -396,149 +405,91 @@ def venda_create(request):
 
     return render(request, 'config/venda_form.html', context)
 
-
-    # if request.method == 'POST':
-    #     form_venda = VendaForm(request.POST)
-    #     form_item = VendaItemForm(request.POST)
-    #     if form_venda.is_valid() and form_item.is_valid():
-    #         form_venda.save()
-    #         # Agora, ajusta os produtos e salva os itens de venda
-    #         for form in [form_item]:  # Usando uma lista de formulários, mesmo que tenha só um
-    #             ajuste = [form.cleaned_data['product'].id, form.cleaned_data['quantidade']]
-    #             upt = Product.objects.get(id=ajuste[0])  # Usando 'id' corretamente
-    #             upt.quantidade -= ajuste[1]
-    #             upt.save()
-                
-    #             form_venda_item = form.save(commit=False)
-    #             form_venda_item.venda = form_venda  # Associando a venda
-    #             form_venda_item.save()
-
-    #         return redirect(request, 'venda_list')
-    #     # return render(request,'config/venda_form.html', context)
-
-    #     context={
-    #         'venda_form': form_venda,
-    #         'item_form': form_item
-    #     }
-    #     return render(request,'config/venda_form.html', context)
-
-    # form_venda = VendaForm()
-    # form_item = VendaItemForm()
-
-    
-    # context={
-    #     'venda_form': form_venda,
-    #     'item_form': form_item
-    # }
-    # return render(request, 'config/venda_form.html', context)
-
-
-        # for i in forms:
-        #     form_count = int(request.POST.get('form_count', 1))  # Contador de formulários
-        #     forms = [VendaItemForm(request.POST, prefix=f'item_{i}') for i in range(form_count)]
-
-    # if all(form.is_valid() for form in forms):
-    #     for form in forms:
-    #         # Aqui você pode processar cada formulário
-    #         print(form.cleaned_data)
-    # else:
-    #     return render(request, 'minha_template.html', {'forms': forms, 'form_count': form_count})
-
-
-
-
-
-    #         return redirect('Supplier')
-    # else:
-    #     form = SupplierModelForm()
-    # return render(request, 'config/supplierForm.html', {'form': form})
-
-
-    # if request.method == 'POST':
-    #     venda_form = VendaForm(request.POST)
-    #     # venda_items = [VendaItemForm(request.POST, prefix=f"item_{i}") for i in range(1)] 
-
-    #     form_count = int(request.POST.get('form_count', 1))  # Contador de formulários enviados
-    #     forms = [VendaItemForm(request.POST, prefix=f'item_{i}') for i in range(form_count)]
-
-    #     if venda_form.is_valid():
-    #         venda = venda_form.save()
-
-    #         if all(form.is_valid() for form in forms):
-                # ajuste = [form.product.id , form.quantidade]
-                # upt = Product.objects.get(ajuste[0])
-                # upt.quantidade -= ajuste[1]
-                # upt.save()
-                # venda_item = form.save()
-    #             # venda_item.venda = venda
-    #             venda_item.save()
-    #         for form in forms:
-    #             print(form.cleaned_data)  # Aqui você pode salvar ou processar os dados
-    #         return render(request, 'venda_list.html')  # Redireciona para a página de sucesso
-        
-    #         # for item_form in venda_items:
-    #         #     if item_form.is_valid():
-    #         #         venda_item = item_form.save(commit=False)
-    #         #         venda_item.venda = venda
-    #         #         venda_item.save()
-
-    #         return redirect('venda_list')  
-    # else:
-    #     venda_form = VendaForm()
-    #     venda_items = [VendaItemForm(prefix=f"item_{i}") for i in range(1)]  
-    #     products = Product.objects.all()  # Obtendo todos os produtos
-
-    # return render(request, 'config/venda_form.html', {
-    #     'venda_form': venda_form, 
-    #     'venda_items': venda_items, 
-    #     'products': products  # Passando os produtos ao template
-    # })
-
-    # def venda_create(request):
-    #     if request.method == 'POST':
-    #         venda_form = VendaForm(request.POST)
-    #         venda_items = [VendaItemForm(request.POST, prefix=f"item_{i}") for i in range(1)] 
-
-    #         if venda_form.is_valid():
-    #             venda = venda_form.save()
-
-    #             for item_form in venda_items:
-    #                 if item_form.is_valid():
-    #                     venda_item = item_form.save(commit=False)
-    #                     venda_item.venda = venda
-    #                     venda_item.save()
-
-    #             return redirect('venda_list')  
-    #     else:
-    #         venda_form = VendaForm()
-    #         venda_items = [VendaItemForm(prefix=f"item_{i}") for i in range(1)]  
-    #         products = Product.objects.all()  # Obtendo todos os produtos
-
-    #     return render(request, 'config/venda_form.html', {
-    #         'venda_form': venda_form, 
-    #         'venda_items': venda_items, 
-    #         'products': products  # Passando os produtos ao template
-    #     })
-
 # Editar uma Venda existente
 def venda_update(request, pk):
+    # Obtém a venda existente com base no id (pk)
     venda = get_object_or_404(Venda, pk=pk)
+    
+    # Cria o formset para os itens de venda
+    VendaItemFormSet = modelformset_factory(VendaItem, form=VendaItemForm, extra=1)
+    
     if request.method == 'POST':
-        form = VendaForm(request.POST, instance=venda)
-        if form.is_valid():
-            form.save()
-            return redirect('venda_list')  # Redireciona para a lista de vendas
+        venda_form = VendaForm(request.POST, instance=venda)  # Carrega os dados existentes para edição
+        formset = VendaItemFormSet(request.POST)
+
+        if venda_form.is_valid() and formset.is_valid():
+            estoque_suficiente = True  # Flag para verificar se todos os itens têm estoque suficiente
+            for form in formset:
+                if form.cleaned_data:
+                    produto = form.cleaned_data['product']
+                    quantidade = form.cleaned_data['quantidade']
+
+                    # Verifica se a quantidade solicitada é maior que a quantidade disponível
+                    if produto.current_quantity < quantidade:
+                        estoque_suficiente = False
+                        form.add_error('quantidade', f'Não há estoque suficiente para o produto {produto.description}. Estoque disponível: {produto.current_quantity}.')
+
+            if not estoque_suficiente:
+                # Se algum item não tem estoque suficiente, não salva a venda
+                formset._non_form_errors.append("Alguns produtos não têm estoque suficiente para a venda.")
+            else:
+                # Atualiza a venda
+                venda = venda_form.save()
+
+                # Atualiza ou cria novos itens de venda
+                for form in formset:
+                    if form.cleaned_data:
+                        produto = form.cleaned_data['product']
+                        quantidade = form.cleaned_data['quantidade']
+                        preco_unitario = form.cleaned_data['preco_unitario']
+
+                        # Verifica se o item já existe, e atualiza ou cria um novo
+                        if form.instance.pk:  # Se o item já existe
+                            venda_item = form.save(commit=False)
+                            venda_item.venda = venda
+                            venda_item.save()
+                        else:  # Se o item for novo
+                            VendaItem.objects.create(
+                                venda=venda,
+                                product=produto,
+                                quantidade=quantidade,
+                                preco_unitario=preco_unitario
+                            )
+
+                        # Atualiza a quantidade do produto no estoque
+                        produto_old = Product.objects.get(id=produto.id)
+                        produto_old.current_quantity -= quantidade
+                        produto_old.save()
+
+                return redirect('venda_list')  # Redireciona para a lista de vendas
+
     else:
-        form = VendaForm(instance=venda)
-    return render(request, 'config/venda_form.html', {'form': form})
+        venda_form = VendaForm(instance=venda)  # Carrega o form da venda existente
+        formset = VendaItemFormSet(queryset=VendaItem.objects.filter(venda=venda))  # Carrega os itens da venda
+
+    context = {
+        'venda_form': venda_form,
+        'formset': formset,
+    }
+    return render(request, 'config/venda_form.html', context)
 
 # Deletar uma Venda
 def venda_delete(request, pk):
+    # Obtém a venda com base no id (pk)
     venda = get_object_or_404(Venda, pk=pk)
-    if request.method == 'POST':
-        venda.delete()
-        return redirect('venda_list')  # Redireciona para a lista de vendas
-    return render(request, 'config/venda_confirm_delete.html', {'venda': venda})
+    # Recupera os itens de venda relacionados
+    venda_items = VendaItem.objects.filter(venda=venda)
+    # Restaura a quantidade dos produtos no estoque
+    for item in venda_items:
+        produto = item.product
+        produto.current_quantity += item.quantidade  # Restaura a quantidade
+        produto.save()
+    # Exclui os itens de venda
+    venda_items.delete()
+    # Exclui a venda
+    venda.delete()
+    # Redireciona para a lista de vendas após a deleção
+    return redirect('venda_list')
 
 # Criar VendaItem para uma venda específica
 def venda_item_create(request, venda_pk):

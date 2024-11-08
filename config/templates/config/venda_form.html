@@ -19,8 +19,41 @@
             <div class='content'>
                 <div class='center'>
                     <h2>{% if venda_form.instance.pk %}Editar{% else %}Criar{% endif %} Venda</h2>
-
-                    <form method="post" id="vendaForm">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ venda_form.as_p }}
+                    
+                        <h3>Itens de Venda</h3>
+                        {{ formset.management_form }}  <!-- Renderiza o management_form -->
+                    
+                        <div id="itens-container">
+                            {% for form in formset %}
+                                <div class="form-row">
+                                    {{ form.as_p }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    
+                        <!-- Armazena o primeiro formulário vazio em um <template> para clonar depois -->
+                        <template id="empty-form-template">
+                            <div class="form-row">
+                                {{ formset.empty_form.as_p }}
+                            </div>
+                        </template>
+                        {% if formset.non_form_errors %}
+                            <div class="alert alert-danger">
+                                <ul>
+                                    {% for error in formset.non_form_errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    
+                        <button type="button" onclick="addItem()">Adicionar Produto</button>
+                        <button type="submit">Salvar Venda</button>
+                    </form>
+                    {% comment %} <form method="post" id="vendaForm">
                         {% csrf_token %}
                         
                         <!-- Formulário de Venda -->
@@ -32,6 +65,12 @@
                         <div id="itemsContainer">
                             <h3>Itens da Venda</h3>
                             
+                            <template id="empty-form-template">
+                                <div class="form-row">
+                                    {{ formset.empty_form.as_p }}
+                                </div>
+                            </template>
+
                             <!-- Renderiza os campos para os itens da venda (VendaItemForm) -->
                             {{ formset.management_form }}
                             <div id="itens-container">
@@ -44,10 +83,10 @@
                         </div>
                     
                         <!-- Botão para adicionar mais itens -->
-                        <button type="button" id="addItemButton">Adicionar Item</button>
+                        <button type="button" id="addItemButton" onclick="addItem()">Adicionar Item</button>
                         
                         <button type="submit">Salvar</button>
-                    </form>
+                    </form> {% endcomment %}
                 </div>
             </div>
             <script src="{% static 'js/addItem.js' %}"></script>
