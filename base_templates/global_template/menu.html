@@ -5,6 +5,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="{% static 'global_static/css/menu.css' %} ">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         {% block css %}
         {% endblock  %}
         <title>Dashboard</title>
@@ -40,7 +41,10 @@
             <!-- <h2>Menu</h2> -->
             <ul>
                 <li>
-                    <a href="#" class="toggle"><h3>Cadastros</h3></a>
+                    <a href="#" class="toggle">
+                        <h3>Cadastros</h3>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </a>
                     <ul class="sub-menu">
                         <li><a href="{% url 'Client' %}"><h5>Cliente</h5></a></li>
                         <li><a href="{% url 'Supplier' %}"><h5>Fornecedor</h5></a></li>
@@ -48,7 +52,10 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="#" class="toggle"><h3>Produtos</h3></a>
+                    <a href="#" class="toggle">
+                        <h3>Produtos</h3>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </a>
                     <ul class="sub-menu">
                         <li><a href="{% url 'Product' %}"><h5>Gerenciar Produtos</h5></a></li>
                         <li><a href="#"><h5>Compras</h5></a></li>
@@ -56,7 +63,10 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="#" class="toggle"><h3>Vendas</h3></a>
+                    <a href="#" class="toggle">
+                        <h3>Vendas</h3>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </a>
                     <ul class="sub-menu">
                         <li><a href="{% url 'venda_list' %}"><h5>Pedidos</h5></a></li>
                         <li><a href="{% url 'venda_list' %}"><h5>Relatorio de Vendas</h5></a></li>
@@ -73,7 +83,10 @@
                     </ul>
                 </li> -->
                 <li>
-                    <a href="#" class="toggle"><h3>Configuração</h3></a>
+                    <a href="#" class="toggle">
+                        <h3>Configurações</h3>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </a>
                     <ul class="sub-menu">
                         <li><a href="#"><h5>Usuarios</h5></a></li>
                         <li><a href="{% url 'Situation' %}"><h5>Situação</h5></a></li>
