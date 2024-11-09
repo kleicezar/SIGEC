@@ -66,8 +66,8 @@ img.logo{
     /* display: flex;
     justify-content: flex-end; */
     /* align-items: center; */
-    width: 50px; /* Defina o tamanho desejado */
-    height: 50px; /* Deve ser o mesmo que a largura para manter a proporção */
+    width: 25px; /* Defina o tamanho desejado */
+    height: 25px; /* Deve ser o mesmo que a largura para manter a proporção */
     overflow: hidden; /* Esconde partes da imagem que saem do contêiner */
     border-radius: 50%; /* Cria o formato circular */
 }
@@ -169,6 +169,9 @@ body {
     margin-left: 20px; /* Logan : Move o submenu para a direita*/
 }
 
+.rotate i{
+    transform: rotate(180deg);
+}
 .sub-menu li a:hover{
     text-decoration: underline;
 }
@@ -186,6 +189,8 @@ body {
 .content.expanded {
     margin-left: 20px; /* Reduz a margem quando a sidebar está oculta */
 }
+
+/* li:has() */
 /* .sidebar h2 {
     margin-top: 0;
 } */

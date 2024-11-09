@@ -9,7 +9,7 @@ toggleButton.addEventListener('click', () => {
     sidebar.classList.toggle('hidden');
     content.classList.toggle('expanded'); // Alterna a classe no conteúdo
 });
-
+const isToggle = true;
 // Adiciona eventos de clique para os links do menu
 toggles.forEach(toggle => {
     toggle.addEventListener('click', function(event) {
@@ -20,8 +20,19 @@ toggles.forEach(toggle => {
         // Alterna a exibição da sub-menu
         if (subMenu.style.display === 'block') {
             subMenu.style.display = 'none';
+            // toggle.classList.toggle('toggle');
         } else {
             subMenu.style.display = 'block';
+            // toggle.classList.toggle('rotate');
+        }
+        /*nao colocar antes do if e do else de cima*/
+        if(isToggle){
+            toggle.classList.toggle("rotate");
+            isToggle = !isToggle;
+        }
+        else{
+            toggle.classList.toggle("toggle");
+            isToggle = !isToggle;
         }
     });
 });
