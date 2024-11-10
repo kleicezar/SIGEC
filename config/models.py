@@ -23,9 +23,9 @@ class Position(models.Model):
     
 
 class Address(models.Model):
+    cep = models.CharField('CEP', max_length=10)
     road = models.CharField('rua', max_length=100)
     number = models.DecimalField('numero da casa' , decimal_places=2, max_digits=10)
-    cep = models.CharField('CEP', max_length=10)
     neighborhood = models.CharField('Bairro', max_length=100)
     reference = models.CharField('Ponto de Referencia', max_length=100)
     complement = models.CharField('Complemento', max_length=100)

@@ -17,9 +17,6 @@
                 <a href="{% url 'venda_create' %}">
                     <button class="register-button">Criar nova Venda</button>
                 </a>
-                <a href="{% url 'venda_create' %}">
-                    <button class="register-button">Criar nova Venda</button>
-                </a>
                 <div class="form-group">
                     <form method="GET" action="{% url 'Client' %}">
                         {% csrf_token %}
@@ -48,7 +45,7 @@
                         <td>{{ venda.pessoa.pessoa_fisica.name }}</td>
                         <td>{{ venda.data_da_venda|date:"d/m/Y" }}</td>
                         <td>{{ venda.situacao }}</td>
-                        <td>{{ venda.is_active }}</td>
+                        <td>{{ venda.is_active|yesno:"Sim,Não" }}</td>
                         <td>
                             <a href="{% url 'venda_update' pk=venda.pk %}">Editar</a>
                             <a href="{% url 'venda_delete' pk=venda.pk %}"class="delete-button" data-id="{{ Position.id }}" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</a>

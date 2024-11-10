@@ -1,19 +1,19 @@
 // Script para adicionar novos itens dinamicamente
-function addItem() {
-    // Obtém o container onde os itens serão adicionados
-    const container = document.getElementById('itens-container');
+// function addItem() {
+//     // Obtém o container onde os itens serão adicionados
+//     const container = document.getElementById('itens-container');
 
-    // Obtém o template do formulário vazio
-    const template = document.getElementById('empty-form-template');
-    const newForm = template.content.cloneNode(true);  // Clona o formulário vazio
+//     // Obtém o template do formulário vazio
+//     const template = document.getElementById('empty-form-template');
+//     const newForm = template.content.cloneNode(true);  // Clona o formulário vazio
 
-    // Ajusta o número total de formulários no management_form
-    const totalForms = document.querySelector('#id_form-TOTAL_FORMS');
-    totalForms.value = parseInt(totalForms.value) + 1;
+//     // Ajusta o número total de formulários no management_form
+//     const totalForms = document.querySelector('#id_form-TOTAL_FORMS');
+//     totalForms.value = parseInt(totalForms.value) + 1;
 
-    // Adiciona o novo formulário ao container
-    container.appendChild(newForm);
-}
+//     // Adiciona o novo formulário ao container
+//     container.appendChild(newForm);
+// }
 
 
 // function addItem() {
@@ -68,3 +68,20 @@ function addItem() {
 //                 <label for="id_item_${itemCount}-preco_unitario">Preço Unitário:</label>
 //                 <input type="number" step="0.01" name="item_${itemCount}-preco_unitario" required>
 //             </div>
+
+
+
+// API DE CEP
+
+
+// function copiarValorParaCampos(origemId, destinosIds) {
+//     const valor = document.getElementById(origemId).value;
+//     destinosIds.forEach(destinoId => {
+//         document.getElementById(destinoId).value = valor;
+//     });
+// }
+
+// // Uso da função no evento "blur"
+// document.getElementById("input-cep").addEventListener("blur", function () {
+//     copiarValorParaCampos("input-cep", ["inputDestino1", "inputDestino2"]);
+// });

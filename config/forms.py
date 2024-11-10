@@ -46,6 +46,17 @@ class AddressForm(forms.ModelForm):
     class Meta:
         model = Address
         fields = "__all__"
+        # fields = "["name","cpf","rg","dateOfBirth"]"
+
+    def __init__(self, *args, **kwargs):
+        super(AddressForm, self).__init__(*args, **kwargs)
+        self.fields['road'].widget.attrs.update({'id': 'rua'})
+        self.fields['cep'].widget.attrs.update({'id': 'cep','maxlength':'9','class':'mask-cep','onblur':"pesquisacep(this.value);"})
+        self.fields['neighborhood'].widget.attrs.update({'id': 'bairro'})
+        self.fields['complement'].widget.attrs.update({'id': 'complemento'})
+        self.fields['city'].widget.attrs.update({'id': 'cidade'})
+        self.fields['uf'].widget.attrs.update({'id': 'uf'})
+        self.fields['country'].widget.attrs.update({'id': 'estado'})
 
 class LegalPersonModelForm(forms.ModelForm):
     class Meta:
