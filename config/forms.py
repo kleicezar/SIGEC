@@ -95,6 +95,7 @@ class AddressForm(forms.ModelForm):
             })
         }
 
+
 class LegalPersonModelForm(forms.ModelForm):
     class Meta:
         model = LegalPerson
