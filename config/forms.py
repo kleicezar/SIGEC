@@ -34,8 +34,27 @@ class PositionModelForm(forms.ModelForm):
 class FisicPersonForm(forms.ModelForm):
     class Meta:
         model = FisicPerson
-        fields = ["name","cpf","rg","dateOfBirth"]
+        fields = ["name","cpf","rg","dateOfBirth"] 
+        widgets = {
+            'name':forms.TextInput(attrs={
+                'class':'form-control input-max ',
+                'placeholder':'Digite seu name'
+            }),
+            'cpf':forms.TextInput(attrs={
+                'class':'form-control mask-cpf ',
+                'placeholder':'Digite seu cpf'
+            }),
+            'rg':forms.TextInput(attrs={
+                'class':'form-control input-min ',
+                'placeholder':'Digite seu rg'
+            }),
+            'dateOfBirth':forms.DateInput(attrs={
+                'class':'form-control row mask-date',
+                'placeholder':'Digite seu dateOfBirth'
+            })
+        }
 
+    
     def __init__(self, *args, **kargs):
         super().__init__(*args, **kargs)
         self.fields['dateOfBirth'].widget.attrs.update({'class': 'mask-date'})
@@ -46,6 +65,35 @@ class AddressForm(forms.ModelForm):
     class Meta:
         model = Address
         fields = "__all__"
+        widgets = {
+            'road':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'number':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'cep':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+             'neighborhood':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+             'reference':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+             'complement':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+             'city':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+             'uf':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+             'country':forms.TextInput(attrs={
+                'class':'form-control row'
+            })
+        }
 
 class LegalPersonModelForm(forms.ModelForm):
     class Meta:
@@ -72,6 +120,29 @@ class ClientForm(forms.ModelForm):
     class Meta:
         model = Client
         fields = ['telefone_pessoal', 'telefone_trabalho', 'site', 'ativo', 'limite_credito']
+        widgets = {
+            'telefone_pessoal':forms.TextInput(attrs={
+                'class':'form-control input-min',
+                'placeholder':'Digite seu telefone_pessoal'
+            }),
+            'telefone_trabalho':forms.TextInput(attrs={
+                'class':'form-control input-min',
+                'placeholder':'Digite seu telefone_trabalho'
+            }),
+            'site':forms.TextInput(attrs={
+                'class':'form-control input-min',
+                'placeholder':'Digite seu site'
+            }),
+            'ativo':forms.TextInput(attrs={
+                'class':'form-control input-min',
+                'placeholder':'Digite seu ativo'
+            }),
+            'limite_credito':forms.TextInput(attrs={
+                'class':'form-control input-min',
+                'placeholder':'Digite seu limite de crédito'
+            }),
+        }
+
 class CombinedForm(forms.Form):
     def __init__(self, *args, **kwargs):
         # Pega as instâncias de modelo para os subformulários

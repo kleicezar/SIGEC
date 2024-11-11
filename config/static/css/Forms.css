@@ -5,14 +5,11 @@
 }
 .content {
     display: flex; /* Ativa o Flexbox */
-    justify-content: center; /* Centraliza horizontalmente */
-    align-items: center; /* Centraliza verticalmente */
-    height: 100vh; /* Altura da tela */
-    background-color: #e0e0e0; /* Apenas para visualização */
+    
 }
 
 .center {
-    background-color: #f0f0f0; /* Apenas para visualização */
+   
     padding: 20px;
     border-radius: 5px;
 }
@@ -25,4 +22,25 @@
     margin-left: 250px;
     padding: 70px 0px 0px 20px;
     transition: margin-left 0.3s ease;
+}
+
+.margin-top{
+    margin-top: 20px;
+}
+
+.input-min{
+    width: 200px;
+
+}
+
+.input-max{
+    width: 400px;
+}
+
+.form-margin{
+    margin-left: 50px;
+}
+
+.wid-2{
+    width: 200px;
 }

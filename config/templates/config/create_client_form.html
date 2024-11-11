@@ -1,6 +1,7 @@
 {% extends 'global_template/menu.html' %}
 {% load bootstrap4 %}
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
@@ -13,35 +14,157 @@
         {% bootstrap_css %}
     </head>
     <body>
-        <main>
+        <main >
             {% bootstrap_messages %}
             {% block content %}
             <div class='content'>
-                <div class='center'>
-                    <h1>Cadastro de Cliente</h1>
-
-                    <form method="POST">
+                <div >
+                    <form method="POST" class="col">
                         {% csrf_token %}
-
+                        <h4 class="mt-5">Cadastro de Cliente</h1>
                         <!-- Formulário de Pessoa Física -->
-                        <fieldset>
-                            <legend>Informações Pessoais</legend>
-                            {{ form.fisic_person_form.as_p }}
-                        </fieldset>
+                        <div class="row">
+                            <fieldset class="">
+                                <legend class="mt-12">
+                                    <h5>
+                                        Informações Pessoais
+                                    </h5>
+                                </legend>
+                                <!-- <div class='form-margin'>
+                                    {{ form.fisic_person_form.as_p }}
+                                </div> -->
+                                <div class="form-margin row">
+                                    <div class="col">
+                                        <label for=>{{form.fisic_person_form.name.label}}</label>
+                                        {{form.fisic_person_form.name}}
+                                    </div>
+                                    <div class="col">
+                                        <label class="row" for=>{{form.fisic_person_form.cpf.label}}</label>
+                                        <div class="row  wid-2">
+                                            {{form.fisic_person_form.cpf}}
+                                        </div>
+                                    </div> 
+                                    <div class="row">
+                                        <div class="col">
+                                            <label for=>{{form.fisic_person_form.rg.label}}</label>
+                                            {{form.fisic_person_form.rg}}
+                                        </div>
+                                        <div class="col">
+                                            <label class="row" for=>{{form.fisic_person_form.dateOfBirth.label}}</label>
+                                            <div class="row wid-2">
+                                                {{form.fisic_person_form.dateOfBirth}}
+                                            </div>
+                                        </div>
+                                </div>
+                                    <!-- <div>
+                                        <label for=>{{form.fisic_person_form.rg.label}}</label>
+                                        {{form.fisic_person_form.rg}}
+                                    </div>
+                                    <div>
+                                        <label for=>{{form.fisic_person_form.dateOfBirth.label}}</label>
+                                        {{form.fisic_person_form.dateOfBirth}}
+                                    </div> -->
+                                </div>
+                            </fieldset>
+                         </div>
                         
                         <!-- Formulário de Endereço -->
-                        <fieldset>
-                            <legend>Endereço</legend>
-                            {{ form.address_form.as_p }}
-                        </fieldset>
+                         <div class="row">
+                            <fieldset>
+                                <legend>
+                                    <h5>
+                                        Endereço
+                                    </h5>
+                                </legend>
+                                <div class="form-margin row">
+                                    <div class="row">
+                                        <div class="col-xl-2">
+                                            <label for=>{{form.address_form.cep.label}}</label>
+                                            {{form.address_form.cep}}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-xl-3">
+                                            <label for=>{{form.address_form.country.label}}</label>
+                                            {{form.address_form.country}}
+                                        </div>
+                                        <div class="col-xl-1">
+                                            <label for=>{{form.address_form.uf.label}}</label>
+                                            {{form.address_form.uf}}
+                                        </div>
+    
+                                        <div class="col-xl-3">
+                                            <label for="">
+                                                {{form.address_form.city.label}}
+                                            </label>
+                                            {{form.address_form.city}}
+                                        </div>
+                                    </div>
+                                   
+
+                                    <div class="row">
+                                        <div class="col-xl-3">
+                                            <label for="">
+                                                {{form.address_form.neighborhood.label}}
+                                            </label>
+                                            {{form.address_form.neighborhood}}
+                                        </div>
+                                        <div class="col-xl-4">
+                                            <label for="">
+                                                {{form.address_form.road.label}}
+                                            </label>
+                                            {{form.address_form.road}}
+                                        </div>
+
+                                        <div class="col-xl-2">
+                                            <label for="">
+                                                {{form.address_form.number.label}}
+                                            </label>
+                                            {{form.address_form.number}}
+                                        </div>
+    
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-xl-5">
+                                            <label for="">
+                                                {{form.address_form.complement.label}}
+                                            </label>
+                                            {{form.address_form.complement}}
+                                        </div>
+                                        <div class="col-xl-5">
+                                            <label for="">
+                                                {{form.address_form.reference.label}}
+                                            </label>
+                                            {{form.address_form.reference}}
+                                        </div>
+                                    </div>
+                                   
+                                </div>
+                                <!-- <div class="form-margin">
+                                    {{ form.address_form.as_p }}
+                                </div> -->
+                            </fieldset>
+                         </div>
+                       
                         
                         <!-- Formulário de Cliente -->
-                        <fieldset>
-                            <legend>Informações do Cliente</legend>
-                            {{ form.client_form.as_p }}
-                        </fieldset>
+                        <div class="row">
+                            <fieldset>
+                                <legend>
+                                    <h5>
+                                        Informações do Cliente
+                                    </h5>
+                                </legend>
+                                <div class="form-margin">
+                                    {{ form.client_form.as_p }}
+                                </div>
+                            </fieldset>
+                        </div>
+                      
                 
-                        <button type="submit">Cadastrar</button>
+                        <button  type="submit">Cadastrar</button>
                     </form>
                 </div>
             </div>
@@ -51,6 +174,122 @@
         <script src="{% static 'js/jquery-3.7.1.js' %}"></script>
         <script src="{% static 'js/jquery.mask.min.js' %}"></script>
         <script src="{% static 'js/mask.js' %}"></script>
-       
+     
     </body>
 </html>
+
+
+
+
+
+
+{%comment%}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    {% load static %}  <!-- Carrega a tag 'static' do Django -->
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulários</title>
+
+    <!-- Carregar o CSS do Bootstrap via CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- CSS personalizado do seu projeto -->
+    {% block css %}
+        <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
+    {% endblock %}
+</head>
+<body>
+    <main>
+        {% bootstrap_messages %}
+        {% block content %}
+<div class="content">
+    <form class="mt-5  grid container novalidate">
+        <div class="mb-5 title">Novo Cliente</div>
+        <div class="row mb-5">
+            <div class="col-10">
+                <div class="row mb-4">
+                    <div class="col-xl-5">
+                        <label for="">Nome</label>
+                        <input type="text" class="form-control" placeholder="Ex: Kleilson Cézar" aria-label="nome" >
+                    </div>
+                    <div class="col-xl-2"> 
+                        <label for="">Tipo de pessoa</label>
+                        <select class="form-select force-input" aria-label="Default select example"(change)="onSelectChange($event)">
+                            <option selected>Selecione</option>
+                            <option value="1" (click)="cpfPermission()" >Pessoa Física</option>
+                            <option value="2" (click)="cnpjPermission()">Pessoa Jurídica</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-2">
+                        <label for="cpf">CPF</label>
+                        <input type="text" class="form-control"  aria-label="cpf" id="cpf" [readonly]="readOnlyCpf" [(ngModel)]="CPFValue">
+                    </div>
+                    <div class="col-xl-2">
+                        <label for="">CNPJ</label>
+                        <input type="text" class="form-control" aria-label="cnpj" [readonly]="readOnlyCnpj" [(ngModel)]="CNPJValue">
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col-xl-5">
+                        <label for="">E-mail</label>
+                        <input type="email" class="form-control" placeholder="Ex: fernandosilva@gmail.com" aria-label="email" required>
+                        <div class="invalid-feedback">Por favor, digite um e-mail.</div>
+                    </div>
+                    <div class="col-xl-2">
+                        <label for="">Telefone</label>
+                        <input type="tel" class="form-control" placeholder="Ex: XXXXX-XXXX" aria-label="numero-contato">
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-xl-2">
+                        <label for="">País</label>
+                        <input type="text" class="form-control" placeholder="Ex: Brasil" aria-label="pais">
+                    </div>
+                    <div class="col-xl-3">
+                        <label for="">Cidade</label>
+                        <input type="text" class="form-control" placeholder="Ex: Rio Branco" aria-label="cidade">
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col-xl-2">
+                        <label for="">CEP</label>
+                        <input type="text" class="form-control" aria-label="cep">
+                    </div>
+                    <div class="col-xl-2">
+                        <label for="">Bairro</label>
+                        <input type="text" class="form-control" placeholder="Ex: Belo Jardim" aria-label="bairro">
+                    </div>
+                    <div class="col-xl-3">
+                        <label for="">Rua</label>
+                        <input type="text" class="form-control" placeholder="Ex: Avenida Teresa Mendonça" aria-label="rua">
+                    </div>
+                    <div class="col-xl-1">
+                        <label for="">Número</label>
+                        <input type="number" class="form-control" min="0" aria-label="numero">
+                    </div>
+                    <div class="col-xl-4">
+                        <label>Complemento</label>
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="d-flex justify-content-end">
+                <button class="btn pattern-color">Finalizar Cadastro</button>
+            </div>
+        </div>
+    </form>
+</div>
+    </main>
+
+    <!-- Carregar o JavaScript do Bootstrap (opcional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% endblock %}
+</body>
+</html>
+{%endcomment%}
