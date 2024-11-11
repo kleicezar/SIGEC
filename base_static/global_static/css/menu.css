@@ -168,6 +168,12 @@ body {
     padding-left: 20px; /* Indenta as subopções */
     margin-left: 20px; /* Logan : Move o submenu para a direita*/
 }
+.sub-menu li a h5{
+    font-size: 15px;
+
+}
+
+
 
 .rotate i{
     transform: rotate(180deg);
@@ -194,6 +200,7 @@ body {
 /* .sidebar h2 {
     margin-top: 0;
 } */
+
 
 
 
