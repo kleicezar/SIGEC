@@ -74,7 +74,8 @@ class AddressForm(forms.ModelForm):
             }),
             'cep':forms.TextInput(attrs={
                 'class':'form-control row',
-                'onblur':"pesquisacep(this.value);"
+                'onblur':"pesquisacep(this.value);",
+                'mask-cep':"00000-000"
             }),
              'neighborhood':forms.TextInput(attrs={
                 'class':'form-control row'
@@ -95,7 +96,6 @@ class AddressForm(forms.ModelForm):
                 'class':'form-control row'
             })
         }
-
 
 class LegalPersonModelForm(forms.ModelForm):
     class Meta:
@@ -266,9 +266,6 @@ class ClientSearchForm(forms.Form):
 
 #         return cleaned_data
 
-
-
-
 class VendaForm(forms.ModelForm):
     class Meta:
         model = Venda
@@ -309,10 +306,18 @@ class VendaFormSet(forms.BaseFormSet):
         venda.total = total
         venda.save()
 
+class PaymentMethodVendaForm(forms.ModelForm):
+    class Meta:
+        model = PaymentMethod_Venda
+        fields = ['forma_pagamento', 'expirationDate', 'valor']
+
+
 class CompraForm(forms.ModelForm):
     class Meta:
         model = Purchase
         fields = ['id_fornecedor_fk', 'id_Situation_fk','datePurchase']
+
+
 
 # class CompraItemForm(forms.ModelForm):
 #     class Meta:
