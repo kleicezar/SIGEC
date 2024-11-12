@@ -19,57 +19,56 @@
             {% block content %}
             <div class='content'>
                 <div >
-                    <form method="POST" class="col">
+                    <form method="post" class="col">
                         {% csrf_token %}
-                        <h4 class="mt-5">Cadastro de Cliente</h1>
+                        <h4 class="mt-5 c-adapted">Cadastro de Cliente</h4>
                         <!-- Formulário de Pessoa Física -->
-                        <div class="row">
-                            <fieldset class="">
+                        <div class="row mt-5 mb-5">
+                            <fieldset>
                                 <legend class="mt-12">
                                     <h5>
                                         Informações Pessoais
                                     </h5>
                                 </legend>
-                                <!-- <div class='form-margin'>
-                                    {{ form.fisic_person_form.as_p }}
-                                </div> -->
                                 <div class="form-margin row">
-                                    <div class="col">
-                                        <label for=>{{form.fisic_person_form.name.label}}</label>
-                                        {{form.fisic_person_form.name}}
-                                    </div>
-                                    <div class="col">
-                                        <label class="row" for=>{{form.fisic_person_form.cpf.label}}</label>
-                                        <div class="row  wid-2">
-                                            {{form.fisic_person_form.cpf}}
-                                        </div>
-                                    </div> 
                                     <div class="row">
+
+                                        <div class="col">
+                                            <label for=>{{form.fisic_person_form.name.label}}</label>
+                                            {{form.fisic_person_form.name}}
+                                        </div>
+
+                                        <div class="col">
+                                            <label class="row" for=>{{form.fisic_person_form.cpf.label}}</label>
+                                            <div class="row  wid-2">
+                                                {{form.fisic_person_form.cpf}}
+                                            </div>
+                                        </div> 
+                                    </div>
+
+                                    <div class="row">
+
                                         <div class="col">
                                             <label for=>{{form.fisic_person_form.rg.label}}</label>
                                             {{form.fisic_person_form.rg}}
                                         </div>
+
                                         <div class="col">
+
                                             <label class="row" for=>{{form.fisic_person_form.dateOfBirth.label}}</label>
                                             <div class="row wid-2">
                                                 {{form.fisic_person_form.dateOfBirth}}
                                             </div>
+
                                         </div>
-                                </div>
-                                    <!-- <div>
-                                        <label for=>{{form.fisic_person_form.rg.label}}</label>
-                                        {{form.fisic_person_form.rg}}
                                     </div>
-                                    <div>
-                                        <label for=>{{form.fisic_person_form.dateOfBirth.label}}</label>
-                                        {{form.fisic_person_form.dateOfBirth}}
-                                    </div> -->
+
                                 </div>
                             </fieldset>
                          </div>
                         
                         <!-- Formulário de Endereço -->
-                         <div class="row">
+                         <div class="row mb-5">
                             <fieldset>
                                 <legend>
                                     <h5>
@@ -78,17 +77,21 @@
                                 </legend>
                                 <div class="form-margin row">
                                     <div class="row">
+
                                         <div class="col-xl-2">
                                             <label for=>{{form.address_form.cep.label}}</label>
                                             {{form.address_form.cep}}
                                         </div>
+
                                     </div>
 
                                     <div class="row">
+
                                         <div class="col-xl-3">
                                             <label for=>{{form.address_form.country.label}}</label>
                                             {{form.address_form.country}}
                                         </div>
+
                                         <div class="col-xl-1">
                                             <label for=>{{form.address_form.uf.label}}</label>
                                             {{form.address_form.uf}}
@@ -100,16 +103,19 @@
                                             </label>
                                             {{form.address_form.city}}
                                         </div>
+
                                     </div>
                                    
 
                                     <div class="row">
+
                                         <div class="col-xl-3">
                                             <label for="">
                                                 {{form.address_form.neighborhood.label}}
                                             </label>
                                             {{form.address_form.neighborhood}}
                                         </div>
+
                                         <div class="col-xl-4">
                                             <label for="">
                                                 {{form.address_form.road.label}}
@@ -117,8 +123,8 @@
                                             {{form.address_form.road}}
                                         </div>
 
-                                        <div class="col-xl-2">
-                                            <label for="">
+                                        <div class="col-xl-1">
+                                            <label class="input-max" for="">
                                                 {{form.address_form.number.label}}
                                             </label>
                                             {{form.address_form.number}}
@@ -127,24 +133,23 @@
                                     </div>
 
                                     <div class="row">
+
                                         <div class="col-xl-5">
                                             <label for="">
                                                 {{form.address_form.complement.label}}
                                             </label>
                                             {{form.address_form.complement}}
                                         </div>
+
                                         <div class="col-xl-5">
                                             <label for="">
                                                 {{form.address_form.reference.label}}
                                             </label>
                                             {{form.address_form.reference}}
                                         </div>
+
                                     </div>
-                                   
                                 </div>
-                                <!-- <div class="form-margin">
-                                    {{ form.address_form.as_p }}
-                                </div> -->
                             </fieldset>
                          </div>
                        
@@ -157,14 +162,60 @@
                                         Informações do Cliente
                                     </h5>
                                 </legend>
-                                <div class="form-margin">
-                                    {{ form.client_form.as_p }}
+                                <div class="form-margin row">
+                                    <div class="row">
+
+                                        <div class="col-xl-3">
+                                            <label for="">
+                                                {{form.client_form.telefone_pessoal.label}}
+                                            </label>
+                                            {{form.client_form.telefone_pessoal}}
+                                        </div>
+
+                                        <div class="col-xl-4">
+                                            <label class="input-max" for="">
+                                                {{form.client_form.telefone_trabalho.label}}
+                                            </label>
+                                            {{form.client_form.telefone_trabalho}}
+                                        </div>
+                                    </div>
+                                    <!-- {{ form.client_form.as_p }} -->
+
+                                    <div class="row">
+                                        <div class="col-xl-5">
+                                            <label for="">
+                                                {{form.client_form.site.label}}
+                                            </label>
+                                            {{form.client_form.site}}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-xl-3">
+                                            <label for="">
+                                                {{form.client_form.ativo.label}}
+                                            </label>
+                                            {{form.client_form.ativo}}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-xl-3">
+                                            <label for="">
+                                                {{form.client_form.limite_credito.label}}
+                                            </label>
+                                            {{form.client_form.limite_credito}}
+                                        </div>
+                                    </div>
                                 </div>
                             </fieldset>
                         </div>
                       
-                
-                        <button  type="submit">Cadastrar</button>
+                        <div class="row">
+                            <div class="col text-end">
+                                <button  type="submit" class="btn bg-adapted">Cadastrar</button>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>

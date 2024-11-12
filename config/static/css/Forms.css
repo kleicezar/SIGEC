@@ -44,3 +44,17 @@
 .wid-2{
     width: 200px;
 }
+
+.c-adapted{
+    color:#0b0433;
+}
+
+.bg-adapted{
+    background-color: #12055f;
+    color: white;
+}
+
+.bg-adapted:hover{
+    background-color:#0b0433;
+    color: white;
+}

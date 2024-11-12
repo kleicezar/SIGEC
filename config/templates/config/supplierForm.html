@@ -17,16 +17,82 @@
             {% bootstrap_messages %}
             {% block content %}
             <div class='content'>
-                <div class='center'>
-                
+                <div>
                     <form action="." method='post' autocomplete='off'>
                         {% csrf_token %}
-                        <h1>Fornecedor</h1>
-                        
-                        {{ form }}
+                        <h4 class="mt-5 c-adapted">Fornecedor</h4>
+                        <div class="row mt-5 mb-5">
+                            <fieldset>
+                                <div class="form-margin row">
+                                    <div class="row">
+                                        <div class="col-xl-5">
+                                            <label for="">{{form.fantasyName.label}}</label>
+                                            {{form.fantasyName}}
+                                        </div>
+
+                                        <div class="col-xl-2">
+                                            <label for="">{{form.cnpj.label}}</label>
+                                            {{form.cnpj}}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-xl-4">
+                                            <label class="" for="">{{form.StateRegistration.label}}</label>
+                                            {{form.StateRegistration}}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-xl-4">
+                                            <label class="" for="">{{form.MunicipalRegistration.label}}</label>
+                                            {{form.MunicipalRegistration}}
+                                        </div>
+
+                                        <div class="col-xl-3">
+                                            <label class="" for="">{{form.suframa.label}}</label>
+                                            {{form.suframa}}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-xl-5">
+                                            <label class="" for="">{{form.Responsible.label}}</label>
+                                            {{form.Responsible}}
+                                        </div>
+                                        <div class="col-xl-3">
+                                            <label class="" for="">{{form.PersonalPhone.label}}</label>
+                                            {{form.PersonalPhone}}
+                                        </div>
+                                        <div class="col-xl-3">
+                                            <label class="" for="">{{form.isActive.label}}</label>
+                                            {{form.isActive}}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        
+                                        <div class="col-xl-3">
+                                            <label class="" for="">{{form.typeOfTaxpayer.label}}</label>
+                                            {{form.typeOfTaxpayer}}
+                                        </div>
+
+                                        <div class="col-xl-3">
+                                            <label class="col-xl-5">{{form.socialReason.label}}</label>
+                                            {{form.socialReason}}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </fieldset>
+                        </div>
                        
             
-                        <button Type='submit'>Cadastrar</button>     
+                        <div class="row">
+                            <div class="col text-end">
+                                <button  type="submit" class="btn bg-adapted">Cadastrar</button>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -34,6 +100,6 @@
         </main>
         
         
-        <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+        <!-- <script type="text/javascript" src="{% static 'js/script.js' %}"></script> -->
     </body>
 </html>

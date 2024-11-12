@@ -38,19 +38,18 @@ class FisicPersonForm(forms.ModelForm):
         widgets = {
             'name':forms.TextInput(attrs={
                 'class':'form-control input-max ',
-                'placeholder':'Digite seu name'
+                'placeholder':'Gabriel Fernando Souza'
             }),
             'cpf':forms.TextInput(attrs={
                 'class':'form-control mask-cpf ',
-                'placeholder':'Digite seu cpf'
+                'placeholder':'___.___.___-__'
             }),
             'rg':forms.TextInput(attrs={
                 'class':'form-control input-min ',
-                'placeholder':'Digite seu rg'
+                'placeholder':''
             }),
             'dateOfBirth':forms.DateInput(attrs={
                 'class':'form-control row mask-date',
-                'placeholder':'Digite seu dateOfBirth'
             })
         }
 
@@ -67,31 +66,40 @@ class AddressForm(forms.ModelForm):
         fields = "__all__"
         widgets = {
             'road':forms.TextInput(attrs={
-                'class':'form-control row'
+                'class':'form-control ',
+                'placeholder':'Rua dos Operários'
             }),
-            'number':forms.TextInput(attrs={
-                'class':'form-control row'
+            'number':forms.NumberInput(attrs={
+                'class':'form-control ',
+                'placeholder':'0'
             }),
             'cep':forms.TextInput(attrs={
-                'class':'form-control row'
+                'class':'form-control '
             }),
-             'neighborhood':forms.TextInput(attrs={
-                'class':'form-control row'
+            'neighborhood':forms.TextInput(attrs={
+                'class':'form-control ',
+                'placeholder':'Belo Jardim'
+
             }),
              'reference':forms.TextInput(attrs={
-                'class':'form-control row'
+                'class':'form-control',
+                'placeholder':'Do lado da panificadora'
             }),
              'complement':forms.TextInput(attrs={
-                'class':'form-control row'
+                'class':'form-control ',
+                'placeholder':'Quarto 504'
             }),
              'city':forms.TextInput(attrs={
-                'class':'form-control row'
+                'class':'form-control ',
+                'placeholder':'Rio Branco'
             }),
              'uf':forms.TextInput(attrs={
-                'class':'form-control row'
+                'class':'form-control ',
+                'placeholder':'AC'
             }),
              'country':forms.TextInput(attrs={
-                'class':'form-control row'
+                'class':'form-control ',
+                'placeholder':'Ex: Brasil'
             })
         }
 
@@ -111,11 +119,69 @@ class SupplierModelForm(forms.ModelForm):
         model = Person
         fields =  "__all__"
         # fields = ["PersonalPhone",'WorkPhone','site','isActive','salesman',"creditLimit"]
+        widgets = {
+            'fantasyName':forms.TextInput(attrs={
+                'class':'form-control row',
+                'placeholder':'Teste'
+            }),
+            'cnpj':forms.TextInput(attrs={
+                'class':'form-control',
+                'placeholder':'__.___.___/____-__'
+            }),
+            'socialReason':forms.TextInput(attrs={
+                'class':'form-control row',
+            }),
+            'StateRegistration':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'typeOfTaxpayer':forms.TextInput(attrs={
+                'class':'form-control row',
+            }),
+            'MunicipalRegistration':forms.TextInput(attrs={
+                'class':'form-control row',
+            }),
+            'suframa':forms.TextInput(attrs={
+                'class':'form-control row',
+            }),
+            'PersonalPhone':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'Responsible':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'isActive':forms.TextInput(attrs={
+                'class':'form-control row'
+            })
+        }
 
 class ProductModelForm(forms.ModelForm):
     class Meta:
         model = Product
         fields =  "__all__"
+        widgets= {
+            'description':forms.Textarea(attrs={
+                'class':'form-control  row text-area'
+            }),
+             'product_code':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'barcode':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'unit_of_measure':forms.TextInput(attrs={
+                'class' :'form-control row'
+            }),
+            'brand':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'cost_of_product':forms.NumberInput(attrs={
+                'class':'form-control row'
+            }),
+            'selling_price':forms.NumberInput(attrs={
+                'class':'form-control row'
+            })
+
+        }
 
 class ClientForm(forms.ModelForm):
     class Meta:
@@ -123,24 +189,24 @@ class ClientForm(forms.ModelForm):
         fields = ['telefone_pessoal', 'telefone_trabalho', 'site', 'ativo', 'limite_credito']
         widgets = {
             'telefone_pessoal':forms.TextInput(attrs={
-                'class':'form-control input-min',
-                'placeholder':'Digite seu telefone_pessoal'
+                'class':'form-control ',
+                'placeholder':'XX XXXXX-XXXX'
             }),
             'telefone_trabalho':forms.TextInput(attrs={
-                'class':'form-control input-min',
-                'placeholder':'Digite seu telefone_trabalho'
+                'class':'form-control ',
+                'placeholder':''
             }),
             'site':forms.TextInput(attrs={
-                'class':'form-control input-min',
-                'placeholder':'Digite seu site'
+                'class':'form-control',
+                'placeholder':'Digite o site'
             }),
             'ativo':forms.TextInput(attrs={
-                'class':'form-control input-min',
-                'placeholder':'Digite seu ativo'
+                'class':'form-control',
+                'placeholder':'Ativo'
             }),
-            'limite_credito':forms.TextInput(attrs={
-                'class':'form-control input-min',
-                'placeholder':'Digite seu limite de crédito'
+            'limite_credito':forms.NumberInput(attrs={
+                'class':'form-control ',
+                'placeholder':'200'
             }),
         }
 
