@@ -36,3 +36,25 @@ toggles.forEach(toggle => {
         }
     });
 });
+
+
+// Seleciona o botão e o menu
+const userMenuButton = document.getElementById('user-menu-button');
+const userDropdownMenu = document.getElementById('user-dropdown-menu');
+
+// Adiciona um evento de clique para mostrar/ocultar o menu
+userMenuButton.addEventListener('click', function(event) {
+    // Impede que o clique no botão feche o menu imediatamente
+    event.stopPropagation();
+    
+    // Alterna a visibilidade do menu
+    const isMenuVisible = userDropdownMenu.style.display === 'block';
+    userDropdownMenu.style.display = isMenuVisible ? 'none' : 'block';
+});
+
+// Fecha o menu se o usuário clicar fora dele
+window.addEventListener('click', function(event) {
+    if (!userDropdownMenu.contains(event.target) && event.target !== userMenuButton) {
+        userDropdownMenu.style.display = 'none';
+    }
+});

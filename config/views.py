@@ -1,20 +1,24 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.forms import inlineformset_factory, modelformset_factory
+from django.forms import inlineformset_factory
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
 from .forms import *
 from .models import *
 
+@login_required
 def index(request):
     return render(request, 'config/index.html')
 
 ### PAYMENT METHOD
-
+@login_required
 def paymentMethod(request):
     context = {
         'PaymentMethods': PaymentMethod.objects.all()
     }
     return render(request, 'config/PaymentMethod.html', context)
-
+@login_required
 def PaymentMethodForm(request):
     if request.method == "GET":
         paymentMethodForm = PaymentMethodModelForm()
@@ -32,7 +36,7 @@ def PaymentMethodForm(request):
         'paymentMethod' : paymentMethodForm
     }
     return render(request, 'config/PaymentMethod.html', context)
-    
+@login_required    
 def updatePaymentMethod(request, id_paymentMethod):
     paymentMethod = get_object_or_404(PaymentMethod, id=id_paymentMethod)
     if request.method == "GET":
@@ -53,7 +57,7 @@ def updatePaymentMethod(request, id_paymentMethod):
         'PaymentMethod' : paymentMethodForm
     }
     return render(request, 'config/PaymentMethod.html', context)
-
+@login_required
 def deletePaymentMethod(request, id_paymentMethod):
     paymentMethod = get_object_or_404(PaymentMethod, id=id_paymentMethod)
     if request.method == "POST":
@@ -67,13 +71,13 @@ def deletePaymentMethod(request, id_paymentMethod):
     return render(request, 'config/PaymentMethod.html', context)
 
 ### POSITION
-
+@login_required
 def position(request):
     context = {
         'Positions': Position.objects.all()
     }
     return render(request, 'config/Position.html', context)
-
+@login_required
 def PositionForm(request):
     if request.method == "GET":
         PositionForm = PositionModelForm()
@@ -91,7 +95,7 @@ def PositionForm(request):
         'Position' : PositionForm
     }
     return render(request, 'config/Position.html', context)
-
+@login_required
 def updatePosition(request, id_position):
     position = get_object_or_404(Position, id=id_position)
     if request.method == "GET":
@@ -112,7 +116,7 @@ def updatePosition(request, id_position):
         'Position' : positionForm
     }
     return render(request, 'config/Position.html', context)
-
+@login_required
 def deletePosition(request, id_position):
     position = get_object_or_404(Position, id=id_position)
     if request.method == "POST":
@@ -126,13 +130,13 @@ def deletePosition(request, id_position):
     return render(request, 'config/Position.html', context)
 
 ### SITUATION
-
+@login_required
 def situation(request):
     context = {
         'Situations': Situation.objects.all()
     }
     return render(request, 'config/Situation.html', context)
-
+@login_required
 def SituationForm(request):
     if request.method == "GET":
         situationForm = SituationModelForm()
@@ -150,7 +154,7 @@ def SituationForm(request):
         'Situation' : situationForm
     }
     return render(request, 'config/Situation.html', context)
-
+@login_required
 def updateSituation(request, id_situation):
     situation = get_object_or_404(Situation, id=id_situation)
     if request.method == "GET":
@@ -171,7 +175,7 @@ def updateSituation(request, id_situation):
         'Situation' : situationForm
     }
     return render(request, 'config/Situation.html', context)
-
+@login_required
 def deleteSituation(request, id_situation):
     situation = get_object_or_404(Situation, id=id_situation)
     if request.method == "POST":
@@ -185,11 +189,11 @@ def deleteSituation(request, id_situation):
     return render(request, 'config/Situation.html', context)
 
 ### SUPPLIER
-
+@login_required
 def supplier(request):
     persons = Person.objects.all()
     return render(request, 'config/supplier.html', {'persons': persons})
-
+@login_required
 def supplierForm(request):
     if request.method == 'POST':
         form = SupplierModelForm(request.POST)
@@ -199,7 +203,7 @@ def supplierForm(request):
     else:
         form = SupplierModelForm()
     return render(request, 'config/supplierForm.html', {'form': form})
-
+@login_required
 def updateSupplier(request, id_supplier):
     person = get_object_or_404(Person, id=id_supplier)
     if request.method == 'POST':
@@ -210,7 +214,7 @@ def updateSupplier(request, id_supplier):
     else:
         form = SupplierModelForm(instance=person)
     return render(request, 'config/supplierForm.html', {'form': form})
-
+@login_required
 def deleteSupplier(request, id_supplier):
     person = get_object_or_404(Person, id=id_supplier)
     if request.method == 'POST':
@@ -219,11 +223,11 @@ def deleteSupplier(request, id_supplier):
     return render(request, 'config/person_confirm_delete.html', {'person': person})
 
 ### PRODUCT
-
+@login_required
 def product(request):
     products = Product.objects.all()
     return render(request, 'config/product_list.html', {'products': products})
-
+@login_required
 def productForm(request):
     if request.method == 'POST':
         form = ProductModelForm(request.POST)
@@ -233,7 +237,7 @@ def productForm(request):
     else:
         form = ProductModelForm()
     return render(request, 'config/product_form.html', {'form': form})
-
+@login_required
 def updateProduct(request, id_product):
     product = get_object_or_404(Product, id=id_product)
     if request.method == 'POST':
@@ -244,14 +248,14 @@ def updateProduct(request, id_product):
     else:
         form = ProductModelForm(instance=product)
     return render(request, 'config/product_form.html', {'form': form})
-
+@login_required
 def deleteProduct(request, id_product):
     product = get_object_or_404(Product, id=id_product)
     product.delete()
     return redirect('Product')
 
 ### CLIENT
-
+@login_required
 def create_client(request):
     if request.method == 'POST':
         form = CombinedForm(request.POST)
@@ -262,7 +266,7 @@ def create_client(request):
         form = CombinedForm()
 
     return render(request, 'config/create_client_form.html', {'form': form})
-
+@login_required
 def client_list(request):
     # Cria o formulário de pesquisa
     form = ClientSearchForm(request.GET)
@@ -277,7 +281,7 @@ def client_list(request):
         clients = Client.objects.all()
 
     return render(request, 'config/client_list.html', {'form': form, 'clients': clients})
-
+@login_required
 def update_client(request, id_client):
     client = get_object_or_404(Client, id=id_client)
     address = client.endereco  # Assume que cada cliente tem um endereço relacionado
@@ -298,7 +302,7 @@ def update_client(request, id_client):
         form = CombinedForm(address_instance=address, fisic_person_instance=fisic_person, client_instance=client)
 
     return render(request, 'config/create_client_form.html', {'form': form})
-
+@login_required
 def delete_client(request, id_client):
     # Recupera o cliente com o id fornecido
     client = get_object_or_404(Client, id=id_client)
@@ -306,12 +310,12 @@ def delete_client(request, id_client):
     return redirect('Client')
 
 ### SALE
-
+@login_required
 def venda_list(request):
     vendas = Venda.objects.all()
     return render(request, 'config/venda_list.html', {'vendas': vendas})
 
-    # Criar uma nova Venda
+    # @login_requiredCriar uma nova Venda
     # def venda_create(request):
     #     if request.method == 'POST':
     #         form = VendaForm(request.POST)
@@ -323,7 +327,7 @@ def venda_list(request):
     #     return render(request, 'config/venda_form.html', {'form': form})
 
 
-    # Criar uma nova Venda com itens
+    # @login_requiredCriar uma nova Venda com itens
     # def venda_create(request):
     #     if request.method == 'POST':
     #         venda_form = VendaForm(request.POST)
@@ -346,7 +350,7 @@ def venda_list(request):
     #         venda_items = [VendaItemForm(prefix=f"item_{i}") for i in range(1)]  # Campos iniciais
 
     #     return render(request, 'config/venda_form.html', {'venda_form': venda_form, 'venda_items': venda_items})
-
+@login_required
 def venda_create(request):
     VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=1, can_delete=True)
     PaymentMethodVendaFormSet = inlineformset_factory(Venda, PaymentMethod_Venda, form=PaymentMethodVendaForm, extra=1, can_delete=True)
@@ -419,7 +423,7 @@ def venda_create(request):
     return render(request, 'config/venda_form.html', context)
 
 
-
+@login_required
 def venda_update(request, pk):
     # Carregar a venda existente
     venda = get_object_or_404(Venda, pk=pk)
@@ -459,7 +463,7 @@ def venda_update(request, pk):
 
     return render(request, 'config/venda_form.html', context)
 
-# Deletar uma Venda
+@login_required# Deletar uma Venda
 def venda_delete(request, pk):
     # Obtém a venda com base no id (pk)
     venda = get_object_or_404(Venda, pk=pk)
@@ -477,7 +481,7 @@ def venda_delete(request, pk):
     # Redireciona para a lista de vendas após a deleção
     return redirect('venda_list')
 
-# Criar VendaItem para uma venda específica
+@login_required# Criar VendaItem para uma venda específica
 def venda_item_create(request, venda_pk):
     venda = get_object_or_404(Venda, pk=venda_pk)
     if request.method == 'POST':
@@ -490,14 +494,14 @@ def venda_item_create(request, venda_pk):
     else:
         form = VendaItemForm()
     return render(request, 'config/venda_item_form.html', {'form': form, 'venda': venda})
-
+@login_required
 # def compras_list(request)
-
+@login_required
 def compras_list(request):
     compras = Compra.objects.all()
     return render(request, 'config/compras_list.html', {'compras': compras})
 
-
+@login_required
 def compras_create(request):
     # Configuração do formset para itens de compra e métodos de pagamento
     CompraItemFormSet = inlineformset_factory(Compra, CompraItem, form=CompraItemForm, extra=1, can_delete=True)
@@ -551,7 +555,7 @@ def compras_create(request):
     }
     return render(request, 'config/compra_form.html', context)
 
-
+@login_required
 def compras_update(request, pk):
     compra = get_object_or_404(Compra, pk=pk)
     CompraItemFormSet = inlineformset_factory(Compra, CompraItem, form=CompraItemForm, extra=1, can_delete=True)
@@ -577,9 +581,9 @@ def compras_update(request, pk):
 
     return render(request, 'compras/compra_form.html', context)
 
-# Deletar uma Compra
+@login_required# Deletar uma Compra
 def compras_delete(request, pk):
-    compra = get_object_or_404(Compra, pk=pk)
+    compra = get_object_or_404(Compra, pk=pk) 
     compra_items = CompraItem.objects.filter(compra=compra)
     
     # Restaura a quantidade dos produtos no estoque
@@ -592,7 +596,7 @@ def compras_delete(request, pk):
     compra.delete()
     return redirect('compra_list')
 
-# Criar CompraItem para uma compra específica
+@login_required# Criar CompraItem para uma compra específica
 def compras_item_create(request, compra_pk):
     # Obtém a compra específica à qual o item será adicionado
     compra = get_object_or_404(Compra, pk=compra_pk)
@@ -623,3 +627,18 @@ def compras_item_create(request, compra_pk):
         'compra': compra
     }
     return render(request, 'compras/compra_item_form.html', context) 
+
+def my_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('index')
+    return render(request, 'config/login.html')
+
+@login_required
+def my_logout(request):
+    logout(request)
+    return redirect('index') 
