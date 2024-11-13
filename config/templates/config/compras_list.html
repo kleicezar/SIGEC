@@ -32,9 +32,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Pessoa</th>
-                        <th>Data da Venda</th>
                         <th>Situação</th>
-                        <th>Ativo</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -42,13 +40,11 @@
                     {% for compra in compras %}
                     <tr>
                         <td>{{ compra.id }}</td>
-                        <td>{{ compra.pessoa.pessoa_fisica.name }}</td>
-                        <td>{{ compra.data_da_compra|date:"d/m/Y" }}</td>
+                        <td>{{ compra.fornecedor.fantasyName }}</td>
                         <td>{{ compra.situacao }}</td>
-                        <td>{{ compra.is_active|yesno:"Sim,Não" }}</td>
                         <td>
-                            <a href="{% url 'compra_update' pk=compra.pk %}">Editar</a>
-                            <a href="{% url 'compra_delete' pk=compra.pk %}"class="delete-button" data-id="{{ Position.id }}" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</a>
+                            <a href="{% url 'compras_update' pk=compra.pk %}">Editar</a>
+                            <a href="{% url 'compras_delete' pk=compra.pk %}"class="delete-button" data-id="{{ Position.id }}" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</a>
                         </td>
                     </tr>
                     {% endfor %}

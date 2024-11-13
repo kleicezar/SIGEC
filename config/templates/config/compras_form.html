@@ -9,7 +9,7 @@
     {% block css %}
         <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
     {% endblock %}
-    <title>{% if compra.pk %}Editar{% else %}Criar{% endif %} Venda</title>
+    <title>{% if compra.pk %}Editar{% else %}Criar{% endif %} Compra</title>
     {% bootstrap_css %}
 </head>
 <body>
@@ -18,16 +18,16 @@
         {% block content %}
         <div class='content'>
             <div class='center'>
-                <h2>{% if compra.pk %}Editar{% else %}Criar{% endif %} Venda</h2>
+                <h2>{% if compra.pk %}Editar{% else %}Criar{% endif %} Compra</h2>
 
                 <form method="post">
                     {% csrf_token %}
                 
-                    <!-- Formulário de Venda -->
+                    <!-- Formulário de Compra -->
                     <h3>Dados da Compra</h3>
                     {{ compra_form.as_p }}
                 
-                    <!-- Itens de Venda -->
+                    <!-- Itens de Compra -->
                     <h3>Itens de Compra</h3>
                     <div id="itens-container">
                         {{ compra_item_formset.management_form }}
@@ -37,7 +37,12 @@
                             </div>
                         {% endfor %}
                     </div>
-                    <button type="button" onclick="addItem()">Adicionar Item</button>
+                    <template id="empty-form-template">
+                        <div class="item-form">
+                            {{ compra_item_formset.empty_form.as_p }}
+                        </div>
+                    </template>
+                    <button type="button" onclick="addItemCompra()">Adicionar Item</button>
                 
                     <!-- Formas de Pagamento -->
                     <h3>Formas de Pagamento</h3>
@@ -49,9 +54,9 @@
                             </div>
                         {% endfor %}
                     </div>
-                    <button type="button" onclick="addPaymentMethod()">Adicionar Forma de Pagamento</button>
+                    <button type="button" onclick="addPaymentMethodCompra()">Adicionar Forma de Pagamento</button>
                 
-                    <button type="submit">Salvar Venda</button>
+                    <button type="submit">Salvar Compra</button>
                 </form>
                 
             </div>

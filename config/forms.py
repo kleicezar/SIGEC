@@ -181,8 +181,15 @@ class ProductModelForm(forms.ModelForm):
             'selling_price':forms.NumberInput(attrs={
                 'class':'form-control row'
             })
-
         }
+    def __init__(self, *args, **kwargs):
+        super(ProductModelForm, self).__init__(*args, **kwargs)
+
+        # Desabilita o campo 'current_quantity' se for uma atualização
+        if self.instance and self.instance.pk:
+            self.fields['current_quantity'].disabled = True
+            # self.fields['current_quantity'].widget.attrs['readonly'] = True
+
 
 class ClientForm(forms.ModelForm):
     class Meta:

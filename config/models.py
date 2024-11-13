@@ -168,7 +168,7 @@ class Compra(models.Model):
         return f"Compra {self.id} por {self.usuario.username}"
     
 class CompraItem(models.Model):
-    compra = models.ForeignKey(Venda, on_delete=models.SET_NULL, null=True, verbose_name="Venda")
+    compra = models.ForeignKey(Compra, on_delete=models.SET_NULL, null=True, verbose_name="Compra")
     produto = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, verbose_name="Produto")
     quantidade = models.PositiveIntegerField(verbose_name="Quantidade do Produto")
     preco_unitario = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Preço Unitário")
