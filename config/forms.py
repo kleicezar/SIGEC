@@ -38,7 +38,7 @@ class FisicPersonForm(forms.ModelForm):
         widgets = {
             'name':forms.TextInput(attrs={
                 'class':'form-control input-max ',
-                'placeholder':'Gabriel Fernando Souza'
+                'placeholder':'Kleilson Colaço Leoncio Cezar'
             }),
             'cpf':forms.TextInput(attrs={
                 'class':'form-control mask-cpf ',
@@ -377,11 +377,29 @@ class PaymentMethodVendaForm(forms.ModelForm):
         model = PaymentMethod_Venda
         fields = ['forma_pagamento', 'expirationDate', 'valor']
 
+class PaymentMethodCompraForm(forms.ModelForm):
+    class Meta:
+        model = PaymentMethod_Compra
+        fields = ['forma_pagamento', 'expirationDate', 'valor']
+
 
 class CompraForm(forms.ModelForm):
     class Meta:
-        model = Purchase
-        fields = ['id_fornecedor_fk', 'id_Situation_fk','datePurchase']
+        model = Compra
+        fields = ['data_da_compra', 'fornecedor', 'situacao'] 
+
+class CompraItemForm(forms.ModelForm):
+    class Meta:
+        model = CompraItem
+        fields = ['produto', 'quantidade', 'preco_unitario']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        preco_unitario = cleaned_data.get('preco_unitario')
+        quantidade = cleaned_data.get('quantidade')
+        if preco_unitario and quantidade:
+            cleaned_data['total'] = preco_unitario * quantidade
+        return cleaned_data
 
 
 

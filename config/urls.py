@@ -51,9 +51,9 @@ urlpatterns = [
     path('venda/delete/<int:pk>/', venda_delete, name='venda_delete'),
     path('venda/<int:venda_pk>/item/create/', venda_item_create, name='venda_item_create'),
 
-    # path('compras/', compras_list, name='compras_list'),
-    # path('compras/create/', compras_create, name='compras_create'),
-    # path('compras/update/<int:pk>/', compras_update, name='compras_update'),
-    # path('compras/delete/<int:pk>/', compras_delete, name='compras_delete'),
-    # path('compras/<int:compras_pk>/item/create/', compras_item_create, name='compras_item_create'),
+    path('compras/', compras_list, name='compras_list'),
+    path('compras/create/', compras_create, name='compras_create'),
+    path('compras/update/<int:pk>/', compras_update, name='compras_update'),
+    path('compras/delete/<int:pk>/', compras_delete, name='compras_delete'),
+    path('compras/<int:compras_pk>/item/create/', compras_item_create, name='compras_item_create'),
     ]

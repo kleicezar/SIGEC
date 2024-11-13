@@ -153,11 +153,11 @@ class PaymentMethod_Venda(models.Model):
     expirationDate = models.CharField(max_length=50, verbose_name='Data de Vencimento')
     valor = models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor Pago:')
 
-class Purchase(models.Model):
-    datePurchase = models.CharField(max_length=10, verbose_name='Data da Compra')
+class Compra(models.Model):
+    data_da_compra = models.CharField(max_length=10, verbose_name='Data da Compra')
     total = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Total", blank=True, null=True)
-    id_fornecedor_fk = models.ForeignKey(Person, on_delete=models.SET_NULL, null=True, verbose_name="Fornecedor")
-    id_Situation_fk = models.ForeignKey(Situation, on_delete=models.SET_NULL, null=True, verbose_name="Situação")
+    fornecedor = models.ForeignKey(Person, on_delete=models.SET_NULL, null=True, verbose_name="Fornecedor")
+    situacao = models.ForeignKey(Situation, on_delete=models.SET_NULL, null=True, verbose_name="Situação")
 
 
     def calcular_total(self):
@@ -167,9 +167,9 @@ class Purchase(models.Model):
     def __str__(self):
         return f"Compra {self.id} por {self.usuario.username}"
     
-class PurchaseItem(models.Model):
+class CompraItem(models.Model):
     compra = models.ForeignKey(Venda, on_delete=models.SET_NULL, null=True, verbose_name="Venda")
-    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, verbose_name="Produto")
+    produto = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, verbose_name="Produto")
     quantidade = models.PositiveIntegerField(verbose_name="Quantidade do Produto")
     preco_unitario = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Preço Unitário")
 
@@ -181,8 +181,8 @@ class PurchaseItem(models.Model):
     def __str__(self):
         return f"{self.product.description} - {self.quantidade} unidades"
 
-class PaymentMethod_Purchase(models.Model):
-    compra = models.ForeignKey(Purchase, on_delete=models.SET_NULL, null=True, verbose_name='id_compra')
+class PaymentMethod_Compra(models.Model):
+    compra = models.ForeignKey(Compra, on_delete=models.SET_NULL, null=True, verbose_name='id_compra')
     forma_pagamento = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True, verbose_name='id_forma_de_pagamento')
     expirationDate = models.CharField(max_length=50, verbose_name='Data de Vencimento')
     valor = models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor Pago:')

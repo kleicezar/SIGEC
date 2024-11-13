@@ -1,0 +1,61 @@
+{% extends 'global_template/menu.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>  
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block css %}
+        <link rel="stylesheet" href="{% static 'css/Table.css' %}">
+        {% endblock  %}
+        <title>Formulário</title>
+    </head>
+    <body>
+        {% block content %}
+        <div class='content'>
+            <div class="container">
+                <a href="{% url 'compras_create' %}">
+                    <button class="register-button">Criar nova Venda</button>
+                </a>
+                <div class="form-group">
+                    <form method="GET" action="{% url 'Client' %}">
+                        {% csrf_token %}
+                        <div>
+                            {{ form.as_p }}
+                            <button type="submit">Pesquisar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Pessoa</th>
+                        <th>Data da Venda</th>
+                        <th>Situação</th>
+                        <th>Ativo</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for compra in compras %}
+                    <tr>
+                        <td>{{ compra.id }}</td>
+                        <td>{{ compra.pessoa.pessoa_fisica.name }}</td>
+                        <td>{{ compra.data_da_compra|date:"d/m/Y" }}</td>
+                        <td>{{ compra.situacao }}</td>
+                        <td>{{ compra.is_active|yesno:"Sim,Não" }}</td>
+                        <td>
+                            <a href="{% url 'compra_update' pk=compra.pk %}">Editar</a>
+                            <a href="{% url 'compra_delete' pk=compra.pk %}"class="delete-button" data-id="{{ Position.id }}" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div> 
+        {% endblock %}
+        <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+    </body>
+</html>

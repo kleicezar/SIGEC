@@ -9,7 +9,7 @@
     {% block css %}
         <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
     {% endblock %}
-    <title>{% if venda.pk %}Editar{% else %}Criar{% endif %} Venda</title>
+    <title>{% if compra.pk %}Editar{% else %}Criar{% endif %} Venda</title>
     {% bootstrap_css %}
 </head>
 <body>
@@ -18,30 +18,25 @@
         {% block content %}
         <div class='content'>
             <div class='center'>
-                <h2>{% if venda.pk %}Editar{% else %}Criar{% endif %} Venda</h2>
+                <h2>{% if compra.pk %}Editar{% else %}Criar{% endif %} Venda</h2>
 
                 <form method="post">
                     {% csrf_token %}
                 
                     <!-- Formulário de Venda -->
-                    <h3>Dados da Venda</h3>
-                    {{ venda_form.as_p }}
+                    <h3>Dados da Compra</h3>
+                    {{ compra_form.as_p }}
                 
                     <!-- Itens de Venda -->
-                    <h3>Itens de Venda</h3>
+                    <h3>Itens de Compra</h3>
                     <div id="itens-container">
-                        {{ venda_item_formset.management_form }}
-                        {% for form in venda_item_formset %}
-                            <div class="item-form">
+                        {{ compra_item_formset.management_form }}
+                        {% for form in compra_item_formset %}
+                            <div class="form-row">
                                 {{ form.as_p }}
                             </div>
                         {% endfor %}
                     </div>
-                    <template id="empty-form-template">
-                        <div class="item-form">
-                            {{ venda_item_formset.empty_form.as_p }}
-                        </div>
-                    </template>
                     <button type="button" onclick="addItem()">Adicionar Item</button>
                 
                     <!-- Formas de Pagamento -->
@@ -63,8 +58,8 @@
         </div>
         <template id="empty-form-template">
             <div class="form-row">
-                <!-- Clona o formulário vazio de venda_item_formset -->
-                {{ venda_item_formset.empty_form.as_p }}
+                <!-- Clona o formulário vazio de compra_item_formset -->
+                {{ compra_item_formset.empty_form.as_p }}
             </div>
         </template>
         
