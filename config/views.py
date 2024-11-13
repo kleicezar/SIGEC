@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.forms import modelformset_factory
+from django.forms import inlineformset_factory, modelformset_factory
 from .forms import *
 from .models import *
 
@@ -349,128 +349,110 @@ def venda_list(request):
 
 def venda_create(request):
     VendaItemFormSet = modelformset_factory(VendaItem, form=VendaItemForm, extra=1)
+    PaymentMethodVendaFormSet = modelformset_factory(PaymentMethod_Venda, form=PaymentMethodVendaForm, extra=1)
+    
     if request.method == 'POST':
         venda_form = VendaForm(request.POST)
-        formset = VendaItemFormSet(request.POST)
-
-        if venda_form.is_valid() and formset.is_valid():
-            # Verificar se a quantidade em estoque é suficiente
-            estoque_suficiente = True  # Flag para verificar se o estoque é suficiente
-            for form in formset:
+        venda_item_formset = VendaItemFormSet(request.POST)
+        payment_method_formset = PaymentMethodVendaFormSet(request.POST)
+        
+        if venda_form.is_valid() and venda_item_formset.is_valid() and payment_method_formset.is_valid():
+            estoque_suficiente = True
+            for form in venda_item_formset:
                 if form.cleaned_data:
                     produto = form.cleaned_data['product']
                     quantidade = form.cleaned_data['quantidade']
-
-                    # Verifica se a quantidade solicitada é maior do que a quantidade em estoque
                     if produto.current_quantity < quantidade:
                         estoque_suficiente = False
                         form.add_error('quantidade', f'Não há estoque suficiente para o produto {produto.description}. Estoque disponível: {produto.current_quantity}.')
 
-            if not estoque_suficiente:
-                # Se houver erro de estoque, a venda não será salva
-                formset._non_form_errors.append("Alguns produtos não têm estoque suficiente.")
-            else:
-                # Se o estoque for suficiente, salvar a venda
+            if estoque_suficiente:
                 venda = venda_form.save()
-
-                # Salvar os itens da venda
-                for form in formset:
+                
+                # Salva os itens da venda
+                for form in venda_item_formset:
                     if form.cleaned_data:
                         produto = form.cleaned_data['product']
                         quantidade = form.cleaned_data['quantidade']
                         preco_unitario = form.cleaned_data['preco_unitario']
-
-                        # Criar um novo item de venda
+                        
                         VendaItem.objects.create(
                             venda=venda,
                             product=produto,
                             quantidade=quantidade,
                             preco_unitario=preco_unitario
                         )
-
-                        # Atualiza o estoque do produto
+                        
                         produto.current_quantity -= quantidade
                         produto.save()
 
-                return redirect('venda_list')  # Redireciona para a lista de vendas
-
+                # Salva as formas de pagamento associadas à venda
+                for form in payment_method_formset:
+                    if form.cleaned_data:
+                        forma_pagamento = form.cleaned_data['forma_pagamento']
+                        expiration_date = form.cleaned_data['expirationDate']
+                        valor = form.cleaned_data['valor']
+                        
+                        PaymentMethod_Venda.objects.create(
+                            venda=venda,
+                            forma_pagamento=forma_pagamento,
+                            expirationDate=expiration_date,
+                            valor=valor
+                        )
+                
+                return redirect('venda_list')
+        
     else:
         venda_form = VendaForm()
-        formset = VendaItemFormSet(queryset=VendaItem.objects.none())
+        venda_item_formset = VendaItemFormSet(queryset=VendaItem.objects.none())
+        payment_method_formset = PaymentMethodVendaFormSet(queryset=PaymentMethod_Venda.objects.none())
 
     context = {
         'venda_form': venda_form,
-        'formset': formset
+        'venda_item_formset': venda_item_formset,
+        'payment_method_formset': payment_method_formset
     }
-
     return render(request, 'config/venda_form.html', context)
 
-# Editar uma Venda existente
+
+
 def venda_update(request, pk):
-    # Obtém a venda existente com base no id (pk)
+    # Carregar a venda existente
     venda = get_object_or_404(Venda, pk=pk)
-    
-    # Cria o formset para os itens de venda
-    VendaItemFormSet = modelformset_factory(VendaItem, form=VendaItemForm, extra=1)
-    
+
+    # Criar formsets para itens de venda e formas de pagamento
+    VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=1, can_delete=True)
+    PaymentMethodVendaFormSet = inlineformset_factory(Venda, PaymentMethod_Venda, form=PaymentMethodVendaForm, extra=1, can_delete=True)
+
     if request.method == 'POST':
-        venda_form = VendaForm(request.POST, instance=venda)  # Carrega os dados existentes para edição
-        formset = VendaItemFormSet(request.POST)
+        venda_form = VendaForm(request.POST, instance=venda)
+        venda_item_formset = VendaItemFormSet(request.POST, instance=venda)
+        payment_method_formset = PaymentMethodVendaFormSet(request.POST, instance=venda)
 
-        if venda_form.is_valid() and formset.is_valid():
-            estoque_suficiente = True  # Flag para verificar se todos os itens têm estoque suficiente
-            for form in formset:
-                if form.cleaned_data:
-                    produto = form.cleaned_data['product']
-                    quantidade = form.cleaned_data['quantidade']
+        if venda_form.is_valid() and venda_item_formset.is_valid() and payment_method_formset.is_valid():
+            # Salvar a venda
+            venda_form.save()
+            venda_item_formset.save()
+            payment_method_formset.save()
 
-                    # Verifica se a quantidade solicitada é maior que a quantidade disponível
-                    if produto.current_quantity < quantidade:
-                        estoque_suficiente = False
-                        form.add_error('quantidade', f'Não há estoque suficiente para o produto {produto.description}. Estoque disponível: {produto.current_quantity}.')
+            messages.success(request, "Venda atualizada com sucesso!")
+            return redirect('venda_list')
 
-            if not estoque_suficiente:
-                # Se algum item não tem estoque suficiente, não salva a venda
-                formset._non_form_errors.append("Alguns produtos não têm estoque suficiente para a venda.")
-            else:
-                # Atualiza a venda
-                venda = venda_form.save()
-
-                # Atualiza ou cria novos itens de venda
-                for form in formset:
-                    if form.cleaned_data:
-                        produto = form.cleaned_data['product']
-                        quantidade = form.cleaned_data['quantidade']
-                        preco_unitario = form.cleaned_data['preco_unitario']
-
-                        # Verifica se o item já existe, e atualiza ou cria um novo
-                        if form.instance.pk:  # Se o item já existe
-                            venda_item = form.save(commit=False)
-                            venda_item.venda = venda
-                            venda_item.save()
-                        else:  # Se o item for novo
-                            VendaItem.objects.create(
-                                venda=venda,
-                                product=produto,
-                                quantidade=quantidade,
-                                preco_unitario=preco_unitario
-                            )
-
-                        # Atualiza a quantidade do produto no estoque
-                        produto_old = Product.objects.get(id=produto.id)
-                        produto_old.current_quantity -= quantidade
-                        produto_old.save()
-
-                return redirect('venda_list')  # Redireciona para a lista de vendas
+        else:
+            messages.error(request, "Erro ao atualizar a venda. Verifique os campos.")
 
     else:
-        venda_form = VendaForm(instance=venda)  # Carrega o form da venda existente
-        formset = VendaItemFormSet(queryset=VendaItem.objects.filter(venda=venda))  # Carrega os itens da venda
+        venda_form = VendaForm(instance=venda)
+        venda_item_formset = VendaItemFormSet(instance=venda)
+        payment_method_formset = PaymentMethodVendaFormSet(instance=venda)
 
     context = {
         'venda_form': venda_form,
-        'formset': formset,
+        'venda_item_formset': venda_item_formset,
+        'payment_method_formset': payment_method_formset,
+        'venda': venda,
     }
+
     return render(request, 'config/venda_form.html', context)
 
 # Deletar uma Venda

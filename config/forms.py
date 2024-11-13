@@ -104,7 +104,6 @@ class AddressForm(forms.ModelForm):
             })
         }
 
-
 class LegalPersonModelForm(forms.ModelForm):
     class Meta:
         model = LegalPerson
@@ -332,9 +331,6 @@ class ClientSearchForm(forms.Form):
 
 #         return cleaned_data
 
-
-
-
 class VendaForm(forms.ModelForm):
     class Meta:
         model = Venda
@@ -375,10 +371,18 @@ class VendaFormSet(forms.BaseFormSet):
         venda.total = total
         venda.save()
 
+class PaymentMethodVendaForm(forms.ModelForm):
+    class Meta:
+        model = PaymentMethod_Venda
+        fields = ['forma_pagamento', 'expirationDate', 'valor']
+
+
 class CompraForm(forms.ModelForm):
     class Meta:
         model = Purchase
         fields = ['id_fornecedor_fk', 'id_Situation_fk','datePurchase']
+
+
 
 # class CompraItemForm(forms.ModelForm):
 #     class Meta:

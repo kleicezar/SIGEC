@@ -107,6 +107,7 @@ class Product(models.Model):
 
     def __str__(self):
         return self.description  # retorna a descrição
+    
 class Client(models.Model):
     telefone_pessoal = models.CharField(max_length=15,verbose_name="Telefone Pessoal",blank=True,null=True )
     telefone_trabalho = models.CharField(max_length=15,verbose_name="Telefone de Trabalho",blank=True,null=True )
@@ -118,9 +119,6 @@ class Client(models.Model):
 
     def __str__(self):
         return f"Cliente {self.id} - {self.pessoa_fisica}"
-    
-
-
 
 class Venda(models.Model):
     pessoa = models.ForeignKey(Client,on_delete=models.CASCADE,verbose_name="Pessoa",related_name="vendas")
@@ -133,9 +131,7 @@ class Venda(models.Model):
 
     def __str__(self):
         return f"Venda {self.id} - {self.pessoa}"
-    
-
-        
+           
 
 class VendaItem(models.Model):
     venda = models.ForeignKey(Venda, on_delete=models.CASCADE, verbose_name="Venda")
@@ -150,6 +146,12 @@ class VendaItem(models.Model):
 
     def __str__(self):
         return f"{self.product.description} - {self.quantidade} unidades"
+
+class PaymentMethod_Venda(models.Model):
+    venda = models.ForeignKey(Venda, on_delete=models.SET_NULL, null=True, verbose_name='id_venda')
+    forma_pagamento = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True, verbose_name='id_forma_de_pagamento')
+    expirationDate = models.CharField(max_length=50, verbose_name='Data de Vencimento')
+    valor = models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor Pago:')
 
 class Purchase(models.Model):
     datePurchase = models.CharField(max_length=10, verbose_name='Data da Compra')
@@ -184,3 +186,4 @@ class PaymentMethod_Purchase(models.Model):
     forma_pagamento = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True, verbose_name='id_forma_de_pagamento')
     expirationDate = models.CharField(max_length=50, verbose_name='Data de Vencimento')
     valor = models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor Pago:')
+
