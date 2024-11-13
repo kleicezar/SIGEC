@@ -75,7 +75,8 @@ class AddressForm(forms.ModelForm):
             }),
             'cep':forms.TextInput(attrs={
                 'class':'form-control ',
-                'onblur':"pesquisacep(this.value);"
+                'onblur':"pesquisacep(this.value);",
+                'mask-cep':"00000-000"
             }),
             'neighborhood':forms.TextInput(attrs={
                 'class':'form-control ',
