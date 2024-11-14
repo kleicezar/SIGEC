@@ -38,10 +38,17 @@
                     <td>{{ Position.name_position }}</td>
                     <td>{{ Position.is_Active|yesno:"Sim,Não" }}</td>
                     <td>
-                        <a href="{% url 'updatePosition' id_position=Position.id %}">
+                        <!-- <a href="{% url 'updatePosition' id_position=Position.id %}">
                             <button>Editar</button>
                         </a>
-                        <button class="delete-button" data-id="{{ Position.id }}" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
+                        <button class="delete-button" data-id="{{ Position.id }}" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button> -->
+                        <a href="{% url 'updatePosition' id_position=Position.id %}">
+                            <button class="btn" style="background-color: #117027;color: white;">Editar</button>
+                        </a>
+                        <form action="{% url 'deletePosition' id_position=Position.id %}" method="POST" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
+                        </form>
                         {% comment %} <button>Deletar</button> {% endcomment %}
                         {% comment %} <button>Mais</button> {% endcomment %}
                     </td>

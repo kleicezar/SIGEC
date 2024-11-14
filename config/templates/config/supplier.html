@@ -18,8 +18,8 @@
                     <button class="register-button">Cadastrar</button>
                 </a>
                 <div class="form-group">
-                    <input type="text" placeholder="Pesquisar..." class="search-input">
-                    <button class="search-button">Pesquisar</button>
+                    <!-- <input type="text" placeholder="Pesquisar..." class="search-input">
+                    <button class="search-button">Pesquisar</button> -->
                 </div>
             </div>
             <table>
@@ -40,8 +40,15 @@
                         <td>{{ person.cnpj }}</td>
                         <td>{{ person.cnpj }}</td>
                         <td>
-                            <a href="{% url 'updateSupplier' id_supplier=person.id %}">Editar</a>
-                            <a href="{% url 'deleteSupplier' id_supplier=person.id %}">Deletar</a>
+                            <!-- <a href="{% url 'updateSupplier' id_supplier=person.id %}">Editar</a>
+                            <a href="{% url 'deleteSupplier' id_supplier=person.id %}">Deletar</a> -->
+                            <a href="{% url 'updateSupplier' id_supplier=person.id %}">
+                                <button class="btn" style="background-color: #117027;color: white;">Editar</button>
+                            </a>
+                            <form action="{% url 'deleteSupplier' id_supplier=person.id %}" method="POST" style="display:inline-block;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
+                            </form>
                         </td>
                 </tr>
                 {% endfor %}

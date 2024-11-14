@@ -15,14 +15,14 @@
         <div class='content'>
             <div class="container">
                 <a href="{% url 'compras_create' %}">
-                    <button class="register-button">Criar nova Venda</button>
+                    <button class="register-button">Criar nova Compra</button>
                 </a>
                 <div class="form-group">
                     <form method="GET" action="{% url 'Client' %}">
                         {% csrf_token %}
                         <div>
                             {{ form.as_p }}
-                            <button type="submit">Pesquisar</button>
+                            <!-- <button type="submit">Pesquisar</button> -->
                         </div>
                     </form>
                 </div>
@@ -43,8 +43,15 @@
                         <td>{{ compra.fornecedor.fantasyName }}</td>
                         <td>{{ compra.situacao }}</td>
                         <td>
-                            <a href="{% url 'compras_update' pk=compra.pk %}">Editar</a>
-                            <a href="{% url 'compras_delete' pk=compra.pk %}"class="delete-button" data-id="{{ Position.id }}" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</a>
+                            <!-- <a href="{% url 'compras_update' pk=compra.pk %}">Editar</a>
+                            <a href="{% url 'compras_delete' pk=compra.pk %}"class="delete-button" data-id="{{ Position.id }}" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</a> -->
+                            <a href="{% url 'compras_update' pk=compra.pk %}">
+                                <button class="btn" style="background-color: #117027;color: white;">Editar</button>
+                            </a>
+                            <form action="{% url 'compras_delete' pk=compra.pk %}" method="POST" style="display:inline-block;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
+                            </form>
                         </td>
                     </tr>
                     {% endfor %}

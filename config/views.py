@@ -532,7 +532,7 @@ def compras_create(request):
                     # Cria o item de compra
                     CompraItem.objects.create(
                         compra=compra,
-                        product=produto,
+                        produto=produto,
                         quantidade=quantidade,
                         preco_unitario=preco_unitario
                     )
@@ -687,18 +687,24 @@ def compras_update(request, pk):
 
 @login_required# Deletar uma Compra
 def compras_delete(request, pk):
-    compra = get_object_or_404(Compra, pk=pk) 
+    # Obtém o objeto Compra ou retorna 404 se não encontrado
+    compra = get_object_or_404(Compra, pk=pk)
+    # Obtém todos os itens associados à compra
     compra_items = CompraItem.objects.filter(compra=compra)
     
     # Restaura a quantidade dos produtos no estoque
     for item in compra_items:
         produto = item.produto
-        produto.current_quantity -= item.quantidade
+        # Incrementa a quantidade de produto no estoque com a quantidade do item de compra
+        produto.current_quantity += item.quantidade
         produto.save()
     
+    # Deleta os itens de compra e a compra em si
     compra_items.delete()
     compra.delete()
-    return redirect('compra_list')
+    
+    # Redireciona para a lista de compras
+    return redirect('compras_list')
 
 @login_required# Criar CompraItem para uma compra específica
 def compras_item_create(request, compra_pk):
