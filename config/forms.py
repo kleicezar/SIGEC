@@ -1,3 +1,4 @@
+
 from django import forms
 from .models import *
 
@@ -5,6 +6,14 @@ class SituationModelForm(forms.ModelForm):
     class Meta:
         model = Situation
         fields = "__all__"
+        widgets = {
+            'name_Situation' : forms.TextInput(
+                attrs = {
+                    'class':'form-control row'
+                }
+            )
+        }
+
 
     def __init__(self, *args, **kwargs):
         super(SituationModelForm, self).__init__(*args, **kwargs)
@@ -71,7 +80,9 @@ class AddressForm(forms.ModelForm):
             }),
             'number':forms.NumberInput(attrs={
                 'class':'form-control ',
-                'placeholder':'0'
+                'placeholder':'0',
+                'step':1,
+                'min':0
             }),
             'cep':forms.TextInput(attrs={
                 'class':'form-control ',
@@ -157,6 +168,7 @@ class SupplierModelForm(forms.ModelForm):
 
 class ProductModelForm(forms.ModelForm):
     class Meta:
+        choices_unit_measure = [('1','KG'),('2','G')]
         model = Product
         fields =  "__all__"
         widgets= {
@@ -169,17 +181,49 @@ class ProductModelForm(forms.ModelForm):
             'barcode':forms.TextInput(attrs={
                 'class':'form-control row'
             }),
-            'unit_of_measure':forms.TextInput(attrs={
-                'class' :'form-control row'
+            'unit_of_measure':forms.Select(choices=choices_unit_measure,attrs={
+                'class':'form-select row'
             }),
             'brand':forms.TextInput(attrs={
                 'class':'form-control row'
             }),
             'cost_of_product':forms.NumberInput(attrs={
-                'class':'form-control row'
+                'class':'form-control row',
+                'min':'0'
             }),
             'selling_price':forms.NumberInput(attrs={
-                'class':'form-control row'
+                'class':'form-control row',
+                'min':'0'
+            }),
+            'ncm':forms.TextInput(attrs={
+                'class':'form-control row',
+            }),
+            'csosn':forms.TextInput(attrs={
+                'class':'form-control row',
+            }),
+            'cfop':forms.TextInput(attrs={
+                'class':'form-control row',
+            }),
+            'current_quantity':forms.NumberInput(attrs={
+                'class':'form-control row',
+                'step':1,
+                'min':0
+            }),
+            'maximum_quantity':forms.NumberInput(attrs={
+                'class':'form-control row',
+                'step':1,
+                'min':0
+            }),
+            'minimum_quantity': forms.TextInput(attrs={
+                'class':'form-control row',
+                'step':1,
+                'min':0
+            }),
+            'is_active':forms.TextInput(attrs={
+                'class':'form-control row',
+            }),
+            'supplier':forms.Select(attrs={
+                'class':'form-select row'
             })
         }
     def __init__(self, *args, **kwargs):
@@ -264,7 +308,13 @@ class CombinedForm(forms.Form):
         print("passei do client save")
 
 class ClientSearchForm(forms.Form):
-    search = forms.CharField(max_length=100, required=False, label="Pesquisar Cliente")
+    search = forms.CharField(max_length=100, required=False, label="Pesquisar Cliente",
+                             widget=forms.TextInput(
+                                 attrs={
+                                 'class':'form-control w',
+                                 'placeholder':'Digite o nome do Cliente'
+                                 }
+                             ))
 
 # class VendaForm(forms.ModelForm):
 #     class Meta:
@@ -358,7 +408,11 @@ class VendaForm(forms.ModelForm):
     class Meta:
         model = Venda
         fields = ['data_da_venda',  'pessoa', 'situacao', 'is_active','observacao_pessoas', 'observacao_sistema']
-
+        widgets={
+            # 'pessoa':forms.Select(attrs={
+            #     'class':'form-control row'
+            # })
+        }
     def __init__(self, *args, **kwargs):
         super(VendaForm, self).__init__(*args, **kwargs)
         if self.instance and self.instance.pk:
@@ -369,7 +423,17 @@ class VendaItemForm(forms.ModelForm):
     class Meta:
         model = VendaItem
         fields = ['product', 'quantidade', 'preco_unitario']
-
+        widgets = {
+            'product':forms.TextInput(attrs={
+                'class':'form-control'
+            }),
+            'quantidade':forms.NumberInput(attrs={
+                'class':'form-control'
+            }),
+            'preco_unitario':forms.NumberInput(attrs={
+                'class':'form-control'
+            })
+        }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['product'].queryset = Product.objects.all()
@@ -398,7 +462,17 @@ class PaymentMethodVendaForm(forms.ModelForm):
     class Meta:
         model = PaymentMethod_Venda
         fields = ['forma_pagamento', 'expirationDate', 'valor']
-
+        widgets = {
+            'forma_pagamento':forms.TextInput(attrs={
+                'class':'form-control'
+            }),
+            'expirationDate':forms.TextInput(attrs={
+                'class':'form-control'
+            }),
+            'valor':forms.NumberInput(attrs={
+                'class':'form-control'
+            })
+        }
 class PaymentMethodCompraForm(forms.ModelForm):
     class Meta:
         model = PaymentMethod_Compra
