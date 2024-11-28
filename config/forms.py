@@ -183,53 +183,53 @@ class ClientForm(forms.ModelForm):
             }),
         }
 
-class CombinedForm(forms.Form):
-    address_instance = None
-    fisic_person_instance = None
-    client_instance = None
-    address_form = None
-    fisic_person_form = None
-    client_form = None
+# class CombinedForm(forms.Form):
+#     address_instance = None
+#     fisic_person_instance = None
+#     client_instance = None
+#     address_form = None
+#     fisic_person_form = None
+#     client_form = None
 
-    def __init__(self, *args, **kwargs):
-        # Pega as instâncias de modelo para os subformulários
-        self.address_instance = kwargs.pop('address_instance', None)
-        self.fisic_person_instance = kwargs.pop('fisic_person_instance', None)
-        self.client_instance = kwargs.pop('client_instance', None)
+#     def __init__(self, *args, **kwargs):
+#         # Pega as instâncias de modelo para os subformulários
+#         self.address_instance = kwargs.pop('address_instance', None)
+#         self.fisic_person_instance = kwargs.pop('fisic_person_instance', None)
+#         self.client_instance = kwargs.pop('client_instance', None)
 
-        # Inicializa o super()
-        super().__init__(*args, **kwargs)
+#         # Inicializa o super()
+#         super().__init__(*args, **kwargs)
 
-        # Cria os subformulários com as instâncias passadas, se existirem
-        self.address_form = AddressForm(prefix="address", instance=self.address_instance, data=self.data if self.is_bound else None)
-        self.fisic_person_form = FisicPersonForm(prefix="fisic_person", instance=self.fisic_person_instance, data=self.data if self.is_bound else None)
-        self.client_form = ClientForm(prefix="client", instance=self.client_instance, data=self.data if self.is_bound else None)
+#         # Cria os subformulários com as instâncias passadas, se existirem
+#         self.address_form = AddressForm(prefix="address", instance=self.address_instance, data=self.data if self.is_bound else None)
+#         self.fisic_person_form = FisicPersonForm(prefix="fisic_person", instance=self.fisic_person_instance, data=self.data if self.is_bound else None)
+#         self.client_form = ClientForm(prefix="client", instance=self.client_instance, data=self.data if self.is_bound else None)
 
-    def save(self):
-        # Salva o endereço (se houver alterações)
-        print("Entrei no save de boas")
-        print("Entrei no save de boas")
-        print("Entrei no save de boas")
-        address = self.address_form.save()
-        print("passei do address")
-        # Salva a pessoa física (se houver alterações)
-        fisic_person = self.fisic_person_form.save(commit=False)
-        print("passei do fisic_person")
-        fisic_person.id_address_fk = address
-        fisic_person.save()
+#     def save(self):
+#         # Salva o endereço (se houver alterações)
+#         print("Entrei no save de boas")
+#         print("Entrei no save de boas")
+#         print("Entrei no save de boas")
+#         address = self.address_form.save()
+#         print("passei do address")
+#         # Salva a pessoa física (se houver alterações)
+#         fisic_person = self.fisic_person_form.save(commit=False)
+#         print("passei do fisic_person")
+#         fisic_person.id_address_fk = address
+#         fisic_person.save()
 
-        # Salva o cliente (se houver alterações)
-        print("passei do fisic_person save")
-        print(self.client_form)
-        client = self.client_form.save(commit=False)
-        print("passei do client")
-        client.endereco = address
-        client.pessoa_fisica = fisic_person
-        client.save()
-        print("passei do client save")
+#         # Salva o cliente (se houver alterações)
+#         print("passei do fisic_person save")
+#         print(self.client_form)
+#         client = self.client_form.save(commit=False)
+#         print("passei do client")
+#         client.endereco = address
+#         client.pessoa_fisica = fisic_person
+#         client.save()
+#         print("passei do client save")
 
-class ClientSearchForm(forms.Form):
-    search = forms.CharField(max_length=100, required=False, label="Pesquisar Cliente")
+# class ClientSearchForm(forms.Form):
+#     search = forms.CharField(max_length=100, required=False, label="Pesquisar Cliente")
 
 # class VendaForm(forms.ModelForm):
 #     class Meta:
@@ -319,25 +319,7 @@ class ClientSearchForm(forms.Form):
 
 #         return cleaned_data
 
-class VendaForm(forms.ModelForm):
-    class Meta:
-        model = Venda
-        fields = ['data_da_venda',  'pessoa', 'situacao', 'is_active','observacao_pessoas', 'observacao_sistema']
 
-    def __init__(self, *args, **kwargs):
-        super(VendaForm, self).__init__(*args, **kwargs)
-        if self.instance and self.instance.pk:
-            self.fields['data_da_venda'].initial = self.instance.data_da_venda
-            self.fields['data_da_venda'].widget.attrs['readonly'] = True
-
-class VendaItemForm(forms.ModelForm):
-    class Meta:
-        model = VendaItem
-        fields = ['product', 'quantidade', 'preco_unitario']
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['product'].queryset = Product.objects.all()
 
 #     def clean(self):
 #         cleaned_data = super().clean()
@@ -359,10 +341,30 @@ class VendaItemForm(forms.ModelForm):
 #         venda.total = total
 #         venda.save()
 
-class PaymentMethodVendaForm(forms.ModelForm):
-    class Meta:
-        model = PaymentMethod_Venda
-        fields = ['forma_pagamento', 'expirationDate', 'valor']
+# class VendaForm(forms.ModelForm):
+#     class Meta:
+#         model = Venda
+#         fields = ['data_da_venda',  'pessoa', 'situacao', 'is_active','observacao_pessoas', 'observacao_sistema']
+
+#     def __init__(self, *args, **kwargs):
+#         super(VendaForm, self).__init__(*args, **kwargs)
+#         if self.instance and self.instance.pk:
+#             self.fields['data_da_venda'].initial = self.instance.data_da_venda
+#             self.fields['data_da_venda'].widget.attrs['readonly'] = True
+
+# class VendaItemForm(forms.ModelForm):
+#     class Meta:
+#         model = VendaItem
+#         fields = ['product', 'quantidade', 'preco_unitario']
+
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.fields['product'].queryset = Product.objects.all()
+        
+# class PaymentMethodVendaForm(forms.ModelForm):
+#     class Meta:
+#         model = PaymentMethod_Venda
+#         fields = ['forma_pagamento', 'expirationDate', 'valor']
 
 class PaymentMethodCompraForm(forms.ModelForm):
     class Meta:
