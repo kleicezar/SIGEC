@@ -31,89 +31,44 @@ class PositionModelForm(forms.ModelForm):
         self.fields['name_position'].widget.attrs.update({'class': 'label-text'})
         self.fields['is_Active'].widget.attrs.update({'class': 'boll'})
 
-class FisicPersonForm(forms.ModelForm):
+# **--**
+
+class ProductModelForm(forms.ModelForm):
     class Meta:
-        model = FisicPerson
-        fields = ["name","cpf","rg","dateOfBirth"] 
-        widgets = {
-            'name':forms.TextInput(attrs={
-                'class':'form-control input-max ',
-                'placeholder':'Kleilson Colaço Leoncio Cezar'
+        model = Product
+        fields =  "__all__"
+        widgets= {
+            'description':forms.Textarea(attrs={
+                'class':'form-control  row text-area'
             }),
-            'cpf':forms.TextInput(attrs={
-                'class':'form-control mask-cpf ',
-                'placeholder':'___.___.___-__'
+             'product_code':forms.TextInput(attrs={
+                'class':'form-control row'
             }),
-            'rg':forms.TextInput(attrs={
-                'class':'form-control input-min ',
-                'placeholder':''
+            'barcode':forms.TextInput(attrs={
+                'class':'form-control row'
             }),
-            'dateOfBirth':forms.DateInput(attrs={
-                'class':'form-control row mask-date',
+            'unit_of_measure':forms.TextInput(attrs={
+                'class' :'form-control row'
+            }),
+            'brand':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'cost_of_product':forms.NumberInput(attrs={
+                'class':'form-control row'
+            }),
+            'selling_price':forms.NumberInput(attrs={
+                'class':'form-control row'
             })
         }
+    def __init__(self, *args, **kwargs):
+        super(ProductModelForm, self).__init__(*args, **kwargs)
 
-    
-    def __init__(self, *args, **kargs):
-        super().__init__(*args, **kargs)
-        self.fields['dateOfBirth'].widget.attrs.update({'class': 'mask-date'})
-        self.fields['cpf'].widget.attrs.update({'class': 'mask-cpf'})
+        # Desabilita o campo 'current_quantity' se for uma atualização
+        if self.instance and self.instance.pk:
+            self.fields['current_quantity'].disabled = True
+            # self.fields['current_quantity'].widget.attrs['readonly'] = True
 
-
-class AddressForm(forms.ModelForm):
-    class Meta:
-        model = Address
-        fields = "__all__"
-        widgets = {
-            'road':forms.TextInput(attrs={
-                'class':'form-control ',
-                'placeholder':'Rua dos Operários'
-            }),
-            'number':forms.NumberInput(attrs={
-                'class':'form-control ',
-                'placeholder':'0'
-            }),
-            'cep':forms.TextInput(attrs={
-                'class':'form-control ',
-                'onblur':"pesquisacep(this.value);",
-                'mask-cep':"00000-000"
-            }),
-            'neighborhood':forms.TextInput(attrs={
-                'class':'form-control ',
-                'placeholder':'Belo Jardim'
-
-            }),
-             'reference':forms.TextInput(attrs={
-                'class':'form-control',
-                'placeholder':'Do lado da panificadora'
-            }),
-             'complement':forms.TextInput(attrs={
-                'class':'form-control ',
-                'placeholder':'Quarto 504'
-            }),
-             'city':forms.TextInput(attrs={
-                'class':'form-control ',
-                'placeholder':'Rio Branco'
-            }),
-             'uf':forms.TextInput(attrs={
-                'class':'form-control ',
-                'placeholder':'AC'
-            }),
-             'country':forms.TextInput(attrs={
-                'class':'form-control ',
-                'placeholder':'Ex: Brasil'
-            })
-        }
-
-class LegalPersonModelForm(forms.ModelForm):
-    class Meta:
-        model = LegalPerson
-        fields = ["fantasyName","cnpj","socialReason","StateRegistration","typeOfTaxpayer","MunicipalRegistration","suframa","Responsible"]
-
-class ForeignerModelForm(forms.ModelForm):
-    class Meta:
-        model = ForeignPerson
-        fields = ["name_foreigner","num_foreigner"]
+# **-**
 
 class SupplierModelForm(forms.ModelForm):
     class Meta:
@@ -155,116 +110,51 @@ class SupplierModelForm(forms.ModelForm):
             })
         }
 
-class ProductModelForm(forms.ModelForm):
+# WorkPhone = models.CharField('WorkPhone', max_length=100)
+#     PersonalPhone = models.CharField('PersonalPhone', max_length=100)
+#     isActive = models.BooleanField('isActive', max_length=100)
+#     site = models.CharField('site', max_length=100,null=True, blank=True)
+#     salesman = models.CharField('salesman', max_length=100,null=True, blank=True)
+#     # creditLimit = models.DecimalField('creditLimit', max_length=100, decimal_places=2, max_digits=10)
+#     creditLimit = models.PositiveIntegerField('creditLimit', max_length=100)
+
+#     id_FisicPerson_fk = models.OneToOneField ('FisicPerson', on_delete=models.CASCADE,null=True, blank=True)
+#     id_LegalPerson_fk = models.OneToOneField ('LegalPerson', on_delete=models.CASCADE,null=True, blank=True)
+#     id_ForeignPerson_fk = models.OneToOneField ('ForeignPerson', on_delete=models.CASCADE,null=True, blank=True)
+
+
+
+
+class PersonForm(forms.ModelForm):
     class Meta:
-        model = Product
-        fields =  "__all__"
-        widgets= {
-            'description':forms.Textarea(attrs={
-                'class':'form-control  row text-area'
-            }),
-             'product_code':forms.TextInput(attrs={
-                'class':'form-control row'
-            }),
-            'barcode':forms.TextInput(attrs={
-                'class':'form-control row'
-            }),
-            'unit_of_measure':forms.TextInput(attrs={
-                'class' :'form-control row'
-            }),
-            'brand':forms.TextInput(attrs={
-                'class':'form-control row'
-            }),
-            'cost_of_product':forms.NumberInput(attrs={
-                'class':'form-control row'
-            }),
-            'selling_price':forms.NumberInput(attrs={
-                'class':'form-control row'
-            })
-        }
-    def __init__(self, *args, **kwargs):
-        super(ProductModelForm, self).__init__(*args, **kwargs)
-
-        # Desabilita o campo 'current_quantity' se for uma atualização
-        if self.instance and self.instance.pk:
-            self.fields['current_quantity'].disabled = True
-            # self.fields['current_quantity'].widget.attrs['readonly'] = True
-
-
-class ClientForm(forms.ModelForm):
-    class Meta:
-        model = Client
-        fields = ['telefone_pessoal', 'telefone_trabalho', 'site', 'ativo', 'limite_credito']
+        model = Person
+        fields = ['PersonalPhone', 'WorkPhone', 'isActive', 'site', 'salesman','creditLimit']
         widgets = {
-            'telefone_pessoal':forms.TextInput(attrs={
+            'PersonalPhone':forms.TextInput(attrs={
                 'class':'form-control ',
                 'placeholder':'XX XXXXX-XXXX'
             }),
-            'telefone_trabalho':forms.TextInput(attrs={
+            'WorkPhone':forms.TextInput(attrs={
                 'class':'form-control ',
                 'placeholder':''
+            }),
+            'isActive':forms.TextInput(attrs={
+                'class':'form-control',
+                'placeholder':'Ativo'
             }),
             'site':forms.TextInput(attrs={
                 'class':'form-control',
                 'placeholder':'Digite o site'
             }),
-            'ativo':forms.TextInput(attrs={
-                'class':'form-control',
-                'placeholder':'Ativo'
-            }),
-            'limite_credito':forms.NumberInput(attrs={
+            'creditLimit':forms.NumberInput(attrs={
                 'class':'form-control ',
                 'placeholder':'200'
             }),
         }
 
-class CombinedForm(forms.Form):
-    address_instance = None
-    fisic_person_instance = None
-    client_instance = None
-    address_form = None
-    fisic_person_form = None
-    client_form = None
 
-    def __init__(self, *args, **kwargs):
-        # Pega as instâncias de modelo para os subformulários
-        self.address_instance = kwargs.pop('address_instance', None)
-        self.fisic_person_instance = kwargs.pop('fisic_person_instance', None)
-        self.client_instance = kwargs.pop('client_instance', None)
-
-        # Inicializa o super()
-        super().__init__(*args, **kwargs)
-
-        # Cria os subformulários com as instâncias passadas, se existirem
-        self.address_form = AddressForm(prefix="address", instance=self.address_instance, data=self.data if self.is_bound else None)
-        self.fisic_person_form = FisicPersonForm(prefix="fisic_person", instance=self.fisic_person_instance, data=self.data if self.is_bound else None)
-        self.client_form = ClientForm(prefix="client", instance=self.client_instance, data=self.data if self.is_bound else None)
-
-    def save(self):
-        # Salva o endereço (se houver alterações)
-        print("Entrei no save de boas")
-        print("Entrei no save de boas")
-        print("Entrei no save de boas")
-        address = self.address_form.save()
-        print("passei do address")
-        # Salva a pessoa física (se houver alterações)
-        fisic_person = self.fisic_person_form.save(commit=False)
-        print("passei do fisic_person")
-        fisic_person.id_address_fk = address
-        fisic_person.save()
-
-        # Salva o cliente (se houver alterações)
-        print("passei do fisic_person save")
-        print(self.client_form)
-        client = self.client_form.save(commit=False)
-        print("passei do client")
-        client.endereco = address
-        client.pessoa_fisica = fisic_person
-        client.save()
-        print("passei do client save")
-
-class ClientSearchForm(forms.Form):
-    search = forms.CharField(max_length=100, required=False, label="Pesquisar Cliente")
+class PersonSearchForm(forms.Form):
+    search = forms.CharField(max_length=100, required=False, label="Pesquisar Pessoa")
 
 # class VendaForm(forms.ModelForm):
 #     class Meta:
@@ -354,50 +244,50 @@ class ClientSearchForm(forms.Form):
 
 #         return cleaned_data
 
-class VendaForm(forms.ModelForm):
-    class Meta:
-        model = Venda
-        fields = ['data_da_venda',  'pessoa', 'situacao', 'is_active','observacao_pessoas', 'observacao_sistema']
+# class VendaForm(forms.ModelForm):
+#     class Meta:
+#         model = Venda
+#         fields = ['data_da_venda',  'pessoa', 'situacao', 'is_active','observacao_pessoas', 'observacao_sistema']
 
-    def __init__(self, *args, **kwargs):
-        super(VendaForm, self).__init__(*args, **kwargs)
-        if self.instance and self.instance.pk:
-            self.fields['data_da_venda'].initial = self.instance.data_da_venda
-            self.fields['data_da_venda'].widget.attrs['readonly'] = True
+#     def __init__(self, *args, **kwargs):
+#         super(VendaForm, self).__init__(*args, **kwargs)
+#         if self.instance and self.instance.pk:
+#             self.fields['data_da_venda'].initial = self.instance.data_da_venda
+#             self.fields['data_da_venda'].widget.attrs['readonly'] = True
 
-class VendaItemForm(forms.ModelForm):
-    class Meta:
-        model = VendaItem
-        fields = ['product', 'quantidade', 'preco_unitario']
+# class VendaItemForm(forms.ModelForm):
+#     class Meta:
+#         model = VendaItem
+#         fields = ['product', 'quantidade', 'preco_unitario']
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['product'].queryset = Product.objects.all()
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.fields['product'].queryset = Product.objects.all()
 
-    def clean(self):
-        cleaned_data = super().clean()
-        preco_unitario = cleaned_data.get('preco_unitario')
-        quantidade = cleaned_data.get('quantidade')
-        if preco_unitario and quantidade:
-            cleaned_data['total'] = preco_unitario * quantidade
-        return cleaned_data
+#     def clean(self):
+#         cleaned_data = super().clean()
+#         preco_unitario = cleaned_data.get('preco_unitario')
+#         quantidade = cleaned_data.get('quantidade')
+#         if preco_unitario and quantidade:
+#             cleaned_data['total'] = preco_unitario * quantidade
+#         return cleaned_data
     
-class VendaFormSet(forms.BaseFormSet):
-    def clean(self):
-        if any(self.errors):
-            return
-        total = 0
-        for form in self.forms:
-            if form.cleaned_data:
-                total += form.cleaned_data['quantidade'] * form.cleaned_data['preco_unitario']
-        venda = self.form_kwargs['venda']
-        venda.total = total
-        venda.save()
+# class VendaFormSet(forms.BaseFormSet):
+#     def clean(self):
+#         if any(self.errors):
+#             return
+#         total = 0
+#         for form in self.forms:
+#             if form.cleaned_data:
+#                 total += form.cleaned_data['quantidade'] * form.cleaned_data['preco_unitario']
+#         venda = self.form_kwargs['venda']
+#         venda.total = total
+#         venda.save()
 
-class PaymentMethodVendaForm(forms.ModelForm):
-    class Meta:
-        model = PaymentMethod_Venda
-        fields = ['forma_pagamento', 'expirationDate', 'valor']
+# class PaymentMethodVendaForm(forms.ModelForm):
+#     class Meta:
+#         model = PaymentMethod_Venda
+#         fields = ['forma_pagamento', 'expirationDate', 'valor']
 
 class PaymentMethodCompraForm(forms.ModelForm):
     class Meta:

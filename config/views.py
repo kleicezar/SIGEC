@@ -7,9 +7,9 @@ from django.contrib.auth import authenticate, login, logout
 from .forms import *
 from .models import *
 
-@login_required
-def index(request):
-    return render(request, 'config/index.html')
+# @login_required
+# def index(request):
+#     return render(request, 'config/index.html')
 
 ### PAYMENT METHOD
 @login_required
@@ -18,6 +18,7 @@ def paymentMethod(request):
         'PaymentMethods': PaymentMethod.objects.all()
     }
     return render(request, 'config/PaymentMethod.html', context)
+
 @login_required
 def PaymentMethodForm(request):
     if request.method == "GET":
@@ -36,6 +37,7 @@ def PaymentMethodForm(request):
         'paymentMethod' : paymentMethodForm
     }
     return render(request, 'config/PaymentMethod.html', context)
+
 @login_required    
 def updatePaymentMethod(request, id_paymentMethod):
     paymentMethod = get_object_or_404(PaymentMethod, id=id_paymentMethod)
@@ -57,6 +59,7 @@ def updatePaymentMethod(request, id_paymentMethod):
         'PaymentMethod' : paymentMethodForm
     }
     return render(request, 'config/PaymentMethod.html', context)
+
 @login_required
 def deletePaymentMethod(request, id_paymentMethod):
     paymentMethod = get_object_or_404(PaymentMethod, id=id_paymentMethod)
@@ -77,6 +80,8 @@ def position(request):
         'Positions': Position.objects.all()
     }
     return render(request, 'config/Position.html', context)
+
+
 @login_required
 def PositionForm(request):
     if request.method == "GET":
@@ -95,6 +100,7 @@ def PositionForm(request):
         'Position' : PositionForm
     }
     return render(request, 'config/Position.html', context)
+
 @login_required
 def updatePosition(request, id_position):
     position = get_object_or_404(Position, id=id_position)
@@ -116,6 +122,7 @@ def updatePosition(request, id_position):
         'Position' : positionForm
     }
     return render(request, 'config/Position.html', context)
+
 @login_required
 def deletePosition(request, id_position):
     position = get_object_or_404(Position, id=id_position)
@@ -130,12 +137,14 @@ def deletePosition(request, id_position):
     return render(request, 'config/Position.html', context)
 
 ### SITUATION
+
 @login_required
 def situation(request):
     context = {
         'Situations': Situation.objects.all()
     }
     return render(request, 'config/Situation.html', context)
+
 @login_required
 def SituationForm(request):
     if request.method == "GET":
@@ -154,6 +163,7 @@ def SituationForm(request):
         'Situation' : situationForm
     }
     return render(request, 'config/Situation.html', context)
+
 @login_required
 def updateSituation(request, id_situation):
     situation = get_object_or_404(Situation, id=id_situation)
@@ -175,6 +185,7 @@ def updateSituation(request, id_situation):
         'Situation' : situationForm
     }
     return render(request, 'config/Situation.html', context)
+
 @login_required
 def deleteSituation(request, id_situation):
     situation = get_object_or_404(Situation, id=id_situation)
@@ -189,10 +200,12 @@ def deleteSituation(request, id_situation):
     return render(request, 'config/Situation.html', context)
 
 ### SUPPLIER
+
 @login_required
 def supplier(request):
     persons = Person.objects.all()
     return render(request, 'config/supplier.html', {'persons': persons})
+
 @login_required
 def supplierForm(request):
     if request.method == 'POST':
@@ -203,6 +216,7 @@ def supplierForm(request):
     else:
         form = SupplierModelForm()
     return render(request, 'config/supplierForm.html', {'form': form})
+
 @login_required
 def updateSupplier(request, id_supplier):
     person = get_object_or_404(Person, id=id_supplier)
@@ -214,6 +228,7 @@ def updateSupplier(request, id_supplier):
     else:
         form = SupplierModelForm(instance=person)
     return render(request, 'config/supplierForm.html', {'form': form})
+
 @login_required
 def deleteSupplier(request, id_supplier):
     person = get_object_or_404(Person, id=id_supplier)
@@ -223,10 +238,12 @@ def deleteSupplier(request, id_supplier):
     return render(request, 'config/person_confirm_delete.html', {'person': person})
 
 ### PRODUCT
+
 @login_required
 def product(request):
     products = Product.objects.all()
     return render(request, 'config/product_list.html', {'products': products})
+
 @login_required
 def productForm(request):
     if request.method == 'POST':
@@ -237,6 +254,7 @@ def productForm(request):
     else:
         form = ProductModelForm()
     return render(request, 'config/product_form.html', {'form': form})
+
 @login_required
 def updateProduct(request, id_product):
     product = get_object_or_404(Product, id=id_product)
@@ -248,254 +266,264 @@ def updateProduct(request, id_product):
     else:
         form = ProductModelForm(instance=product)
     return render(request, 'config/product_form.html', {'form': form})
+
 @login_required
 def deleteProduct(request, id_product):
     product = get_object_or_404(Product, id=id_product)
     product.delete()
     return redirect('Product')
 
-### CLIENT
-@login_required
-def create_client(request):
-    if request.method == 'POST':
-        form = CombinedForm(request.POST)
-        if form.is_valid():
-            form.save()  # Salva o endereço, pessoa física e cliente
-            return redirect('Client')  # Redireciona para a lista de clientes, ou página de sucesso
-    else:
-        form = CombinedForm()
+    # ### CLIENT
 
-    return render(request, 'config/create_client_form.html', {'form': form})
-@login_required
-def client_list(request):
-    # Cria o formulário de pesquisa
-    form = ClientSearchForm(request.GET)
-
-    # Se o formulário for válido e contiver um valor de pesquisa
-    if form.is_valid() and form.cleaned_data.get('search'):
-        search_term = form.cleaned_data['search']
-        # Filtra os clientes pelo nome (ou outro campo desejado)
-        clients = Client.objects.filter(pessoa_fisica__name__icontains=search_term)
-    else:
-        # Caso contrário, exibe todos os clientes
-        clients = Client.objects.all()
-
-    return render(request, 'config/client_list.html', {'form': form, 'clients': clients})
-@login_required
-def update_client(request, id_client):
-    client = get_object_or_404(Client, id=id_client)
-    address = client.endereco  # Assume que cada cliente tem um endereço relacionado
-    fisic_person = client.pessoa_fisica  # Assume que cada cliente tem uma pessoa física relacionada
-
-    # Quando o formulário for enviado (POST)
-    if request.method == 'POST':
-        # Passa as instâncias para os subformulários
-        form = CombinedForm(request.POST, address_instance=address, fisic_person_instance=fisic_person, client_instance=client)
-
-        if form.is_valid():
-            # Salva os dados, cada subformulário cuida de salvar sua respectiva instância
-            form.save()  
-            return redirect('Client')  # Redireciona para a lista de clientes após a edição
-
-    else:
-        # No método GET, passamos as instâncias para carregar os dados
-        form = CombinedForm(address_instance=address, fisic_person_instance=fisic_person, client_instance=client)
-
-    return render(request, 'config/create_client_form.html', {'form': form})
-@login_required
-def delete_client(request, id_client):
-    # Recupera o cliente com o id fornecido
-    client = get_object_or_404(Client, id=id_client)
-    client.delete()
-    return redirect('Client')
-
-### SALE
-@login_required
-def venda_list(request):
-    vendas = Venda.objects.all()
-    return render(request, 'config/venda_list.html', {'vendas': vendas})
-
-    # @login_requiredCriar uma nova Venda
-    # def venda_create(request):
+    # @login_required
+    # def create_client(request):
     #     if request.method == 'POST':
-    #         form = VendaForm(request.POST)
+    #         form = CombinedForm(request.POST)
     #         if form.is_valid():
-    #             form.save()
-    #             return redirect('venda_list')  # Redireciona para a lista de vendas
+    #             form.save()  # Salva o endereço, pessoa física e cliente
+    #             return redirect('Client')  # Redireciona para a lista de clientes, ou página de sucesso
     #     else:
-    #         form = VendaForm()
-    #     return render(request, 'config/venda_form.html', {'form': form})
+    #         form = CombinedForm()
 
+    #     return render(request, 'config/create_client_form.html', {'form': form})
 
-    # @login_requiredCriar uma nova Venda com itens
-    # def venda_create(request):
+    # @login_required
+    # def client_list(request):
+    #     # Cria o formulário de pesquisa
+    #     form = ClientSearchForm(request.GET)
+
+    #     # Se o formulário for válido e contiver um valor de pesquisa
+    #     if form.is_valid() and form.cleaned_data.get('search'):
+    #         search_term = form.cleaned_data['search']
+    #         # Filtra os clientes pelo nome (ou outro campo desejado)
+    #         clients = Client.objects.filter(pessoa_fisica__name__icontains=search_term)
+    #     else:
+    #         # Caso contrário, exibe todos os clientes
+    #         clients = Client.objects.all()
+
+    #     return render(request, 'config/client_list.html', {'form': form, 'clients': clients})
+
+    # @login_required
+    # def update_client(request, id_client):
+    #     client = get_object_or_404(Client, id=id_client)
+    #     address = client.endereco  # Assume que cada cliente tem um endereço relacionado
+    #     fisic_person = client.pessoa_fisica  # Assume que cada cliente tem uma pessoa física relacionada
+
+    #     # Quando o formulário for enviado (POST)
     #     if request.method == 'POST':
-    #         venda_form = VendaForm(request.POST)
-    #         # Como o formulário de VendaItem precisa ser adicionado de forma dinâmica, vamos criar uma instância dele manualmente
-    #         venda_items = [VendaItemForm(request.POST, prefix=f"item_{i}") for i in range(1)]  # Inicia com 5 campos de item (ajuste conforme necessário)
+    #         # Passa as instâncias para os subformulários
+    #         form = CombinedForm(request.POST, address_instance=address, fisic_person_instance=fisic_person, client_instance=client)
 
-    #         if venda_form.is_valid():
-    #             venda = venda_form.save()
+    #         if form.is_valid():
+    #             # Salva os dados, cada subformulário cuida de salvar sua respectiva instância
+    #             form.save()  
+    #             return redirect('Client')  # Redireciona para a lista de clientes após a edição
 
-    #             # Salvando os itens da venda
-    #             for item_form in venda_items:
-    #                 if item_form.is_valid():
-    #                     venda_item = item_form.save(commit=False)
-    #                     venda_item.venda = venda
-    #                     venda_item.save()
-
-    #             return redirect('venda_list')  # Redireciona para a lista de vendas
     #     else:
-    #         venda_form = VendaForm()
-    #         venda_items = [VendaItemForm(prefix=f"item_{i}") for i in range(1)]  # Campos iniciais
+    #         # No método GET, passamos as instâncias para carregar os dados
+    #         form = CombinedForm(address_instance=address, fisic_person_instance=fisic_person, client_instance=client)
 
-    #     return render(request, 'config/venda_form.html', {'venda_form': venda_form, 'venda_items': venda_items})
-@login_required
-def venda_create(request):
-    VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=1, can_delete=True)
-    PaymentMethodVendaFormSet = inlineformset_factory(Venda, PaymentMethod_Venda, form=PaymentMethodVendaForm, extra=1, can_delete=True)
-    # VendaItemFormSet = modelformset_factory(VendaItem, form=VendaItemForm, extra=1)
-    # PaymentMethodVendaFormSet = modelformset_factory(PaymentMethod_Venda, form=PaymentMethodVendaForm, extra=1)
+    #     return render(request, 'config/create_client_form.html', {'form': form})
+
+    # @login_required
+    # def delete_client(request, id_client):
+    #     # Recupera o cliente com o id fornecido
+    #     client = get_object_or_404(Client, id=id_client)
+    #     client.delete()
+    #     return redirect('Client')
+
+# ### SALE
+
+# @login_required
+# def venda_list(request):
+#     vendas = Venda.objects.all()
+#     return render(request, 'config/venda_list.html', {'vendas': vendas})
+
+#     # 
+#     # @login_requiredCriar uma nova Venda
+#     # def venda_create(request):
+#     #     if request.method == 'POST':
+#     #         form = VendaForm(request.POST)
+#     #         if form.is_valid():
+#     #             form.save()
+#     #             return redirect('venda_list')  # Redireciona para a lista de vendas
+#     #     else:
+#     #         form = VendaForm()
+#     #     return render(request, 'config/venda_form.html', {'form': form})
+
+
+#     # 
+#     # @login_requiredCriar uma nova Venda com itens
+#     # def venda_create(request):
+#     #     if request.method == 'POST':
+#     #         venda_form = VendaForm(request.POST)
+#     #         # Como o formulário de VendaItem precisa ser adicionado de forma dinâmica, vamos criar uma instância dele manualmente
+#     #         venda_items = [VendaItemForm(request.POST, prefix=f"item_{i}") for i in range(1)]  # Inicia com 5 campos de item (ajuste conforme necessário)
+
+#     #         if venda_form.is_valid():
+#     #             venda = venda_form.save()
+
+#     #             # Salvando os itens da venda
+#     #             for item_form in venda_items:
+#     #                 if item_form.is_valid():
+#     #                     venda_item = item_form.save(commit=False)
+#     #                     venda_item.venda = venda
+#     #                     venda_item.save()
+
+#     #             return redirect('venda_list')  # Redireciona para a lista de vendas
+#     #     else:
+#     #         venda_form = VendaForm()
+#     #         venda_items = [VendaItemForm(prefix=f"item_{i}") for i in range(1)]  # Campos iniciais
+
+#     #     return render(request, 'config/venda_form.html', {'venda_form': venda_form, 'venda_items': venda_items})
+
+# @login_required
+# def venda_create(request):
+#     VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=1, can_delete=True)
+#     PaymentMethodVendaFormSet = inlineformset_factory(Venda, PaymentMethod_Venda, form=PaymentMethodVendaForm, extra=1, can_delete=True)
+#     # VendaItemFormSet = modelformset_factory(VendaItem, form=VendaItemForm, extra=1)
+#     # PaymentMethodVendaFormSet = modelformset_factory(PaymentMethod_Venda, form=PaymentMethodVendaForm, extra=1)
     
-    if request.method == 'POST':
-        venda_form = VendaForm(request.POST)
-        venda_item_formset = VendaItemFormSet(request.POST)
-        payment_method_formset = PaymentMethodVendaFormSet(request.POST)
+#     if request.method == 'POST':
+#         venda_form = VendaForm(request.POST)
+#         venda_item_formset = VendaItemFormSet(request.POST)
+#         payment_method_formset = PaymentMethodVendaFormSet(request.POST)
         
-        if venda_form.is_valid() and venda_item_formset.is_valid() and payment_method_formset.is_valid():
-            estoque_suficiente = True
-            for form in venda_item_formset:
-                if form.cleaned_data:
-                    produto = form.cleaned_data['product']
-                    quantidade = form.cleaned_data['quantidade']
-                    if produto.current_quantity < quantidade:
-                        estoque_suficiente = False
-                        form.add_error('quantidade', f'Não há estoque suficiente para o produto {produto.description}. Estoque disponível: {produto.current_quantity}.')
+#         if venda_form.is_valid() and venda_item_formset.is_valid() and payment_method_formset.is_valid():
+#             estoque_suficiente = True
+#             for form in venda_item_formset:
+#                 if form.cleaned_data:
+#                     produto = form.cleaned_data['product']
+#                     quantidade = form.cleaned_data['quantidade']
+#                     if produto.current_quantity < quantidade:
+#                         estoque_suficiente = False
+#                         form.add_error('quantidade', f'Não há estoque suficiente para o produto {produto.description}. Estoque disponível: {produto.current_quantity}.')
 
-            if estoque_suficiente:
-                venda = venda_form.save()
+#             if estoque_suficiente:
+#                 venda = venda_form.save()
 
-                venda_item_formset.instance = venda
-                venda_item_formset.save()
+#                 venda_item_formset.instance = venda
+#                 venda_item_formset.save()
                 
-                # Salva os itens da venda
-                for form in venda_item_formset:
-                    if form.cleaned_data:
-                        produto = form.cleaned_data['product']
-                        quantidade = form.cleaned_data['quantidade']
-                        preco_unitario = form.cleaned_data['preco_unitario']
+#                 # Salva os itens da venda
+#                 for form in venda_item_formset:
+#                     if form.cleaned_data:
+#                         produto = form.cleaned_data['product']
+#                         quantidade = form.cleaned_data['quantidade']
+#                         preco_unitario = form.cleaned_data['preco_unitario']
                         
-                        VendaItem.objects.create(
-                            venda=venda,
-                            product=produto,
-                            quantidade=quantidade,
-                            preco_unitario=preco_unitario
-                        )
+#                         VendaItem.objects.create(
+#                             venda=venda,
+#                             product=produto,
+#                             quantidade=quantidade,
+#                             preco_unitario=preco_unitario
+#                         )
                         
-                        produto.current_quantity -= quantidade
-                        produto.save()
+#                         produto.current_quantity -= quantidade
+#                         produto.save()
 
-                # Salva as formas de pagamento associadas à venda
-                for form in payment_method_formset:
-                    if form.cleaned_data:
-                        forma_pagamento = form.cleaned_data['forma_pagamento']
-                        expiration_date = form.cleaned_data['expirationDate']
-                        valor = form.cleaned_data['valor']
+#                 # Salva as formas de pagamento associadas à venda
+#                 for form in payment_method_formset:
+#                     if form.cleaned_data:
+#                         forma_pagamento = form.cleaned_data['forma_pagamento']
+#                         expiration_date = form.cleaned_data['expirationDate']
+#                         valor = form.cleaned_data['valor']
                         
-                        PaymentMethod_Venda.objects.create(
-                            venda=venda,
-                            forma_pagamento=forma_pagamento,
-                            expirationDate=expiration_date,
-                            valor=valor
-                        )
+#                         PaymentMethod_Venda.objects.create(
+#                             venda=venda,
+#                             forma_pagamento=forma_pagamento,
+#                             expirationDate=expiration_date,
+#                             valor=valor
+#                         )
                 
-                return redirect('venda_list')
+#                 return redirect('venda_list')
         
-    else:
-        venda_form = VendaForm()
-        venda_item_formset = VendaItemFormSet(queryset=VendaItem.objects.none())
-        payment_method_formset = PaymentMethodVendaFormSet(queryset=PaymentMethod_Venda.objects.none())
-    context = {
-        'venda_form': venda_form,   
-        'venda_item_formset': venda_item_formset,
-        'payment_method_formset': payment_method_formset
-    }
-    return render(request, 'config/venda_form.html', context)
+#     else:
+#         venda_form = VendaForm()
+#         venda_item_formset = VendaItemFormSet(queryset=VendaItem.objects.none())
+#         payment_method_formset = PaymentMethodVendaFormSet(queryset=PaymentMethod_Venda.objects.none())
+#     context = {
+#         'venda_form': venda_form,   
+#         'venda_item_formset': venda_item_formset,
+#         'payment_method_formset': payment_method_formset
+#     }
+#     return render(request, 'config/venda_form.html', context)
 
+# @login_required
+# def venda_update(request, pk):
+#     # Carregar a venda existente
+#     venda = get_object_or_404(Venda, pk=pk)
 
-@login_required
-def venda_update(request, pk):
-    # Carregar a venda existente
-    venda = get_object_or_404(Venda, pk=pk)
+#     # Criar formsets para itens de venda e formas de pagamento
+#     VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=1, can_delete=True)
+#     PaymentMethodVendaFormSet = inlineformset_factory(Venda, PaymentMethod_Venda, form=PaymentMethodVendaForm, extra=1, can_delete=True)
 
-    # Criar formsets para itens de venda e formas de pagamento
-    VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=1, can_delete=True)
-    PaymentMethodVendaFormSet = inlineformset_factory(Venda, PaymentMethod_Venda, form=PaymentMethodVendaForm, extra=1, can_delete=True)
+#     if request.method == 'POST':
+#         venda_form = VendaForm(request.POST, instance=venda)
+#         venda_item_formset = VendaItemFormSet(request.POST, instance=venda)
+#         payment_method_formset = PaymentMethodVendaFormSet(request.POST, instance=venda)
 
-    if request.method == 'POST':
-        venda_form = VendaForm(request.POST, instance=venda)
-        venda_item_formset = VendaItemFormSet(request.POST, instance=venda)
-        payment_method_formset = PaymentMethodVendaFormSet(request.POST, instance=venda)
+#         if venda_form.is_valid() and venda_item_formset.is_valid() and payment_method_formset.is_valid():
+#             # Salvar a venda
+#             venda_form.save()
+#             venda_item_formset.save()
+#             payment_method_formset.save()
 
-        if venda_form.is_valid() and venda_item_formset.is_valid() and payment_method_formset.is_valid():
-            # Salvar a venda
-            venda_form.save()
-            venda_item_formset.save()
-            payment_method_formset.save()
+#             messages.success(request, "Venda atualizada com sucesso!")
+#             return redirect('venda_list')
 
-            messages.success(request, "Venda atualizada com sucesso!")
-            return redirect('venda_list')
+#         else:
+#             messages.error(request, "Erro ao atualizar a venda. Verifique os campos.")
 
-        else:
-            messages.error(request, "Erro ao atualizar a venda. Verifique os campos.")
+#     else:
+#         venda_form = VendaForm(instance=venda)
+#         venda_item_formset = VendaItemFormSet(instance=venda)
+#         payment_method_formset = PaymentMethodVendaFormSet(instance=venda)
 
-    else:
-        venda_form = VendaForm(instance=venda)
-        venda_item_formset = VendaItemFormSet(instance=venda)
-        payment_method_formset = PaymentMethodVendaFormSet(instance=venda)
+#     context = {
+#         'venda_form': venda_form,
+#         'venda_item_formset': venda_item_formset,
+#         'payment_method_formset': payment_method_formset,
+#         'venda': venda,
+#     }
 
-    context = {
-        'venda_form': venda_form,
-        'venda_item_formset': venda_item_formset,
-        'payment_method_formset': payment_method_formset,
-        'venda': venda,
-    }
+#     return render(request, 'config/venda_form.html', context)
 
-    return render(request, 'config/venda_form.html', context)
+# @login_required# Deletar uma Venda
+# def venda_delete(request, pk):
+#     # Obtém a venda com base no id (pk)
+#     venda = get_object_or_404(Venda, pk=pk)
+#     # Recupera os itens de venda relacionados
+#     venda_items = VendaItem.objects.filter(venda=venda)
+#     # Restaura a quantidade dos produtos no estoque
+#     for item in venda_items:
+#         produto = item.product
+#         produto.current_quantity += item.quantidade  # Restaura a quantidade
+#         produto.save()
+#     # Exclui os itens de venda
+#     venda_items.delete()
+#     # Exclui a venda
+#     venda.delete()
+#     # Redireciona para a lista de vendas após a deleção
+#     return redirect('venda_list')
 
-@login_required# Deletar uma Venda
-def venda_delete(request, pk):
-    # Obtém a venda com base no id (pk)
-    venda = get_object_or_404(Venda, pk=pk)
-    # Recupera os itens de venda relacionados
-    venda_items = VendaItem.objects.filter(venda=venda)
-    # Restaura a quantidade dos produtos no estoque
-    for item in venda_items:
-        produto = item.product
-        produto.current_quantity += item.quantidade  # Restaura a quantidade
-        produto.save()
-    # Exclui os itens de venda
-    venda_items.delete()
-    # Exclui a venda
-    venda.delete()
-    # Redireciona para a lista de vendas após a deleção
-    return redirect('venda_list')
+# @login_required# Criar VendaItem para uma venda específica
+# def venda_item_create(request, venda_pk):
+#     venda = get_object_or_404(Venda, pk=venda_pk)
+#     if request.method == 'POST':
+#         form = VendaItemForm(request.POST)
+#         if form.is_valid():
+#             venda_item = form.save(commit=False)
+#             venda_item.venda = venda
+#             venda_item.save()
+#             return redirect('venda_detail', pk=venda.pk)  # Redireciona para os detalhes da venda
+#     else:
+#         form = VendaItemForm()
+#     return render(request, 'config/venda_item_form.html', {'form': form, 'venda': venda})
 
-@login_required# Criar VendaItem para uma venda específica
-def venda_item_create(request, venda_pk):
-    venda = get_object_or_404(Venda, pk=venda_pk)
-    if request.method == 'POST':
-        form = VendaItemForm(request.POST)
-        if form.is_valid():
-            venda_item = form.save(commit=False)
-            venda_item.venda = venda
-            venda_item.save()
-            return redirect('venda_detail', pk=venda.pk)  # Redireciona para os detalhes da venda
-    else:
-        form = VendaItemForm()
-    return render(request, 'config/venda_item_form.html', {'form': form, 'venda': venda})
 @login_required
 # def compras_list(request)
+
 @login_required
 def compras_list(request):
     compras = Compra.objects.all()
@@ -738,17 +766,17 @@ def compras_item_create(request, compra_pk):
     }
     return render(request, 'compras/compra_item_form.html', context) 
 
-def my_login(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('index')
-    return render(request, 'config/login.html')
+# def my_login(request):
+#     if request.method == 'POST':
+#         username = request.POST['username']
+#         password = request.POST['password']
+#         user = authenticate(request, username=username, password=password)
+#         if user is not None:
+#             login(request, user)
+#             return redirect('index')
+#     return render(request, 'config/login.html')
 
-@login_required
-def my_logout(request):
-    logout(request)
-    return redirect('index') 
+# @login_required
+# def my_logout(request):
+#     logout(request)
+#     return redirect('index') 

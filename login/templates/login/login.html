@@ -11,7 +11,7 @@
 </head>
 <body>
     <div class="container">
-        <img class="logo" src="{% static 'global_static/images/logo.jpg'%}" alt="Eletro Cezar">   
+        <img class="logo" src="{% static 'images/logo.jpg'%}" alt="Eletro Cezar">
         <div class="margin">
             <form action="{% url 'login' %}" method="POST"> 
                 {% csrf_token %}
