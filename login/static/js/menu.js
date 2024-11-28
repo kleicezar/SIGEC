@@ -3,7 +3,7 @@ const toggleButton = document.querySelector('.toggle-menu');
 const sidebar = document.querySelector('.sidebar');
 const content = document.querySelector('.content'); // Adicionado para referenciar o conteúdo
 const toggles = document.querySelectorAll('.toggle');
-
+// console.log('dfsfadsf');
 // Alterna a visibilidade da sidebar
 toggleButton.addEventListener('click', () => {
     sidebar.classList.toggle('hidden');

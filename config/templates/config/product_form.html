@@ -17,13 +17,155 @@
             {% bootstrap_messages %}
             {% block content %}
             <div class='content'>
-                <div class='center'>
+                <div class=''>
                 
-                    <h1>{% if form.instance.pk %}Editar Produto{% else %}Adicionar Produto{% endif %}</h1>
+                    <!-- <h4>{% if form.instance.pk %}Editar Produto{% else %}Adicionar Produto{% endif %}</h4> -->
                     <form method="post">
                         {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit">Salvar</button>
+                        <h4 class="mt-5 c-adapted">{% if form.instance.pk %}Editar Produto{% else %}Adicionar Produto{% endif %}</h4>
+                        <!-- {{ form.as_p }} -->
+                        <div class="row mt-5 mb-5">
+                            <fieldset>
+                             
+                                <div class="form-margin row">
+
+                                    <div class="col-4 ">
+                                        <label for="" class="">{{form.product_code.label}}</label>
+                                        {{form.product_code}}
+                                    </div>
+
+                                    <div class="col-4">
+                                        <label for="" class="">{{form.barcode.label}}</label>
+                                        {{form.barcode}}
+                                    </div>
+                                    
+                                </div>
+                                <div class="form-margin row">
+                                    <div class="col-4">
+                                        <label class="" for="">{{form.unit_of_measure.label}}</label>
+                                        {{form.unit_of_measure}}
+                                    </div>
+                                </div>
+
+                                <div class="form-margin row">
+
+                                    <div class="col">
+
+                                        <label class="" for="">{{form.description.label}}</label>
+                                        {{form.description}}
+
+                                    </div>
+                                    
+                                </div>
+
+                                <div class="form-margin row">
+                                    <div class="col-5">
+
+                                        <label class="" for="">{{form.brand.label}}</label>
+                                        {{form.brand}}
+
+                                    </div> 
+                                </div>
+
+                                <div class="form-margin row">
+
+                                    <div class="col">
+                                        <label  for="" class="">{{form.cost_of_product.label}}</label>
+                                        {{form.cost_of_product}}
+                                    </div>
+
+                                    <div class="col">
+                                        
+                                    <label for="" class="">{{form.selling_price.label}}</label>
+                                    {{form.selling_price}}
+
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="form-margin row">
+
+                                    <div class="col">
+                        
+                                        <label for="" class="">{{form.ncm.label}}</label>
+                                        {{form.ncm}}
+
+                                    </div>
+
+                                    <div class="col">
+
+                                        <label for="" class="">{{form.csosn.label}}</label>
+                                        {{form.csosn}}
+
+                                    </div>
+
+                                    <div class="col">
+
+                                        <label for="" class="">{{form.cfop.label}}</label>
+                                        {{form.cfop}}
+
+                                    </div>
+
+                                </div>
+
+                                <div class="form-margin row">
+
+                                    <div class="col-4">
+
+                                        <label for="" class="">{{form.maximum_quantity.label}}</label>
+                                        {{form.maximum_quantity}}  
+
+                                    </div>
+
+                                    <div class="col-4">
+
+                                        <label for="" class="">{{form.current_quantity.label}}</label>
+                                        {{form.current_quantity}}  
+
+                                    </div>
+
+                                    <div class="col-4">
+
+                                        <label for="" class="">{{form.minimum_quantity.label}}</label>
+                                        {{form.minimum_quantity}}  
+
+                                    </div>
+
+                                </div>
+
+                                <div class="form-margin row">
+
+                                    <div class="col-2">
+
+                                        <label for="" class="">{{form.is_active.label}}</label>
+                                        {{form.is_active}}
+
+                                    </div>
+
+                                </div>
+
+                                <div class="form-margin row">
+
+                                    <div class="col-5">
+
+                                        <label for="" class="">{{form.supplier.label}}</label>
+                                        {{form.supplier}}
+
+                                    </div>
+
+                                </div>
+
+                            </fieldset>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col  text-end">
+                                <button type="submit" class="btn bg-adapted ">Salvar</button>
+                            </div>
+
+                        </div>
+                       
                     </form>
                     <a href="{% url 'Product' %}">Voltar</a>
                 </div>

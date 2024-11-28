@@ -15,14 +15,20 @@
         <div class='content'>
             <div class="container">
                 <a href="{% url 'create_client' %}">
-                    <button class="register-button">Cadastrar</button>
+                    <button class="btn btn-success">Cadastrar</button>
                 </a>
                 <div class="form-group">
                     <form method="GET" action="{% url 'Client' %}">
                         {% csrf_token %}
-                        <div>
-                            {{ form.as_p }}
-                            <button type="submit">Pesquisar</button>
+                        <div class="row">
+                            <div class="col">
+                                <label for="" class="">{{form.search.label}}</label>
+                                {{form.search}}
+                            </div>
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary mt-4">Pesquisar</button>
+                            </div>
+                        
                         </div>
                     </form>
                 </div>

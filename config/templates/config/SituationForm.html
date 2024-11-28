@@ -21,10 +21,27 @@
                 
                     <form action="." method='post' autocomplete='off'>
                         {% csrf_token %}
-                        <h1>Situação Personalizada</h1>
-                        {{ Situation.as_p }}
+                        <h3>Situação Personalizada</h3>
+                        <!-- {{ Situation.as_p }} -->
+                          <div class="row">
+                            <label for="" class="">
+                                {{Situation.name_Situation.label}}
+                            </label>
+                            <div>
+                                {{Situation.name_Situation}}
+                            </div>
+                          </div>
+
+                          <div class="row">
+                            <label for="" class="">
+                                {{Situation.is_Active.label}}
+                            </label>
+                            <div>
+                                {{Situation.is_Active}}
+                            </div>
+                          </div>
             
-                        <button Type='submit'>Cadastrar</button>     
+                        <button Type='submit' class="btn bg-adapted">Cadastrar</button>     
                     </form>
                 </div>
             </div>

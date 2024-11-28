@@ -1,3 +1,4 @@
+
 from django import forms
 from .models import *
 
@@ -5,6 +6,14 @@ class SituationModelForm(forms.ModelForm):
     class Meta:
         model = Situation
         fields = "__all__"
+        widgets = {
+            'name_Situation' : forms.TextInput(
+                attrs = {
+                    'class':'form-control row'
+                }
+            )
+        }
+
 
     def __init__(self, *args, **kwargs):
         super(SituationModelForm, self).__init__(*args, **kwargs)
@@ -41,8 +50,9 @@ class ProductModelForm(forms.ModelForm):
             'description':forms.Textarea(attrs={
                 'class':'form-control  row text-area'
             }),
-             'product_code':forms.TextInput(attrs={
-                'class':'form-control row'
+            'number':forms.NumberInput(attrs={
+                'class':'form-control ',
+                'placeholder':'0'
             }),
             'barcode':forms.TextInput(attrs={
                 'class':'form-control row'
@@ -110,22 +120,43 @@ class SupplierModelForm(forms.ModelForm):
             })
         }
 
-# WorkPhone = models.CharField('WorkPhone', max_length=100)
-#     PersonalPhone = models.CharField('PersonalPhone', max_length=100)
-#     isActive = models.BooleanField('isActive', max_length=100)
-#     site = models.CharField('site', max_length=100,null=True, blank=True)
-#     salesman = models.CharField('salesman', max_length=100,null=True, blank=True)
-#     # creditLimit = models.DecimalField('creditLimit', max_length=100, decimal_places=2, max_digits=10)
-#     creditLimit = models.PositiveIntegerField('creditLimit', max_length=100)
+class ProductModelForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields =  "__all__"
+        widgets= {
+            'description':forms.Textarea(attrs={
+                'class':'form-control  row text-area'
+            }),
+             'product_code':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'barcode':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'unit_of_measure':forms.TextInput(attrs={
+                'class' :'form-control row'
+            }),
+            'brand':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'cost_of_product':forms.NumberInput(attrs={
+                'class':'form-control row'
+            }),
+            'selling_price':forms.NumberInput(attrs={
+                'class':'form-control row'
+            })
+        }
+    def __init__(self, *args, **kwargs):
+        super(ProductModelForm, self).__init__(*args, **kwargs)
 
-#     id_FisicPerson_fk = models.OneToOneField ('FisicPerson', on_delete=models.CASCADE,null=True, blank=True)
-#     id_LegalPerson_fk = models.OneToOneField ('LegalPerson', on_delete=models.CASCADE,null=True, blank=True)
-#     id_ForeignPerson_fk = models.OneToOneField ('ForeignPerson', on_delete=models.CASCADE,null=True, blank=True)
+        # Desabilita o campo 'current_quantity' se for uma atualização
+        if self.instance and self.instance.pk:
+            self.fields['current_quantity'].disabled = True
+            # self.fields['current_quantity'].widget.attrs['readonly'] = True
 
 
-
-
-class PersonForm(forms.ModelForm):
+class ClientForm(forms.ModelForm):
     class Meta:
         model = Person
         fields = ['PersonalPhone', 'WorkPhone', 'isActive', 'site', 'salesman','creditLimit']
@@ -152,9 +183,53 @@ class PersonForm(forms.ModelForm):
             }),
         }
 
+class CombinedForm(forms.Form):
+    address_instance = None
+    fisic_person_instance = None
+    client_instance = None
+    address_form = None
+    fisic_person_form = None
+    client_form = None
 
-class PersonSearchForm(forms.Form):
-    search = forms.CharField(max_length=100, required=False, label="Pesquisar Pessoa")
+    def __init__(self, *args, **kwargs):
+        # Pega as instâncias de modelo para os subformulários
+        self.address_instance = kwargs.pop('address_instance', None)
+        self.fisic_person_instance = kwargs.pop('fisic_person_instance', None)
+        self.client_instance = kwargs.pop('client_instance', None)
+
+        # Inicializa o super()
+        super().__init__(*args, **kwargs)
+
+        # Cria os subformulários com as instâncias passadas, se existirem
+        self.address_form = AddressForm(prefix="address", instance=self.address_instance, data=self.data if self.is_bound else None)
+        self.fisic_person_form = FisicPersonForm(prefix="fisic_person", instance=self.fisic_person_instance, data=self.data if self.is_bound else None)
+        self.client_form = ClientForm(prefix="client", instance=self.client_instance, data=self.data if self.is_bound else None)
+
+    def save(self):
+        # Salva o endereço (se houver alterações)
+        print("Entrei no save de boas")
+        print("Entrei no save de boas")
+        print("Entrei no save de boas")
+        address = self.address_form.save()
+        print("passei do address")
+        # Salva a pessoa física (se houver alterações)
+        fisic_person = self.fisic_person_form.save(commit=False)
+        print("passei do fisic_person")
+        fisic_person.id_address_fk = address
+        fisic_person.save()
+
+        # Salva o cliente (se houver alterações)
+        print("passei do fisic_person save")
+        print(self.client_form)
+        client = self.client_form.save(commit=False)
+        print("passei do client")
+        client.endereco = address
+        client.pessoa_fisica = fisic_person
+        client.save()
+        print("passei do client save")
+
+class ClientSearchForm(forms.Form):
+    search = forms.CharField(max_length=100, required=False, label="Pesquisar Cliente")
 
 # class VendaForm(forms.ModelForm):
 #     class Meta:
@@ -244,25 +319,25 @@ class PersonSearchForm(forms.Form):
 
 #         return cleaned_data
 
-# class VendaForm(forms.ModelForm):
-#     class Meta:
-#         model = Venda
-#         fields = ['data_da_venda',  'pessoa', 'situacao', 'is_active','observacao_pessoas', 'observacao_sistema']
+class VendaForm(forms.ModelForm):
+    class Meta:
+        model = Venda
+        fields = ['data_da_venda',  'pessoa', 'situacao', 'is_active','observacao_pessoas', 'observacao_sistema']
 
-#     def __init__(self, *args, **kwargs):
-#         super(VendaForm, self).__init__(*args, **kwargs)
-#         if self.instance and self.instance.pk:
-#             self.fields['data_da_venda'].initial = self.instance.data_da_venda
-#             self.fields['data_da_venda'].widget.attrs['readonly'] = True
+    def __init__(self, *args, **kwargs):
+        super(VendaForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            self.fields['data_da_venda'].initial = self.instance.data_da_venda
+            self.fields['data_da_venda'].widget.attrs['readonly'] = True
 
-# class VendaItemForm(forms.ModelForm):
-#     class Meta:
-#         model = VendaItem
-#         fields = ['product', 'quantidade', 'preco_unitario']
+class VendaItemForm(forms.ModelForm):
+    class Meta:
+        model = VendaItem
+        fields = ['product', 'quantidade', 'preco_unitario']
 
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.fields['product'].queryset = Product.objects.all()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['product'].queryset = Product.objects.all()
 
 #     def clean(self):
 #         cleaned_data = super().clean()
@@ -284,10 +359,10 @@ class PersonSearchForm(forms.Form):
 #         venda.total = total
 #         venda.save()
 
-# class PaymentMethodVendaForm(forms.ModelForm):
-#     class Meta:
-#         model = PaymentMethod_Venda
-#         fields = ['forma_pagamento', 'expirationDate', 'valor']
+class PaymentMethodVendaForm(forms.ModelForm):
+    class Meta:
+        model = PaymentMethod_Venda
+        fields = ['forma_pagamento', 'expirationDate', 'valor']
 
 class PaymentMethodCompraForm(forms.ModelForm):
     class Meta:
