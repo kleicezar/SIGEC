@@ -67,7 +67,14 @@ class Person(models.Model):
     id_ForeignPerson_fk = models.OneToOneField ('ForeignPerson', on_delete=models.CASCADE,null=True, blank=True, db_column='id_ForeignPerson_fk')
 
     def __str__(self):
-        return self.fantasyName
+        if self.id_FisicPerson_fk != None:
+            return self.id_FisicPerson_fk.name
+        elif self.id_LegalPerson_fk != None:
+            return self.id_LegalPerson_fk.fantasyName
+        elif self.id_ForeignPerson_fk != None:
+            return self.id_ForeignPerson_fk.name_foreigner
+        else:
+            return None
     
 # no cadastro de clientes/fornecedores todos os campos is_(alguma função) serao respectivamente
 # is_client                 1

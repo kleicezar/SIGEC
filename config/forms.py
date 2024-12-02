@@ -42,146 +42,146 @@ class PositionModelForm(forms.ModelForm):
 
 # **--**
 
-class ProductModelForm(forms.ModelForm):
-    class Meta:
-        model = Product
-        fields =  "__all__"
-        widgets= {
-            'description':forms.Textarea(attrs={
-                'class':'form-control  row text-area'
-            }),
-            'number':forms.NumberInput(attrs={
-                'class':'form-control ',
-                'placeholder':'0'
-            }),
-            'barcode':forms.TextInput(attrs={
-                'class':'form-control row'
-            }),
-            'unit_of_measure':forms.TextInput(attrs={
-                'class' :'form-control row'
-            }),
-            'brand':forms.TextInput(attrs={
-                'class':'form-control row'
-            }),
-            'cost_of_product':forms.NumberInput(attrs={
-                'class':'form-control row'
-            }),
-            'selling_price':forms.NumberInput(attrs={
-                'class':'form-control row'
-            })
-        }
-    def __init__(self, *args, **kwargs):
-        super(ProductModelForm, self).__init__(*args, **kwargs)
+# class ProductModelForm(forms.ModelForm):
+#     class Meta:
+#         model = Product
+#         fields =  "__all__"
+#         widgets= {
+#             'description':forms.Textarea(attrs={
+#                 'class':'form-control  row text-area'
+#             }),
+#             'product_code':forms.NumberInput(attrs={
+#                 'class':'form-control ',
+#                 'placeholder':'0'
+#             }),
+#             'barcode':forms.TextInput(attrs={
+#                 'class':'form-control row'
+#             }),
+#             'unit_of_measure':forms.TextInput(attrs={
+#                 'class' :'form-control row'
+#             }),
+#             'brand':forms.TextInput(attrs={
+#                 'class':'form-control row'
+#             }),
+#             'cost_of_product':forms.NumberInput(attrs={
+#                 'class':'form-control row'
+#             }),
+#             'selling_price':forms.NumberInput(attrs={
+#                 'class':'form-control row'
+#             })
+#         } 
+#     def __init__(self, *args, **kwargs):
+#         super(ProductModelForm, self).__init__(*args, **kwargs)
 
-        # Desabilita o campo 'current_quantity' se for uma atualização
-        if self.instance and self.instance.pk:
-            self.fields['current_quantity'].disabled = True
-            # self.fields['current_quantity'].widget.attrs['readonly'] = True
+#         # Desabilita o campo 'current_quantity' se for uma atualização
+#         if self.instance and self.instance.pk:
+#             self.fields['current_quantity'].disabled = True
+#             # self.fields['current_quantity'].widget.attrs['readonly'] = True
+
+# class ProductModelForm(forms.ModelForm):
+#     class Meta:
+#         model = Product
+#         fields =  "__all__"
+#         widgets= {
+#             'description':forms.Textarea(attrs={
+#                 'class':'form-control  row text-area'
+#             }),
+#              'product_code':forms.TextInput(attrs={
+#                 'class':'form-control row'
+#             }),
+#             'barcode':forms.TextInput(attrs={
+#                 'class':'form-control row'
+#             }),
+#             'unit_of_measure':forms.TextInput(attrs={
+#                 'class' :'form-control row'
+#             }),
+#             'brand':forms.TextInput(attrs={
+#                 'class':'form-control row'
+#             }),
+#             'cost_of_product':forms.NumberInput(attrs={
+#                 'class':'form-control row'
+#             }),
+#             'selling_price':forms.NumberInput(attrs={
+#                 'class':'form-control row'
+#             })
+#         }
+#     def __init__(self, *args, **kwargs):
+#         super(ProductModelForm, self).__init__(*args, **kwargs)
+
+#         # Desabilita o campo 'current_quantity' se for uma atualização
+#         if self.instance and self.instance.pk:
+#             self.fields['current_quantity'].disabled = True
+#             # self.fields['current_quantity'].widget.attrs['readonly'] = True
 
 # **-**
 
-class SupplierModelForm(forms.ModelForm):
-    class Meta:
-        model = Person
-        fields =  "__all__"
-        # fields = ["PersonalPhone",'WorkPhone','site','isActive','salesman',"creditLimit"]
-        widgets = {
-            'fantasyName':forms.TextInput(attrs={
-                'class':'form-control row',
-                'placeholder':'Teste'
-            }),
-            'cnpj':forms.TextInput(attrs={
-                'class':'form-control',
-                'placeholder':'__.___.___/____-__'
-            }),
-            'socialReason':forms.TextInput(attrs={
-                'class':'form-control row',
-            }),
-            'StateRegistration':forms.TextInput(attrs={
-                'class':'form-control row'
-            }),
-            'typeOfTaxpayer':forms.TextInput(attrs={
-                'class':'form-control row',
-            }),
-            'MunicipalRegistration':forms.TextInput(attrs={
-                'class':'form-control row',
-            }),
-            'suframa':forms.TextInput(attrs={
-                'class':'form-control row',
-            }),
-            'PersonalPhone':forms.TextInput(attrs={
-                'class':'form-control row'
-            }),
-            'Responsible':forms.TextInput(attrs={
-                'class':'form-control row'
-            }),
-            'isActive':forms.TextInput(attrs={
-                'class':'form-control row'
-            })
-        }
-
-class ProductModelForm(forms.ModelForm):
-    class Meta:
-        model = Product
-        fields =  "__all__"
-        widgets= {
-            'description':forms.Textarea(attrs={
-                'class':'form-control  row text-area'
-            }),
-             'product_code':forms.TextInput(attrs={
-                'class':'form-control row'
-            }),
-            'barcode':forms.TextInput(attrs={
-                'class':'form-control row'
-            }),
-            'unit_of_measure':forms.TextInput(attrs={
-                'class' :'form-control row'
-            }),
-            'brand':forms.TextInput(attrs={
-                'class':'form-control row'
-            }),
-            'cost_of_product':forms.NumberInput(attrs={
-                'class':'form-control row'
-            }),
-            'selling_price':forms.NumberInput(attrs={
-                'class':'form-control row'
-            })
-        }
-    def __init__(self, *args, **kwargs):
-        super(ProductModelForm, self).__init__(*args, **kwargs)
-
-        # Desabilita o campo 'current_quantity' se for uma atualização
-        if self.instance and self.instance.pk:
-            self.fields['current_quantity'].disabled = True
-            # self.fields['current_quantity'].widget.attrs['readonly'] = True
+# class SupplierModelForm(forms.ModelForm):
+#     class Meta:
+#         model = Person
+#         fields =  "__all__"
+#         # fields = ["PersonalPhone",'WorkPhone','site','isActive','salesman',"creditLimit"]
+#         widgets = {
+#             'fantasyName':forms.TextInput(attrs={
+#                 'class':'form-control row',
+#                 'placeholder':'Teste'
+#             }),
+#             'cnpj':forms.TextInput(attrs={
+#                 'class':'form-control',
+#                 'placeholder':'__.___.___/____-__'
+#             }),
+#             'socialReason':forms.TextInput(attrs={
+#                 'class':'form-control row',
+#             }),
+#             'StateRegistration':forms.TextInput(attrs={
+#                 'class':'form-control row'
+#             }),
+#             'typeOfTaxpayer':forms.TextInput(attrs={
+#                 'class':'form-control row',
+#             }),
+#             'MunicipalRegistration':forms.TextInput(attrs={
+#                 'class':'form-control row',
+#             }),
+#             'suframa':forms.TextInput(attrs={
+#                 'class':'form-control row',
+#             }),
+#             'PersonalPhone':forms.TextInput(attrs={
+#                 'class':'form-control row'
+#             }),
+#             'Responsible':forms.TextInput(attrs={
+#                 'class':'form-control row'
+#             }),
+#             'isActive':forms.TextInput(attrs={
+#                 'class':'form-control row'
+#             })
+#         }
 
 
-class ClientForm(forms.ModelForm):
-    class Meta:
-        model = Person
-        fields = ['PersonalPhone', 'WorkPhone', 'isActive', 'site', 'salesman','creditLimit']
-        widgets = {
-            'PersonalPhone':forms.TextInput(attrs={
-                'class':'form-control ',
-                'placeholder':'XX XXXXX-XXXX'
-            }),
-            'WorkPhone':forms.TextInput(attrs={
-                'class':'form-control ',
-                'placeholder':''
-            }),
-            'isActive':forms.TextInput(attrs={
-                'class':'form-control',
-                'placeholder':'Ativo'
-            }),
-            'site':forms.TextInput(attrs={
-                'class':'form-control',
-                'placeholder':'Digite o site'
-            }),
-            'creditLimit':forms.NumberInput(attrs={
-                'class':'form-control ',
-                'placeholder':'200'
-            }),
-        }
+# class ClientForm(forms.ModelForm):
+#     class Meta:
+#         model = Person
+#         fields = ['PersonalPhone', 'WorkPhone', 'isActive', 'site', 'salesman','creditLimit']
+#         widgets = {
+#             'PersonalPhone':forms.TextInput(attrs={
+#                 'class':'form-control ',
+#                 'placeholder':'XX XXXXX-XXXX'
+#             }),
+#             'WorkPhone':forms.TextInput(attrs={
+#                 'class':'form-control ',
+#                 'placeholder':''
+#             }),
+#             'isActive':forms.TextInput(attrs={
+#                 'class':'form-control',
+#                 'placeholder':'Ativo'
+#             }),
+#             'site':forms.TextInput(attrs={
+#                 'class':'form-control',
+#                 'placeholder':'Digite o site'
+#             }),
+#             'creditLimit':forms.NumberInput(attrs={
+#                 'class':'form-control ',
+#                 'placeholder':'200'
+#             }),
+#         }
 
 # class CombinedForm(forms.Form):
 #     address_instance = None
@@ -366,29 +366,29 @@ class ClientForm(forms.ModelForm):
 #         model = PaymentMethod_Venda
 #         fields = ['forma_pagamento', 'expirationDate', 'valor']
 
-class PaymentMethodCompraForm(forms.ModelForm):
-    class Meta:
-        model = PaymentMethod_Compra
-        fields = ['forma_pagamento', 'expirationDate', 'valor']
+# class PaymentMethodCompraForm(forms.ModelForm):
+#     class Meta:
+#         model = PaymentMethod_Compra
+#         fields = ['forma_pagamento', 'expirationDate', 'valor']
 
 
-class CompraForm(forms.ModelForm):
-    class Meta:
-        model = Compra
-        fields = ['data_da_compra', 'fornecedor', 'situacao'] 
+# class CompraForm(forms.ModelForm):
+#     class Meta:
+#         model = Compra
+#         fields = ['data_da_compra', 'fornecedor', 'situacao'] 
 
-class CompraItemForm(forms.ModelForm):
-    class Meta:
-        model = CompraItem
-        fields = ['produto', 'quantidade', 'preco_unitario']
+# class CompraItemForm(forms.ModelForm):
+#     class Meta:
+#         model = CompraItem
+#         fields = ['produto', 'quantidade', 'preco_unitario']
 
-    def clean(self):
-        cleaned_data = super().clean()
-        preco_unitario = cleaned_data.get('preco_unitario')
-        quantidade = cleaned_data.get('quantidade')
-        if preco_unitario and quantidade:
-            cleaned_data['total'] = preco_unitario * quantidade
-        return cleaned_data
+#     def clean(self):
+#         cleaned_data = super().clean()
+#         preco_unitario = cleaned_data.get('preco_unitario')
+#         quantidade = cleaned_data.get('quantidade')
+#         if preco_unitario and quantidade:
+#             cleaned_data['total'] = preco_unitario * quantidade
+#         return cleaned_data
 
 
 
