@@ -1,5 +1,5 @@
 {% extends 'login/menu.html' %}
-{% load bootstrap4 %}
+<!-- {% load bootstrap4 %} -->
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -18,74 +18,78 @@
         {% block content %}
         <div class='content'>
             <div class='center'>
-                <h2>{% if venda.pk %}Editar{% else %}Criar{% endif %} Venda</h2>
+                <h4>{% if venda.pk %}Editar{% else %}Criar{% endif %} Venda</h4>
 
                 <form method="post">
                     {% csrf_token %}
                 
                     <!-- Formulário de Venda -->
-                    <h3>Dados da Venda</h3>
-                    {{ venda_form.as_p }}
-                    
-                    <!-- <div class="row"> -->
-                        <!-- <label for="">{{venda_form.pessoa.label}}</label> -->
-                        <!-- <input type="text" id="field-client"> -->
-                        <!-- <select id="selection">
-                            {% for pessoa in venda_form.pessoa.field.queryset %}
-                            <option class="option">{{pessoa}}</button> -->
-                            <!-- <button>{{venda_form.pessoa}}</button> -->
-                        <!-- </ul> -->
-                        <!-- {% endfor %} -->
-                    <!-- </div> -->
-                    
-
-                    <!-- <table class="table">
+                    <h5>Dados da Venda</h5>
+                    <!-- {{ venda_form.as_p }} -->
+                    <table class="table">
                         <thead>
-                          <tr>
-                            
-                            <th scope="col">Pessoa</th>
-                            <th scope="col">Situação</th>
-                            <th scope="col">Ativo</th>
-                            <th scope="col">Data da Venda</th>
-                          </tr>
+                            <tr>
+                                <th scope="col">
+                                    Pessoa
+                                </th>
+                                <th scope="col">
+                                    Data da Venda
+                                </th>
+                                <th scope="col">
+                                    Situação
+                                </th>
+                                <th>
+                                    Ativo
+                                </th>
+                            </tr>
                         </thead>
-                        <tbody>
-                          <tr>
-                            <td style="background-color: #291686">
-                                <input type="text" id="field-client">
-                                <select id="selection">
-                                    {% for pessoa in venda_form.pessoa.field.queryset %}
-                                    <option class="option">{{pessoa}}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                            <td style="background-color: #291686">
-                                <div>
-                                    <input type="text" >
-                                </div>
 
-                            </td>
-                            <td style="background-color:#291686">
-                                <div>
-                                    <div class="col">
-                                        {{venda_form.is_active}}
-                                    </div>
-                                   
-                                    <div class="col">Ativo</div>
-                                </div>
-                            </td>
-                            <td style="background-color: #291686">
-                                {{venda_form.data_da_venda}}
-                            </td>
-                          </tr>
-                          
-                          
+                        <tbody>
+                            <tr>
+                                <td> 
+                                    <!-- <div class="row"> -->
+                                    <!-- <label for="">{{venda_form.pessoa.label}}</label>  -->
+                                    <input type="text" id="field-client" class="form-control ">
+                                    <select id="selection">
+                                       {% for pessoa in venda_form.pessoa.field.queryset %}
+                                       <option class="option">{{pessoa}}</option> 
+                                        <!-- <button>{{venda_form.pessoa}}</button> --> 
+                                    </select> 
+                                   {% endfor %}
+                                    <!-- </div>  -->
+                                </td>
+                                <!-- {% for venda  in venda_form.as_p} -->
+                                <td>{{venda_form.data_da_venda}}</td>
+                                <td>{{venda_form.situacao}}</td>
+                                <td>{{venda_form.is_active}}</td>
+                            </tr>
                         </tbody>
-                      </table>  -->
+                    </table>
+                    <div class="row">
+                        <div class="col">
+                            <label for="">{{venda_form.observacao_pessoas.label}}</label>
+                            {{venda_form.observacao_pessoas}}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <label for="">{{venda_form.observacao_sistema.label}}</label>
+                            {{venda_form.observacao_sistema}}
+                        </div>
+                    </div>
+
+                    <!-- <div class="row">
+                        <div class="col">
+                            <label for="">{{venda_form.total.label}}</label>
+                            {{venda_form}}
+                        </div>
+                    </div> -->
+                    
 
                     <!-- Itens de Venda -->
-                    <h3>Itens de Venda</h3>
-                    <div id="itens-container">
+                    <h5>Itens de Venda</h5>
+                    <div id="itens-container">      
                         {{ venda_item_formset.management_form }}
                         {% for form in venda_item_formset %}
                             <div class="item-form">
@@ -102,14 +106,40 @@
                                             <th scope="col">
                                                 Preço Unitário
                                             </th>
+                                            <th scope="col">
+                                                Desconto(%)
+                                            </th>
+                                            <th scope="col">
+                                                Valor Total
+                                            </th>
+                                            <th scope="col">
+                                                Ações
+                                            </th>
                                         </tr>
                                     </thead>
 
-                                    <tbody>
+                                    <tbody class="itens">
                                         <tr>
                                             <td>{{form.product}}</td>
-                                            <td>{{form.quantidade}}</td>
-                                            <td>{{form.preco_unitario}}</td>
+                                            <td>
+                                                {{form.quantidade}}
+                                                <!-- <input type="number" class="form-control mount" value="{{form.quantidade}}"> -->
+                                            </td>
+                                            <td>
+                                                {{form.preco_unitario}}
+                                                <!-- <input type="number" class="form-control price" value="{{form.preco_unitario}}"> -->
+                                            </td>
+                                            <td>
+                                                <input type="number" class="form-control row descont">
+                                            </td>
+                                            <td>
+                                                <input type="number" class="form-control row totalValue" readonly>
+                                            </td>
+                                            <td>
+                                                <!-- <label for="">Deletar</label> -->
+                                                <button class="btn btn-danger delete" >Deletar</button>
+                                                <!-- {{form.DELETE}} -->
+                                            </td>
                                         </tr>
                                     </tbody>
                                   </table>
@@ -126,20 +156,38 @@
                                 </thead>
 
                                 <tbody>
-                                    <tr>
+                                    <tr >
                                         <td>{{ venda_item_formset.empty_form.product }}</td>
-                                        <td>{{venda_item_formset.empty_form.quantidade}}</td>
-                                        <td>{{venda_item_formset.empty_form.preco_unitario}}</td>
+                                        <td>
+                                            {{venda_item_formset.empty_form.quantidade}}
+                                            <!-- <input type="number" class="form-control mount" value="{{venda_item_formset.empty_form.quantidade}}"> -->
+                                        </td>
+                                
+                                        <td>
+                                            {{venda_item_formset.empty_form.preco_unitario}}
+                                            <!-- <input type="number" class="form-control mount" value="{{venda_item_formset.empty_form.preco_unitario}}"> -->
+                                        </td>
+
+                                        <td>
+                                            <input type="number" class="form-control row descont">
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control row totalValue">
+                                        </td>
+                                        <td>
+                                            <!-- <label for="">Deletar</label> -->
+                                            <!-- {{venda_item_formset.empty_form.DELETE}}</td> -->
+                                            <button class="btn btn-danger delete">Deletar</button>
                                     </tr>
                                 </tbody>
                               </table>
                             <!-- {{ venda_item_formset.empty_form.as_p }} -->
                         </div>
                     </template>
-                    <button type="button" onclick="addItem()" class="btn btn-success">Adicionar Item</button>
+                    <button id="item" type="button" onclick="addItem()" class="btn btn-outline-success mb-5">Adicionar Item</button>
                 
                     <!-- Formas de Pagamento -->
-                    <h3>Formas de Pagamento</h3>
+                    <h5>Formas de Pagamento</h5>
                     <div id="payment-method-container">
                         {{ payment_method_formset.management_form }}
                         {% for form in payment_method_formset %}
@@ -156,6 +204,9 @@
                                             <th scope="col">
                                                 Valor
                                             </th>
+                                            <th scol="col">
+                                                Ações
+                                            </th>
                                         </tr>
                                     </thead>
 
@@ -164,15 +215,22 @@
                                             <td>{{form.forma_pagamento}}</td>
                                             <td>{{form.expirationDate}}</td>
                                             <td>{{form.valor}}</td>
+                                            <td>
+                                                <label for="">Deletar</label>
+                                                {{form.DELETE}}</td>
                                         </tr>
                                     </tbody>
                                   </table>
                             </div>
                         {% endfor %}
                     </div>
-                    <button type="button" onclick="addPaymentMethod()" class="btn btn-success">Adicionar Forma de Pagamento</button>
-                
-                    <button type="submit">Salvar Venda</button>
+                    <button type="button" onclick="addPaymentMethod()" class="btn btn-outline-success mb-5">Adicionar Forma de Pagamento</button>
+                    
+                    <div class="row">
+                        <div class="col text-end">
+                            <button  type="submit" class="btn bg-adapted">SALVAR VENDA</button>
+                        </div>
+                    </div>
                 </form>
                 
             </div>
@@ -194,11 +252,15 @@
                         </tr>
                     </thead>
 
-                    <tbody>
+                    <tbody> 
                         <tr>
                             <td>{{ payment_method_formset.empty_form.forma_pagamento }}</td>
                             <td>{{payment_method_formset.empty_form.expirationDate}}</td>
                             <td>{{payment_method_formset.empty_form.valor}}</td>
+                            <td>
+                                <label for="">Deletar</label>
+                                {{payment_method_formset.empty_form.DELETE}}
+                            </td>
                         </tr>
                     </tbody>
                   </table>
