@@ -17,6 +17,12 @@
         <main >
             {% bootstrap_messages %}
             {% block content %}
+            <select id="formSelect" onchange="mostrarFormulario()">
+                <option value="">Selecione um formulário</option>
+                <option value="FisicPerson">Pessoal Fisica</option>
+                <option value="LegalPerson">Pessoal Jusidica</option>
+                <option value="Foreigner">Estrangeiro</option>
+            </select>
             <div class='content'>
                 <div >
                     <form method="post" class="col">

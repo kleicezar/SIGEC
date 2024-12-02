@@ -4,8 +4,8 @@ from .views import *
 
 urlpatterns = [
 
-    # path('clients/', client_list, name='Client'),
-    # path('create/client/', create_client, name='create_client'),
+    path('prsn/', client_list, name='Client'),
+    path('c/prsn/', Client_Create, name='Client_Create'),
     # path('client/update/<int:id_client>/', update_client, name='update_client'),  # Atualizar cliente
     # path('client/delete/<int:id_client>/', delete_client, name='delete_client'),
 

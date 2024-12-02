@@ -17,7 +17,8 @@ class AddressForm(forms.ModelForm):
             'cep':forms.TextInput(attrs={
                 'class':'form-control ',
                 'onblur':"pesquisacep(this.value);",
-                'mask-cep':"00000-000"
+                'mask-cep':"00000-000",
+                'placeholder':"00000-000"
             }),
             'neighborhood':forms.TextInput(attrs={
                 'class':'form-control ',
@@ -84,6 +85,22 @@ class FisicPersonForm(forms.ModelForm):
         super().__init__(*args, **kargs)
         self.fields['dateOfBirth'].widget.attrs.update({'class': 'mask-date'})
         self.fields['cpf'].widget.attrs.update({'class': 'mask-cpf'})
+
+class PersonForm(forms.ModelForm):
+    class Meta:
+        model = Person
+        fields = ['WorkPhone', 'PersonalPhone', 'site', 'salesman', 'creditLimit' ] # 'isActive','is_client', 'is_supllier', 'is_user', 'is_employee', 'is_former_employee', 'is_carrier', 'is_delivery_man', 'is_technician'
+
+        widgets = {
+        }
+
+    
+    def __init__(self, *args, **kargs):
+        super().__init__(*args, **kargs)
+
+class ClientSearchForm(forms.Form):
+    search = forms.CharField(max_length=100, required=False, label="Pesquisar Cliente")
+
 
 # class CombinedForm(forms.Form):
 #     address_instance = None
