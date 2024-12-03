@@ -12,7 +12,7 @@ from .models import *
 @login_required
 def venda_list(request):
     vendas = Venda.objects.all()
-    return render(request, 'config/venda_list.html', {'vendas': vendas})
+    return render(request, 'sale/venda_list.html', {'vendas': vendas})
 
     # 
     # @login_requiredCriar uma nova Venda
@@ -24,7 +24,7 @@ def venda_list(request):
     #             return redirect('venda_list')  # Redireciona para a lista de vendas
     #     else:
     #         form = VendaForm()
-    #     return render(request, 'config/venda_form.html', {'form': form})
+    #     return render(request, 'sale/venda_form.html', {'form': form})
 
 
     # 
@@ -50,7 +50,7 @@ def venda_list(request):
     #         venda_form = VendaForm()
     #         venda_items = [VendaItemForm(prefix=f"item_{i}") for i in range(1)]  # Campos iniciais
 
-    #     return render(request, 'config/venda_form.html', {'venda_form': venda_form, 'venda_items': venda_items})
+    #     return render(request, 'sale/venda_form.html', {'venda_form': venda_form, 'venda_items': venda_items})
 
 @login_required
 def venda_create(request):
@@ -122,7 +122,7 @@ def venda_create(request):
         'venda_item_formset': venda_item_formset,
         'payment_method_formset': payment_method_formset
     }
-    return render(request, 'config/venda_form.html', context)
+    return render(request, 'sale/venda_form.html', context)
 
 @login_required
 def venda_update(request, pk):
@@ -162,7 +162,7 @@ def venda_update(request, pk):
         'venda': venda,
     }
 
-    return render(request, 'config/venda_form.html', context)
+    return render(request, 'sale/venda_form.html', context)
 
 @login_required# Deletar uma Venda
 def venda_delete(request, pk):
@@ -194,4 +194,4 @@ def venda_item_create(request, venda_pk):
             return redirect('venda_detail', pk=venda.pk)  # Redireciona para os detalhes da venda
     else:
         form = VendaItemForm()
-    return render(request, 'config/venda_item_form.html', {'form': form, 'venda': venda})
+    return render(request, 'sale/venda_item_form.html', {'form': form, 'venda': venda})

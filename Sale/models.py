@@ -1,6 +1,7 @@
 from django.db import models
 from Registry.models import *
-from config.models import Situation, PaymentMethod, Product
+from config.models import Situation, PaymentMethod
+from purchase.models import Product
 
 class Venda(models.Model):
     pessoa = models.ForeignKey(Person,on_delete=models.CASCADE,verbose_name="Pessoa",related_name="vendas")

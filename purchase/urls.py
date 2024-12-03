@@ -1,0 +1,16 @@
+from django.contrib import admin
+from django.urls import path
+from .views import *
+
+urlpatterns = [
+    path('Sdct/', product, name='Product'),
+    path('SdctForm/', productForm, name='ProductForm'),
+    path('Sdct/upt/<int:id_product>/', updateProduct, name='updateProduct'),
+    path('Sdct/dlt/<int:id_product>/', deleteProduct, name='deleteProduct'),
+
+    path('compras/', compras_list, name='compras_list'),
+    path('compras/create/', compras_create, name='compras_create'),
+    path('compras/update/<int:pk>/', compras_update, name='compras_update'),
+    path('compras/delete/<int:pk>/', compras_delete, name='compras_delete'),
+    path('compras/<int:compras_pk>/item/create/', compras_item_create, name='compras_item_create'),
+]
