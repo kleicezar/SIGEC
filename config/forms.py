@@ -145,7 +145,33 @@ class ProductModelForm(forms.ModelForm):
             }),
             'selling_price':forms.NumberInput(attrs={
                 'class':'form-control row'
+            }),
+            'ncm':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'csosn':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'cfop':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'current_quantity':forms.NumberInput(attrs={
+                'class':'form-control row',
+                'step':1,
+                'min':0
+
+            }),
+            'maximum_quantity':forms.NumberInput(attrs={
+                'class':'form-control row',
+                'step':1,
+                'min':0
+            }),
+            'minimum_quantity':forms.NumberInput(attrs={
+                'class':'form-control row',
+                'step':1,
+                'min':0
             })
+        
         }
     def __init__(self, *args, **kwargs):
         super(ProductModelForm, self).__init__(*args, **kwargs)

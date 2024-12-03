@@ -17,12 +17,12 @@
             {% bootstrap_messages %}
             {% block content %}
             <div class='content'>
-                <div class=''>
+                <!-- <div class=''> -->
                 
-                    <!-- <h4>{% if form.instance.pk %}Editar Produto{% else %}Adicionar Produto{% endif %}</h4> -->
-                    <form method="post">
+                    <h4 class="">{% if form.instance.pk %}Editar Produto{% else %}Adicionar Produto{% endif %}</h4>
+                    <form method="post" class="col">
                         {% csrf_token %}
-                        <h4 class="mt-5 c-adapted">{% if form.instance.pk %}Editar Produto{% else %}Adicionar Produto{% endif %}</h4>
+                        <!-- <h4 class="mt-5 c-adapted">{% if form.instance.pk %}Editar Produto{% else %}Adicionar Produto{% endif %}</h4> -->
                         <!-- {{ form.as_p }} -->
                         <div class="row mt-5 mb-5">
                             <fieldset>
@@ -69,12 +69,12 @@
 
                                 <div class="form-margin row">
 
-                                    <div class="col">
+                                    <div class="col-3">
                                         <label  for="" class="">{{form.cost_of_product.label}}</label>
                                         {{form.cost_of_product}}
                                     </div>
 
-                                    <div class="col">
+                                    <div class="col-3">
                                         
                                     <label for="" class="">{{form.selling_price.label}}</label>
                                     {{form.selling_price}}
@@ -110,21 +110,21 @@
 
                                 <div class="form-margin row">
 
-                                    <div class="col-4">
+                                    <div class="col-2">
 
                                         <label for="" class="">{{form.maximum_quantity.label}}</label>
                                         {{form.maximum_quantity}}  
 
                                     </div>
 
-                                    <div class="col-4">
+                                    <div class="col-2">
 
                                         <label for="" class="">{{form.current_quantity.label}}</label>
                                         {{form.current_quantity}}  
 
                                     </div>
 
-                                    <div class="col-4">
+                                    <div class="col-2">
 
                                         <label for="" class="">{{form.minimum_quantity.label}}</label>
                                         {{form.minimum_quantity}}  
@@ -155,20 +155,25 @@
 
                                 </div>
 
+
+                                
                             </fieldset>
+                            
                         </div>
 
                         <div class="row">
 
-                            <div class="col  text-end">
+                            <a href="{% url 'Product' %}">Voltar</a>
+
+                            <div class="col text-end">
                                 <button type="submit" class="btn bg-adapted ">Salvar</button>
                             </div>
 
                         </div>
                        
                     </form>
-                    <a href="{% url 'Product' %}">Voltar</a>
-                </div>
+                    <!-- <a href="{% url 'Product' %}">Voltar</a> -->
+                <!-- </div> -->
             </div>
             {% endblock %}
         </main>

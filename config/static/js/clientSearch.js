@@ -45,7 +45,7 @@ item_forms.forEach(itemForm=>{
     console.log(delet);
 
     item = itemForm.querySelector("tbody tr");
-            // console.log(item);
+    console.log(item);
             
     
     discount.addEventListener("input",()=>{
@@ -66,12 +66,13 @@ item_forms.forEach(itemForm=>{
 })
 
 const itemButton = document.getElementById("item");
+const itens = []
 itemButton.addEventListener('click',()=>{
     const new_item_forms = document.querySelectorAll('.item-form')
     let index = 0;
     new_item_forms.forEach(itemForm => {
         // if(index!=0){
-            let delet = itemForm.querySelector("td .delete");
+            // let delet = itemForm.querySelector("td .delete");
 
 
             // MONITORAR A ALTERAÇÃO DE VALORES PARA MUDAR O VALOR TOTAL
@@ -97,12 +98,12 @@ itemButton.addEventListener('click',()=>{
 
 
             // DELETAR UM ITEM 
-            delet.addEventListener("click",()=>{
-                console.log(delet);
-                item = itemForm.querySelector("tbody tr");
-                item.innerHTML = ' ';
-                console.log(item)
-            })
+            // delet.addEventListener("click",()=>{
+            //     console.log(delet);
+            //     item = itemForm.querySelector("tbody tr");
+            //     item.innerHTML = ' ';
+            //     console.log(item)
+            // })
 
         // }
         
@@ -111,9 +112,9 @@ itemButton.addEventListener('click',()=>{
        
     })
 
-// function deleteItem(){
+// // function deleteItem(){
 
-// }
+// // }
 
 
 

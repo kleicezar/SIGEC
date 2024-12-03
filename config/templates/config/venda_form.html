@@ -65,19 +65,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <div class="row">
-                        <div class="col">
-                            <label for="">{{venda_form.observacao_pessoas.label}}</label>
-                            {{venda_form.observacao_pessoas}}
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <label for="">{{venda_form.observacao_sistema.label}}</label>
-                            {{venda_form.observacao_sistema}}
-                        </div>
-                    </div>
+                    
 
                     <!-- <div class="row">
                         <div class="col">
@@ -138,7 +126,7 @@
                                             <td>
                                                 <!-- <label for="">Deletar</label> -->
                                                 <button class="btn btn-danger delete" >Deletar</button>
-                                                <!-- {{form.DELETE}} -->
+                                                {{ form.DELETE.as_hidden }}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -176,8 +164,10 @@
                                         </td>
                                         <td>
                                             <!-- <label for="">Deletar</label> -->
-                                            <!-- {{venda_item_formset.empty_form.DELETE}}</td> -->
+                                            
                                             <button class="btn btn-danger delete">Deletar</button>
+                                            {{venda_item_formset.empty_form.DELETE.as_hidden}}</td>
+                                            
                                     </tr>
                                 </tbody>
                               </table>
@@ -221,11 +211,26 @@
                                         </tr>
                                     </tbody>
                                   </table>
+                                  
                             </div>
                         {% endfor %}
                     </div>
                     <button type="button" onclick="addPaymentMethod()" class="btn btn-outline-success mb-5">Adicionar Forma de Pagamento</button>
                     
+
+                    <div class="row">
+                        <div class="col">
+                            <label for="">{{venda_form.observacao_pessoas.label}}</label>
+                            {{venda_form.observacao_pessoas}}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <label for="">{{venda_form.observacao_sistema.label}}</label>
+                            {{venda_form.observacao_sistema}}
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col text-end">
                             <button  type="submit" class="btn bg-adapted">SALVAR VENDA</button>
