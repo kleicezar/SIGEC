@@ -11,6 +11,7 @@
     {% endblock %}
     <title>{% if venda.pk %}Editar{% else %}Criar{% endif %} Venda</title>
     {% bootstrap_css %}
+    
 </head>
 <body>
     <main>
@@ -25,7 +26,7 @@
                 
                     <!-- Formulário de Venda -->
                     <h5>Dados da Venda</h5>
-                    <!-- {{ venda_form.as_p }} -->
+                    {{ venda_form.as_p }}
                     <table class="table">
                         <thead>
                             <tr>
@@ -65,6 +66,8 @@
                             </tr>
                         </tbody>
                     </table>
+                    <input type="text" id="nome_pesquisa" name="nome_pesquisa" placeholder="Pesquise um nome..." autocomplete="off">
+                    <ul id="suggestions" style="display:none; border: 1px solid #ccc; max-height: 200px; overflow-y: auto; padding: 0;"></ul>
                     
 
                     <!-- <div class="row">

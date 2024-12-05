@@ -119,3 +119,41 @@ itemButton.addEventListener('click',()=>{
 
 
 
+
+$(document).ready(function() {
+    $('#nome_pesquisa').on('keyup', function() {
+        let nome = $(this).val();
+        console.log(nome);
+
+        if (nome.length >= 2) {
+            $.ajax({
+                url: "buscar_pessoas",
+                data: { 'pessoa': nome },
+                dataType: 'json',
+                success: function(response) {
+                    const pessoas = response.pessoas;
+                    console.log(pessoas);
+                    const $resultados = $('#suggestions');
+                    $resultados.empty();
+
+                    if (pessoas.length > 0) {
+                        pessoas.forEach(pessoa => {
+                            $resultados.append(`<li>${pessoa.WorkPhone}</li>`);
+                        });
+                    } else {
+                        $resultados.append('<li>Nenhum usuário encontrado.</li>');
+                    }
+
+                    // Exibe as sugestões se houver resultados
+                    $resultados.show();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Erro na requisição:', error);
+                    alert('Ocorreu um erro ao buscar os usuários.');
+                }
+            });
+        } else {
+            $('#suggestions').hide();
+        }
+    });
+});

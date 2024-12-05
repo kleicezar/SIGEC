@@ -6,7 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from .forms import *
 from .models import *
-
+from django.http import JsonResponse
+from django.db.models import Q
 ### SALE
 
 @login_required
@@ -195,3 +196,14 @@ def venda_item_create(request, venda_pk):
     else:
         form = VendaItemForm()
     return render(request, 'sale/venda_item_form.html', {'form': form, 'venda': venda})
+
+
+def client_search(request):
+    nome = request.GET.get('pessoa', '')
+    # pessoas = Venda.objects.filter(pessoa__WorkPhone__icontains=nome).values('pessoa__WorkPhone')
+    vendas = Venda.objects.filter(
+        Q(pessoa__WorkPhone__icontains=nome)).values("pessoa__WorkPhone")
+    return JsonResponse({'pessoas': list(vendas)})
+# nome = request.GET.get('nome','')
+# usuarios = User.objects.filter(nome__icontains = nome).values('nome')
+# return JsonResponse({'usuarios':list(usuarios)})
