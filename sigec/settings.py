@@ -58,10 +58,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'sigec.urls'
 
-TEMPLATES = [
+
+TEMPLATES= [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ 'static', 'templates' ],
+        'DIRS': [BASE_DIR / 'templates'],  # Aqui deve estar o diretório onde seus templates HTML estão
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -73,6 +74,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'sigec.wsgi.application'
 
@@ -127,9 +129,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-# STATICFILES_DIRS = (
-#     BASE_DIR / 'static',  # local static files directory
-# )
+STATICFILES_DIRS = (
+    BASE_DIR / 'static',  # local static files directory
+)
 STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
 
 # Default primary key field type

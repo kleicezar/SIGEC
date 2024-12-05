@@ -94,45 +94,48 @@ def Client_Create(request):
 
 @login_required
 def client_list(request):
-    # # Cria o formulário de pesquisa
-    # form = ClientSearchForm(request.GET)
+    # Cria o formulário de pesquisa
+    form = ClientSearchForm(request.GET)
 
-    # # Se o formulário for válido e contiver um valor de pesquisa
-    # if form.is_valid() and form.cleaned_data.get('search'):
-    #     search_term = form.cleaned_data['search']
-    #     # Filtra os clientes pelo nome (ou outro campo desejado)
-    #     clients = Person.objects.filter(id_FisicPerson_fk__name__icontains=search_term)
-    # else:
-    #     # Caso contrário, exibe todos os clientes
-    #     clients = Person.objects.all()
-
-    # return render(request, 'registry/client_list.html', { 'clients': clients}) #'form': form,
-    # opção 2
-    query = request.GET.get('query', '')
-    
-    if query:
-        # Realiza a busca considerando três possíveis modelos relacionados
-        resultados = Person.objects.filter(
-            Q(id_FisicPerson_fk__name__icontains=query) |
-            Q(id_LegalPerson_fk__fantasyName__icontains=query) |
-            Q(id_ForeignPerson_fk__name_foreigner__icontains=query)
-        )  # Ajuste o filtro conforme seu modelo e campo
-        
-        # Prepare a lista de resultados para o retorno
-        resultados_data = []
-        for pessoa in resultados:
-            # Adapte conforme os campos que você deseja exibir no JSON
-            resultados_data.append({
-                'nome': pessoa.id_FisicPerson_fk.name if pessoa.id_FisicPerson_fk else '',
-                'fantasy_name': pessoa.id_LegalPerson_fk.fantasyName if pessoa.id_LegalPerson_fk else '',
-                'name_foreigner': pessoa.id_ForeignPerson_fk.name_foreigner if pessoa.id_ForeignPerson_fk else ''
-            })
+    # Se o formulário for válido e contiver um valor de pesquisa
+    if form.is_valid() and form.cleaned_data.get('search'):
+        search_term = form.cleaned_data['search']
+        # Filtra os clientes pelo nome (ou outro campo desejado)
+        clients = Person.objects.filter(id_FisicPerson_fk__name__icontains=search_term)
     else:
-        resultados_data = Person.objects.all()
+        # Caso contrário, exibe todos os clientes
+        clients = Person.objects.all()
 
-    # return JsonResponse({'resultados': resultados_data})
-    return render(request, 'registry/client_list.html', {'clients': resultados_data})
+    return render(request, 'registry/client_list.html', { 'clients': clients}) #'form': form,
 
+def buscar_clientes(request):
+    """Busca clientes dinamicamente e retorna JSON."""
+    query = request.GET.get('query', '')  # Recebe a entrada do usuário
+    resultados = Person.objects.filter(
+        Q(id__icontains=query) | 
+        Q(id_FisicPerson_fk__name__icontains=query) | 
+        Q(id_ForeignPerson_fk__name_foreigner__icontains=query) | 
+        Q(id_LegalPerson_fk__fantasyName__icontains=query)
+    ).order_by('id')[:5]  # Limita os resultados a 5
+
+    if not resultados:
+        return JsonResponse({'clientes': [], 'message': 'Nenhum cliente encontrado.'})
+
+    clients = [
+        {
+            'id': cliente.id,
+            'name': (
+                    cliente.id_FisicPerson_fk.name if cliente.id_FisicPerson_fk else 
+                    (cliente.id_ForeignPerson_fk.name_foreigner if cliente.id_ForeignPerson_fk else 
+                    (cliente.id_LegalPerson_fk.fantasyName if cliente.id_LegalPerson_fk else 'Nome não disponível'))),
+            'WorkPhone': cliente.WorkPhone,
+            'PersonalPhone': cliente.PersonalPhone,
+
+        }
+        for cliente in resultados
+    ]
+    return JsonResponse({'clientes': clients})
+    # return render(request, 'registry/client_list.html', { 'clients': clients})
 
 # @login_required
 # def update_client(request, id_client):
