@@ -5,6 +5,11 @@ class VendaForm(forms.ModelForm):
     class Meta:
         model = Venda
         fields = ['data_da_venda',  'pessoa', 'situacao', 'is_active','observacao_pessoas', 'observacao_sistema']
+        widgets = {
+            'pessoa':forms.TextInput(attrs={
+                'class':'form-control row'
+            })
+        }
 
     def __init__(self, *args, **kwargs):
         super(VendaForm, self).__init__(*args, **kwargs)
