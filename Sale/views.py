@@ -199,11 +199,39 @@ def venda_item_create(request, venda_pk):
 
 
 def client_search(request):
-    nome = request.GET.get('pessoa', '')
-    # pessoas = Venda.objects.filter(pessoa__WorkPhone__icontains=nome).values('pessoa__WorkPhone')
-    vendas = Venda.objects.filter(
-        Q(pessoa__WorkPhone__icontains=nome)).values("pessoa__WorkPhone")
-    return JsonResponse({'pessoas': list(vendas)})
+    """Busca clientes dinamicamente e retorna JSON."""
+    query = request.GET.get('query', '') 
+    resultados = Person.objects.filter(
+        Q(id__icontains=query) | 
+        Q(id_FisicPerson_fk__name__icontains=query) | 
+        Q(id_ForeignPerson_fk__name_foreigner__icontains=query) | 
+        Q(id_LegalPerson_fk__fantasyName__icontains=query)
+    ).order_by('id')[:5]
+
+    if not resultados:
+        return JsonResponse({'clientes': [], 'message': 'Nenhum cliente encontrado.'})
+
+    clients = [
+        {
+            'id': cliente.id,
+            'name': (
+                    cliente.id_FisicPerson_fk.name if cliente.id_FisicPerson_fk else 
+                    (cliente.id_ForeignPerson_fk.name_foreigner if cliente.id_ForeignPerson_fk else 
+                    (cliente.id_LegalPerson_fk.fantasyName if cliente.id_LegalPerson_fk else 'Nome não disponível')))
+        }
+        for cliente in resultados
+    ]
+    return JsonResponse({'clientes': clients})
+
+
+
+
+
 # nome = request.GET.get('nome','')
 # usuarios = User.objects.filter(nome__icontains = nome).values('nome')
 # return JsonResponse({'usuarios':list(usuarios)})
+
+# def client_search(request):
+#     nome = request.GET.get('pessoa', '')
+    # vendas = Person.objects.filter(WorkPhone__icontains=nome).values('WorkPhone')
+    # return JsonResponse({'pessoas': list(vendas)})
