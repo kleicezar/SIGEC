@@ -7,7 +7,7 @@ class VendaForm(forms.ModelForm):
         fields = ['data_da_venda',  'pessoa', 'situacao', 'is_active','observacao_pessoas', 'observacao_sistema']
         widgets = {
             'pessoa':forms.TextInput(attrs={
-                'class':'form-control row' 
+                'class':'form-control row-5' 
             }),
             'data_da_venda':forms.TextInput(attrs={
                 'class':'form-control row mask-date' 
@@ -26,6 +26,12 @@ class VendaItemForm(forms.ModelForm):
         fields = ['product', 'quantidade', 'preco_unitario']
         widgets = {
             'product':forms.TextInput(attrs={
+                'class':'form-control row-2'
+            }),
+            'quantidade':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'preco_unitario':forms.TextInput(attrs={
                 'class':'form-control row'
             })
         }
