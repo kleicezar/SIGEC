@@ -11,6 +11,14 @@ item_forms.forEach(itemForm=>{
     let price = document.getElementById(`id_vendaitem_set-${index}-preco_unitario`);
     let discount = itemForm.querySelector('td .descont');
     let totalValue = itemForm.querySelector('td .totalValue');
+
+    const product_0 = document.getElementById(`id_vendaitem_set-${index}-product`);
+    const produtos_0 = document.getElementById(`products-${index}`);
+
+
+
+    // MONITORAR A ALTERAÇÃO DE VALORES PARA MUDAR O VALOR TOTAL
+    fieldProducts(produtos_0,product_0);
     console.log(delet);
 
     item = itemForm.querySelector("tbody tr");
@@ -40,67 +48,23 @@ itemButton.addEventListener('click',()=>{
     const new_item_forms = document.querySelectorAll('.item-form')
     let index = 0;
     new_item_forms.forEach(itemForm => {
-        // if(index!=0){
-            // let delet = itemForm.querySelector("td .delete");
+            // MOSTRAS OS PRODUTOS REQUISITADOS
+            const product = document.getElementById(`id_vendaitem_set-${index}-product`);
+            const produtos = document.getElementById(`products-${index}`);
 
+            fieldProducts(produtos,product);
 
             // MONITORAR A ALTERAÇÃO DE VALORES PARA MUDAR O VALOR TOTAL
             let discount = itemForm.querySelector("td .descont");
             let totalValue = itemForm.querySelector("td .totalValue");
             let amount = document.getElementById(`id_vendaitem_set-${index}-quantidade`);
             let price = document.getElementById(`id_vendaitem_set-${index}-preco_unitario`);
-            const product = document.getElementById(`id_vendaitem_set-${index}-product`);
-            
-            const produtos = document.getElementById(`products-${index}`);
-
-            product.addEventListener("input",()=>{
-              
-                console.log(produtos)
-                if(product.value.length >=1 && product.value != " "){
-                    let id_options = 0;
-                    const query = product.value;
-                    console.log(query);
-                    fetch(`/buscar_produtos/?query=${encodeURIComponent(query)}`)
-                    .then(response=>{
-                        if(response.ok && response.headers.get('Content-Type').includes('application/json')){
-                            return response.json();
-                        }
-                        else {
-                            throw new Error('Resposta não é JSON');
-                        }
-                    })
-                    .then(data=>{
-                        produtos.innerHTML = " ";
-                        if(data.produtos.length > 0){
-                            data.produtos.forEach(produto=>{
-                                selectProduct = document.createElement("button");
-                                selectProduct.className = "btn btn-outline-secondary form-control";
-                                selectProduct.id = `option-${id_options}`;
-
-                                selectProduct.textContent = `${produto.description}`;
-                                produtos.appendChild(selectProduct);
-
-                                const button = document.getElementById(selectProduct.id);
-                                button.addEventListener("click",()=>{
-                                    product.value = button.textContent;
-                                    console.log(button.textContent);
-                                    produtos.innerHTML = "";
-                                })
-                                id_options+=1;
-                            })
-                        
-                        }
-                    }) 
-                } else {
-                    produtos.innerHTML = " ";
-                }
-            })
 
             index = index + 1;
+
             discount.addEventListener("input",()=>{
                 console.log('OLHA O DESCONTO:',discount.value);
-                totalValue.value = ( (price.value - (discount.value/100)*price.value)*amount.value).toFixed(2);
-                console.log('fjdafjaldsjfl')
+                totalValue.value = ((price.value - (discount.value/100)*price.value)*amount.value).toFixed(2);
             })
 
             amount.addEventListener("input",()=>{
@@ -114,6 +78,8 @@ itemButton.addEventListener('click',()=>{
             })
 
 
+
+            
             // DELETAR UM ITEM 
             // delet.addEventListener("click",()=>{
             //     console.log(delet);
@@ -130,7 +96,50 @@ itemButton.addEventListener('click',()=>{
     })
 
 
+function fieldProducts(produtos,product){
+    product.addEventListener("input",()=>{
+              
+        console.log(produtos)
+        if(product.value.length >=1 && product.value != " "){
+            let id_options = 0;
+            const query = product.value;
+            console.log(query);
+            fetch(`/buscar_produtos/?query=${encodeURIComponent(query)}`)
+            .then(response=>{
+                if(response.ok && response.headers.get('Content-Type').includes('application/json')){
+                    return response.json();
+                }
+                else {
+                    throw new Error('Resposta não é JSON');
+                }
+            })
+            .then(data=>{
+                produtos.innerHTML = " ";
+                if(data.produtos.length > 0){
+                    data.produtos.forEach(produto=>{
+                        selectProduct = document.createElement("button");
+                        selectProduct.className = "btn btn-outline-secondary form-control";
+                        selectProduct.id = `option-${id_options}`;
 
+                        selectProduct.textContent = `${produto.description}`;
+                        produtos.appendChild(selectProduct);
+
+                        const button = document.getElementById(selectProduct.id);
+                        button.addEventListener("click",()=>{
+                            product.value = button.textContent;
+                            console.log(button.textContent);
+                            produtos.innerHTML = "";
+                        })
+                        id_options+=1;
+                    })
+                
+                }
+            }) 
+        } else {
+            produtos.innerHTML = " ";
+        }
+    })
+}
 // // function deleteItem(){
 
 // // }
@@ -184,11 +193,11 @@ input_client.addEventListener("input",()=>{
 
 
 
-teste = document.getElementById("id_paymentmethod_venda_set-0-DELETE");
-console.log(teste.value)
-teste.addEventListener("click",()=>{
-    console.log(teste.value)
-})
+// teste = document.getElementById("id_paymentmethod_venda_set-0-DELETE");
+// console.log(teste.value)
+// teste.addEventListener("click",()=>{
+//     console.log(teste.value)
+// })
 
 
 
