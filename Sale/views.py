@@ -223,8 +223,22 @@ def client_search(request):
     ]
     return JsonResponse({'clientes': clients})
 
+def product_search(request):
+    query = request.GET.get('query','')
+    resultados = Product.objects.filter(
+        Q(description__icontains=query) |
+        Q(product_code__icontains=query)
+    ).order_by('id'[:5])
 
-
+    products = [
+        {
+            'id':produto.product_code,
+            'description':produto.description
+        }
+        for produto in resultados
+        
+    ]
+    return JsonResponse({'produtos':products})
 
 
 # nome = request.GET.get('nome','')

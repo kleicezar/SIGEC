@@ -50,10 +50,18 @@ function addItem() {
         input.name = input.name.replace('__prefix__', formCount);
         input.id = input.id.replace('__prefix__', formCount);
         input.value = ''; // Limpa os valores dos campos
+        console.log(input)
     });
 
+
+
+    // Cria ids para identificação da area em que sera requisitado os produtos pelo filtro do campo product
     formCountElem.value = parseInt(formCount) + 1;
+    field_product=  newForm.querySelector(".field-product ");
+    field_product.id = `products-${formCount}`;
+    console.log(field_product)
     formset.appendChild(newForm);
+    
     
 
     const itens = formset.querySelectorAll(".item-form");
@@ -64,6 +72,7 @@ function addItem() {
         const tr = tbody.querySelector("tr")
         const delet = tr.querySelector(".delete");
       
+
         delet.addEventListener("click", () => {
             tbody.style.display = "none";
             const deleteField = tr.querySelector('input[type="hidden"][name$="-DELETE"]');
@@ -71,6 +80,8 @@ function addItem() {
 
         });
     });
+
+
     
     // btnDeletar.addEventListener('click',()=>{
     //     formset.removeChild(newForm)

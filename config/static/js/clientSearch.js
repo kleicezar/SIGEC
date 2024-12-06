@@ -35,7 +35,7 @@ item_forms.forEach(itemForm=>{
 })
 
 const itemButton = document.getElementById("item");
-const itens = []
+const itens = [];
 itemButton.addEventListener('click',()=>{
     const new_item_forms = document.querySelectorAll('.item-form')
     let index = 0;
@@ -49,10 +49,58 @@ itemButton.addEventListener('click',()=>{
             let totalValue = itemForm.querySelector("td .totalValue");
             let amount = document.getElementById(`id_vendaitem_set-${index}-quantidade`);
             let price = document.getElementById(`id_vendaitem_set-${index}-preco_unitario`);
+            const product = document.getElementById(`id_vendaitem_set-${index}-product`);
+            
+            const produtos = document.getElementById(`products-${index}`);
+
+            product.addEventListener("input",()=>{
+              
+                console.log(produtos)
+                if(product.value.length >=1 && product.value != " "){
+                    let id_options = 0;
+                    const query = product.value;
+                    console.log(query);
+                    fetch(`/buscar_produtos/?query=${encodeURIComponent(query)}`)
+                    .then(response=>{
+                        if(response.ok && response.headers.get('Content-Type').includes('application/json')){
+                            return response.json();
+                        }
+                        else {
+                            throw new Error('Resposta não é JSON');
+                        }
+                    })
+                    .then(data=>{
+                        produtos.innerHTML = " ";
+                        if(data.produtos.length > 0){
+                            data.produtos.forEach(produto=>{
+                                selectProduct = document.createElement("button");
+                                selectProduct.className = "btn btn-outline-secondary form-control";
+                                selectProduct.id = `option-${id_options}`;
+
+                                selectProduct.textContent = `${produto.description}`;
+                                produtos.appendChild(selectProduct);
+
+                                const button = document.getElementById(selectProduct.id);
+                                button.addEventListener("click",()=>{
+                                    product.value = button.textContent;
+                                    console.log(button.textContent);
+                                    produtos.innerHTML = "";
+                                })
+                                id_options+=1;
+                            })
+                        
+                        }
+                    }) 
+                } else {
+                    produtos.innerHTML = " ";
+                }
+            })
+
             index = index + 1;
             discount.addEventListener("input",()=>{
                 console.log('OLHA O DESCONTO:',discount.value);
                 totalValue.value = ( (price.value - (discount.value/100)*price.value)*amount.value).toFixed(2);
+                console.log('fjdafjaldsjfl')
             })
 
             amount.addEventListener("input",()=>{
@@ -92,8 +140,6 @@ input_client.addEventListener("input",()=>{
     const clients = document.getElementById("clients");
     if (input_client.value.length >=1 && input_client.value != " "){
         let id_options = 0;
-
-    
     
     const query = input_client.value;
     console.log(input_client.value)
@@ -143,6 +189,9 @@ console.log(teste.value)
 teste.addEventListener("click",()=>{
     console.log(teste.value)
 })
+
+
+
 // $(document).ready(function() {
 //     $('#nome_pesquisa').on('keyup', function() {
 //         let nome = $(this).val();

@@ -7,7 +7,10 @@ class VendaForm(forms.ModelForm):
         fields = ['data_da_venda',  'pessoa', 'situacao', 'is_active','observacao_pessoas', 'observacao_sistema']
         widgets = {
             'pessoa':forms.TextInput(attrs={
-                'class':'form-control row'
+                'class':'form-control row' 
+            }),
+            'data_da_venda':forms.TextInput(attrs={
+                'class':'form-control row mask-date' 
             })
         }
 
@@ -21,6 +24,11 @@ class VendaItemForm(forms.ModelForm):
     class Meta:
         model = VendaItem
         fields = ['product', 'quantidade', 'preco_unitario']
+        widgets = {
+            'product':forms.TextInput(attrs={
+                'class':'form-control row'
+            })
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -50,3 +58,8 @@ class PaymentMethodVendaForm(forms.ModelForm):
     class Meta:
         model = PaymentMethod_Venda
         fields = ['forma_pagamento', 'expirationDate', 'valor']
+        widgets = {
+            'forma_pagamento':forms.TextInput(attrs={
+                'class':'form-control row mask-date'
+            })
+        }
