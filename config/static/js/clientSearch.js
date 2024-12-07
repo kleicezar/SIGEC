@@ -18,7 +18,7 @@ item_forms.forEach(itemForm=>{
 
 
     // MONITORAR A ALTERAÇÃO DE VALORES PARA MUDAR O VALOR TOTAL
-    fieldProducts(produtos_0,product_0);
+    fieldProducts(produtos_0,product_0,price);
     console.log(delet);
 
     item = itemForm.querySelector("tbody tr");
@@ -52,8 +52,6 @@ itemButton.addEventListener('click',()=>{
             const product = document.getElementById(`id_vendaitem_set-${index}-product`);
             const produtos = document.getElementById(`products-${index}`);
 
-            fieldProducts(produtos,product);
-
             // MONITORAR A ALTERAÇÃO DE VALORES PARA MUDAR O VALOR TOTAL
             let discount = itemForm.querySelector("td .descont");
             let totalValue = itemForm.querySelector("td .totalValue");
@@ -78,6 +76,7 @@ itemButton.addEventListener('click',()=>{
             })
 
 
+            fieldProducts(produtos,product,price);
 
             
             // DELETAR UM ITEM 
@@ -96,10 +95,8 @@ itemButton.addEventListener('click',()=>{
     })
 
 
-function fieldProducts(produtos,product){
+function fieldProducts(produtos,product,price){
     product.addEventListener("input",()=>{
-              
-        console.log(produtos)
         if(product.value.length >=1 && product.value != " "){
             let id_options = 0;
             const query = product.value;
@@ -127,8 +124,9 @@ function fieldProducts(produtos,product){
                         const button = document.getElementById(selectProduct.id);
                         button.addEventListener("click",()=>{
                             product.value = button.textContent;
-                            console.log(button.textContent);
                             produtos.innerHTML = "";
+
+                            price.value = produto.cost_of_product;
                         })
                         id_options+=1;
                     })

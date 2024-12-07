@@ -233,7 +233,8 @@ def product_search(request):
     products = [
         {
             'id':produto.product_code,
-            'description':produto.description
+            'description':produto.description,
+            'cost_of_product':produto.cost_of_product
         }
         for produto in resultados
         
