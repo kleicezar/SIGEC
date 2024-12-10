@@ -9,8 +9,8 @@ class VendaForm(forms.ModelForm):
             'pessoa':forms.TextInput(attrs={
                 'class':'form-control row-5' 
             }),
-            'data_da_venda':forms.TextInput(attrs={
-                'class':'form-control row mask-date' 
+            'data_da_venda':forms.DateTimeInput(attrs={
+                'class':'form-control row' 
             })
         }
 
@@ -66,6 +66,6 @@ class PaymentMethodVendaForm(forms.ModelForm):
         fields = ['forma_pagamento', 'expirationDate', 'valor']
         widgets = {
             'forma_pagamento':forms.TextInput(attrs={
-                'class':'form-control row mask-date'
+                'class':'form-control row'
             })
         }

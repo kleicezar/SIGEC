@@ -52,26 +52,13 @@
                                     
                                 </div>
                                 </td>
-                                
-                                <!-- {% for venda  in venda_form.as_p} -->
                                 <td>{{venda_form.data_da_venda}}</td>
                                 <td>{{venda_form.situacao}}</td>
                                 <td>{{venda_form.is_active}}</td>
                             </tr>
                         </tbody>
                     </table>
-                  
                     
-                    
-
-                    <!-- <div class="row">
-                        <div class="col">
-                            <label for="">{{venda_form.total.label}}</label>
-                            {{venda_form}}
-                        </div>
-                    </div> -->
-                    
-
                     <!-- Itens de Venda -->
                     <h5>Itens de Venda</h5>
                     <div id="itens-container">      
@@ -111,13 +98,10 @@
                                             </td>
                                             
                                             <td>
-                                                {{form.quantidade}}
-                                                <!-- <input type="number" class="form-control mount" value="{{form.quantidade}}"> -->
-                                                
+                                                {{form.quantidade}}    
                                             </td>
                                             <td>
                                                 {{form.preco_unitario}}
-                                                <!-- <input type="number" class="form-control price" value="{{form.preco_unitario}}"> -->
                                             </td>
                                             <td>
                                                 <input type="number" class="form-control row descont">
@@ -126,7 +110,6 @@
                                                 <input type="number" class="form-control row totalValue" readonly>
                                             </td>
                                             <td>
-                                                <!-- <label for="">Deletar</label> -->
                                                 <button class="btn btn-danger delete" >Deletar</button>
                                                 {{ form.DELETE.as_hidden }}
                                             </td>
@@ -156,12 +139,10 @@
                                         
                                         <td>
                                             {{venda_item_formset.empty_form.quantidade}}
-                                            <!-- <input type="number" class="form-control mount" value="{{venda_item_formset.empty_form.quantidade}}"> -->
                                         </td>
                                 
                                         <td>
                                             {{venda_item_formset.empty_form.preco_unitario}}
-                                            <!-- <input type="number" class="form-control mount" value="{{venda_item_formset.empty_form.preco_unitario}}"> -->
                                         </td>
 
                                         <td>
@@ -171,15 +152,11 @@
                                             <input type="number" class="form-control row totalValue" readonly>
                                         </td>
                                         <td>
-                                            <!-- <label for="">Deletar</label> -->
-                                            
                                             <button class="btn btn-danger delete">Deletar</button>
                                             {{venda_item_formset.empty_form.DELETE.as_hidden}}</td>
-                                            
                                     </tr>
                                 </tbody>
                               </table>
-                            <!-- {{ venda_item_formset.empty_form.as_p }} -->
                         </div>
                     </template>
                     <button id="item" type="button" onclick="addItem()" class="btn btn-outline-success mb-5">Adicionar Item</button>
@@ -248,12 +225,6 @@
                 
             </div>
         </div>
-        <!-- <template id="empty-form-template"> -->
-            <!-- <div class="form-row"> -->
-                <!-- Clona o formulário vazio de venda_item_formset -->
-                <!-- {{ venda_item_formset.empty_form.as_p }} -->
-            <!-- </div> -->
-        <!-- </template> -->
         
         <template id="empty-payment-method-form">
             <div class="form-row">

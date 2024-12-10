@@ -45,7 +45,7 @@ item_forms.forEach(itemForm=>{
 const itemButton = document.getElementById("item");
 const itens = [];
 itemButton.addEventListener('click',()=>{
-    const new_item_forms = document.querySelectorAll('.item-form')
+    const new_item_forms = document.querySelectorAll('.item-form');
     let index = 0;
     new_item_forms.forEach(itemForm => {
             // MOSTRAS OS PRODUTOS REQUISITADOS
@@ -97,7 +97,7 @@ itemButton.addEventListener('click',()=>{
 
 function fieldProducts(produtos,product,price){
     product.addEventListener("input",()=>{
-        if(product.value.length >=1 && product.value != " "){
+        if(product.value.length >=1){
             let id_options = 0;
             const query = product.value;
             console.log(query);
@@ -114,21 +114,27 @@ function fieldProducts(produtos,product,price){
                 produtos.innerHTML = " ";
                 if(data.produtos.length > 0){
                     data.produtos.forEach(produto=>{
-                        selectProduct = document.createElement("button");
-                        selectProduct.className = "btn btn-outline-secondary form-control";
-                        selectProduct.id = `option-${id_options}`;
-
-                        selectProduct.textContent = `${produto.description}`;
-                        produtos.appendChild(selectProduct);
-
-                        const button = document.getElementById(selectProduct.id);
-                        button.addEventListener("click",()=>{
-                            product.value = button.textContent;
-                            produtos.innerHTML = "";
-
-                            price.value = produto.cost_of_product;
-                        })
-                        id_options+=1;
+                        if (data.produtos.length < query.length){
+                            selectProduct = document.createElement("button");
+                            selectProduct.className = "btn btn-outline-secondary form-control";
+                            selectProduct.id = `option-${id_options}`;
+    
+                            selectProduct.textContent = `${produto.id}`;
+                            produtos.appendChild(selectProduct);
+    
+                            const button = document.getElementById(selectProduct.id);
+                            button.addEventListener("click",()=>{
+                                product.value = button.textContent;
+                                produtos.innerHTML = "";
+    
+                                price.value = produto.cost_of_product;
+                            })
+                            id_options+=1;
+                        }
+                        else if (data.produtos.length == query.length){
+                            price.value = produto.cost_of_product
+                        }
+                       
                     })
                 
                 }
@@ -162,20 +168,23 @@ input_client.addEventListener("input",()=>{
         clients.innerHTML = '';
         if(data.clientes.length > 0){
             data.clientes.forEach(cliente=>{
-                selectClient = document.createElement("button");
-                selectClient.className ="btn btn-outline-secondary form-control";
-                selectClient.id = `option-${id_options}`
-                // selectClient.textContent= `${cliente.id} -- ${cliente.name}`
-                selectClient.textContent= `${cliente.name}`
-                clients.appendChild(selectClient);
-
-                const button = document.getElementById(selectClient.id);
-                button.addEventListener("click",()=>{
-                    input_client.value = button.textContent ;
-                    console.log(button.textContent)
-                    clients.innerHTML = "";
-                })
-                id_options+=1;
+                if (data.clientes.length < query.length){
+                    selectClient = document.createElement("button");
+                    selectClient.className ="btn btn-outline-secondary form-control";
+                    selectClient.id = `option-${id_options}`
+                    // selectClient.textContent= `${cliente.id} -- ${cliente.name}`
+                    selectClient.textContent= `${cliente.id}`
+                    clients.appendChild(selectClient);
+    
+                    const button = document.getElementById(selectClient.id);
+                    button.addEventListener("click",()=>{
+                        input_client.value = button.textContent ;
+                        console.log(button.textContent)
+                        clients.innerHTML = "";
+                    })
+                    id_options+=1;
+                }
+              
             })
         }
     })

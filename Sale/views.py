@@ -65,6 +65,7 @@ def venda_create(request):
         venda_item_formset = VendaItemFormSet(request.POST)
         payment_method_formset = PaymentMethodVendaFormSet(request.POST)
         
+
         if venda_form.is_valid() and venda_item_formset.is_valid() and payment_method_formset.is_valid():
             estoque_suficiente = True
             for form in venda_item_formset:
@@ -74,7 +75,7 @@ def venda_create(request):
                     if produto.current_quantity < quantidade:
                         estoque_suficiente = False
                         form.add_error('quantidade', f'Não há estoque suficiente para o produto {produto.description}. Estoque disponível: {produto.current_quantity}.')
-
+            
             if estoque_suficiente:
                 venda = venda_form.save()
 
@@ -226,14 +227,13 @@ def client_search(request):
 def product_search(request):
     query = request.GET.get('query','')
     resultados = Product.objects.filter(
-        Q(description__icontains=query) |
-        Q(product_code__icontains=query)
+
+        Q(id__icontains=query)
     ).order_by('id'[:5])
 
     products = [
         {
-            'id':produto.product_code,
-            'description':produto.description,
+            'id':produto.id,
             'cost_of_product':produto.cost_of_product
         }
         for produto in resultados
