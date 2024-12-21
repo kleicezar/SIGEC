@@ -19,23 +19,56 @@
             {% csrf_token %}
             
             <h4 class="mt-5 c-adapted">Cadastro de Cliente</h4>
-            <label for="formSelect">Tipo de Cliente:</label>
-            <select id="formSelect" name="form_choice" onchange="updateForm()">
-                <option value="">Selecione um formulário</option>
-                <option value="Pessoa Fisica" {% if 'form_choice' in request.POST and request.POST.form_choice == 'Pessoa Fisica' %}selected{% endif %}>Pessoa Fisica</option>
+            <h5>
+                Informações Pessoa
+            </h5>
+            <select id="formSelect" name="form_choice" onchange="updateForm()" class="form-select form-select-lg mb-3 ">
+                <!-- <option value="">Selecione um formulário</option> -->
+                <option selected value="Pessoa Fisica" {% if 'form_choice' in request.POST and request.POST.form_choice == 'Pessoa Fisica' %}selected{% endif %}>Pessoa Fisica</option>
                 <option value="Pessoa Juridica" {% if 'form_choice' in request.POST and request.POST.form_choice == 'Pessoa Juridica' %}selected{% endif %}>Pessoa Juridica</option>
                 <option value="Estrangeiro" {% if 'form_choice' in request.POST and request.POST.form_choice == 'Estrangeiro' %}selected{% endif %}>Estrangeiro</option>
             </select>
 
+
+            <div class="form-margin row">
+
+                <div class="row">
+                    <div class="col">
+                        <label for="">{{form_Person.WorkPhone.label}}</label>
+                        {{form_Person.WorkPhone}}
+                    </div>
+    
+                    <div class="col">
+                        <label for="">{{form_Person.PersonalPhone.label}}</label>
+                        {{form_Person.PersonalPhone}}
+                    </div>
+    
+                    <div class="col">
+                        <label for="">{{form_Person.site.label}}</label>
+                        {{form_Person.site}}
+                    </div>
+    
+                    <div class="col">
+                        <label for="">{{form_Person.salesman.label}}</label>
+                        {{form_Person.salesman}}
+                    </div>
+    
+                    <div class="col">
+                        <label for="">{{form_Person.creditLimit.label}}</label>
+                        {{form_Person.creditLimit}}
+                    </div>
+                 </div>
+
+            </div>
             <!-- Formulário 1: Pessoa Fisica -->
             <div id="form1" style="display: none;">
                 <!-- Formulário de Pessoa Física -->
                 <div class="row mt-5 mb-5">
                     <fieldset>
                         <legend class="mt-12">
-                            <h5>
-                                Informações Pessoais
-                            </h5>
+                            <!-- <h5>
+                                Informações Pessoa Física
+                            </h5> -->
                         </legend>
                         <div class="form-margin row">
                             <div class="row">
@@ -77,18 +110,34 @@
             
             <!-- Formulário 2: Pessoa Juridica -->
             <div id="form2" style="display: none;">
-                <h3>Formulário 2: Pessoa Juridica</h3>
+                <!-- <h3>Formulário 2: Pessoa Juridica</h3> -->
+
                 {{ form_legalPerson.as_p }}
             </div>
             
             <!-- Formulário 3: Estrangeiro -->
-            <div id="form3" style="display: none;">
-                <h3>Formulário 3: Estrangeiro</h3>
-                {{ form_foreigner.as_p }}
+            <div id="form3" style="display: none;" class="form-margin row">
+                <!-- <h3>Formulário 3: Estrangeiro</h3> -->
+                
+                <div class="row">
+                    
+                    <div class="col-xl-4">
+                        <label for="">{{ form_foreigner.name_foreigner.label }}</label>
+                        {{form_foreigner.name_foreigner}}
+                    </div>
+                    
+                    <div class="col-xl-3">
+                        <label for="">{{form_foreigner.num_foreigner.label}}</label>
+                        {{form_foreigner.num_foreigner}}
+                    </div>
+                </div>
             </div>
             
             <!-- cadastro tabela pessoa -->
-            {{ form_Person.as_p }}
+            
+
+               
+            <!-- {{ form_Person.as_p }} -->
 
             <div class="row mb-5">
                     <fieldset>

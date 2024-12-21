@@ -51,11 +51,47 @@ class LegalPersonModelForm(forms.ModelForm):
     class Meta:
         model = LegalPerson
         fields = ["fantasyName","cnpj","socialReason","StateRegistration","typeOfTaxpayer","MunicipalRegistration","suframa","Responsible"]
+        widgets = {
+            'fantasyName':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'cnpj':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'socialReason':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'StateRegistration':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'typeOfTaxpayer':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'MunicipalRegistration':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'suframa':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'Responsible':forms.TextInput(attrs={
+                'class':'form-control row'
+            })
+
+
+        }
 
 class ForeignerModelForm(forms.ModelForm):
     class Meta:
         model = ForeignPerson
         fields = ["name_foreigner","num_foreigner"]
+        widgets = {
+            'name_foreigner':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'num_foreigner':forms.TextInput(attrs={
+                'class':'form-control row'
+            })
+        }
 
 
 class FisicPersonForm(forms.ModelForm):
@@ -92,6 +128,23 @@ class PersonForm(forms.ModelForm):
         fields = ['WorkPhone', 'PersonalPhone', 'site', 'salesman', 'creditLimit' ] # 'isActive','is_client', 'is_supllier', 'is_user', 'is_employee', 'is_former_employee', 'is_carrier', 'is_delivery_man', 'is_technician'
 
         widgets = {
+            'WorkPhone':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'PersonalPhone':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'site':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'salesman':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'creditLimit':forms.NumberInput(attrs={
+                'class':'form-control row',
+                'min':0,
+                # 'step':1
+            })
         }
 
     
