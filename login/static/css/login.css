@@ -3,7 +3,7 @@
 }
 body {
     font-family: Arial, sans-serif;
-    background-color: #140757;
+    background-color: #1A1955;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,12 +12,17 @@ body {
 }
 
 .container  {
-    background: white;
+    background:white;
     padding: 0px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     width: 400px;
+    height: 400px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    
 }
 .margin{
+    margin-top: 5%;
+    margin-left: 2%;
     padding: 10px;
 }
 
@@ -34,22 +39,31 @@ label {
 
 .logo{
     width: 100%;
-    height: 20%;
+    height: 30%;
     margin: auto;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
 }
 
 input {
-    width: 96%;
+    background-color: #DCDCDC;
+    width:90%;
     padding: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 30px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
 
+label{
+    font-size: 16px black;
+    color: black;
+}
+
 button {
-    width: 100%;
+    margin-left:35%;
+    width:25%;
     padding: 10px;
-    background-color: #28a745;
+    background-color: #140757;
     color: white;
     border: none;
     border-radius: 4px;
@@ -60,3 +74,4 @@ button {
 button:hover {
     background-color: #218838;
 }
+

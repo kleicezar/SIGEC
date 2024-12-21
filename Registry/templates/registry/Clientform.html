@@ -14,84 +14,6 @@
 </head>
 <body>
     {% block content %}
-    <script>
-        // // Função que altera o formulário exibido com base na seleção do usuário
-        // function updateForm() {
-        //     // Obter o valor selecionado
-        //     var selectedForm = document.getElementById('formSelect').value;
-
-        //     // Ocultar todos os formulários
-        //     document.getElementById('form1').style.display = 'none';
-        //     document.getElementById('form2').style.display = 'none';
-        //     document.getElementById('form3').style.display = 'none';
-
-        //     // Exibir o formulário correspondente
-        //     if (selectedForm == 'Pessoa Fisica') {
-        //         document.getElementById('form1').style.display = 'block';
-        //     } else if (selectedForm == 'Pessoa Juridica') {
-        //         document.getElementById('form2').style.display = 'block';
-        //     } else if (selectedForm == 'Estrangeiro') {
-        //         document.getElementById('form3').style.display = 'block';
-        //     }
-        // }
-
-        // // Quando a página carrega, exibe o formulário correto (se uma escolha já foi feita)
-        // window.onload = function() {
-        //     updateForm();  // Atualiza a exibição do formulário com base na seleção inicial (se houver)
-        // }
-        function updateForm() {
-            // Obter o valor selecionado
-            var selectedForm = document.getElementById('formSelect').value;
-
-            // Referência aos formulários
-            var form1 = document.getElementById('form1');
-            var form2 = document.getElementById('form2');
-            var form3 = document.getElementById('form3');
-
-            // Lista de formulários para iterar
-            var forms = [form1, form2, form3];
-
-            // Função auxiliar para configurar cada formulário
-            function configureForm(form, isActive) {
-                if (isActive) {
-                    form.style.display = 'block'; // Exibe o formulário
-                    form.querySelectorAll('input, select, textarea').forEach(function (field) {
-                        field.removeAttribute('disabled'); // Habilita os campos
-                        field.setAttribute('required', ''); // Adiciona required
-                    });
-                } else {
-                    form.style.display = 'none'; // Oculta o formulário
-                    form.querySelectorAll('input, select, textarea').forEach(function (field) {
-                        field.setAttribute('disabled', ''); // Desabilita os campos
-                        field.removeAttribute('required'); // Remove required
-                    });
-                }
-            }
-
-            // Configura os formulários com base na seleção
-            if (selectedForm === 'Pessoa Fisica') {
-                configureForm(form1, true); // Mostra Pessoa Fisica
-                configureForm(form2, false); // Oculta Pessoa Juridica
-                configureForm(form3, false); // Oculta Estrangeiro
-            } else if (selectedForm === 'Pessoa Juridica') {
-                configureForm(form1, false); // Oculta Pessoa Fisica
-                configureForm(form2, true); // Mostra Pessoa Juridica
-                configureForm(form3, false); // Oculta Estrangeiro
-            } else if (selectedForm === 'Estrangeiro') {
-                configureForm(form1, false); // Oculta Pessoa Fisica
-                configureForm(form2, false); // Oculta Pessoa Juridica
-                configureForm(form3, true); // Mostra Estrangeiro
-            } else {
-                // Caso nenhuma opção seja selecionada, oculta todos os formulários
-                forms.forEach(form => configureForm(form, false));
-            }
-        }
-
-        // Executar a função ao carregar a página
-        window.onload = function () {
-            updateForm();
-        };
-    </script>
     <div class="content">
         <form method="POST">
             {% csrf_token %}
@@ -262,6 +184,7 @@
     <script src="{% static 'js/jquery.mask.min.js' %}"></script>
     <script src="{% static 'js/mask.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/cep_api.js' %}"></script>
+    <script src="{% static 'js/registryform.js' %}"></script>
 
     {% endblock %}
 </body>

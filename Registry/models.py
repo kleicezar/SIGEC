@@ -126,12 +126,3 @@ class Person(models.Model):
 # is_delivery_man           0
 # is_technician             0
 
-# no cadastro de transportadoras todos os campos is_(alguma função) serao respectivamente
-# is_client                 1
-# is_supllier               1
-# is_user                   0
-# is_employee               0
-# is_former_employee        0
-# is_carrier                1
-# is_delivery_man           0
-# is_technician             0

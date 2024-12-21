@@ -5,6 +5,7 @@
     <head>  
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
         {% block css %}
         <link rel="stylesheet" href="{% static 'css/Table.css' %}">
         {% endblock  %}
@@ -65,7 +66,13 @@
                     <td>{{ client.WorkPhone }}</td>
                     <td>{{ client.PersonalPhone }}</td>
                     <td>
-
+                        <a href="{% url 'update_client' id_client=client.id %}">
+                            <button class="btn" style="background-color: #117027;color: white;">Editar</button>
+                        </a>
+                        <form action="{% url 'delete_client' id_client=client.id %}" method="POST" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
+                        </form>
                     </td>
                 </tr>
                 {% endfor %}
