@@ -1,15 +1,12 @@
 function updateForm() {
     // Obter o valor selecionado
     var selectedForm = document.getElementById('formSelect').value;
-
-    // Referência aos formulários
+    //  formulários
     var form1 = document.getElementById('form1');
     var form2 = document.getElementById('form2');
     var form3 = document.getElementById('form3');
-
     // Lista de formulários para iterar
     var forms = [form1, form2, form3];
-
     // Função auxiliar para configurar cada formulário
     function configureForm(form, isActive) {
         if (isActive) {
@@ -26,7 +23,6 @@ function updateForm() {
             });
         }
     }
-
     // Configura os formulários com base na seleção
     if (selectedForm === 'Pessoa Fisica') {
         configureForm(form1, true); // Mostra Pessoa Fisica
@@ -45,8 +41,6 @@ function updateForm() {
         forms.forEach(form => configureForm(form, false));
     }
 }
-
-// Executar a função ao carregar a página
 window.onload = function () {
     updateForm();
 };

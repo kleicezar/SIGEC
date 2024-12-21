@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
     var selectedForm = document.body.getAttribute('data-selected-form');
-    console.log(selectedForm)
     var form1 = document.getElementById('form1');
     var form2 = document.getElementById('form2');
     var form3 = document.getElementById('form3');
@@ -37,6 +36,5 @@ document.addEventListener("DOMContentLoaded", function () {
         configureForm(form1, false);
         configureForm(form2, false);
         configureForm(form3, false);
-        console.log('nao funfou')
     }
 });
