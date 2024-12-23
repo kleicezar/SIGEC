@@ -18,10 +18,10 @@
         <form method="POST">
             {% csrf_token %}
             
-            <h4 class="mt-5 c-adapted">Cadastro de Cliente</h4>
-            <h5>
+            <h4 class="mt-5 mb-5 c-adapted">Cadastro de Cliente</h4>
+            <h6>
                 Informações Pessoa
-            </h5>
+            </h6>
             <select id="formSelect" name="form_choice" onchange="updateForm()" class="form-select form-select-lg mb-3 ">
                 <!-- <option value="">Selecione um formulário</option> -->
                 <option selected value="Pessoa Fisica" {% if 'form_choice' in request.POST and request.POST.form_choice == 'Pessoa Fisica' %}selected{% endif %}>Pessoa Fisica</option>
@@ -61,58 +61,92 @@
 
             </div>
             <!-- Formulário 1: Pessoa Fisica -->
-            <div id="form1" style="display: none;">
+            <div id="form1" style="display: none;" class="form-margin row">
                 <!-- Formulário de Pessoa Física -->
-                <div class="row mt-5 mb-5">
-                    <fieldset>
-                        <legend class="mt-12">
-                            <!-- <h5>
-                                Informações Pessoa Física
-                            </h5> -->
-                        </legend>
-                        <div class="form-margin row">
-                            <div class="row">
+                <div class="row">
+                    
+                    <div class="col-xl-5">
+                        <label for=>{{form_fisicPerson.name.label}}</label>
+                        {{form_fisicPerson.name}}
+                    </div>
 
-                                <div class="col">
-                                    <label for=>{{form_fisicPerson.name.label}}</label>
-                                    {{form_fisicPerson.name}}
-                                </div>
+                    <div class="col-xl-3">
+                        <label for=>{{form_fisicPerson.cpf.label}}</label>
+                        <!-- <div class="row  wid-2"> -->
+                            {{form_fisicPerson.cpf}}
+                        <!-- </div> -->
+                    </div> 
+                  
+                </div>
 
-                                <div class="col">
-                                    <label class="row" for=>{{form_fisicPerson.cpf.label}}</label>
-                                    <div class="row  wid-2">
-                                        {{form_fisicPerson.cpf}}
-                                    </div>
-                                </div> 
-                            </div>
+                <div class="row">
 
-                            <div class="row">
+                    <div class="col-xl-3">
+                        <label for=>{{form_fisicPerson.rg.label}}</label>
+                        {{form_fisicPerson.rg}}
+                    </div>
 
-                                <div class="col">
-                                    <label for=>{{form_fisicPerson.rg.label}}</label>
-                                    {{form_fisicPerson.rg}}
-                                </div>
+                    <div class="col-xl-2">
 
-                                <div class="col">
-
-                                    <label class="row" for=>{{form_fisicPerson.dateOfBirth.label}}</label>
-                                    <div class="row wid-2">
-                                        {{form_fisicPerson.dateOfBirth}}
-                                    </div>
-
-                                </div>
-                            </div>
-
+                        <label class="row" for=>{{form_fisicPerson.dateOfBirth.label}}</label>
+                        <div class="row wid-2">
+                            {{form_fisicPerson.dateOfBirth}}
                         </div>
-                    </fieldset>
+
+                    </div>
                 </div>
             </div>
             
             <!-- Formulário 2: Pessoa Juridica -->
-            <div id="form2" style="display: none;">
+            <div id="form2" style="display: none;" class="form-margin row">
                 <!-- <h3>Formulário 2: Pessoa Juridica</h3> -->
+                <div class="row">
 
-                {{ form_legalPerson.as_p }}
+                    <div class="col-xl-4">
+                        <label for="">{{form_legalPerson.fantasyName.label}}</label>
+                        {{form_legalPerson.fantasyName}}
+                    </div>
+
+                    <div class="col-xl-3">
+                        <label for="">{{form_legalPerson.cnpj.label}}</label>
+                        {{form_legalPerson.cnpj}}
+                    </div>
+
+                    <div class="col-xl-5">
+                        <label for="">
+                            {{form_legalPerson.socialReason.label}}
+                        </label>
+                        {{form_legalPerson.socialReason}}
+                    </div>
+                   
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-xl-3">
+                        <label for="">{{form_legalPerson.StateRegistration.label}}</label>
+                        {{form_legalPerson.StateRegistration}}
+                    </div>
+
+                    <div class="col-xl-3">
+                        <label for="">{{form_legalPerson.typeOfTaxpayer.label}}</label>
+                        {{form_legalPerson.typeOfTaxpayer}}
+                    </div>
+
+                    <div class="col-xl-3">
+                        <label for="">{{form_legalPerson.suframa.label}}</label>
+                        {{form_legalPerson.suframa}}
+                    </div>
+
+                    <div class="col-xl-3">
+                        <label for=""> {{form_legalPerson.Responsible.label}}</label>
+                        {{form_legalPerson.Responsible}}
+                    </div>
+                   
+
+                </div>
+                <!-- {{ form_legalPerson.as_p }} -->
             </div>
             
             <!-- Formulário 3: Estrangeiro -->
@@ -139,12 +173,12 @@
                
             <!-- {{ form_Person.as_p }} -->
 
-            <div class="row mb-5">
+            <div class="row mb-5 mt-5">
                     <fieldset>
                         <legend>
-                            <h5>
+                            <h6>
                                 Endereço
-                            </h5>
+                            </h6>
                         </legend>
                         <div class="form-margin row">
                             <div class="row">
@@ -225,7 +259,13 @@
                        
 
             <br><br>
-            <button type="submit">Enviar</button>
+            <div class="row">
+                <div class="col text-end">
+                    <button type="submit"  class="btn bg-adapted ">Enviar</button>
+                </div>
+                
+            </div>
+            
         </form>
     </div>
 

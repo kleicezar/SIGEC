@@ -100,15 +100,15 @@ class FisicPersonForm(forms.ModelForm):
         fields = ["name","cpf","rg","dateOfBirth"] 
         widgets = {
             'name':forms.TextInput(attrs={
-                'class':'form-control input-max ',
+                'class':'form-control row ',
                 'placeholder':'Kleilson Colaço Leoncio Cezar'
             }),
             'cpf':forms.TextInput(attrs={
-                'class':'form-control mask-cpf ',
+                'class':'form-control row mask-cpf ',
                 'placeholder':'___.___.___-__'
             }),
             'rg':forms.TextInput(attrs={
-                'class':'form-control input-min ',
+                'class':'form-control row ',
                 'placeholder':''
             }),
             'dateOfBirth':forms.DateInput(attrs={
