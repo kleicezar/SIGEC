@@ -17,31 +17,37 @@
             {% bootstrap_messages %}
             {% block content %}
             <div class='content'>
-                <div class='center'>
+                <div class='center col'>
                 
-                    <form action="." method='post' autocomplete='off'>
+                    <form action="." method='post' autocomplete='off' class="row">
                         {% csrf_token %}
-                        <h3>Situação Personalizada</h3>
-                        <!-- {{ Situation.as_p }} -->
-                          <div class="row">
-                            <label for="" class="">
-                                {{Situation.name_Situation.label}}
-                            </label>
-                            <div>
-                                {{Situation.name_Situation}}
+                        <div class="card mt-5" style="margin-left:25%;width:40%;">
+                            <div class="card-body">
+                                <h6 class="card-title " style="margin-left: 25%;">Situação Personalizada</h6>
+                                <div class="row mt-5" style="margin-left: 15%;">
+                                    <label for="" >
+                                        {{Situation.name_Situation.label}}
+                                    </label>
+                                    <div>
+                                        {{Situation.name_Situation}}
+                                    </div>
+                                </div>
+    
+                                <div class="row " style="margin-left: 15%;">
+                                    <label for="" class="">
+                                        {{Situation.is_Active.label}}
+                                    </label>
+                                    <div>
+                                        {{Situation.is_Active}}
+                                    </div>
+                                </div>
+                    
+                                <button Type='submit' class="btn bg-adapted" style="margin-left: 35%;">Cadastrar</button>   
                             </div>
-                          </div>
-
-                          <div class="row">
-                            <label for="" class="">
-                                {{Situation.is_Active.label}}
-                            </label>
-                            <div>
-                                {{Situation.is_Active}}
-                            </div>
-                          </div>
-            
-                        <button Type='submit' class="btn bg-adapted">Cadastrar</button>     
+                           
+                            <!-- {{ Situation.as_p }} -->
+                            
+                        </div>  
                     </form>
                 </div>
             </div>
