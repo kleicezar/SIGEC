@@ -17,14 +17,37 @@
             {% bootstrap_messages %}
             {% block content %}
             <div class='content'>
-                <div class='center'>
+                <div class='center col'>
                 
-                    <form action="." method='post' autocomplete='off'>
+                    <form action="." method='post' autocomplete='off' class="row">
                         {% csrf_token %}
-                        <h1>Forma de Pagamento</h1>
-                        {{ paymentMethod.as_p }}
-            
-                        <button Type='submit'>Cadastrar</button>     
+                        <div class="card mt-5" style="margin-left:25%;width:40%;">
+                            
+                            <div class="row mt-5" style="margin-left:25%;width:40%;">
+                                <div class="card-body">
+                                    <h6 class="card-title" >Forma de Pagamento</h6>
+
+                                    <div class="row mt-5" >
+                                        <label for="" class="">{{paymentMethod.name_paymentMethod.label}}</label>
+                                        <div>
+                                            {{paymentMethod.name_paymentMethod}}
+                                        </div>
+                                    </div>
+
+                                    <div class="row" >
+                                        <label for="">{{paymentMethod.is_Active.label}}</label>
+                                        <div>
+                                            {{paymentMethod.is_Active}}
+                                        </div>
+                                    </div>
+                                    <button Type='submit' class="btn bg-adapted" style="margin-left: 35%;">Cadastrar</button>       
+                                </div>
+                            </div>
+                            <!-- {{ paymentMethod.as_p }} -->
+                
+                           
+                        </div>
+                       
                     </form>
                 </div>
             </div>
