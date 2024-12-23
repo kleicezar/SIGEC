@@ -19,8 +19,8 @@
             <div class='content'>
                 <!-- <div class=''> -->
                 
-                    <h4 class="">{% if form.instance.pk %}Editar Produto{% else %}Adicionar Produto{% endif %}</h4>
-                    <form method="post" class="col">
+                    <h4 class="row">{% if form.instance.pk %}Editar Produto{% else %}Adicionar Produto{% endif %}</h4>
+                    <form method="post" class="row">
                         {% csrf_token %}
                         <!-- <h4 class="mt-5 c-adapted">{% if form.instance.pk %}Editar Produto{% else %}Adicionar Produto{% endif %}</h4> -->
                         <!-- {{ form.as_p }} -->
