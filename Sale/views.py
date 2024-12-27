@@ -79,8 +79,8 @@ def venda_create(request):
             if estoque_suficiente:
                 venda = venda_form.save()
 
-                venda_item_formset.instance = venda
-                venda_item_formset.save()
+                # venda_item_formset.instance = venda
+                # venda_item_formset.save()
                 
                 # Salva os itens da venda
                 for form in venda_item_formset:
