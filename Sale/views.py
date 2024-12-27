@@ -59,7 +59,7 @@ def venda_create(request):
     PaymentMethodVendaFormSet = inlineformset_factory(Venda, PaymentMethod_Venda, form=PaymentMethodVendaForm, extra=1, can_delete=True)
     # VendaItemFormSet = modelformset_factory(VendaItem, form=VendaItemForm, extra=1)
     # PaymentMethodVendaFormSet = modelformset_factory(PaymentMethod_Venda, form=PaymentMethodVendaForm, extra=1)
-    
+
     if request.method == 'POST':
         venda_form = VendaForm(request.POST)
         venda_item_formset = VendaItemFormSet(request.POST)

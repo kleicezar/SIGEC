@@ -144,19 +144,20 @@ function fieldProducts(produtos,product,price){
         }
     })
 }
-// // function deleteItem(){
 
-// // }
-// const client_id = document.getElementById("form-client");
-const input_client = document.getElementById("id_pessoa");
-input_client.addEventListener("input",()=>{
-    const clients = document.getElementById("clients");
-    if (input_client.value.length >=1 && input_client.value != " "){
-        let id_options = 0;
-    
-    const query = input_client.value;
-    console.log(input_client.value)
-    fetch(`/buscar_pessoas/?query=${encodeURIComponent(query)}`)
+
+// EDIÇÃO DE VENDA, IRÁ INVERTER A LÓGICA - O VALOR DO INPUT DE PESSOA SERÁ USADO PARA PREENCHER O INPUT DE PESQUISA DE PESSOA;
+let invertAutoComplete = false;
+const id_pessoa = document.getElementById("id_pessoa");
+const input_client = document.getElementById("idSearch");
+if(id_pessoa.value!=""){
+    invertAutoComplete = !invertAutoComplete;
+}
+
+if(invertAutoComplete){
+    anotherQuery = id_pessoa.value;
+    //MUDAR ISSO PARA BUSCA POR ID;
+    fetch(`/buscar_pessoas/?query=${encodeURIComponent(anotherQuery)}`)
     .then(response=>{
         if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
             return response.json();
@@ -165,29 +166,56 @@ input_client.addEventListener("input",()=>{
         }
     })
     .then(data=>{
-        clients.innerHTML = '';
-        if(data.clientes.length > 0){
-            data.clientes.forEach(cliente=>{
-                if (data.clientes.length < query.length){
-                    selectClient = document.createElement("button");
-                    selectClient.className ="btn btn-outline-secondary form-control";
-                    selectClient.id = `option-${id_options}`
-                    // selectClient.textContent= `${cliente.id} -- ${cliente.name}`
-                    selectClient.textContent= `${cliente.id}`
-                    clients.appendChild(selectClient);
-    
-                    const button = document.getElementById(selectClient.id);
-                    button.addEventListener("click",()=>{
-                        input_client.value = button.textContent ;
-                        console.log(button.textContent)
-                        clients.innerHTML = "";
-                    })
-                    id_options+=1;
-                }
-              
-            })
-        }
+        data.clientes.forEach(cliente=>{
+            input_client.value = `${cliente.id} - ${cliente.name}`
+        
+        })
+
     })
+}
+
+
+// FILTRO IRÁ PREENCHER O CAMPO DE PESQUISA E COLOCAR NO VALOR DE PESSOA O SEU ID
+input_client.addEventListener("input",()=>{
+
+    const clients = document.getElementById("clients");
+    if ((!invertAutoComplete) || (input_client.value.length >=1 && input_client.value != " ")){
+            let id_options = 0;
+            const query = input_client.value;
+            console.log(input_client.value)
+            fetch(`/buscar_pessoas/?query=${encodeURIComponent(query)}`)
+            .then(response=>{
+                if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
+                    return response.json();
+                } else {
+                    throw new Error('Resposta não é JSON');
+                }
+            })
+            .then(data=>{
+                clients.innerHTML = '';
+                if(data.clientes.length > 0){
+                    data.clientes.forEach(cliente=>{
+                        if (data.clientes.length <= query.length){
+                            selectClient = document.createElement("button");
+                            selectClient.className ="btn btn-outline-secondary form-control";
+                            selectClient.id = `option-${id_options}`
+                            selectClient.textContent= `${cliente.id} - ${cliente.name}`
+                            clients.appendChild(selectClient);
+            
+                            const button = document.getElementById(selectClient.id);
+                            button.addEventListener("click",()=>{
+                                input_client.value = button.textContent ;
+                                id_pessoa.value = `${cliente.id}`;
+                                console.log(id_pessoa.value);
+                                clients.innerHTML = "";
+                            })
+                            id_options+=1;
+                        }
+                    
+                    })
+                }
+            })
+        // }
     }else{
         clients.innerHTML = ''
     }
