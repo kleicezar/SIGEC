@@ -50,7 +50,7 @@
                             <!-- <a href="{% url 'venda_update' pk=venda.pk %}">Editar</a>
                             <a href="{% url 'venda_delete' pk=venda.pk %}"class="delete-button" data-id="{{ Position.id }}" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</a> -->
                             <a href="{% url 'venda_update' pk=venda.pk %}">
-                                <button class="btn" style="background-color: #117027;color: white;">Editar</button>
+                                <button class="btn" style="background-color: #117027;color: white;" >Editar</button>
                             </a>
                             <form action="{% url 'venda_delete' pk=venda.pk %}" method="POST" style="display:inline-block;">
                                 {% csrf_token %}
