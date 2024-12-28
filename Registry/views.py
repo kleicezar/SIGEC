@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from .forms import *
 from .models import *
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
 
 
@@ -84,8 +84,6 @@ def Client_Create(request):
     }
     return render(request, 'registry/Clientform.html', context)
 
-
-
 @login_required
 def client_list(request):
     # Cria o formulário de pesquisa
@@ -102,6 +100,7 @@ def client_list(request):
 
     return render(request, 'registry/client_list.html', { 'clients': clients}) #'form': form,
 
+@login_required
 def buscar_clientes(request):
     """Busca clientes dinamicamente e retorna JSON."""
     query = request.GET.get('query', '')  # Recebe a entrada do usuário
@@ -226,6 +225,100 @@ def update_client(request, id_client):
 
     return render(request, 'registry/ClientformUpdate.html', context)
 
+@login_required
+def delete_client(request, id_client):
+    # Recupera o cliente com o id fornecido
+    client = get_object_or_404(Person, id=id_client)
+    client.delete()
+    return redirect('Client')
+
+@login_required
+def get_client(request, id_client):
+    person = Person.objects.get(id=id_client)
+    if person.id_FisicPerson_fk:
+        client = {
+                'id': person.id,
+                'name': ( person.id_FisicPerson_fk.name if person.id_FisicPerson_fk else 'Nome não disponível' ),
+                'cpf': ( person.id_FisicPerson_fk.cpf if person.id_FisicPerson_fk else 'Cadastro de Pessoa Fisica - CPF indisponível'),
+                'rg': ( person.id_FisicPerson_fk.rg if person.id_FisicPerson_fk else 'Registro Geral - RG indisponível'),
+                'dateOfBirth': ( person.id_FisicPerson_fk.dateOfBirth if person.id_FisicPerson_fk else 'Data de Aniversario indisponível'),
+                'WorkPhone': person.WorkPhone,
+                'PersonalPhone': person.PersonalPhone,
+                'Site': person.site if person.site else 'Não Informado',
+                'Salesman': person.salesman if person.salesman else 'Não Informado',
+                'CreditLimit': person.creditLimit if person.creditLimit else 'Não Informado',
+                'id_FisicPerson_fk': 1,
+                }
+    if person.id_LegalPerson_fk:
+        client = {
+                'id': person.id,
+                'name': ( person.id_LegalPerson_fk.fantasyName if person.id_LegalPerson_fk else 'Nome indisponível'),
+                'cnpj':( person.id_LegalPerson_fk.cnpj if person.id_LegalPerson_fk else 'CNPJ indisponível'),
+                'socialReason':( person.id_LegalPerson_fk.socialReason if person.id_LegalPerson_fk else 'Razão Social indisponível'),
+                'StateRegistration':( person.id_LegalPerson_fk.StateRegistration if person.id_LegalPerson_fk else 'Inscrição Estadual indisponível'),
+                'typeOfTaxpayer':( person.id_LegalPerson_fk.typeOfTaxpayer if person.id_LegalPerson_fk else 'Tipo de Contribuinte indisponível'),
+                'MunicipalRegistration':( person.id_LegalPerson_fk.MunicipalRegistration if person.id_LegalPerson_fk else 'Inscrição Municipal indisponível'),
+                'suframa':( person.id_LegalPerson_fk.suframa if person.id_LegalPerson_fk else 'Numero da Suframa indisponível'),
+                'Responsible':( person.id_LegalPerson_fk.Responsible if person.id_LegalPerson_fk else 'Nome do Responsavel indisponível'),
+                'WorkPhone': person.WorkPhone,
+                'PersonalPhone': person.PersonalPhone,
+                'Site': person.site if person.site else 'Não Informado',
+                'Salesman': person.salesman if person.salesman else 'Não Informado',
+                'CreditLimit': person.creditLimit if person.creditLimit else 'Não Informado',
+                'id_LegalPerson_fk': 1,
+            }
+        
+    if person.id_ForeignPerson_fk:
+        client = {
+                'id': person.id,
+                'name_foreigner': ( person.id_ForeignPerson_fk.name_foreigner if person.id_ForeignPerson_fk else 'Nome não disponível'),
+                'num_foreigner': ( person.id_ForeignPerson_fk.num_foreigner if person.id_ForeignPerson_fk else 'Numero do Documento Estrangeiro não disponível'),
+                'WorkPhone': person.WorkPhone,
+                'PersonalPhone': person.PersonalPhone,
+                'Site': person.site if person.site else 'Não Informado',
+                'Salesman': person.salesman if person.salesman else 'Não Informado',
+                'CreditLimit': person.creditLimit if person.creditLimit else 'Não Informado',
+                'id_ForeignPerson_fk': 1,
+            }
+        
+
+    print('-------------------')
+    # print(client.id_FisicPerson_fk | None)
+    # print(client.id_LegalPerson_fk | None)
+    # print(client.id_ForeignPerson_fk | None)
+    print(client)
+    print('-------------------')
+
+        # clients = Person.objects.filter( Q(id__icontains=query) | 
+        # Q(id_FisicPerson_fk__name__icontains=query) | 
+        # Q(id_ForeignPerson_fk__name_foreigner__icontains=query) | 
+        # Q(id_LegalPerson_fk__fantasyName__icontains=query))
+        
+
+    #     form_address = AddressForm(request.POST, instance=address)
+    #     form_fisicPerson = FisicPersonForm(request.POST, instance=fisicPerson)
+    #     form_legalPerson = LegalPersonModelForm(request.POST, instance=legalPerson)
+    #     form_foreigner = ForeignerModelForm(request.POST, instance=foreigner)
+    #     form_Person = PersonForm(request.POST, instance=person)
+    # else:
+    #     form = CombinedForm()
+
+    # client = [
+    #     {
+    #         'id': person.id,
+    #         'name': (    person.id_FisicPerson_fk.name if person.id_FisicPerson_fk else 
+    #                     (person.id_ForeignPerson_fk.name_foreigner if person.id_ForeignPerson_fk else 
+    #                     (person.id_LegalPerson_fk.fantasyName if person.id_LegalPerson_fk else 'Nome não disponível'))),
+    #         'WorkPhone': person.WorkPhone,
+    #         'PersonalPhone': person.PersonalPhone,
+    #         'Site': person.site if person.site else 'Não Informado',
+    #         'Salesman': person.salesman if person.salesman else 'Não Informado',
+    #         'CreditLimit': person.salesman if person.salesman else 'Não Informado',
+    #         }
+    #     ]
+
+    return render(request, 'registry/Client_Get.html', {'client': client})
+    return HttpResponse(client)
 
 # @login_required
 # def update_client(request, id_client):
@@ -273,24 +366,5 @@ def update_client(request, id_client):
 #     else:
 #         # No método GET, passamos as instâncias para carregar os dados
 #         form = CombinedForm(address_instance=address, fisic_person_instance=fisic_person, client_instance=client)
-
-#     return render(request, 'config/create_client_form.html', {'form': form})
-
-@login_required
-def delete_client(request, id_client):
-    # Recupera o cliente com o id fornecido
-    client = get_object_or_404(Person, id=id_client)
-    client.delete()
-    return redirect('Client')
-
-# @login_required
-# def create_client(request):
-#     if request.method == 'POST':
-#         form = CombinedForm(request.POST)
-#         if form.is_valid():
-#             form.save()  # Salva o endereço, pessoa física e cliente
-#             return redirect('Client')  # Redireciona para a lista de clientes, ou página de sucesso
-#     else:
-#         form = CombinedForm()
 
 #     return render(request, 'config/create_client_form.html', {'form': form})
