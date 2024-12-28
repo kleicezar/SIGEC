@@ -227,13 +227,15 @@ def client_search(request):
 def product_search(request):
     query = request.GET.get('query','')
     resultados = Product.objects.filter(
-
-        Q(id__icontains=query)
+        Q(product_code__icontains=query) |
+        Q(description__icontains=query)
     ).order_by('id'[:5])
 
     products = [
         {
             'id':produto.id,
+            'product_code':produto.product_code,
+            'description':produto.description,
             'cost_of_product':produto.cost_of_product
         }
         for produto in resultados

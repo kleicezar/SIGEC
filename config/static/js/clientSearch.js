@@ -1,7 +1,7 @@
 
 // TOTAL VALOR DE FORMULARIO DE ITENS;
 
-const item_forms = document.querySelectorAll('.item-form')
+const item_forms = document.querySelectorAll('.item-form');
 
 let allTrs = [];
 let index = 0;
@@ -14,11 +14,11 @@ item_forms.forEach(itemForm=>{
 
     const product_0 = document.getElementById(`id_vendaitem_set-${index}-product`);
     const produtos_0 = document.getElementById(`products-${index}`);
-
+    const idProduct = document.getElementById("idProduct-0");
 
 
     // MONITORAR A ALTERAÇÃO DE VALORES PARA MUDAR O VALOR TOTAL
-    fieldProducts(produtos_0,product_0,price);
+    fieldProducts(produtos_0,idProduct,product_0,price);
     console.log(delet);
 
     item = itemForm.querySelector("tbody tr");
@@ -95,11 +95,11 @@ itemButton.addEventListener('click',()=>{
     })
 
 
-function fieldProducts(produtos,product,price){
-    product.addEventListener("input",()=>{
-        if(product.value.length >=1){
+function fieldProducts(produtos,inputSearch,product,price){
+    inputSearch.addEventListener("input",()=>{
+        if(inputSearch.value.length >=1){
             let id_options = 0;
-            const query = product.value;
+            const query = inputSearch.value;
             console.log(query);
             fetch(`/buscar_produtos/?query=${encodeURIComponent(query)}`)
             .then(response=>{
@@ -114,20 +114,23 @@ function fieldProducts(produtos,product,price){
                 produtos.innerHTML = " ";
                 if(data.produtos.length > 0){
                     data.produtos.forEach(produto=>{
-                        if (data.produtos.length < query.length){
+                        if (data.produtos.length <= query.length){
                             selectProduct = document.createElement("button");
                             selectProduct.className = "btn btn-outline-secondary form-control";
                             selectProduct.id = `option-${id_options}`;
     
-                            selectProduct.textContent = `${produto.id}`;
+                            selectProduct.textContent = `${produto.product_code} - ${produto.description}`;
                             produtos.appendChild(selectProduct);
     
                             const button = document.getElementById(selectProduct.id);
                             button.addEventListener("click",()=>{
-                                product.value = button.textContent;
+                                product.value = produto.id;
+                                console.log(product.value);
+                                inputSearch.value = button.textContent;
                                 produtos.innerHTML = "";
-    
                                 price.value = produto.cost_of_product;
+                                
+
                             })
                             id_options+=1;
                         }
