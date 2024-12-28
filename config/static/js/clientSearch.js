@@ -51,7 +51,7 @@ itemButton.addEventListener('click',()=>{
             // MOSTRAS OS PRODUTOS REQUISITADOS
             const product = document.getElementById(`id_vendaitem_set-${index}-product`);
             const produtos = document.getElementById(`products-${index}`);
-
+            const searchProduct = document.getElementById(`idProduct-${index}`)
             // MONITORAR A ALTERAÇÃO DE VALORES PARA MUDAR O VALOR TOTAL
             let discount = itemForm.querySelector("td .descont");
             let totalValue = itemForm.querySelector("td .totalValue");
@@ -76,7 +76,7 @@ itemButton.addEventListener('click',()=>{
             })
 
 
-            fieldProducts(produtos,product,price);
+            fieldProducts(produtos,searchProduct,product,price);
 
             
             // DELETAR UM ITEM 

@@ -58,7 +58,9 @@ function addItem() {
     // Cria ids para identificação da area em que sera requisitado os produtos pelo filtro do campo product
     formCountElem.value = parseInt(formCount) + 1;
     field_product=  newForm.querySelector(".field-product ");
+    input_product = newForm.querySelector(".inputProduct");
     field_product.id = `products-${formCount}`;
+    input_product.id = `idProduct-${formCount}`
     console.log(field_product)
     formset.appendChild(newForm);
     
