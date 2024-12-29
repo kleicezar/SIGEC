@@ -9,6 +9,7 @@ urlpatterns = [
     path('b-prsn/', buscar_clientes, name='buscar_clientes'),
     path('prsn/upt/<int:id_client>/', update_client, name='update_client'),  # Atualizar cliente
     path('prsn/del/<int:id_client>/', delete_client, name='delete_client'),
+    path('prsn/get/<int:id_client>/', get_client, name='get_client'),
 
     # path('tcnch/', Technician_list, name='Technician'),
     # path('c/tcnch/', Technician_Create, name='Technician_Create'),
