@@ -11,6 +11,12 @@ class VendaForm(forms.ModelForm):
             }),
             'data_da_venda':forms.DateTimeInput(attrs={
                 'class':'form-control row' 
+            }),
+            'observacao_pessoas':forms.Textarea(attrs={
+                'class':'form-control row'
+            }),
+            'observacao_sistema':forms.Textarea(attrs={
+                'class':'form-control row'
             })
         }
 
@@ -67,5 +73,12 @@ class PaymentMethodVendaForm(forms.ModelForm):
         widgets = {
             'forma_pagamento':forms.TextInput(attrs={
                 'class':'form-control row'
+            }),
+            'expirationDate':forms.TextInput(attrs={
+                'class':'form-control row mask-date'
+            }),
+            'valor':forms.NumberInput(attrs={
+                'class':'form-control row',
+                'min':0
             })
         }
