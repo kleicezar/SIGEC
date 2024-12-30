@@ -62,9 +62,12 @@ def venda_create(request):
 
     if request.method == 'POST':
         venda_form = VendaForm(request.POST)
+       
         venda_item_formset = VendaItemFormSet(request.POST)
         payment_method_formset = PaymentMethodVendaFormSet(request.POST)
         
+
+        # Percorrer VendaForm, manipular,
 
         if venda_form.is_valid() and venda_item_formset.is_valid() and payment_method_formset.is_valid():
             estoque_suficiente = True
@@ -75,43 +78,57 @@ def venda_create(request):
                     if produto.current_quantity < quantidade:
                         estoque_suficiente = False
                         form.add_error('quantidade', f'Não há estoque suficiente para o produto {produto.description}. Estoque disponível: {produto.current_quantity}.')
-            
+
+            # venda = venda_form.save(commit=False)
+            # venda_item_formset.instance = venda
+            # for obj in payment_method_formset.deleted_objects:
+            #         obj.delete()
+
             if estoque_suficiente:
                 venda = venda_form.save()
 
-                # venda_item_formset.instance = venda
-                # venda_item_formset.save()
                 
                 # Salva os itens da venda
                 for form in venda_item_formset:
                     if form.cleaned_data:
                         produto = form.cleaned_data['product']
                         quantidade = form.cleaned_data['quantidade']
-                        preco_unitario = form.cleaned_data['preco_unitario']
-                        
-                        VendaItem.objects.create(
-                            venda=venda,
-                            product=produto,
-                            quantidade=quantidade,
-                            preco_unitario=preco_unitario
-                        )
+                        # preco_unitario = form.cleaned_data['preco_unitario']
+                        # VendaItem.objects.create(
+                        #     venda=venda,
+                        #     product=produto,
+                        #     quantidade=quantidade,
+                        #     preco_unitario=preco_unitario
+                        # )
                         
                         produto.current_quantity -= quantidade
                         produto.save()
-
+                        venda_item_formset.instance = venda
+                        venda_item_formset.save()
+                        for form in venda_item_formset.deleted_objects:
+                            form.delete()
+                            form.save()
                 # Salva as formas de pagamento associadas à venda
-                for form in payment_method_formset:
-                    if form.cleaned_data:
-                        forma_pagamento = form.cleaned_data['forma_pagamento']
-                        expiration_date = form.cleaned_data['expirationDate']
-                        valor = form.cleaned_data['valor']
+
+
+                payment_method_formset.instance = venda
+                payment_method_formset.save()
+                for form in payment_method_formset.deleted_objects:
+                    form.delete()
+                    form.save()
+               
+                # for form in payment_method_formset:
+                #     if form.cleaned_data:
+                #         forma_pagamento = form.cleaned_data['forma_pagamento']
+                #         expiration_date = form.cleaned_data['expirationDate']
+                #         valor = form.cleaned_data['valor']
                         
-                        PaymentMethod_Venda.objects.create(
-                            venda=venda,
-                            forma_pagamento=forma_pagamento,
-                            expirationDate=expiration_date,
-                            valor=valor
-                        )
+                #         PaymentMethod_Venda.objects.create(
+                #             venda=venda,
+                #             forma_pagamento=forma_pagamento,
+                #             expirationDate=expiration_date,
+                #             valor=valor
+                #         )
                 
                 return redirect('venda_list')
         
@@ -252,3 +269,4 @@ def product_search(request):
 #     nome = request.GET.get('pessoa', '')
     # vendas = Person.objects.filter(WorkPhone__icontains=nome).values('WorkPhone')
     # return JsonResponse({'pessoas': list(vendas)})
+
