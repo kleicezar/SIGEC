@@ -17,6 +17,9 @@ class VendaForm(forms.ModelForm):
             }),
             'observacao_sistema':forms.Textarea(attrs={
                 'class':'form-control row'
+            }),
+            'situacao':forms.Select(attrs={
+                'class':'form-select row'
             })
         }
 
@@ -71,8 +74,8 @@ class PaymentMethodVendaForm(forms.ModelForm):
         model = PaymentMethod_Venda
         fields = ['forma_pagamento', 'expirationDate', 'valor']
         widgets = {
-            'forma_pagamento':forms.TextInput(attrs={
-                'class':'form-control row'
+            'forma_pagamento':forms.Select(attrs={
+                'class':'form-select row'
             }),
             'expirationDate':forms.TextInput(attrs={
                 'class':'form-control row mask-date'

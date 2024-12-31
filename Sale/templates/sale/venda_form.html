@@ -25,7 +25,7 @@
                     {% csrf_token %}
                 
                     <!-- Formulário de Venda -->
-                    <h5>Dados da Venda</h5>
+                    <h6>Dados da Venda</h6>
                     <!-- {{ venda_form.as_p }} -->
                     <table class="table">
                         <thead>
@@ -62,7 +62,7 @@
                     </table>
                     
                     <!-- Itens de Venda -->
-                    <h5>Itens de Venda</h5>
+                    <h6>Itens de Venda</h6>
                     <div id="itens-container">      
                         {{ venda_item_formset.management_form }}
                         {% for form in venda_item_formset %}
@@ -165,7 +165,7 @@
                     <button id="item" type="button" onclick="addItem()" class="btn btn-outline-success mb-5">Adicionar Item</button>
                 
                     <!-- Formas de Pagamento -->
-                    <h5>Formas de Pagamento</h5>
+                    <h6>Formas de Pagamento</h6>
                     <div id="payment-method-container">
                         {{ payment_method_formset.management_form }}
                         {% for form in payment_method_formset %}
