@@ -2,7 +2,7 @@
 const input = document.getElementById("searchInput");
 const resultsContainer = document.getElementById("results");
 const messageContainer = document.getElementById("messageContainer");  // Elemento onde a mensagem será exibida
-// const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
 input.addEventListener("input", () => {
     const query = input.value;
@@ -33,15 +33,19 @@ input.addEventListener("input", () => {
                     <td>${cliente.name || "N/A"}</td>
                     <td>${cliente.WorkPhone || "N/A"}</td>
                     <td>${cliente.PersonalPhone || "N/A"}</td>
-                    <td>
-                        <a href="/prsn/upt/${cliente.id}">
-                            <button class="btn" style="background-color: #117027;color: white;">Editar</button>
-                        </a>
-                        <form action="/prsn/del/${cliente.id}" method="POST" style="display:inline-block;">
-                            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                    <td> 
+                        <form action="/prsn/get/${cliente.id}/" method="GET" style="display:inline-block;">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
+                            <button type="submit" class="btn" style="background-color: #117027;color: white;">Visualizar</button>
+                        </form>
+                        <form action="/prsn/upt/${cliente.id}/" method="GET" style="display:inline-block;">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
+                            <button type="submit" class="btn" style="background-color: #117027;color: white;">Editar</button>
+                        </form>
+                        <form action="/prsn/del/${cliente.id}/" method="POST" style="display:inline-block;">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
                             <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
                         </form>
-
                     </td>
                 `;
                 resultsContainer.appendChild(row);
@@ -82,3 +86,4 @@ input.addEventListener("input", () => {
     <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
 </form>
 </td> */}
+

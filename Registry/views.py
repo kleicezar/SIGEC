@@ -8,6 +8,7 @@ from .forms import *
 from .models import *
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
+from django.core.paginator import Paginator
 
 
 # ### CLIENT
@@ -90,15 +91,19 @@ def client_list(request):
     form = ClientSearchForm(request.GET)
 
     # Se o formulário for válido e contiver um valor de pesquisa
-    if form.is_valid() and form.cleaned_data.get('search'):
-        search_term = form.cleaned_data['search']
-        # Filtra os clientes pelo nome (ou outro campo desejado)
-        clients = Person.objects.filter(id_FisicPerson_fk__name__icontains=search_term)
-    else:
-        # Caso contrário, exibe todos os clientes
-        clients = Person.objects.all()
+    # if form.is_valid() and form.cleaned_data.get('search'):
+    #     search_term = form.cleaned_data['search']
+    #     # Filtra os clientes pelo nome (ou outro campo desejado)
+    #     clients = Person.objects.filter(id_FisicPerson_fk__name__icontains=search_term)
+    # else:
+    #     # Caso contrário, exibe todos os clientes
+    clients = Person.objects.all()
 
-    return render(request, 'registry/client_list.html', { 'clients': clients}) #'form': form,
+    usuario_paginator = Paginator(clients,20)
+    page_num = request.GET.get('page')
+    page = usuario_paginator.get_page(page_num)
+    print(page)
+    return render(request, 'registry/client_list.html', { 'clients': page}) #'form': form,
 
 @login_required
 def buscar_clientes(request):
@@ -109,7 +114,7 @@ def buscar_clientes(request):
         Q(id_FisicPerson_fk__name__icontains=query) | 
         Q(id_ForeignPerson_fk__name_foreigner__icontains=query) | 
         Q(id_LegalPerson_fk__fantasyName__icontains=query)
-    ).order_by('id')[:5]  # Limita os resultados a 5
+    ).order_by('id')[:20]  # Limita os resultados a 5
 
     if not resultados:
         return JsonResponse({'clientes': [], 'message': 'Nenhum cliente encontrado.'})
