@@ -87,27 +87,27 @@ def venda_create(request):
             if estoque_suficiente:
                 venda = venda_form.save()
 
-                
+                # venda_item_formset.instance = venda
+                # venda_item_formset.save()
                 # Salva os itens da venda
                 for form in venda_item_formset:
                     if form.cleaned_data:
                         produto = form.cleaned_data['product']
                         quantidade = form.cleaned_data['quantidade']
-                        # preco_unitario = form.cleaned_data['preco_unitario']
-                        # VendaItem.objects.create(
-                        #     venda=venda,
-                        #     product=produto,
-                        #     quantidade=quantidade,
-                        #     preco_unitario=preco_unitario
-                        # )
-                        
-                        produto.current_quantity -= quantidade
-                        produto.save()
-                        venda_item_formset.instance = venda
-                        venda_item_formset.save()
-                        for form in venda_item_formset.deleted_objects:
-                            form.delete()
-                            form.save()
+                        preco_unitario = form.cleaned_data['preco_unitario']
+                        if not form.cleaned_data.get("DELETE"):
+                            VendaItem.objects.create(
+                                venda=venda,
+                                product=produto,
+                                quantidade=quantidade,
+                                preco_unitario=preco_unitario
+                            )
+                            
+                            produto.current_quantity -= quantidade
+                            produto.save()
+                        # for form in venda_item_formset.deleted_objects:
+                        #     form.delete()
+                        #     form.save()
                 # Salva as formas de pagamento associadas à venda
 
 

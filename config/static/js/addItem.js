@@ -79,7 +79,6 @@ function addItem() {
             tbody.style.display = "none";
             const deleteField = tr.querySelector('input[type="hidden"][name$="-DELETE"]');
             deleteField.value = "on";
-
         });
     });
 
