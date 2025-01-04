@@ -1,4 +1,3 @@
-
 const input = document.getElementById("searchInput");
 const resultsContainer = document.getElementById("results");
 const messageContainer = document.getElementById("messageContainer");  // Elemento onde a mensagem será exibida
@@ -25,6 +24,8 @@ input.addEventListener("input", () => {
             messageContainer.innerHTML = `<p>${data.message}</p>`;
         }
         
+        // input.value = query;
+
         if (data.clientes.length > 0) {
             data.clientes.forEach(cliente => {
                 const row = document.createElement("tr");
@@ -51,39 +52,29 @@ input.addEventListener("input", () => {
                 resultsContainer.appendChild(row);
             });
         }
+        paginationContainer.innerHTML = ""; // Limpa os links de paginação anteriores  search_client
+        // search_client.innerHTML = ""; // Limpa os links de paginação anteriores
+
+        if (data.pagination) {
+            const { has_previous, has_next, previous_page, next_page } = data.pagination;
+            if (has_previous) {
+                const prevLink = document.createElement("a");
+                // Inclui o parâmetro 'query' na URL para a navegação anterior
+                prevLink.href = `/prsn/?page=${previous_page}&query=${encodeURIComponent(query)}`;
+                prevLink.textContent = "Anterior";
+                prevLink.className = "pagination-link";
+                paginationContainer.appendChild(prevLink);
+            }
+            
+            if (has_next) {
+                const nextLink = document.createElement("a");
+                // Inclui o parâmetro 'query' na URL para a navegação próxima
+                nextLink.href = `/prsn/?page=${next_page}&query=${encodeURIComponent(query)}`;
+                nextLink.textContent = "Próximo";
+                nextLink.className = "pagination-link";
+                paginationContainer.appendChild(nextLink);
+            }
+        }
     })
     .catch(error => console.error("Erro ao buscar clientes:", error));
 });
-
-// const config = document.getElementById('config');
-// const updateUrl = config.dataset.updateUrl;
-// const deleteUrl = config.dataset.deleteUrl;
-//bateria 75 650,00 consumidor final
-// // Substituir 0 pelo cliente.id ao gerar as URLs
-// row.innerHTML = `
-//     <td>${cliente.id}</td>
-//     <td>${cliente.name || "N/A"}</td>
-//     <td>${cliente.WorkPhone || "N/A"}</td>
-//     <td>${cliente.PersonalPhone || "N/A"}</td>
-//     <td>
-//         <form action="${updateUrl.replace('0', cliente.id)}" method="POST" style="display:inline-block;">
-//             <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
-//             <button type="submit" class="btn" style="background-color: #117027;color: white;">Editar</button>
-//         </form>
-//         <form action="${deleteUrl.replace('0', cliente.id)}" method="POST" style="display:inline-block;">
-//             <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
-//             <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
-//         </form>
-//     </td>
-// `;
-
-{/* <td>
-<a href="/prsn/upt/${cliente.id}">
-    <button class="btn" style="background-color: #117027;color: white;">Editar</button>
-</a>
-<form action="/prsn/del/${cliente.id}" method="POST" style="display:inline-block;">
-    <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
-    <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
-</form>
-</td> */}
-

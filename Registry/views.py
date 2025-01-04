@@ -87,53 +87,77 @@ def Client_Create(request):
 
 @login_required
 def client_list(request):
-    # Cria o formulário de pesquisa
-    form = ClientSearchForm(request.GET)
+    # Obtenha o termo de pesquisa da requisição
+    search_query = request.GET.get('query', '')
 
-    # Se o formulário for válido e contiver um valor de pesquisa
-    # if form.is_valid() and form.cleaned_data.get('search'):
-    #     search_term = form.cleaned_data['search']
-    #     # Filtra os clientes pelo nome (ou outro campo desejado)
-    #     clients = Person.objects.filter(id_FisicPerson_fk__name__icontains=search_term)
-    # else:
-    #     # Caso contrário, exibe todos os clientes
-    clients = Person.objects.all()
+    # Filtrar os clientes com base no termo de pesquisa
+    if search_query:
+        clients = Person.objects.filter(
+        Q(id__icontains=search_query) | 
+        Q(id_FisicPerson_fk__name__icontains=search_query) | 
+        Q(id_ForeignPerson_fk__name_foreigner__icontains=search_query) | 
+        Q(id_LegalPerson_fk__fantasyName__icontains=search_query)
+    ).order_by('id')
+    else:
+        clients = Person.objects.all()
 
-    usuario_paginator = Paginator(clients,20)
-    page_num = request.GET.get('page')
-    page = usuario_paginator.get_page(page_num)
-    print(page)
-    return render(request, 'registry/client_list.html', { 'clients': page}) #'form': form,
+    # Configure o Paginator com o queryset filtrado
+    paginator = Paginator(clients, 20)  # 5 itens por página
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+
+    return render(request, 'registry/client_list.html', {
+        'clients': page,
+        'query': search_query,  # Envie o termo de pesquisa para o template
+    })
+
 
 @login_required
 def buscar_clientes(request):
-    """Busca clientes dinamicamente e retorna JSON."""
-    query = request.GET.get('query', '')  # Recebe a entrada do usuário
+    # """Busca clientes dinamicamente, retorna dados paginados em JSON."""
+    query = request.GET.get('query', '').strip()  # Recebe a entrada do usuário
+    page_num = request.GET.get('page', 1)  # Número da página atual
+
+    # Realiza a busca com base no termo de pesquisa
     resultados = Person.objects.filter(
         Q(id__icontains=query) | 
         Q(id_FisicPerson_fk__name__icontains=query) | 
         Q(id_ForeignPerson_fk__name_foreigner__icontains=query) | 
         Q(id_LegalPerson_fk__fantasyName__icontains=query)
-    ).order_by('id')[:20]  # Limita os resultados a 5
+    ).order_by('id')
 
-    if not resultados:
-        return JsonResponse({'clientes': [], 'message': 'Nenhum cliente encontrado.'})
-
+    # Serializa os resultados em uma lista de dicionários
     clients = [
         {
             'id': cliente.id,
             'name': (
-                    cliente.id_FisicPerson_fk.name if cliente.id_FisicPerson_fk else 
-                    (cliente.id_ForeignPerson_fk.name_foreigner if cliente.id_ForeignPerson_fk else 
-                    (cliente.id_LegalPerson_fk.fantasyName if cliente.id_LegalPerson_fk else 'Nome não disponível'))),
+                cliente.id_FisicPerson_fk.name if cliente.id_FisicPerson_fk else 
+                (cliente.id_ForeignPerson_fk.name_foreigner if cliente.id_ForeignPerson_fk else 
+                (cliente.id_LegalPerson_fk.fantasyName if cliente.id_LegalPerson_fk else 'Nome não disponível'))),
             'WorkPhone': cliente.WorkPhone,
             'PersonalPhone': cliente.PersonalPhone,
-
         }
         for cliente in resultados
     ]
-    return JsonResponse({'clientes': clients})
-    # return render(request, 'registry/client_list.html', { 'clients': clients})
+
+    # Paginação
+    usuario_paginator = Paginator(clients, 20)  # 20 resultados por página
+    page = usuario_paginator.get_page(page_num)
+
+    # Constrói a resposta JSON
+    response_data = {
+        'clientes': list(page.object_list),
+        'pagination': {
+            'has_previous': page.has_previous(),
+            'previous_page': page.previous_page_number() if page.has_previous() else None,
+            'has_next': page.has_next(),
+            'next_page': page.next_page_number() if page.has_next() else None,
+            'current_page': page.number,
+            'total_pages': usuario_paginator.num_pages,
+        },
+        'message': f"{len(clients)} Clientes encontrados." if page.object_list else "Nenhum cliente encontrado."
+    }
+    return JsonResponse(response_data)
 
 @login_required
 def update_client(request, id_client):

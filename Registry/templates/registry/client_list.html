@@ -27,8 +27,8 @@
                             <div class="col">
                                 <label for="" class="">{{form.search.label}}</label>
                                 {{form.search}}
-                                <div class="col-sm-8">
-                                    <input type="text" id="searchInput"  class="search-input"> <!-- onkeyup="searchInput()" -->
+                                <div class="col-sm-8" id="search_client">
+                                    <input type="text" id="searchInput"  class="search-input" value="{{ request.GET.query }}"> <!-- onkeyup="searchInput()" -->
                                     <!-- <input type="text" id="search" name="search" class="form-control" placeholder="Digite o nome do cliente" value="{{ request.GET.search }}"> -->
                                     <!-- <input type="text" id="searchBox" placeholder="Pesquise um cliente..."> -->
                                 </div>
@@ -85,12 +85,12 @@
                 {% endfor %}
                 </tbody>
             </table>
-            <div>
+            <div id="paginationContainer">
                 {% if clients.has_previous %}
-                <a href="{% url 'Client' %}?page={{ clients.previous_page_number }}">Anterior</a>
+                <a href="{% url 'Client' %}?page={{ clients.previous_page_number }}&query={{ query }}">Anterior</a>
                 {% endif %}
                 {% if clients.has_next %}
-                <a href="{% url 'Client' %}?page={{ clients.next_page_number }}">Proximo</a>
+                <a href="{% url 'Client' %}?page={{ clients.next_page_number }}&query={{ query  }}">Proximo</a>
                 {% endif %}
             </div>
         </div> 

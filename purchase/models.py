@@ -41,6 +41,8 @@ class CompraItem(models.Model):
     produto = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, verbose_name="Produto")
     quantidade = models.PositiveIntegerField(verbose_name="Quantidade do Produto")
     preco_unitario = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Preço Unitário")
+    total_value = models.DecimalField(max_digits=10, decimal_places=2) # valor total do produto
+    discount_percentage = models.DecimalField(max_digits=5, decimal_places=2) # porcentagem aplicada no produto
 
     # Calcula o total automaticamente ao salvar a instância
     def save(self, *args, **kwargs):
