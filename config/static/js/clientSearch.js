@@ -26,19 +26,27 @@ item_forms.forEach(itemForm=>{
             
     
     discount.addEventListener("input",()=>{
-        console.log('OLHA O DESCONTO:',discount.value);
-        totalValue.value = (((discount.value/100)*price.value)*mount.value).toFixed(2);
+        if(discount.value != 0){
+            totalValue.value = ((price.value - ((discount.value/100) * price.value))*mount.value).toFixed(2);
+        } else {
+            totalValue.value = (price.value*mount.value).toFixed(2);
+        }
     });
 
     mount.addEventListener("input",()=>{
-        totalValue.value = (((discount.value/100)*price.value)*mount.value).toFixed(2);
-        console.log('OLHA A QUANTIDADE',mount.value);
+        if(discount.value != 0){
+            totalValue.value = ((price.value - ((discount.value/100) * price.value))*mount.value).toFixed(2);
+        } else {
+            totalValue.value = (price.value*mount.value).toFixed(2);
+        }
     });
 
     price.addEventListener("input",()=>{
-        totalValue.value = (((discount.value/100)*price.value)*mount.value).toFixed(2);
-        console.log('OLHA O PRECO',price.value);
-       
+        if(discount.value != 0){
+            totalValue.value = ((price.value - ((discount.value/100) * price.value))*mount.value).toFixed(2);
+        } else {
+            totalValue.value = (price.value*mount.value).toFixed(2);
+        }
     })
 })
 
