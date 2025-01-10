@@ -123,6 +123,7 @@ function fieldProducts(produtos,inputSearch,product,price){
                 if(data.produtos.length > 0){
                     data.produtos.forEach(produto=>{
                         if (data.produtos.length <= query.length){
+                            console.log(container_options);
                             selectProduct = document.createElement("button");
                             selectProduct.className = "btn btn-outline-secondary form-control";
                             selectProduct.id = `option-${id_options}`;
@@ -189,7 +190,7 @@ if(invertAutoComplete){
 // FILTRO IRÁ PREENCHER O CAMPO DE PESQUISA E COLOCAR NO VALOR DE PESSOA O SEU ID
 input_client.addEventListener("input",()=>{
 
-    const clients = document.getElementById("clients");
+    let container_options = document.getElementById(`options-1`);
     if ((!invertAutoComplete) || (input_client.value.length >=1 && input_client.value != " ")){
             let id_options = 0;
             const query = input_client.value;
@@ -203,22 +204,24 @@ input_client.addEventListener("input",()=>{
                 }
             })
             .then(data=>{
-                clients.innerHTML = '';
+                container_options.innerHTML = '';
                 if(data.clientes.length > 0){
                     data.clientes.forEach(cliente=>{
                         if (data.clientes.length <= query.length){
+                            container_options = document.getElementById(`options-1`);
+
                             selectClient = document.createElement("button");
                             selectClient.className ="btn btn-outline-secondary form-control";
                             selectClient.id = `option-${id_options}`
                             selectClient.textContent= `${cliente.id} - ${cliente.name}`
-                            clients.appendChild(selectClient);
+                            container_options.appendChild(selectClient);
             
                             const button = document.getElementById(selectClient.id);
                             button.addEventListener("click",()=>{
                                 input_client.value = button.textContent ;
                                 id_pessoa.value = `${cliente.id}`;
                                 console.log(id_pessoa.value);
-                                clients.innerHTML = "";
+                                container_options.innerHTML = "";
                             })
                             id_options+=1;
                         }
@@ -228,7 +231,7 @@ input_client.addEventListener("input",()=>{
             })
         // }
     }else{
-        clients.innerHTML = ''
+        container_options.innerHTML = ''
     }
     
 
