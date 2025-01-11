@@ -203,8 +203,9 @@
                                             <td>{{form.expirationDate}}</td>
                                             <td>{{form.valor}}</td>
                                             <td>
-                                                <label for="">Deletar</label>
-                                                {{form.DELETE}}</td>
+                                                <!-- <label for="">Deletar</label> -->
+                                                <button type="button" class="btn btn-danger delete" >Deletar</button>
+                                                {{ form.DELETE.as_hidden }}
                                         </tr>
                                     </tbody>
                                   </table>
@@ -254,8 +255,8 @@
                             <td>{{payment_method_formset.empty_form.expirationDate}}</td>
                             <td>{{payment_method_formset.empty_form.valor}}</td>
                             <td>
-                                <label for="">Deletar</label>
-                                {{payment_method_formset.empty_form.DELETE}}
+                                <button type="button" class="btn btn-danger delete">Deletar</button>
+                                {{payment_method_formset.empty_form.DELETE.as_hidden}}</td>
                             </td>
                         </tr>
                     </tbody>

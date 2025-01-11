@@ -116,6 +116,24 @@ function addPaymentMethod() {
 
     formCountElem.value = parseInt(formCount) + 1;
     container.appendChild(newForm);
+
+    const payments = container.querySelectorAll(".form-row");
+
+    payments.forEach(payment=>{
+        const table_payment = payment.querySelector("table");
+        console.log(table_payment);
+        const tbody_payment = table_payment.querySelector("tbody");
+        const tr_payment = tbody_payment.querySelector("tr");
+        const delet_payment = tr_payment.querySelector(".delete");
+
+        delet_payment.addEventListener("click",()=>{
+            tbody_payment.style.display = "none";
+            const deleteFieldPayment = tr_payment.querySelector('input[type="hidden"][name$="-DELETE"]');
+            deleteFieldPayment.value="on";
+            console.log(deleteFieldPayment);
+            console.log(deleteFieldPayment.value);
+        })
+    })
 }
 
 
@@ -146,6 +164,9 @@ function addItemCompra() {
 
     formCountElem.value = parseInt(formCount) + 1;
     formset.appendChild(newForm);
+
+
+    
 }
 
 function addPaymentMethodCompra() {
