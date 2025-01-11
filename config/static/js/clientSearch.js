@@ -3,10 +3,8 @@
 
 const item_forms = document.querySelectorAll('.item-form');
 
-let allTrs = [];
 let index = 0;
 item_forms.forEach(itemForm=>{
-    let delet = document.querySelector('.delete');
     let mount = document.getElementById(`id_vendaitem_set-${index}-quantidade`);
     let price = document.getElementById(`id_vendaitem_set-${index}-preco_unitario`);
     let discount = itemForm.querySelector('td .descont');
@@ -19,7 +17,8 @@ item_forms.forEach(itemForm=>{
 
     // MONITORAR A ALTERAÇÃO DE VALORES PARA MUDAR O VALOR TOTAL
     fieldProducts(produtos_0,idProduct,product_0,price);
-    console.log(delet);
+    
+    
 
     item = itemForm.querySelector("tbody tr");
     console.log(item);
@@ -87,15 +86,6 @@ itemButton.addEventListener('click',()=>{
             fieldProducts(produtos,searchProduct,product,price);
 
             
-            // DELETAR UM ITEM 
-            // delet.addEventListener("click",()=>{
-            //     console.log(delet);
-            //     item = itemForm.querySelector("tbody tr");
-            //     item.innerHTML = ' ';
-            //     console.log(item)
-            // })
-
-        // }
         
         });
         
@@ -123,12 +113,13 @@ function fieldProducts(produtos,inputSearch,product,price){
                 if(data.produtos.length > 0){
                     data.produtos.forEach(produto=>{
                         if (data.produtos.length <= query.length){
-                            console.log(container_options);
                             selectProduct = document.createElement("button");
                             selectProduct.className = "btn btn-outline-secondary form-control";
                             selectProduct.id = `option-${id_options}`;
     
                             selectProduct.textContent = `${produto.product_code} - ${produto.description}`;
+
+                            
                             produtos.appendChild(selectProduct);
     
                             const button = document.getElementById(selectProduct.id);
@@ -186,11 +177,14 @@ if(invertAutoComplete){
     })
 }
 
+let p = document.createElement("p");
+let container_options = document.getElementById(`options-1`);
 
+let td_container_options = container_options.parentElement;
+td_container_options.style.display = "none";
 // FILTRO IRÁ PREENCHER O CAMPO DE PESQUISA E COLOCAR NO VALOR DE PESSOA O SEU ID
 input_client.addEventListener("input",()=>{
-
-    let container_options = document.getElementById(`options-1`);
+    td_container_options.style.display="none";
     if ((!invertAutoComplete) || (input_client.value.length >=1 && input_client.value != " ")){
             let id_options = 0;
             const query = input_client.value;
@@ -205,22 +199,32 @@ input_client.addEventListener("input",()=>{
             })
             .then(data=>{
                 container_options.innerHTML = '';
+                p.textContent = "ID - CLIENTE";
+                p.id = "title-client";
+                p.className= "text-center";
+                container_options.appendChild(p);
                 if(data.clientes.length > 0){
                     data.clientes.forEach(cliente=>{
                         if (data.clientes.length <= query.length){
+                            // container_options.style.display="block";
+                            td_container_options.style.display = "block"
                             container_options = document.getElementById(`options-1`);
 
                             selectClient = document.createElement("button");
-                            selectClient.className ="btn btn-outline-secondary form-control";
+                            selectClient.className ="btn btn-outline-secondary form-control m-2";
                             selectClient.id = `option-${id_options}`
                             selectClient.textContent= `${cliente.id} - ${cliente.name}`
-                            container_options.appendChild(selectClient);
+
+                            let title_client = document.getElementById("title-client")
+                            // container_options.appendChild(selectClient);
+                            title_client.insertAdjacentElement('afterend',selectClient)
             
                             const button = document.getElementById(selectClient.id);
                             button.addEventListener("click",()=>{
                                 input_client.value = button.textContent ;
                                 id_pessoa.value = `${cliente.id}`;
                                 console.log(id_pessoa.value);
+                                td_container_options.style.display = "none";
                                 container_options.innerHTML = "";
                             })
                             id_options+=1;
@@ -231,7 +235,13 @@ input_client.addEventListener("input",()=>{
             })
         // }
     }else{
-        container_options.innerHTML = ''
+        container_options.innerHTML = '';
+        // container_options.style.display="none"
+        td_container_options.style.display = "none";
+        p.className= "text-center";
+        p.textContent = "ID - CLIENTE";
+        p.id = "title-client";
+        container_options.appendChild(p);
     }
     
 
@@ -240,51 +250,4 @@ input_client.addEventListener("input",()=>{
 
 })
 
-
-
-// teste = document.getElementById("id_paymentmethod_venda_set-0-DELETE");
-// console.log(teste.value)
-// teste.addEventListener("click",()=>{
-//     console.log(teste.value)
-// })
-
-
-
-// $(document).ready(function() {
-//     $('#nome_pesquisa').on('keyup', function() {
-//         let nome = $(this).val();
-//         console.log(nome);
-
-//         if (nome.length >= 2) {
-//             $.ajax({
-//                 url: "buscar_pessoas",
-//                 data: { 'pessoa': nome },
-//                 dataType: 'json',
-//                 success: function(response) {
-//                     const pessoas = response.pessoas;
-//                     console.log(pessoas);
-//                     const $resultados = $('#suggestions');
-//                     $resultados.empty();
-
-//                     if (pessoas.length > 0) {
-//                         pessoas.forEach(pessoa => {
-//                             $resultados.append(`<li>${pessoa.WorkPhone}</li>`);
-//                         });
-//                     } else {
-//                         $resultados.append('<li>Nenhum usuário encontrado.</li>');
-//                     }
-
-//                     // Exibe as sugestões se houver resultados
-//                     $resultados.show();
-//                 },
-//                 error: function(xhr, status, error) {
-//                     console.error('Erro na requisição:', error);
-//                     alert('Ocorreu um erro ao buscar os usuários.');
-//                 }
-//             });
-//         } else {
-//             $('#suggestions').hide();
-//         }
-//     });
-// });
 
