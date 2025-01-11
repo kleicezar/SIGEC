@@ -202,21 +202,20 @@ input_client.addEventListener("input",()=>{
                 p.textContent = "ID - CLIENTE";
                 p.id = "title-client";
                 p.className= "text-center";
+                container_options.style.width = "300px";
                 container_options.appendChild(p);
                 if(data.clientes.length > 0){
                     data.clientes.forEach(cliente=>{
                         if (data.clientes.length <= query.length){
-                            // container_options.style.display="block";
-                            td_container_options.style.display = "block"
+                            td_container_options.style.display = "block";
                             container_options = document.getElementById(`options-1`);
 
                             selectClient = document.createElement("button");
-                            selectClient.className ="btn btn-outline-secondary form-control m-2";
+                            selectClient.className ="btn btn-outline-secondary form-control mb-2";
                             selectClient.id = `option-${id_options}`
                             selectClient.textContent= `${cliente.id} - ${cliente.name}`
 
                             let title_client = document.getElementById("title-client")
-                            // container_options.appendChild(selectClient);
                             title_client.insertAdjacentElement('afterend',selectClient)
             
                             const button = document.getElementById(selectClient.id);
