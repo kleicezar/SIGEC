@@ -4,7 +4,7 @@ from .models import *
 class VendaForm(forms.ModelForm):
     class Meta:
         model = Venda
-        fields = ['data_da_venda',  'pessoa', 'situacao', 'is_active','observacao_pessoas', 'observacao_sistema']
+        fields = ['data_da_venda',  'pessoa', 'situacao', 'is_active','observacao_pessoas', 'observacao_sistema', 'total_value', 'product_total', 'discount_total']
         widgets = {
             'pessoa':forms.TextInput(attrs={
                 'class':'form-control row-5' 
@@ -20,6 +20,18 @@ class VendaForm(forms.ModelForm):
             }),
             'situacao':forms.Select(attrs={
                 'class':'form-select row'
+            }),
+            'total_value':forms.TextInput(attrs={
+                'class':'form-control row-5',
+                'readonly': 'readonly',
+            }),
+            'product_total':forms.TextInput(attrs={
+                'class':'form-control row-5',
+                'readonly': 'readonly',
+            }),
+            'discount_total':forms.TextInput(attrs={
+                'class':'form-control row-5',
+                'readonly': 'readonly',
             })
         }
 

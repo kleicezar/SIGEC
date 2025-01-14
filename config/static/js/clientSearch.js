@@ -17,6 +17,8 @@ let value_product = document.getElementById(`id_vendaitem_set-${formCountElem.va
 
 
 
+discount
+
 item_forms.forEach(itemForm=>{
     
     let delet = document.querySelector('.delete');
