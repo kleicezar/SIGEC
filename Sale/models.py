@@ -21,6 +21,8 @@ class VendaItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Produto")
     quantidade = models.PositiveIntegerField(verbose_name="Quantidade do Produto")
     preco_unitario = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Preço Unitário")
+    discount = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Desconto(%)")
+    price_total = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Valor Total")
 
     # Calcula o total automaticamente ao salvar a instância
     def save(self, *args, **kwargs):

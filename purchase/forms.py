@@ -40,6 +40,22 @@ class CompraForm(forms.ModelForm):
     class Meta:
         model = Compra
         fields = ['data_da_compra', 'fornecedor', 'situacao'] 
+        widgets = {
+                'fornecedor':forms.TextInput(attrs={
+                    'class':'form-control row-5' 
+                }),
+                'data_da_compra':forms.DateTimeInput(attrs={
+                    'class':'form-control row' 
+                }),
+                'situacao':forms.Select(attrs={
+                    'class':'form-select row'
+                })
+            }
+    def __init__(self, *args, **kwargs):
+        super(CompraForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            self.fields['data_da_compra'].initial = self.instance.data_da_compra
+            self.fields['data_da_compra'].widget.attrs['readonly'] = True
 
 class CompraItemForm(forms.ModelForm):
     class Meta:

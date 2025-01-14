@@ -11,7 +11,13 @@
     {% endblock %}
     <title>{% if venda.pk %}Editar{% else %}Criar{% endif %} Venda</title>
     {% bootstrap_css %}
-    
+    <style>
+        input[readonly] {
+            background-color: #e9ecef; /* Cinza claro */
+            color: #6c757d; /* Texto cinza escuro */
+            cursor: not-allowed; /* Cursor indicando que não é editável */
+        }
+    </style>
 </head>
 <body>
     <main>
@@ -59,9 +65,9 @@
                                 <td>{{venda_form.is_active}}</td>
                             </tr>
                             <tr>
-                                <td>
+                                <!-- <td>
                                     <div id="options-1" style="height: 200px;" class="row form-control "></div>
-                                </td>
+                                </td> -->
                             </tr>
                         </tbody>
                     </table>
@@ -112,10 +118,10 @@
                                                 {{form.preco_unitario}}
                                             </td>
                                             <td>
-                                                <input type="number" class="form-control row descont">
+                                                {{form.discount}}
                                             </td>
                                             <td>
-                                                <input type="number" class="form-control row totalValue" readonly>
+                                                {{form.price_total}}
                                             </td>
                                             <td>
                                                 <button class="btn btn-danger delete" >Deletar</button>
@@ -154,10 +160,12 @@
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control row descont">
+                                            <!-- <input type="number" class="form-control row descont"> SUPER IMPORTANTE -->
+                                            {{venda_item_formset.empty_form.discount}}
                                         </td>
                                         <td>
-                                            <input type="number" class="form-control row totalValue" readonly>
+                                            <!-- <input type="number" class="form-control row totalValue" readonly> -->
+                                            {{venda_item_formset.empty_form.price_total}}
                                         </td>
                                         <td>
                                             <button class="btn btn-danger delete">Deletar</button>
@@ -169,6 +177,36 @@
                     </template>
                     <button id="item" type="button" onclick="addItem()" class="btn btn-outline-success mb-5">Adicionar Item</button>
                 
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    Total de Produtos
+                                </th>
+                                <th scope="col">
+                                    Valor de Desconto
+                                </th>
+                                <th scope="col">
+                                    Valor Total
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <input type="text" id="id_all_total_products" readonly>
+                                </td>
+                                <td>
+                                    <input type="text" id="id_all_total_discount" readonly>
+                                </td>
+                                <td>
+                                    <input type="text" id="id_all_total_value"readonly>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                     <!-- Formas de Pagamento -->
                     <h6>Formas de Pagamento</h6>
                     <div id="payment-method-container">

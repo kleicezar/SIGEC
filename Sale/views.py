@@ -62,11 +62,8 @@ def venda_create(request):
 
     if request.method == 'POST':
         venda_form = VendaForm(request.POST)
-       
         venda_item_formset = VendaItemFormSet(request.POST)
         payment_method_formset = PaymentMethodVendaFormSet(request.POST)
-        
-
         # Percorrer VendaForm, manipular,
 
         if venda_form.is_valid() and venda_item_formset.is_valid() and payment_method_formset.is_valid():
@@ -253,7 +250,7 @@ def product_search(request):
             'id':produto.id,
             'product_code':produto.product_code,
             'description':produto.description,
-            'cost_of_product':produto.cost_of_product
+            'selling_price':produto.selling_price
         }
         for produto in resultados
         

@@ -50,7 +50,7 @@ function addItem() {
         input.name = input.name.replace('__prefix__', formCount);
         input.id = input.id.replace('__prefix__', formCount);
         input.value = ''; // Limpa os valores dos campos
-        console.log(input)
+        // console.log(input)
     });
 
 
@@ -61,10 +61,8 @@ function addItem() {
     input_product = newForm.querySelector(".inputProduct");
     field_product.id = `products-${formCount}`;
     input_product.id = `idProduct-${formCount}`
-    console.log(field_product)
+    // console.log(field_product)
     formset.appendChild(newForm);
-    
-    
 
     const itens = formset.querySelectorAll(".item-form");
 
