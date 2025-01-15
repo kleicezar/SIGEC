@@ -1,6 +1,30 @@
 
 // TOTAL VALOR DE FORMULARIO DE ITENS;
+const itens_container = document.getElementById("itens-container");
+itens_container.addEventListener("input",(event)=>{
+    if(event.target.tagName==='INPUT'){
+        const inputModificado = event.target;
+        const item_form = inputModificado.closest(".item-form");
+        const inputs_item_form = item_form.querySelectorAll("input");
 
+        inputs_item_form.forEach((input)=>{
+            const type_field = input.id;
+            // console.log(input)
+            if (type_field.endsWith('quantidade')){
+                const quantidade_value = input;
+            }
+            else if(type_field.endsWith('preco_unitario')){
+                const quantidade_value = input;
+            }
+            else{
+            //    IDENTIFICA O CAMPO DE DESCONTO
+                const descont = input;
+                console.log(input);
+
+            }
+        })
+    }
+})
 const item_forms = document.querySelectorAll('.item-form');
 
 let index = 0;
@@ -50,7 +74,7 @@ item_forms.forEach(itemForm=>{
 })
 
 const itemButton = document.getElementById("item");
-const itens = [];
+
 itemButton.addEventListener('click',()=>{
     const new_item_forms = document.querySelectorAll('.item-form');
     let index = 0;
@@ -58,7 +82,7 @@ itemButton.addEventListener('click',()=>{
             // MOSTRAS OS PRODUTOS REQUISITADOS
             const product = document.getElementById(`id_vendaitem_set-${index}-product`);
             const produtos = document.getElementById(`products-${index}`);
-            const searchProduct = document.getElementById(`idProduct-${index}`)
+            const searchProduct = document.getElementById(`idProduct-${index}`);
             // MONITORAR A ALTERAÇÃO DE VALORES PARA MUDAR O VALOR TOTAL
             let discount = itemForm.querySelector("td .descont");
             let totalValue = itemForm.querySelector("td .totalValue");
@@ -182,6 +206,7 @@ let container_options = document.getElementById(`options-1`);
 
 let td_container_options = container_options.parentElement;
 td_container_options.style.display = "none";
+
 // FILTRO IRÁ PREENCHER O CAMPO DE PESQUISA E COLOCAR NO VALOR DE PESSOA O SEU ID
 input_client.addEventListener("input",()=>{
     td_container_options.style.display="none";

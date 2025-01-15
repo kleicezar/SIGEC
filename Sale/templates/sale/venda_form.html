@@ -59,7 +59,7 @@
                                 <td>{{venda_form.is_active}}</td>
                             </tr>
                             <tr>
-                                <td class="z-3 position-absolute ">
+                                <td class="z-2 position-absolute ">
                                     <div id="options-1"  class="row form-control z-1 ">
                                         <p id="title-client"class="text-center ">ID - CLIENTE</p>
                                         
@@ -78,7 +78,7 @@
                             <div class="item-form">
                                 <!-- {{ form.as_p }} -->
                                   <table class="table">
-                                    <thead>
+                                    <thead id="thead">
                                         <tr>
                                             <th scope="col">
                                                 Produto
@@ -122,8 +122,8 @@
                                                 <input type="number" class="form-control row totalValue" readonly>
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-danger delete" >Deletar</button>
-                                                {{ form.DELETE.as_hidden }}
+                                                <button type="button" class="btn btn-danger delete" onclick="removeItem(this)" >Deletar</button>
+                                                {{form.DELETE.as_hidden}}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -164,7 +164,7 @@
                                             <input type="number" class="form-control row totalValue" readonly>
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-danger delete">Deletar</button>
+                                            <button type="button" class="btn btn-danger delete" onclick="removeItem(this)">Deletar</button>
                                             {{venda_item_formset.empty_form.DELETE.as_hidden}}</td>
                                     </tr>
                                 </tbody>

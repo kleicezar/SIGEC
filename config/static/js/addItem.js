@@ -26,7 +26,7 @@
 //     formCountElem.value = parseInt(formCount) + 1;
 //     formset.appendChild(newForm);
 // }
-
+const itensIndex  = [0];
 function addItem() {
     const formset = document.getElementById('itens-container');
     const formCountElem = document.getElementById('id_vendaitem_set-TOTAL_FORMS');
@@ -68,19 +68,12 @@ function addItem() {
 
     const itens = formset.querySelectorAll(".item-form");
 
-    itens.forEach(item => {
-        const table = item.querySelector("table");
-        const tbody = table.querySelector("tbody");
-        const tr = tbody.querySelector("tr")
-        const delet = tr.querySelector(".delete");
-      
 
-        delet.addEventListener("click", () => {
-            tbody.style.display = "none";
-            const deleteField = tr.querySelector('input[type="hidden"][name$="-DELETE"]');
-            deleteField.value = "on";
-        });
-    });
+
+    
+
+    itensIndex.push(formCount);
+    
 
 
     
@@ -88,6 +81,24 @@ function addItem() {
     //     formset.removeChild(newForm)
     // })
 }
+
+
+function removeItem(button){
+    let parent_button = button.parentElement;
+    let x = parent_button.parentElement;
+    let azul = parent_button.querySelector('input[type="hidden"][name$="-DELETE"]');
+    azul.value = "on";
+    console.log(azul.value);
+    let y = x.parentElement;
+    let z = y.parentElement;
+    let fd = z.parentElement;
+    let zd = fd.parentElement;
+    console.log(parent_button)
+    fd.removeChild(z);
+}
+
+
+
 
 
 function addPaymentMethod() {
@@ -135,6 +146,7 @@ function addPaymentMethod() {
         })
     })
 }
+
 
 
 function addItemCompra() {
