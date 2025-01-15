@@ -60,7 +60,7 @@
                                 </div>
                                 </td>
                                 <td>
-                                    <div class="input-group date" data-provide="datepicker">
+                                    <div class="input-group date" id="date_purchase" data-provide="datepicker">
                                         {{compra_form.data_da_compra}}
                                         <div class="input-group-addon">
                                             <span class="glyphicon glyphicon-th"></span>
@@ -243,7 +243,7 @@
                                         <tr>
                                             <td>{{form.forma_pagamento}}</td>
                                             <td>
-                                                <div class="input-group date" data-provide="datepicker">
+                                                <div class="input-group date">
                                                     {{form.expirationDate}}
                                                     <div class="input-group-addon">
                                                         <span class="glyphicon glyphicon-th"></span>
@@ -316,6 +316,7 @@
         <script type="text/javascript" src="{% static 'js/jquery.mask.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/mask.js' %}"></script> -
         <script src="{% static 'js/addItem.js' %}" defer></script>
+        <script src="{% static 'js/date.js' %}"></script>
         <script src="{% static 'js/clientSearch.js' %}"></script>  <!-- pesquisa clientes -->
         <script src="{% static 'js/compra_item.js' %}"></script> <!-- pesquisa produtos em compras -->
         <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>

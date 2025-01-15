@@ -45,7 +45,7 @@ class CompraForm(forms.ModelForm):
                     'class':'form-control row-5' 
                 }),
                 'data_da_compra':forms.DateTimeInput(attrs={
-                    'class':'form-control row' 
+                    'class':'form-control row',
                 }),
                 'situacao':forms.Select(attrs={
                     'class':'form-select row'
@@ -96,7 +96,8 @@ class PaymentMethodCompraForm(forms.ModelForm):
                 'class':'form-select row'
             }),
             'expirationDate':forms.TextInput(attrs={
-                'class':'form-control row mask-date'
+                'class':'form-control row mask-date',
+                # 'id' : 'payment_method',
             }),
             'valor':forms.NumberInput(attrs={
                 'class':'form-control row',

@@ -63,7 +63,7 @@
                                 </div>
                                 </td>
                                 <td>
-                                    <div class="input-group date" data-provide="datepicker">
+                                    <div class="input-group date" id="date_sale" data-provide="datepicker">
                                         {{venda_form.data_da_venda}}
                                         <div class="input-group-addon">
                                             <span class="glyphicon glyphicon-th"></span>
@@ -321,7 +321,7 @@
         <script src="{% static 'js/addItem.js' %}" defer></script>
         <script src="{% static 'js/clientSearch.js' %}"></script>  <!-- pesquisa clientes -->
         <script src="{% static 'js/venda_item.js' %}"></script> <!-- pesquisa produtos em vendas-->
-        <script src="{% static 'js/date.js' %   }"></script>
+        <script src="{% static 'js/date.js' %}"></script>
         <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
         <script src="{% static 'js/bootstrap-datepicker.pt-BR.js' %}"></script>
         {% endblock %}     
