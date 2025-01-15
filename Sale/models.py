@@ -26,7 +26,7 @@ class VendaItem(models.Model):
     quantidade = models.PositiveIntegerField(verbose_name="Quantidade do Produto")
     preco_unitario = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Preço Unitário")
     discount = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Desconto(%)")
-    price_total = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Valor Total", default=0)
+    price_total = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Valor Total")
     # Calcula o total automaticamente ao salvar a instância
     def save(self, *args, **kwargs):
         self.total = self.quantidade * self.preco_unitario  # Calcula o total

@@ -60,7 +60,24 @@ class CompraForm(forms.ModelForm):
 class CompraItemForm(forms.ModelForm):
     class Meta:
         model = CompraItem
-        fields = ['produto', 'quantidade', 'preco_unitario']
+        fields = ['produto', 'quantidade', 'preco_unitario','discount','price_total']
+        widgets = {
+            'product':forms.TextInput(attrs={
+                'class':'form-control row-2'
+            }),
+            'quantidade':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'preco_unitario':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'discount':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'price_total':forms.TextInput(attrs={
+                'class':'form-control row'
+            })
+        }
 
     def clean(self):
         cleaned_data = super().clean()
@@ -74,3 +91,15 @@ class PaymentMethodCompraForm(forms.ModelForm):
     class Meta:
         model = PaymentMethod_Compra
         fields = ['forma_pagamento', 'expirationDate', 'valor']
+        widgets = {
+            'forma_pagamento':forms.Select(attrs={
+                'class':'form-select row'
+            }),
+            'expirationDate':forms.TextInput(attrs={
+                'class':'form-control row mask-date'
+            }),
+            'valor':forms.NumberInput(attrs={
+                'class':'form-control row',
+                'min':0
+            })
+        }

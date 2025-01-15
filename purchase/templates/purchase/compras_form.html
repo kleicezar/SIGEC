@@ -8,9 +8,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% block css %}
         <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
+        <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.min.css' %}">
     {% endblock %}
-    <title>{% if venda.pk %}Editar{% else %}Criar{% endif %} Compra</title>
+    <title>{% if compra.pk %}Editar{% else %}Criar{% endif %} Compra</title>
     {% bootstrap_css %}
+    <style>
+        input[readonly] {
+            background-color: #e9ecef; /* Cinza claro */
+            color: #6c757d; /* Texto cinza escuro */
+            cursor: not-allowed; /* Cursor indicando que não é editável */
+        }
+    </style>
     
 </head>
 <body>
@@ -19,14 +27,14 @@
         {% block content %}
         <div class='content'>
             <div class='center'>
-                <h4 class="mt-5 mb-5 c-adapted">{% if venda.pk %}Editar{% else %}Criar{% endif %} Compra</h4>
+                <h4 class="mt-5 mb-5 c-adapted">{% if Compra.pk %}Editar{% else %}Criar{% endif %} Compra</h4>
 
                 <form method="post">
                     {% csrf_token %}
                 
-                    <!-- Formulário de Venda -->
+                    <!-- Formulário de Compra -->
                     <h6>Dados da Compra</h6>
-                    <!-- {{ venda_form.as_p }} -->
+                    <!-- {{ compra_form.as_p }} -->
                     <table class="table">
                         <thead>
                             <tr>
@@ -34,14 +42,11 @@
                                     Pessoa
                                 </th>
                                 <th scope="col">
-                                    Data da Venda
+                                    Data da Compra
                                 </th>
                                 <th scope="col">
                                     Situação
                                 </th>
-                                <!-- <th>
-                                    Ativo
-                                </th> -->
                             </tr>
                         </thead>
 
@@ -54,15 +59,26 @@
                                     
                                 </div>
                                 </td>
-                                <td>{{compra_form.data_da_compra}}</td>
+                                <td>
+                                    <div class="input-group date" data-provide="datepicker">
+                                        {{compra_form.data_da_compra}}
+                                        <div class="input-group-addon">
+                                            <span class="glyphicon glyphicon-th"></span>
+                                        </div>
+                                    </div>
+                                </td>
                                 <td>{{compra_form.situacao}}</td>
-                                <!-- <td>{{compra_form.is_active}}</td> -->
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div id="options-1" style="height: 200px;" class="row form-control "></div>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                     
-                    <!-- Itens de Venda -->
-                    <h6>Itens de Venda</h6>
+                    <!-- Itens de Compra -->
+                    <h6>Itens de Compra</h6>
                     <div id="itens-container">      
                         {{ compra_item_formset.management_form }}
                         {% for form in compra_item_formset %}
@@ -107,10 +123,10 @@
                                                 {{form.preco_unitario}}
                                             </td>
                                             <td>
-                                                <input type="number" class="form-control row descont">
+                                                {{form.discount}}
                                             </td>
                                             <td>
-                                                <input type="number" class="form-control row totalValue" readonly>
+                                                {{form.price_total}}
                                             </td>
                                             <td>
                                                 <button class="btn btn-danger delete" >Deletar</button>
@@ -121,49 +137,84 @@
                                   </table>
                             </div>
                         {% endfor %}
-                    </div>
-                    <template id="empty-form-template">
-                        <div class="item-form">
-                            <!-- {{ venda_item_formset.empty_form.as_p }} -->
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    <tr >
-                                        <td>{{ venda_item_formset.empty_form.product.as_hidden }}
-                                            <input type="text" class="row form-control inputProduct">
-                                            <div class="mt-3 field-product row">
-                                    
-                                            </div>
-                                        </td>
+                        <template id="empty-form-template">
+                            <div class="item-form">
+                                <!-- {{ compra_item_formset.empty_form.as_p }} -->
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                        </tr>
+                                    </thead>
+    
+                                    <tbody>
+                                        <tr >
+                                            <td>{{ compra_item_formset.empty_form.product.as_hidden }}
+                                                <input type="text" class="row form-control inputProduct">
+                                                <div class="mt-3 field-product row">
                                         
-                                        <td>
-                                            {{venda_item_formset.empty_form.quantidade}}
-                                        </td>
-                                
-                                        <td>
-                                            {{venda_item_formset.empty_form.preco_unitario}}
-                                        </td>
-
-                                        <td>
-                                            <input type="number" class="form-control row descont">
-                                        </td>
-                                        <td>
-                                            <input type="number" class="form-control row totalValue" readonly>
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-danger delete">Deletar</button>
-                                            {{venda_item_formset.empty_form.DELETE.as_hidden}}</td>
-                                    </tr>
-                                </tbody>
-                              </table>
-                        </div>
-                    </template>
+                                                </div>
+                                            </td>
+                                            
+                                            <td>
+                                                {{compra_item_formset.empty_form.quantidade}}
+                                            </td>
+                                    
+                                            <td>
+                                                {{compra_item_formset.empty_form.preco_unitario}}
+                                            </td>
+    
+                                            <td>
+                                                <!-- <input type="number" class="form-control row descont"> SUPER IMPORTANTE -->
+                                                {{compra_item_formset.empty_form.discount}}
+                                            </td>
+                                            <td>
+                                                <!-- <input type="number" class="form-control row totalValue" readonly> -->
+                                                {{compra_item_formset.empty_form.price_total}}
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger delete">Deletar</button>
+                                                {{compra_item_formset.empty_form.DELETE.as_hidden}}</td>
+                                        </tr>
+                                    </tbody>
+                                  </table>
+                            </div>
+                        </template>
+                    </div>
                     <button id="item" type="button" onclick="addItem()" class="btn btn-outline-success mb-5">Adicionar Item</button>
                 
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    Total de Produtos
+                                </th>
+                                <th scope="col">
+                                    Valor de Desconto
+                                </th>
+                                <th scope="col">
+                                    Valor Total
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <!-- <input type="text" id="id_all_total_products" readonly> -->
+                                    {{compra_form.product_total}}
+                                </td>
+                                <td>
+                                    <!-- <input type="text" id="id_all_total_discount" readonly> -->
+                                    {{compra_form.discount_total}}
+                                </td>
+                                <td>
+                                    <!-- <input type="text" id="id_all_total_value"readonly> -->
+                                    {{compra_form.total_value}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                     <!-- Formas de Pagamento -->
                     <h6>Formas de Pagamento</h6>
                     <div id="payment-method-container">
@@ -191,7 +242,14 @@
                                     <tbody>
                                         <tr>
                                             <td>{{form.forma_pagamento}}</td>
-                                            <td>{{form.expirationDate}}</td>
+                                            <td>
+                                                <div class="input-group date" data-provide="datepicker">
+                                                    {{form.expirationDate}}
+                                                    <div class="input-group-addon">
+                                                        <span class="glyphicon glyphicon-th"></span>
+                                                    </div>
+                                                </div>
+                                            </td>
                                             <td>{{form.valor}}</td>
                                             <td>
                                                 <label for="">Deletar</label>
@@ -209,19 +267,19 @@
                     <div class="row">
 
                         <div class="col">
-                            <label for="">{{venda_form.observacao_pessoas.label}}</label>
-                            {{venda_form.observacao_pessoas}}
+                            <label for="">{{compra_form.observacao_pessoas.label}}</label>
+                            {{compra_form.observacao_pessoas}}
                         </div>
 
                         <div class="col">
-                            <label for="">{{venda_form.observacao_sistema.label}}</label>
-                            {{venda_form.observacao_sistema}}
+                            <label for="">{{compra_form.observacao_sistema.label}}</label>
+                            {{compra_form.observacao_sistema}}
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col mt-5 text-end">
-                            <button  type="submit" class="btn bg-adapted">SAL   VAR VENDA</button>
+                            <button  type="submit" class="btn bg-adapted">SALVAR VENDA</button>
                         </div>
                     </div>
                 </form>
@@ -258,7 +316,10 @@
         <script type="text/javascript" src="{% static 'js/jquery.mask.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/mask.js' %}"></script> -
         <script src="{% static 'js/addItem.js' %}" defer></script>
-        <script src="{% static 'js/clientSearch.js' %}"></script>
+        <script src="{% static 'js/clientSearch.js' %}"></script>  <!-- pesquisa clientes -->
+        <script src="{% static 'js/compra_item.js' %}"></script> <!-- pesquisa produtos em compras -->
+        <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap-datepicker.pt-BR.js' %}"></script>
         {% endblock %}     
     </main>
 </body>
