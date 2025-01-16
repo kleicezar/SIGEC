@@ -4,13 +4,14 @@ from .models import *
 class VendaForm(forms.ModelForm):
     class Meta:
         model = Venda
-        fields = ['data_da_venda',  'pessoa', 'situacao', 'is_active','observacao_pessoas', 'observacao_sistema']
+        fields = ['data_da_venda',  'pessoa', 'situacao', 'is_active','observacao_pessoas', 'observacao_sistema', 'total_value', 'product_total', 'discount_total']
         widgets = {
             'pessoa':forms.TextInput(attrs={
                 'class':'form-control row-5' 
             }),
             'data_da_venda':forms.DateTimeInput(attrs={
-                'class':'form-control row' 
+                'class':'form-control row' ,
+                'id' : "date_sale",
             }),
             'observacao_pessoas':forms.Textarea(attrs={
                 'class':'form-control row'
@@ -20,6 +21,18 @@ class VendaForm(forms.ModelForm):
             }),
             'situacao':forms.Select(attrs={
                 'class':'form-select row'
+            }),
+            'total_value':forms.TextInput(attrs={
+                'class':'form-control row-5',
+                'readonly': 'readonly',
+            }),
+            'product_total':forms.TextInput(attrs={
+                'class':'form-control row-5',
+                'readonly': 'readonly',
+            }),
+            'discount_total':forms.TextInput(attrs={
+                'class':'form-control row-5',
+                'readonly': 'readonly',
             })
         }
 
@@ -32,7 +45,7 @@ class VendaForm(forms.ModelForm):
 class VendaItemForm(forms.ModelForm):
     class Meta:
         model = VendaItem
-        fields = ['product', 'quantidade', 'preco_unitario']
+        fields = ['product', 'quantidade', 'preco_unitario','discount','price_total']
         widgets = {
             'product':forms.TextInput(attrs={
                 'class':'form-control row-2'
@@ -42,12 +55,19 @@ class VendaItemForm(forms.ModelForm):
             }),
             'preco_unitario':forms.TextInput(attrs={
                 'class':'form-control row'
+            }),
+            'discount':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'price_total':forms.TextInput(attrs={
+                'class':'form-control row'
             })
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['product'].queryset = Product.objects.all()
+        self.fields['price_total'].widget.attrs['readonly'] = True
 
     def clean(self):
         cleaned_data = super().clean()

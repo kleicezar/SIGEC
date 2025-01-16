@@ -8,9 +8,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% block css %}
         <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
+        <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.min.css' %}">
     {% endblock %}
     <title>{% if venda.pk %}Editar{% else %}Criar{% endif %} Venda</title>
     {% bootstrap_css %}
+    <style>
+        input[readonly] {
+            background-color: #e9ecef; /* Cinza claro */
+            color: #6c757d; /* Texto cinza escuro */
+            cursor: not-allowed; /* Cursor indicando que não é editável */
+        }
+    </style>
     
 </head>
 <body>
@@ -54,7 +62,14 @@
                                     
                                 </div>
                                 </td>
-                                <td>{{venda_form.data_da_venda}}</td>
+                                <td>
+                                    <div class="input-group date" data-provide="datepicker">
+                                        {{venda_form.data_da_venda}}
+                                        <div class="input-group-addon">
+                                            <span class="glyphicon glyphicon-th"></span>
+                                        </div>
+                                    </div>
+                                </td>
                                 <td>{{venda_form.situacao}}</td>
                                 <td>{{venda_form.is_active}}</td>
                             </tr>
@@ -116,10 +131,10 @@
                                                 {{form.preco_unitario}}
                                             </td>
                                             <td>
-                                                <input type="number" class="form-control row descont">
+                                                {{form.discount}}
                                             </td>
                                             <td>
-                                                <input type="number" class="form-control row totalValue" readonly>
+                                                {{form.price_total}}
                                             </td>
                                             <td>
                                                 <button type="button" class="btn btn-danger delete" onclick="removeItem(this)" >Deletar</button>
@@ -173,6 +188,39 @@
                     </template>
                     <button id="item" type="button" onclick="addItem()" class="btn btn-outline-success mb-5">Adicionar Item</button>
                 
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    Total de Produtos
+                                </th>
+                                <th scope="col">
+                                    Valor de Desconto
+                                </th>
+                                <th scope="col">
+                                    Valor Total
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <!-- <input type="text" id="id_all_total_products" readonly> -->
+                                    {{venda_form.product_total}}
+                                </td>
+                                <td>
+                                    <!-- <input type="text" id="id_all_total_discount" readonly> -->
+                                    {{venda_form.discount_total}}
+                                </td>
+                                <td>
+                                    <!-- <input type="text" id="id_all_total_value"readonly> -->
+                                    {{venda_form.total_value}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                     <!-- Formas de Pagamento -->
                     <h6>Formas de Pagamento</h6>
                     <div id="payment-method-container">
@@ -200,7 +248,14 @@
                                     <tbody>
                                         <tr>
                                             <td>{{form.forma_pagamento}}</td>
-                                            <td>{{form.expirationDate}}</td>
+                                            <td>
+                                                <div class="input-group date" data-provide="datepicker">
+                                                    {{form.expirationDate}}
+                                                    <div class="input-group-addon">
+                                                        <span class="glyphicon glyphicon-th"></span>
+                                                    </div>
+                                                </div>
+                                            </td>
                                             <td>{{form.valor}}</td>
                                             <td>
                                                 <!-- <label for="">Deletar</label> -->
@@ -264,11 +319,14 @@
             </div>
         </template>
         <script type="text/javascript" src="{% static 'js/jquery-3.7.1.js' %}"></script>
-        <script src="{% static 'js/cep_api.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/jquery.mask.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/mask.js' %}"></script> -
         <script src="{% static 'js/addItem.js' %}" defer></script>
-        <script src="{% static 'js/clientSearch.js' %}"></script>
+        <script src="{% static 'js/clientSearch.js' %}"></script>  <!-- pesquisa clientes -->
+        <script src="{% static 'js/venda_item.js' %}"></script> <!-- pesquisa produtos em vendas-->
+        <script src="{% static 'js/date.js' %   }"></script>
+        <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap-datepicker.pt-BR.js' %}"></script>
         {% endblock %}     
     </main>
 </body>

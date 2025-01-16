@@ -9,7 +9,7 @@ toggleButton.addEventListener('click', () => {
     sidebar.classList.toggle('hidden');
     content.classList.toggle('expanded'); // Alterna a classe no conteúdo
 });
-const isToggle = true;
+let isToggle = true;
 // Adiciona eventos de clique para os links do menu
 toggles.forEach(toggle => {
     toggle.addEventListener('click', function(event) {

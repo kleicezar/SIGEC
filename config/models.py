@@ -1,5 +1,6 @@
 from django.db import models
 from Registry.models import Person
+# from Sale.models import PaymentMethod_Venda
 # from Sale.models import *
 
 class PaymentMethod(models.Model):
@@ -22,6 +23,36 @@ class Position(models.Model):
 
     def __str__(self):
         return self.name_position
+    
+# class Bank(models.Model):
+#     name_bank = models.CharField('Nome do Banco', max_length=50)
+#     value_bank = models.DecimalField(max_digits=100,decimal_places=2,verbose_name="Valor Total Inserido no Banco")
+#     entry_payment = models.ForeignKey(PaymentMethod_Venda, on_delete=models.CASCADE, verbose_name="entradas de pagamento")
+#     # entry_payment = models.ForeignKey(PaymentMethod_Venda, on_delete=models.CASCADE, verbose_name="entradas de pagamento")
+
+# mes julho 
+# caixa 
+# credito  
+# debito
+
+# itau 
+# pix 
+# boleto 
+
+# caixa cofre
+
+# itau
+
+# junçao 
+# entrada +  null
+# saida  - 
+
+# banco 
+# forma de pagamento
+
+# class Bank_paymentMethod(models.Model):
+#     name_bank = models.CharField('Nome do Banco', max_length=50)
+#     value_bank = models.DecimalField(max_digits=100,decimal_places=2,verbose_name="Valor Total Inserido no Banco")
 
 # class Product(models.Model):
 #     description = models.CharField(max_length=255, verbose_name='Descrição')  # descrição

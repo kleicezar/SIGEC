@@ -10,7 +10,11 @@ class Venda(models.Model):
     observacao_sistema = models.TextField(verbose_name="Observações do Sistema",blank=True,null=True)
     situacao = models.ForeignKey(Situation,on_delete=models.CASCADE,verbose_name="Situação",related_name="vendas",blank=True,null=True)
     is_active = models.BooleanField(default=True, verbose_name='Está Ativo')  # está ativo
-    total = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Total", blank=True, null=True)
+    total_value = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Total", blank=True, null=True)
+    product_total = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Total de Produtos")
+    discount_total = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Total de Descontos")
+     
+
 
     def __str__(self):
         return f"Venda {self.id} - {self.pessoa}"
@@ -21,7 +25,8 @@ class VendaItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Produto")
     quantidade = models.PositiveIntegerField(verbose_name="Quantidade do Produto")
     preco_unitario = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Preço Unitário")
-
+    discount = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Desconto(%)")
+    price_total = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Valor Total")
     # Calcula o total automaticamente ao salvar a instância
     def save(self, *args, **kwargs):
         self.total = self.quantidade * self.preco_unitario  # Calcula o total
