@@ -3,6 +3,13 @@
 const itens_container = document.getElementById("itens-container");
 itens_container.addEventListener("input",(event)=>{
     if(event.target.tagName==='INPUT'){
+        const item_forms = itens_container.querySelectorAll(".item-form");
+        let n_produtos = 0;
+        item_forms.forEach(item_form_array=>{
+            let input_quantidade = item_form_array.querySelector("")
+            
+            n_produtos = 1+ n_produtos;
+        })
         const inputModificado = event.target;
         const item_form = inputModificado.closest(".item-form");
         const inputs_item_form = item_form.querySelectorAll("input");
