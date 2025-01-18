@@ -173,11 +173,9 @@
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control row descont">
-                                        </td>
+                                            {{venda_item_formset.empty_form.discount}}
                                         <td>
-                                            <input type="number" class="form-control row totalValue" readonly>
-                                        </td>
+                                            {{venda_item_formset.empty_form.price_total}}
                                         <td>
                                             <button type="button" class="btn btn-danger delete" onclick="removeItem(this)">Deletar</button>
                                             {{venda_item_formset.empty_form.DELETE.as_hidden}}</td>

@@ -4,7 +4,6 @@ const itens_container = document.getElementById("itens-container");
 itens_container.addEventListener("input",(event)=>{
     if(event.target.tagName==='INPUT'){
         const inputModificado = event.target;
-        console.log(inputModificado)
         const item_form = inputModificado.closest(".item-form");
         const inputs_item_form = item_form.querySelectorAll("input");
         let product_value;
@@ -12,10 +11,32 @@ itens_container.addEventListener("input",(event)=>{
         let descont_value;
         let price_total_value;
         let price_unit_value ;
-        
         let search_p;
-        // search_p = item_form.
         const list_products = item_form.querySelector("table tbody tr td .field-product");
+        inputs_item_form.forEach((input)=>{
+            const type_field = input.id;
+            if(type_field.endsWith('product')){
+                product_value = input;
+
+            }
+            else if (type_field.endsWith('quantidade')){
+                quantidade_value = input;
+            }
+            else if(type_field.endsWith('preco_unitario')){
+                price_unit_value = input;
+            }
+            else if (type_field.endsWith('discount')){
+                descont_value = input;
+                console.log(descont_value.value)
+            }
+            else if(type_field.endsWith('price_total')){
+                price_total_value = input;
+            }
+            else{
+                search_p = input;
+            }
+            
+        })
         if (inputModificado.id.startsWith("idProduct")){
             if(inputModificado.value.length>=1){
                 let id_options = 0;
@@ -43,12 +64,12 @@ itens_container.addEventListener("input",(event)=>{
                         list_products.appendChild(selectProduct);
 
                         const button = document.getElementById(selectProduct.id);
+                
                         button.addEventListener("click",()=>{
                             product_value.value = produto.id;
                             search_p.value = button.textContent;
-                            list_products.innerHTML="";
                             price_unit_value.value = produto.selling_price;
-                
+                            list_products.innerHTML="";
                         })
                     })
                 }
@@ -61,30 +82,16 @@ itens_container.addEventListener("input",(event)=>{
             }
             
         } 
-        inputs_item_form.forEach((input)=>{
-            const type_field = input.id;
-            if(type_field.endsWith('product')){
-                product_value = input;
-                // console.log(product_value);
-
-            }
-            else if (type_field.endsWith('quantidade')){
-                quantidade_value = input;
-            }
-            else if(type_field.endsWith('preco_unitario')){
-                price_unit_value = input;
-            }
-            else if (type_field.endsWith('discount')){
-                descont_value = input;
-            }
-            else if(type_field.endsWith('price_total')){
-                price_total_value = input;
-            }
-            else{
-                search_p = input;// id-product
+        if(descont_value != undefined && quantidade_value!=undefined && price_unit_value!=undefined){
+          
+            if(descont_value.value != 0){
+                price_total_value.value = ((price_unit_value.value - ((descont_value.value/100) * price_unit_value.value))*quantidade_value.value).toFixed(2);
+            } else {
+                price_total_value.value = (price_unit_value.value*quantidade_value.value).toFixed(2);
             }
             
-        })
+        }
+        
       
     }
 })
@@ -180,59 +187,59 @@ let index = 0;
 //     })
 
 
-function fieldProducts(produtos,inputSearch,product,price){
-    inputSearch.addEventListener("input",()=>{
-        if(inputSearch.value.length >=1){
-            let id_options = 0;
-            const query = inputSearch.value;
-            fetch(`/buscar_produtos/?query=${encodeURIComponent(query)}`)
-            .then(response=>{
-                if(response.ok && response.headers.get('Content-Type').includes('application/json')){
-                    return response.json();
-                }
-                else {
-                    throw new Error('Resposta não é JSON');
-                }
-            })
-            .then(data=>{
-                produtos.innerHTML = " ";
-                if(data.produtos.length > 0){
-                    data.produtos.forEach(produto=>{
-                        if (data.produtos.length <= query.length){
-                            selectProduct = document.createElement("button");
-                            selectProduct.className = "btn btn-outline-secondary form-control";
-                            selectProduct.id = `option-${id_options}`;
+// function fieldProducts(produtos,inputSearch,product,price){
+//     inputSearch.addEventListener("input",()=>{
+//         if(inputSearch.value.length >=1){
+//             let id_options = 0;
+//             const query = inputSearch.value;
+//             fetch(`/buscar_produtos/?query=${encodeURIComponent(query)}`)
+//             .then(response=>{
+//                 if(response.ok && response.headers.get('Content-Type').includes('application/json')){
+//                     return response.json();
+//                 }
+//                 else {
+//                     throw new Error('Resposta não é JSON');
+//                 }
+//             })
+//             .then(data=>{
+//                 produtos.innerHTML = " ";
+//                 if(data.produtos.length > 0){
+//                     data.produtos.forEach(produto=>{
+//                         if (data.produtos.length <= query.length){
+//                             selectProduct = document.createElement("button");
+//                             selectProduct.className = "btn btn-outline-secondary form-control";
+//                             selectProduct.id = `option-${id_options}`;
     
-                            selectProduct.textContent = `${produto.product_code} - ${produto.description}`;
+//                             selectProduct.textContent = `${produto.product_code} - ${produto.description}`;
 
-                            produtos.appendChild(selectProduct);
+//                             produtos.appendChild(selectProduct);
     
-                            const button = document.getElementById(selectProduct.id);
-                            button.addEventListener("click",()=>{
-                                product.value = produto.id;
-                                console.log(product.value);
-                                inputSearch.value = button.textContent;
-                                produtos.innerHTML = "";
-                                price.value = produto.cost_of_product;
+//                             const button = document.getElementById(selectProduct.id);
+//                             button.addEventListener("click",()=>{
+//                                 product.value = produto.id;
+//                                 console.log(product.value);
+//                                 inputSearch.value = button.textContent;
+//                                 produtos.innerHTML = "";
+//                                 price.value = produto.cost_of_product;
                                 
 
-                            })
-                            id_options+=1;
-                        }
-                        else if (data.produtos.length == query.length){
-                            price.value = produto.cost_of_product
-                        }
+//                             })
+//                             id_options+=1;
+//                         }
+//                         else if (data.produtos.length == query.length){
+//                             price.value = produto.cost_of_product
+//                         }
                        
-                    })
+//                     })
                 
-                }
-            }) 
-        } else {
-            produtos.innerHTML = " ";
-        }
-    }
-)
-}
+//                 }
+//             }) 
+//         } else {
+//             produtos.innerHTML = " ";
+//         }
+//     }
+// )
+// }
 
 
 // EDIÇÃO DE VENDA, IRÁ INVERTER A LÓGICA - O VALOR DO INPUT DE PESSOA SERÁ USADO PARA PREENCHER O INPUT DE PESQUISA DE PESSOA;
