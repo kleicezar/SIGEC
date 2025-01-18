@@ -1,14 +1,25 @@
 
 // TOTAL VALOR DE FORMULARIO DE ITENS;
+const total = document.getElementById("id_total_value")
+const totalProducts = document.getElementById("id_product_total");
 const itens_container = document.getElementById("itens-container");
 itens_container.addEventListener("input",(event)=>{
     if(event.target.tagName==='INPUT'){
         const item_forms = itens_container.querySelectorAll(".item-form");
         let n_produtos = 0;
+        let totalPrice = 0;
         item_forms.forEach(item_form_array=>{
-            let input_quantidade = item_form_array.querySelector("")
-            
-            n_produtos = 1+ n_produtos;
+            const inputs = item_form_array.querySelectorAll("input")
+            inputs.forEach(input=>{
+                if(input.id.endsWith("quantidade")){
+                    n_produtos = Number(input.value) + n_produtos;
+                }
+                else if(input.id.endsWith("price_total")){
+                    totalPrice = totalPrice + Number(input.value);
+                }
+            })
+            totalProducts.value = n_produtos;
+            total.value = totalPrice;
         })
         const inputModificado = event.target;
         const item_form = inputModificado.closest(".item-form");
