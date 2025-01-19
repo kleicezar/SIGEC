@@ -50,8 +50,10 @@ itens_container.addEventListener("input",(event)=>{
             else if(type_field.endsWith('price_total')){
                 price_total_value = input;
             }
-            else{
+            else if(type_field.startsWith("idProduct")){
                 search_p = input;
+                console.log('search pzinho')
+                console.log(search_p)
             }
             
         })
@@ -116,148 +118,6 @@ itens_container.addEventListener("input",(event)=>{
 const item_forms = document.querySelectorAll('.item-form');
 
 let index = 0;
-// item_forms.forEach(itemForm=>{
-//     let mount = document.getElementById(`id_vendaitem_set-${index}-quantidade`);
-//     let price = document.getElementById(`id_vendaitem_set-${index}-preco_unitario`);
-//     let discount = itemForm.querySelector('td .descont');
-//     let totalValue = itemForm.querySelector('td .totalValue');
-
-//     const product_0 = document.getElementById(`id_vendaitem_set-${index}-product`);
-//     const produtos_0 = document.getElementById(`products-${index}`);
-//     const idProduct = document.getElementById("idProduct-0");
-
-
-//     // MONITORAR A ALTERAÇÃO DE VALORES PARA MUDAR O VALOR TOTAL
-//     fieldProducts(produtos_0,idProduct,product_0,price);
-    
-    
-
-//     item = itemForm.querySelector("tbody tr");
-//     console.log(item);
-            
-    
-//     discount.addEventListener("input",()=>{
-//         if(discount.value != 0){
-//             totalValue.value = ((price.value - ((discount.value/100) * price.value))*mount.value).toFixed(2);
-//         } else {
-//             totalValue.value = (price.value*mount.value).toFixed(2);
-//         }
-//     });
-
-//     mount.addEventListener("input",()=>{
-//         if(discount.value != 0){
-//             totalValue.value = ((price.value - ((discount.value/100) * price.value))*mount.value).toFixed(2);
-//         } else {
-//             totalValue.value = (price.value*mount.value).toFixed(2);
-//         }
-//     });
-
-//     price.addEventListener("input",()=>{
-//         if(discount.value != 0){
-//             totalValue.value = ((price.value - ((discount.value/100) * price.value))*mount.value).toFixed(2);
-//         } else {
-//             totalValue.value = (price.value*mount.value).toFixed(2);
-//         }
-//     })
-// })
-
-// const itemButton = document.getElementById("item");
-
-// itemButton.addEventListener('click',()=>{
-//     const new_item_forms = document.querySelectorAll('.item-form');
-//     let index = 0;
-//     new_item_forms.forEach(itemForm => {
-//             // MOSTRAS OS PRODUTOS REQUISITADOS
-//             const product = document.getElementById(`id_vendaitem_set-${index}-product`);
-//             const produtos = document.getElementById(`products-${index}`);
-//             const searchProduct = document.getElementById(`idProduct-${index}`);
-//             // MONITORAR A ALTERAÇÃO DE VALORES PARA MUDAR O VALOR TOTAL
-//             let discount = itemForm.querySelector("td .descont");
-//             let totalValue = itemForm.querySelector("td .totalValue");
-//             let amount = document.getElementById(`id_vendaitem_set-${index}-quantidade`);
-//             let price = document.getElementById(`id_vendaitem_set-${index}-preco_unitario`);
-
-//             index = index + 1;
-
-//             discount.addEventListener("input",()=>{
-//                 console.log('OLHA O DESCONTO:',discount.value);
-//                 totalValue.value = ((price.value - (discount.value/100)*price.value)*amount.value).toFixed(2);
-//             })
-
-//             amount.addEventListener("input",()=>{
-//                 console.log('OLHA A QUANTIDADE',amount.value);
-//                 totalValue.value = ( (price.value - (discount.value/100)*price.value)*amount.value).toFixed(2);
-//             });
-
-//             price.addEventListener("input",()=>{
-//                 console.log('OLHA O PRECO',price.value);
-//                 totalValue.value = ( (price.value - (discount.value/100)*price.value)*amount.value).toFixed(2);
-//             })
-
-
-//             fieldProducts(produtos,searchProduct,product,price);
-
-            
-        
-//         });
-        
-       
-//     })
-
-
-// function fieldProducts(produtos,inputSearch,product,price){
-//     inputSearch.addEventListener("input",()=>{
-//         if(inputSearch.value.length >=1){
-//             let id_options = 0;
-//             const query = inputSearch.value;
-//             fetch(`/buscar_produtos/?query=${encodeURIComponent(query)}`)
-//             .then(response=>{
-//                 if(response.ok && response.headers.get('Content-Type').includes('application/json')){
-//                     return response.json();
-//                 }
-//                 else {
-//                     throw new Error('Resposta não é JSON');
-//                 }
-//             })
-//             .then(data=>{
-//                 produtos.innerHTML = " ";
-//                 if(data.produtos.length > 0){
-//                     data.produtos.forEach(produto=>{
-//                         if (data.produtos.length <= query.length){
-//                             selectProduct = document.createElement("button");
-//                             selectProduct.className = "btn btn-outline-secondary form-control";
-//                             selectProduct.id = `option-${id_options}`;
-    
-//                             selectProduct.textContent = `${produto.product_code} - ${produto.description}`;
-
-//                             produtos.appendChild(selectProduct);
-    
-//                             const button = document.getElementById(selectProduct.id);
-//                             button.addEventListener("click",()=>{
-//                                 product.value = produto.id;
-//                                 console.log(product.value);
-//                                 inputSearch.value = button.textContent;
-//                                 produtos.innerHTML = "";
-//                                 price.value = produto.cost_of_product;
-                                
-
-//                             })
-//                             id_options+=1;
-//                         }
-//                         else if (data.produtos.length == query.length){
-//                             price.value = produto.cost_of_product
-//                         }
-                       
-//                     })
-                
-//                 }
-//             }) 
-//         } else {
-//             produtos.innerHTML = " ";
-//         }
-//     }
-// )
-// }
 
 
 // EDIÇÃO DE VENDA, IRÁ INVERTER A LÓGICA - O VALOR DO INPUT DE PESSOA SERÁ USADO PARA PREENCHER O INPUT DE PESQUISA DE PESSOA;
@@ -361,50 +221,4 @@ input_client.addEventListener("input",()=>{
 })
 
 
-
-// teste = document.getElementById("id_paymentmethod_venda_set-0-DELETE");
-// console.log(teste.value)
-// teste.addEventListener("click",()=>{
-//     console.log(teste.value)
-// })
-
-
-
-// $(document).ready(function() {
-//     $('#nome_pesquisa').on('keyup', function() {
-//         let nome = $(this).val();
-//         console.log(nome);
-
-//         if (nome.length >= 2) {
-//             $.ajax({
-//                 url: "buscar_pessoas",
-//                 data: { 'pessoa': nome },
-//                 dataType: 'json',
-//                 success: function(response) {
-//                     const pessoas = response.pessoas;
-//                     console.log(pessoas);
-//                     const $resultados = $('#suggestions');
-//                     $resultados.empty();
-
-//                     if (pessoas.length > 0) {
-//                         pessoas.forEach(pessoa => {
-//                             $resultados.append(`<li>${pessoa.WorkPhone}</li>`);
-//                         });
-//                     } else {
-//                         $resultados.append('<li>Nenhum usuário encontrado.</li>');
-//                     }
-
-//                     // Exibe as sugestões se houver resultados
-//                     $resultados.show();
-//                 },
-//                 error: function(xhr, status, error) {
-//                     console.error('Erro na requisição:', error);
-//                     alert('Ocorreu um erro ao buscar os usuários.');
-//                 }
-//             });
-//         } else {
-//             $('#suggestions').hide();
-//         }
-//     });
-// });
 
