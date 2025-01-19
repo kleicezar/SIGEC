@@ -2,22 +2,40 @@
 // TOTAL VALOR DE FORMULARIO DE ITENS;
 const total = document.getElementById("id_total_value")
 const totalProducts = document.getElementById("id_product_total");
+const discountTotal = document.getElementById("id_discount_total");
 const itens_container = document.getElementById("itens-container");
 itens_container.addEventListener("input",(event)=>{
     if(event.target.tagName==='INPUT'){
         const item_forms = itens_container.querySelectorAll(".item-form");
+        // const discounts = itens_container.querySelectorAll('input[type="text"][name$="-discount"]');
         let n_produtos = 0;
         let totalPrice = 0;
+        let totalValue = 0;
+        let discountValue = 0;
+
         item_forms.forEach(item_form_array=>{
+            let quanti = 0;
+            let preco = 0;
             const inputs = item_form_array.querySelectorAll("input")
             inputs.forEach(input=>{
                 if(input.id.endsWith("quantidade")){
                     n_produtos = Number(input.value) + n_produtos;
+                    quanti = input.value;
+                    totalValue = totalValue + preco*Number(quanti);
                 }
                 else if(input.id.endsWith("price_total")){
                     totalPrice = totalPrice + Number(input.value);
+                    preco = input.value;
                 }
+                else if(input.id.endsWith("preco_unitario")){
+                    preco = input.value;
+                    totalValue = totalValue + Number(preco)*quanti;
+                }
+                console.log(totalValue)
             })
+            valor_discontado = total - totalValue;
+            percentual_disconto = (valor_discontado/total)*100;
+            discountTotal.value = percentual_disconto;
             totalProducts.value = n_produtos;
             total.value = totalPrice;
         })
@@ -52,8 +70,6 @@ itens_container.addEventListener("input",(event)=>{
             }
             else if(type_field.startsWith("idProduct")){
                 search_p = input;
-                console.log('search pzinho')
-                console.log(search_p)
             }
             
         })

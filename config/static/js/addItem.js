@@ -82,15 +82,11 @@ function addItem() {
 
 
 function removeItem(button){
-    let parent_button_1 = button.parentElement;
-    let  parent_button_2 = parent_button_1.parentElement;
-    let  parent_button_3 = parent_button_1.querySelector('input[type="hidden"][name$="-DELETE"]');
-     parent_button_3.value = "on";
-    console.log( parent_button_3.value);
-    let  parent_button_4 =  parent_button_2.parentElement;
-    let  parent_button_5 =  parent_button_4.parentElement;
-    let  parent_button_6 =  parent_button_5.parentElement;
-     parent_button_6.removeChild(parent_button_5);
+    let  parent_button_3 = button.parentElement.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]');
+    parent_button_3.value = "on";
+    let  parent_button_5 =  button.parentElement.parentElement.parentElement.parentElement;
+    let  parent_button_6 =  button.parentElement.parentElement.parentElement.parentElement.parentElement;
+    parent_button_6.removeChild(parent_button_5);
 }
 
 
