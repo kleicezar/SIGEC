@@ -13,39 +13,8 @@ itens_container.addEventListener("input",(event)=>{
     if(event.target.tagName==='INPUT'){
         const item_forms = itens_container.querySelectorAll(".item-form");
         // const discounts = itens_container.querySelectorAll('input[type="text"][name$="-discount"]');
-        let n_produtos = 0;
-        let totalPrice = 0;
-        let totalValue = 0;
-        function item(){
-            item_forms.forEach(item_form_array=>{
-                let quanti = 0;
-                let preco = 0;
-                const inputs = item_form_array.querySelectorAll("input");
-                // const divs = item_form_array.querySelectorAll("div");
-                inputs.forEach(input=>{
-                    if(input.id.endsWith("quantidade")){
-                        n_produtos = Number(input.value) + n_produtos;
-                        quanti = input.value;
-                        totalValue = totalValue + preco*Number(quanti);
-                    }
-                    else if(input.id.endsWith("price_total")){
-                        totalPrice = totalPrice + Number(input.value);
-                        preco = input.value;
-                    }
-                    else if(input.id.endsWith("preco_unitario")){
-                        preco = input.value;
-                        totalValue = totalValue + Number(preco)*quanti;
-                    }
-                    console.log(totalValue)
-                })
-                valor_discontado = total - totalValue;
-                percentual_disconto = (valor_discontado/total)*100;
-                discountTotal.value = 11;
-                totalProducts.value = n_produtos;
-                total.value = totalPrice;
-            })
-        }
-        item();
+        // }
+        // item();
         const inputModificado = event.target;
         const item_form = inputModificado.closest(".item-form");
         const inputs_item_form = item_form.querySelectorAll("input");
@@ -133,7 +102,36 @@ itens_container.addEventListener("input",(event)=>{
             }
             
         }
-        
+        let n_produtos = 0;
+        let totalPrice = 0;
+        let totalValue = 0;
+        // function item(){
+        item_forms.forEach(item_form_array=>{
+            let quanti = 0;
+            let preco = 0;
+            const inputs = item_form_array.querySelectorAll("input");
+            // const divs = item_form_array.querySelectorAll("div");
+            inputs.forEach(input=>{
+                if(input.id.endsWith("quantidade")){
+                    n_produtos = Number(input.value) + n_produtos;
+                    quanti = input.value;
+                    totalValue = totalValue + preco*Number(quanti);
+                }
+                else if(input.id.endsWith("price_total")){
+                    totalPrice = totalPrice + Number(input.value);
+                }
+                else if(input.id.endsWith("preco_unitario")){
+                    preco = input.value;
+                    totalValue = totalValue + Number(preco)*quanti;
+                }
+
+            })
+            valor_discontado = total - totalValue;
+            percentual_disconto = (valor_discontado/total)*100;
+            discountTotal.value = 11;
+            totalProducts.value = n_produtos;
+            total.value = totalPrice;
+        })
       
     }
 })
