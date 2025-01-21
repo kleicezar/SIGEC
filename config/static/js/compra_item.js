@@ -1,7 +1,7 @@
 
 // TOTAL VALOR DE FORMULARIO DE ITENS;
 
-// const item_forms = document.querySelectorAll('.item-form');
+const item_forms = document.querySelectorAll('.item-form');
 let allTrs = [];
 let index = 0;
 const payment_value = document.getElementById(`id_paymentmethod_compra_set-${index}-valor`);
@@ -17,7 +17,7 @@ let value_product = document.getElementById(`id_compraitem_set-${formCountElem.v
 
 
 
-
+discount
 
 item_forms.forEach(itemForm=>{
     
@@ -121,7 +121,6 @@ itemButton.addEventListener('click',()=>{
     })
      
 function fieldProducts(produtos,inputSearch,product,price){
-    console.log(inputSearch)
     inputSearch.addEventListener("input",()=>{
         let amount = document.getElementById(`id_compraitem_set-${formCountElem.value - 1}-quantidade`);
         let discount_product = document.getElementById(`id_compraitem_set-${formCountElem.value - 1}-discount`);
@@ -143,8 +142,7 @@ function fieldProducts(produtos,inputSearch,product,price){
                 if(data.produtos.length > 0){
                     data.produtos.forEach(produto=>{
                         if (data.produtos.length <= query.length){
-                            let selectProduct = document.createElement("button");
-                            selectProduct.type = "button";
+                            selectProduct = document.createElement("button");
                             selectProduct.className = "btn btn-outline-secondary form-control";
                             selectProduct.id = `option-${id_options}`;
     

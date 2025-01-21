@@ -19,6 +19,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('data_da_compra', models.DateTimeField(verbose_name='Data da Compra')),
+                ('data_da_compra', models.DateTimeField(verbose_name='Data da Compra')),
                 ('total', models.DecimalField(blank=True, decimal_places=2, max_digits=10, null=True, verbose_name='Total')),
                 ('is_active', models.BooleanField(default=True, verbose_name='Está Ativo')),
                 ('fornecedor', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='Registry.person', verbose_name='Fornecedor')),
