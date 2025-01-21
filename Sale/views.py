@@ -63,6 +63,7 @@ def venda_create(request):
     if request.method == 'POST':
         venda_form = VendaForm(request.POST)
         venda_item_formset = VendaItemFormSet(request.POST)
+        print()
         payment_method_formset = PaymentMethodVendaFormSet(request.POST)
         # Percorrer VendaForm, manipular,
 
@@ -92,12 +93,16 @@ def venda_create(request):
                         produto = form.cleaned_data['product']
                         quantidade = form.cleaned_data['quantidade']
                         preco_unitario = form.cleaned_data['preco_unitario']
+                        discount = form.cleaned_data['discount']
+                        price_total = form.cleaned_data['price_total']
                         if not form.cleaned_data.get("DELETE"):
                             VendaItem.objects.create(
                                 venda=venda,
                                 product=produto,
                                 quantidade=quantidade,
-                                preco_unitario=preco_unitario
+                                preco_unitario=preco_unitario,
+                                discount = discount,
+                                price_total = price_total
                             )
                             
                             produto.current_quantity -= quantidade
