@@ -7,7 +7,6 @@ const itens_container = document.getElementById("itens-container");
 let p_2 = document.createElement("p");
 let container_options_2 = document.getElementById("options_products-0")
 let td_container_options_2 = container_options_2.parentElement;
-console.log(td_container_options_2)
 td_container_options_2.style.display = "none";  
 const p_product = document.createElement("p");
 

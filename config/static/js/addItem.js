@@ -116,25 +116,16 @@ function addPaymentMethod() {
     container.appendChild(newForm);
 
     const payments = container.querySelectorAll(".form-row");
-
-    payments.forEach(payment=>{
-        const table_payment = payment.querySelector("table");
-        console.log(table_payment);
-        const tbody_payment = table_payment.querySelector("tbody");
-        const tr_payment = tbody_payment.querySelector("tr");
-        const delet_payment = tr_payment.querySelector(".delete");
-
-        delet_payment.addEventListener("click",()=>{
-            tbody_payment.style.display = "none";
-            const deleteFieldPayment = tr_payment.querySelector('input[type="hidden"][name$="-DELETE"]');
-            deleteFieldPayment.value="on";
-            console.log(deleteFieldPayment);
-            console.log(deleteFieldPayment.value);
-        })
-    })
 }
 
 
+function removePayment(button){
+    let parent_button_payment_3 = button.parentElement.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]');
+    parent_button_payment_3.value="on";
+    let parent_button_payment_5 = button.parentElement.parentElement.parentElement.parentElement;
+    let parent_button_payment_6 = button.parentElement.parentElement.parentElement.parentElement.parentElement;
+    parent_button_payment_6.removeChild(parent_button_payment_5);
+}
 
 function addItemCompra() {
     const formset = document.getElementById('itens-container');

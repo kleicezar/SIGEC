@@ -288,7 +288,7 @@
                                             
                                             <td>
                                                 <!-- <label for="">Deletar</label> -->
-                                                <button type="button" class="btn btn-danger delete" >Deletar</button>
+                                                <button type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
                                                 {{ form.DELETE.as_hidden }}
                                         </tr>
                                     </tbody>
@@ -336,10 +336,17 @@
                     <tbody> 
                         <tr>
                             <td>{{ payment_method_formset.empty_form.forma_pagamento }}</td>
-                            <td>{{payment_method_formset.empty_form.expirationDate}}</td>
+                            <td>
+                                <div class="input-group date" data-provide="datepicker">
+                                    {{payment_method_formset.empty_form.expirationDate}}
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-th"></span>
+                                    </div>
+                                </div>
+                            </td>
                             <td>{{payment_method_formset.empty_form.valor}}</td>
                             <td>
-                                <button type="button" class="btn btn-danger delete">Deletar</button>
+                                <button type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
                                 {{payment_method_formset.empty_form.DELETE.as_hidden}}</td>
                             </td>
                         </tr>
