@@ -61,17 +61,12 @@ function addItem() {
     input_product = newForm.querySelector(".inputProduct");
     field_product.id = `products-${formCount}`;
     input_product.id = `idProduct-${formCount}`
+    field_list_products = newForm.querySelector(".v");
+    field_list_products.parentElement.style.display = "none";
+    field_list_products.id = `options_products-${formCount}`;
     // console.log(field_product)
     formset.appendChild(newForm);
 
-    const itens = formset.querySelectorAll(".item-form");
-
-
-
-    
-
-    itensIndex.push(formCount);
-    
 
 
     

@@ -5,16 +5,15 @@ const totalProducts = document.getElementById("id_product_total");
 const discountTotal = document.getElementById("id_discount_total");
 const itens_container = document.getElementById("itens-container");
 let p_2 = document.createElement("p");
-let container_options_2 = document.getElementById("options-item-2")
+let container_options_2 = document.getElementById("options_products-0")
 let td_container_options_2 = container_options_2.parentElement;
-td_container_options_2.style.display = "none";
+console.log(td_container_options_2)
+td_container_options_2.style.display = "none";  
+const p_product = document.createElement("p");
 // let container_options_item = document.getElementById("")
 itens_container.addEventListener("input",(event)=>{
     if(event.target.tagName==='INPUT'){
         const item_forms = itens_container.querySelectorAll(".item-form");
-        // const discounts = itens_container.querySelectorAll('input[type="text"][name$="-discount"]');
-        // }
-        // item();
         const inputModificado = event.target;
         const item_form = inputModificado.closest(".item-form");
         const inputs_item_form = item_form.querySelectorAll("input");
@@ -49,8 +48,15 @@ itens_container.addEventListener("input",(event)=>{
             
         })
         if (inputModificado.id.startsWith("idProduct")){
+            let tbody = inputModificado.parentElement.parentElement.parentElement;
+            console.log(tbody)
+            let td = tbody.querySelector(".tre").querySelector("td");
+    
+            let products = td.querySelector("div");
+          
+            console.log(products)
             if(inputModificado.value.length>=1){
-                let id_options = 0;
+                let idoptions = 0;
                 const query = inputModificado.value;
                 fetch(`/buscar_produtos/?query=${encodeURIComponent(query)}`)
                 .then(response=>{
@@ -62,26 +68,35 @@ itens_container.addEventListener("input",(event)=>{
                 }
             })
             .then(data=>{
-                list_products.innerHTML = " ";
-                console.log(data);
+                products.innerHTML="";
+                p_product.textContent = "COD - DESC";
+                p_product.className="title-product text-center";
+                products.style.width = "300px";
+                products.appendChild(p_product)
+
+
                 if(data.produtos.length>0){    
                     data.produtos.forEach(produto=>{
+                        td.style.display="block";
                         let selectProduct = document.createElement("button");
-                        selectProduct.className = "btn btn-outline-secondary form-control";
+                        selectProduct.className = "btn btn-outline-secondary form-control x mb-2";
                         selectProduct.type="button";
-                        selectProduct.id = `option-${id_options}`;
+                        selectProduct.id = `option-product-${idoptions}`;
 
                         selectProduct.textContent = `${produto.product_code} - ${produto.description}`
-                        list_products.appendChild(selectProduct);
+                        let title_product = td.querySelector(".title-product");
 
-                        const button = document.getElementById(selectProduct.id);
+                        title_product.insertAdjacentElement('afterend',selectProduct);
+                    const button = td.querySelector(".x")
                 
                         button.addEventListener("click",()=>{
                             product_value.value = produto.id;
                             search_p.value = button.textContent;
+                            console.log()
                             price_unit_value.value = produto.selling_price;
-                            list_products.innerHTML="";
+                            td.style.display = "none";  
                         })
+                        idoptions+=1;
                     })
                 }
                 else if(data.produtos.length == query.length){
@@ -89,7 +104,7 @@ itens_container.addEventListener("input",(event)=>{
                 }
             })
             } else {
-                list_products.innerHTML = " ";
+                td.style.display ="none";
             }
             
         } 
@@ -195,6 +210,8 @@ td_container_options.style.display = "none";
 // FILTRO IRÁ PREENCHER O CAMPO DE PESQUISA E COLOCAR NO VALOR DE PESSOA O SEU ID
 input_client.addEventListener("input",()=>{
     td_container_options.style.display="none";
+
+    console.log(td_container_options)
     if ((!invertAutoComplete) || (input_client.value.length >=1 && input_client.value != " ")){
             let id_options = 0;
             const query = input_client.value;
@@ -225,6 +242,7 @@ input_client.addEventListener("input",()=>{
                             selectClient.className ="btn btn-outline-secondary form-control mb-2";
                             selectClient.id = `option-${id_options}`
                             selectClient.textContent= `${cliente.id} - ${cliente.name}`
+                            selectClient.type="button";
 
                             let title_client = document.getElementById("title-client")
                             title_client.insertAdjacentElement('afterend',selectClient)
