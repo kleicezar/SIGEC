@@ -233,8 +233,7 @@ input_client.addEventListener("input",()=>{
                             button.addEventListener("click",()=>{
                                 input_client.value = button.textContent ;
                                 id_pessoa.value = `${cliente.id}`;
-                                // console.log(id_pessoa.value);
-                                container_options.innerHTML = "";
+                                td_container_options.style.display="none";
                             })
                             id_options+=1;
                         }
@@ -243,7 +242,7 @@ input_client.addEventListener("input",()=>{
             })
         // }
     }else{
-        container_options.innerHTML = ''
+        td_container_options.style.display="none";
     }
     
 
