@@ -10,7 +10,17 @@ let td_container_options_2 = container_options_2.parentElement;
 console.log(td_container_options_2)
 td_container_options_2.style.display = "none";  
 const p_product = document.createElement("p");
+
 // let container_options_item = document.getElementById("")
+document.addEventListener("focusin",(event)=>{
+    // pra uma caixa de sugestões nao sobrepor a outra
+    if(event.target.tagName ==="INPUT"){
+        // const inputFocus = event.target.id;
+        // if(inputFocus.startsWith("idProduct")){
+            document.querySelectorAll(".suggest").forEach(el=>el.style.display="none");
+        // }
+    }
+})
 itens_container.addEventListener("input",(event)=>{
     if(event.target.tagName==='INPUT'){
         const item_forms = itens_container.querySelectorAll(".item-form");
