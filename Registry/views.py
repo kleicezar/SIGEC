@@ -120,10 +120,10 @@ def buscar_clientes(request):
 
     # Realiza a busca com base no termo de pesquisa
     resultados = Person.objects.filter(
-        Q(id__icontains=query) | 
-        Q(id_FisicPerson_fk__name__icontains=query) | 
-        Q(id_ForeignPerson_fk__name_foreigner__icontains=query) | 
-        Q(id_LegalPerson_fk__fantasyName__icontains=query)
+        Q(id__istartswith=query) | 
+        Q(id_FisicPerson_fk__name__istartswith=query) | 
+        Q(id_ForeignPerson_fk__name_foreigner__istartswith=query) | 
+        Q(id_LegalPerson_fk__fantasyName__istartswith=query)
     ).order_by('id')
 
     # Serializa os resultados em uma lista de dicionários

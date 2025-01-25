@@ -8,6 +8,7 @@ from .forms import *
 from .models import *
 from django.http import JsonResponse
 from django.db.models import Q
+from django.core.paginator import Paginator
 ### SALE
 
 @login_required
@@ -285,7 +286,51 @@ def product_search(request):
     ]
     return JsonResponse({'produtos':products})
 
+@login_required
+def buscar_vendas(request):
+    query = request.GET.get('query','').strip()
+    page_num = request.GET.get('page',1)
 
+
+    resultados = Venda.objects.filter(
+        Q(id__istartswith=query) | 
+        Q(pessoa__id_FisicPerson_fk__name__istartswith=query) |
+        Q(pessoa__id_ForeignPerson_fk__name_foreigner__istartswith=query) |
+        Q(pessoa__id_LegalPerson_fk__fantasyName__istartswith=query)
+    ).order_by('id')
+
+    sales = [
+        {
+            'id':venda.id,
+            'pessoa':(
+                venda.pessoa.id_FisicPerson_fk.name if venda.pessoa.id_FisicPerson_fk else
+                (venda.pessoa.id_ForeignPerson_fk.name_foreigner if venda.pessoa.id_FisicPerson_fk else
+                (venda.pessoa.LegalPerson_fk.fantasyName if venda.pessoa.LegalPerson_fk else 'Nome não disponível'))
+            ),
+            'data_da_venda':venda.data_da_venda,
+            'situacao':venda.situacao.name_Situation,
+            'is_active':venda.is_active
+        } 
+        for venda in resultados
+    ]
+
+    usuario_paginator = Paginator(sales,20)
+    page = usuario_paginator.get_page(page_num)
+
+    response_data = {
+        'vendas':list(page.object_list),
+        'pagination': {
+            'has_previous': page.has_previous(),
+            'previous_page': page.previous_page_number() if page.has_previous() else None,
+            'has_next': page.has_next(),
+            'next_page': page.next_page_number() if page.has_next() else None,
+            'current_page': page.number,
+            'total_pages': usuario_paginator.num_pages,
+        },
+        'message': f"{len(sales)} Clientes encontrados." if page.object_list else "Nenhum cliente encontrado."
+    }
+
+    return JsonResponse(response_data)
 # nome = request.GET.get('nome','')
 # usuarios = User.objects.filter(nome__icontains = nome).values('nome')
 # return JsonResponse({'usuarios':list(usuarios)})
