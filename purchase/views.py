@@ -6,7 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from .forms import *
 from .models import *
-
+from django.db.models import Q
+from django.core.paginator import Paginator
+from django.http import JsonResponse, HttpResponse
 ### SUPPLIER - em breve desativado
 
 # @login_required
@@ -325,3 +327,41 @@ def deleteProduct(request, id_product):
     product = get_object_or_404(Product, id=id_product)
     product.delete()
     return redirect('Product')
+
+@login_required
+def buscar_produtos(request):
+    query = request.GET.get('query','').strip()
+    page_num = request.GET.get('page',1)
+
+    resultados = Product.objects.filter(
+        Q(id__istartswith=query) |
+        Q(description__istartswith=query) |
+        Q(product_code__istartswith=query)
+    ).order_by('id')
+
+    products = [
+        {
+            'id':produto.id,
+            'description':produto.description,
+            'product_code': produto.product_code,
+            'selling_price':produto.selling_price
+        } for produto in resultados
+    ]
+
+    usuario_paginator = Paginator(products,20)
+    page = usuario_paginator.get_page(page_num)
+
+    response_data = {
+        'produtos':list(page.object_list),
+        'pagination':{
+            'has_previous': page.has_previous(),
+            'previous_page': page.previous_page_number() if page.has_previous() else None,
+            'has_next': page.has_next(),
+            'next_page': page.next_page_number() if page.has_next() else None,
+            'current_page': page.number,
+            'total_pages': usuario_paginator.num_pages,
+        },
+        'message': f"{len(products)} produtos encontrados" if page.object_list else "Nenhum produto encontrado."
+    }
+
+    return JsonResponse(response_data)

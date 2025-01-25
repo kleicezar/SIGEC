@@ -7,7 +7,7 @@ urlpatterns = [
     path('SdctForm/', productForm, name='ProductForm'),
     path('Sdct/upt/<int:id_product>/', updateProduct, name='updateProduct'),
     path('Sdct/dlt/<int:id_product>/', deleteProduct, name='deleteProduct'),
-
+    path('Sdct/buscar_produtos/',buscar_produtos,name='buscar_produtos'),
     path('compras/', compras_list, name='compras_list'),
     path('compras/create/', compras_create, name='compras_create'),
     path('compras/update/<int:pk>/', compras_update, name='compras_update'),

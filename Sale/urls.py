@@ -10,6 +10,6 @@ urlpatterns = [
     path('venda/<int:venda_pk>/item/create/', venda_item_create, name='venda_item_create'),
     path('buscar_pessoas/', client_search, name='buscar_pessoas'),
     path('buscar_produtos/',product_search,name='buscar_produtos'),
-    path('buscar_vendas/',buscar_vendas,name='buscar_vendas')
+    path('venda/buscar_vendas/',buscar_vendas,name='buscar_vendas')
     ]
 
