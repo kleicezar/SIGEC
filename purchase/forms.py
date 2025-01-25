@@ -26,7 +26,29 @@ class ProductModelForm(forms.ModelForm):
             }),
             'selling_price':forms.NumberInput(attrs={
                 'class':'form-control row'
+            }),
+            'ncm':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'csosn':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'cfop':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'current_quantity':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'maximum_quantity':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'minimum_quantity':forms.TextInput(attrs={
+                'class':'form-control row'
+            }),
+            'supplier':forms.Select(attrs={
+                'class':'form-select row'
             })
+            
         }
     def __init__(self, *args, **kwargs):
         super(ProductModelForm, self).__init__(*args, **kwargs)
