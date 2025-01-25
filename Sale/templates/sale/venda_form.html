@@ -43,6 +43,15 @@
                     <!-- Formulário de Venda -->
                     <h6>Dados da Venda</h6>
                     <!-- {{ venda_form.as_p }} -->
+                    {% if messages %}
+                    <div>
+                      {% for message in messages %}
+                        <div class="alert {{ message.tags }}">
+                          {{ message }}
+                        </div>
+                      {% endfor %}
+                    </div>
+                    {% endif %}
                     <table class="table">
                         <thead>
                             <tr>

@@ -130,7 +130,18 @@ def venda_create(request):
                         form.delete()
                         form.save()
                 else:
-                    raise Exception("Cancelando transação")
+                    messages.warning(request, "Ação cancelada! O valor não foi salvo completamente.")
+                    venda_form = VendaForm()
+                    venda_item_formset = VendaItemFormSet(queryset=VendaItem.objects.none())
+                    payment_method_formset = PaymentMethodVendaFormSet(queryset=PaymentMethod_Venda.objects.none())
+                    context = {
+                        'venda_form': venda_form,       
+                        'venda_item_formset': venda_item_formset,
+                        'payment_method_formset': payment_method_formset
+                    }
+                    return render(request, 'sale/venda_form.html', context)
+
+                    # raise Exception("Cancelando transação")
                 # for form in payment_method_formset:
                 #     if form.cleaned_data:
                 #         forma_pagamento = form.cleaned_data['forma_pagamento']
@@ -151,7 +162,7 @@ def venda_create(request):
         venda_item_formset = VendaItemFormSet(queryset=VendaItem.objects.none())
         payment_method_formset = PaymentMethodVendaFormSet(queryset=PaymentMethod_Venda.objects.none())
     context = {
-        'venda_form': venda_form,   
+        'venda_form': venda_form,       
         'venda_item_formset': venda_item_formset,
         'payment_method_formset': payment_method_formset
     }
