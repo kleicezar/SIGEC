@@ -7,10 +7,10 @@ class VendaForm(forms.ModelForm):
         fields = ['data_da_venda',  'pessoa', 'situacao', 'is_active','observacao_pessoas', 'observacao_sistema', 'total_value', 'product_total', 'discount_total']
         widgets = {
             'pessoa':forms.TextInput(attrs={
-                'class':'form-control row-5' 
+                'class':'form-control row-xl-5' 
             }),
             'data_da_venda':forms.DateTimeInput(attrs={
-                'class':'form-control row mask-date' ,
+                'class':'form-control row-xl-2 mask-date' ,
                 'id' : "date_sale",
             }),
             'observacao_pessoas':forms.Textarea(attrs={
@@ -20,7 +20,7 @@ class VendaForm(forms.ModelForm):
                 'class':'form-control row'
             }),
             'situacao':forms.Select(attrs={
-                'class':'form-select row'
+                'class':'form-select row-xl-2'
             }),
             'total_value':forms.TextInput(attrs={
                 'class':'form-control row-5',
@@ -95,13 +95,13 @@ class PaymentMethodVendaForm(forms.ModelForm):
         fields = ['forma_pagamento', 'expirationDate', 'valor']
         widgets = {
             'forma_pagamento':forms.Select(attrs={
-                'class':'form-select row'
+                'class':'form-select row '
             }),
             'expirationDate':forms.TextInput(attrs={
-                'class':'form-control row mask-date'
+                'class':'form-control row-xl-2  mask-date'
             }),
             'valor':forms.NumberInput(attrs={
-                'class':'form-control row',
+                'class':'form-control row-xl-2',
                 'min':0
             })
         }

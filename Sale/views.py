@@ -113,12 +113,24 @@ def venda_create(request):
                 # Salva as formas de pagamento associadas à venda
 
 
+                # payment_method_formset.instance = venda
+                # payment_method_formset.save()
+                # for form in payment_method_formset.deleted_objects:
+                #     form.delete()
+                #     form.save()
                 payment_method_formset.instance = venda
-                payment_method_formset.save()
-                for form in payment_method_formset.deleted_objects:
-                    form.delete()
-                    form.save()
-               
+                total_payment = 0
+                for form in payment_method_formset: 
+                    if form.cleaned_data:
+                        valor = form.cleaned_data['valor']
+                        total_payment+=valor
+                if(total_payment == venda_form.cleaned_data['total_value']):  
+                    payment_method_formset.save()
+                    for form in payment_method_formset.deleted_objects:
+                        form.delete()
+                        form.save()
+                else:
+                    raise Exception("Cancelando transação")
                 # for form in payment_method_formset:
                 #     if form.cleaned_data:
                 #         forma_pagamento = form.cleaned_data['forma_pagamento']

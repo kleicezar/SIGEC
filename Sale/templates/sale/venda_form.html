@@ -70,8 +70,8 @@
                                     
                                 </div>
                                 </td>
-                                <td>
-                                    <div class="input-group date" data-provide="datepicker">
+                                <td style="width: 200px;">
+                                    <div class="input-group date " data-provide="datepicker">
                                         {{venda_form.data_da_venda}}
                                         <div class="input-group-addon">
                                             <span class="glyphicon glyphicon-th"></span>
@@ -273,8 +273,8 @@
 
                                     <tbody>
                                         <tr>
-                                            <td>{{form.forma_pagamento}}</td>
-                                            <td>
+                                            <td class="field_type_payment">{{form.forma_pagamento}}</td>
+                                            <td style="width: 200px;">
                                                 <div class="input-group date" data-provide="datepicker">
                                                     {{form.expirationDate}}
                                                     <div class="input-group-addon">
@@ -297,6 +297,37 @@
                             </div>
                         {% endfor %}
                     </div>
+                    <template id="empty-payment-method-form">
+                        <div class="form-row">
+                            <!-- Clona o formulário vazio de payment_method_formset -->
+                            <!-- {{ payment_method_formset.empty_form.as_p }} -->
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                    </tr>
+                                </thead>
+            
+                                <tbody> 
+                                    <tr>
+                                        <td class="field_type_payment">{{ payment_method_formset.empty_form.forma_pagamento }}</td>
+                                        <td style="width: 200px;">
+                                            <div class="input-group date" data-provide="datepicker">
+                                                {{payment_method_formset.empty_form.expirationDate}}
+                                                <div class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-th"></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{{payment_method_formset.empty_form.valor}}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
+                                            {{payment_method_formset.empty_form.DELETE.as_hidden}}</td>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                              </table>
+                        </div>
+                    </template>
                     <button type="button" onclick="addPaymentMethod()" class="btn btn-outline-success mb-5">Adicionar Forma de Pagamento</button>
                     
 
@@ -323,37 +354,7 @@
             </div>
         </div>
         
-        <template id="empty-payment-method-form">
-            <div class="form-row">
-                <!-- Clona o formulário vazio de payment_method_formset -->
-                <!-- {{ payment_method_formset.empty_form.as_p }} -->
-                <table class="table">
-                    <thead>
-                        <tr>
-                        </tr>
-                    </thead>
-
-                    <tbody> 
-                        <tr>
-                            <td>{{ payment_method_formset.empty_form.forma_pagamento }}</td>
-                            <td>
-                                <div class="input-group date" data-provide="datepicker">
-                                    {{payment_method_formset.empty_form.expirationDate}}
-                                    <div class="input-group-addon">
-                                        <span class="glyphicon glyphicon-th"></span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>{{payment_method_formset.empty_form.valor}}</td>
-                            <td>
-                                <button type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
-                                {{payment_method_formset.empty_form.DELETE.as_hidden}}</td>
-                            </td>
-                        </tr>
-                    </tbody>
-                  </table>
-            </div>
-        </template>
+        
         <script type="text/javascript" src="{% static 'js/jquery-3.7.1.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/jquery.mask.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/mask.js' %}"></script> -

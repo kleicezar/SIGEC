@@ -113,9 +113,7 @@ function addPaymentMethod() {
     });
 
     formCountElem.value = parseInt(formCount) + 1;
-    container.appendChild(newForm);
-
-    const payments = container.querySelectorAll(".form-row");
+container.appendChild(newForm);
 }
 
 
