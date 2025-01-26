@@ -19,7 +19,7 @@ urlpatterns = [
     path('StnForm/', SituationForm, name='SituationForm'),
     path('Stn/upt/<int:id_situation>/', updateSituation, name='updateSituation'),
     path('Stn/dlt/<int:id_situation>/', deleteSituation, name='deleteSituation'),
-
+    path('Stn/buscar_situacao/',buscar_situacao,name='buscar_situacao')
     # path('Sdct/', product, name='Product'),
     # path('SdctForm/', productForm, name='ProductForm'),
     # path('Sdct/upt/<int:id_product>/', updateProduct, name='updateProduct'),

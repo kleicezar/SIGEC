@@ -6,6 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from .forms import *
 from .models import *
+from django.db.models import Q
+from django.core.paginator import Paginator
+from django.http import JsonResponse
 
 ### PAYMENT METHOD
 @login_required
@@ -195,6 +198,41 @@ def deleteSituation(request, id_situation):
 
     return render(request, 'config/Situation.html', context)
 
+@login_required
+def buscar_situacao(request):
+    query = request.GET.get('query','').strip()
+    page_num = request.GET.get('page,1')
+
+    resultados = Situation.objects.filter(
+        Q(id__istartswith=query) |
+        Q(name_Situation__istartswith=query)
+    ).order_by('id')
+
+    situations = [
+        {
+            'id':situacao.id,
+            'name_Situation':situacao.name_Situation,
+            'is_Active':situacao.is_Active
+        } for situacao in resultados
+
+    ]
+    
+    usuario_paginator = Paginator(situations,20)
+    page = usuario_paginator.get_page(page_num)
+
+    response_data = {
+        'situations':list(page.object_list),
+        'pagination':{
+            'has_previous':page.has_previous(),
+            'previous_page':page.previous_page_number() if page.has_previous() else None,
+            'has_next':page.has_next(),
+            'next_page': page.next_page_number() if page.has_next() else None,
+            'current_page': page.number,
+            'total_pages': usuario_paginator.num_pages
+        },
+        'message':f"{len(situations)} Situações encontradas"
+    }
+    return JsonResponse(response_data)
 # @login_required
 # def index(request):
 #     return render(request, 'config/index.html')
