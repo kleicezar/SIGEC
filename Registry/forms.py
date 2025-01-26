@@ -151,8 +151,8 @@ class PersonForm(forms.ModelForm):
     def __init__(self, *args, **kargs):
         super().__init__(*args, **kargs)
 
-class ClientSearchForm(forms.Form):
-    search = forms.CharField(max_length=100, required=False, label="Pesquisar Cliente")
+# class ClientSearchForm(forms.Form):
+#     search = forms.CharField(max_length=100, required=False, label="Pesquisar Cliente")
 
 
 # class CombinedForm(forms.Form):

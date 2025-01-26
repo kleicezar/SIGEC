@@ -6,6 +6,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         {% block css %}
+        <meta name="csrf-token" content="{{ csrf_token }}">
         <link rel="stylesheet" href="{% static 'css/Table.css' %}">
         {% endblock  %}
         <title>Formulário</title>
@@ -18,10 +19,27 @@
                     <button class="btn btn-success">Cadastrar</button>
                 </a>
                 <div class="form-group">
-                    <input type="text" placeholder="Pesquisar..." class="search-input">
-                    <button class="btn btn-primary">Pesquisar</button>
+                    <form method="GET" action="{% url 'PaymentMethod' %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col">
+                                <label for="" class="">{{form.search.label}}</label>
+                                {{form.search}}
+                                <div class="col-sm-8" id="search_client">
+                                    <input type="text" id="searchInput"  class="search-input" value="{{ request.GET.query }}" placeholder="Pesquisar Forma(s) de Pagamento"> <!-- onkeyup="searchInput()" -->
+                                    <!-- <input type="text" id="search" name="search" class="form-control" placeholder="Digite o nome do cliente" value="{{ request.GET.search }}"> -->
+                                    <!-- <input type="text" id="searchBox" placeholder="Pesquise um cliente..."> -->
+                                </div>
+                            </div>
+                            <div class="col">
+                                <!-- <button type="submit" class="btn btn-primary mt-4">Pesquisar</button> -->
+                            </div>
+                        
+                        </div>
+                    </form>
                 </div>
             </div>
+            <div id="messageContainer"></div>
             <table>
                 <thead>
                     <tr>
@@ -31,7 +49,7 @@
                         <th>Ações</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="results">    
                 {% for PaymentMethod in PaymentMethods %}
                 <tr>
                     <td>{{ PaymentMethod.id }}</td>
@@ -56,8 +74,20 @@
                 {% endfor %}
                 </tbody>
             </table>
+            <div id="paginationContainer">
+                {% if payments.has_previous %}
+                <a href="{% url 'PaymentMethod' %}?page={{ paymentsMethod.previous_page_number }}&query={{ query }}">Anterior</a>
+                {% endif %}
+                {% if payments.has_next %}
+                <a href="{% url 'PaymentMethod' %}?page={{ paymentsMethod.next_page_number }}&query={{ query  }}">Proximo</a>
+                {% endif %}
+            </div>
         </div> 
         {% endblock %}
+
+        {% block scripts %}
         <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+        <script src="{% static 'js/search_payment.js' %}"></script>
+        {% endblock %}
     </body>
     </html>

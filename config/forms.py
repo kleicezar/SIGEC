@@ -40,8 +40,11 @@ class PositionModelForm(forms.ModelForm):
         self.fields['name_position'].widget.attrs.update({'class': 'label-text'})
         self.fields['is_Active'].widget.attrs.update({'class': 'boll'})
 
-class SituationSearchForm(forms.Form):
-    search = forms.CharField(max_length=100,required=False,label='Pesquisar Situação')
+# class SituationSearchForm(forms.Form):
+#     search = forms.CharField(max_length=100,required=False,label='Pesquisar Situação')
+
+# class PaymentMethodSearchForm(forms.Form):
+#     ...
 # **--**
 
 # class ProductModelForm(forms.ModelForm):
