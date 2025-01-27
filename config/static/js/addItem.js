@@ -172,4 +172,4 @@ function addPaymentMethodCompra() {
 
     formCountElem.value = parseInt(formCount) + 1;
     container.appendChild(newForm);
-}
+}   

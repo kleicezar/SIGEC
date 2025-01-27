@@ -13,98 +13,84 @@ from django.core.paginator import Paginator
 # ### CLIENT
 
 @login_required
-def Client_Create(request):
+def AccountsPayable_Create(request):
+    PaymentMethodAccountsPayableFormSet = inlineformset_factory(AccountsPayable, PaymentMethod_AccountsPayable, form=PaymentMethodAccountsPayableForm, extra=1, can_delete=True)
     if request.method == "POST":
-        form_address = AddressForm(request.POST)
-        form_fisicPerson = FisicPersonForm(request.POST)
-        form_legalPerson = LegalPersonModelForm(request.POST)
-        form_foreigner = ForeignerModelForm(request.POST)
-        form_Person = PersonForm(request.POST)
-
-        # verificação e validação de endereço
-        if form_address.is_valid():
-            address = form_address.save()
-
-        #verificação se o cadastro é valido 
-        if form_Person.is_valid():
-
-            # verificação em qual cadastro foi feito    
-            if form_fisicPerson.is_valid():
-                fisicPerson = form_fisicPerson.save(commit=False)
-                fisicPerson.id_address_fk = address
-                fisicPerson = form_fisicPerson.save()
-
-                person = form_Person.save(commit=False)
-                person.id_FisicPerson_fk = fisicPerson
-                person.isActive = 1
-                person.save()
-
-            if form_legalPerson.is_valid():
-                legalPerson = form_legalPerson.save(commit=False)
-                legalPerson.id_address_fk = address
-                legalPerson = form_legalPerson.save()
-
-                person = form_Person.save(commit=False)
-                person.id_LegalPerson_fk = legalPerson
-                person.isActive = 1
-                person.save()
-
-            if form_foreigner.is_valid():
-                foreigner = form_foreigner.save(commit=False)
-                foreigner.id_address_fk = address
-                foreigner = form_foreigner.save()
-
-                person = form_Person.save(commit=False)
-                person.id_ForeignPerson_fk = foreigner
-                person.isActive = 1
-                person.save()
-                return redirect('Client')
-
+        form_AccountsPayable = AccountsPayableForm(request.POST)
+        PaymentMethod_AccountsPayable_FormSet = PaymentMethodAccountsPayableFormSet(request.POST)
+        if form_AccountsPayable.is_valid() and PaymentMethod_AccountsPayable_FormSet.is_valid():
+          for form in PaymentMethod_AccountsPayable_FormSet:
+                if form.cleaned_data:
+                    produto = form.cleaned_data['product']
+                    quantidade = form.cleaned_data['quantidade']
+                    if produto.current_quantity < quantidade:
+                        estoque_suficiente = False
+                        form.add_error('quantidade', f'Não há estoque suficiente para o produto {produto.description}. Estoque disponível: {produto.current_quantity}.')
     else: 
-        form_address = AddressForm()
-        form_fisicPerson = FisicPersonForm()
-        form_legalPerson = LegalPersonModelForm()
-        form_foreigner = ForeignerModelForm()
-        form_Person = PersonForm()
+        form_AccountsPayable = AccountsPayableForm()
+        PaymentMethod_AccountsPayable_FormSet = PaymentMethodAccountsPayableFormSet(queryset=PaymentMethod_AccountsPayable.objects.none())
         
     context = {
-        'form_address': form_address,
-        'form_fisicPerson': form_fisicPerson,
-        'form_legalPerson': form_legalPerson,
-        'form_foreigner': form_foreigner,
-        'form_Person': form_Person
+        'form_AccountsPayable': form_AccountsPayable,
+        'form_payment_account': PaymentMethod_AccountsPayable_FormSet
     }
-    return render(request, 'registry/Clientform.html', context)
+    return render(request, 'finance/AccountsPayform.html', context)
 
 @login_required
-def client_list(request):
+def AccountsPayable_list(request):
     # Obtenha o termo de pesquisa da requisição
     search_query = request.GET.get('query', '')
 
     # Filtrar os clientes com base no termo de pesquisa
     if search_query:
-        clients = Person.objects.filter(
-        (
+        accountPayable = AccountsPayable.objects.filter(
+        (   # campo pessoa
             Q(id__icontains=search_query) | 
-            Q(id_FisicPerson_fk__name__icontains=search_query) | 
-            Q(id_ForeignPerson_fk__name_foreigner__icontains=search_query) | 
-            Q(id_LegalPerson_fk__fantasyName__icontains=search_query)
+            Q(pessoa_id__id_FisicPerson_fk__name__icontains=search_query) | 
+            Q(pessoa_id__id_LegalPerson_fk__name_foreigner__icontains=search_query) | 
+            Q(pessoa_id__id_ForeignPerson_fk__fantasyName__icontains=search_query) | 
+            Q(documentNumber__icontains=search_query)
         ),
-        isActive = True
+        isActive = True 
     ).order_by('id')
     else:
-        clients = Person.objects.all()
+        accountPayable = AccountsPayable.objects.all()
 
+    for i in accountPayable:
+        print(accountPayable) 
     # Configure o Paginator com o queryset filtrado
-    paginator = Paginator(clients, 20)  # 5 itens por página
+    paginator = Paginator(accountPayable, 20)  # 5 itens por página
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
 
-    return render(request, 'registry/client_list.html', {
-        'clients': page,
+    return render(request, 'finance/AccountsPay_list.html', {
+        'accountsPayable': page,
         'query': search_query,  # Envie o termo de pesquisa para o template
     })
 
+# para futuros testes
+# INSERT INTO finance_accountspayable(
+#     pessoa_id, 
+#     chartofaccounts_id, 
+#     documentnumber, 
+#     date_account, 
+#     numberofinstallments, 
+#     valueofinstallments, 
+#     totalvalue, 
+#     peoplewatching, 
+#     systemwatching
+# )
+# VALUES (
+#     1, -- ID de uma pessoa existente na tabela `Person`
+#     NULL, -- `chartOfAccounts` será NULL
+#     12345, -- Número do documento
+#     '2025-01-23 15:30:00', -- Data da conta a pagar
+#     12, -- Número de parcelas
+#     500.00, -- Valor de cada parcela
+#     6000.00, -- Valor total
+#     'Cliente pediu para ajustar o prazo.', -- Observação para a pessoa
+#     'Sistema gerou conta automaticamente.' -- Observação para o sistema
+# );
 
 @login_required
 def buscar_clientes(request):

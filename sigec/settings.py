@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'Registry',
     'Sale',
     'purchase',
+    'finance',
     'login',
     'bootstrap4',
     'stdimage',

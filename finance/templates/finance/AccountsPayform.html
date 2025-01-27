@@ -1,0 +1,254 @@
+{% extends 'login/menu.html' %}
+{% load bootstrap4 %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block css %}
+    <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
+    {% endblock %}
+    <title>Formulário</title>
+    {% bootstrap_css %}
+</head>
+<body>
+    {% block content %}
+    <div class="content">
+        <form method="POST">
+            {% csrf_token %}
+            
+            <h4 class="mt-5 mb-5 c-adapted">Cadastro de Contas A Pagar</h4>
+            <!-- dados da conta a pagar -->
+            {{ form_AccountsPayable.pessoa_id.label}}
+            {{ form_AccountsPayable.pessoa_id}}
+
+            {{ form_AccountsPayable.chartOfAccounts.label}}
+            {{ form_AccountsPayable.chartOfAccounts}}
+
+            {{ form_AccountsPayable.documentNumber.label}}
+            {{ form_AccountsPayable.documentNumber}}
+
+            {{ form_AccountsPayable.date_account.label}}
+            <td>
+                <div class="input-group date" data-provide="datepicker">
+                    {{ form_AccountsPayable.date_account}}
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-th"></span>
+                    </div>
+                </div>
+            </td>
+
+            <!-- {{ form_payment_account.interestType.label}}
+            {{ form_payment_account.interestType}}
+            
+            {{ form_payment_account.fineType.label}}
+            {{ form_payment_account.fineType}}
+
+            <div id="interest_percent_field">
+                {{ form_payment_account.interestPercent.label}}
+                {{ form_payment_account.interestPercent}}
+            </div>
+            <div id="interest_value_field">
+                {{ form_payment_account.interestValue.label}}
+                {{ form_payment_account.interestValue}}
+            </div>
+            <div id="fine_percent_field">
+                {{ form_payment_account.finePercent.label}}
+                {{ form_payment_account.finePercent}}
+            </div>
+            <div id="fine_value_field">
+                {{ form_payment_account.fineValue.label}}
+                {{ form_payment_account.fineValue}}
+            </div> -->
+
+            <!-- {{ form_AccountsPayable.numberOfInstallments.label}}
+            {{ form_AccountsPayable.numberOfInstallments}}
+
+            {{ form_AccountsPayable.valueOfInstallments.label}}
+            {{ form_AccountsPayable.valueOfInstallments}}
+
+            {{ form_AccountsPayable.totalValue.label}}
+            {{ form_AccountsPayable.totalValue}} -->
+
+            <!-- forma de pagamento -->
+            <!-- {{ form_payment_account.forma_pagamento.label}}
+            {{ form_payment_account.forma_pagamento}} -->
+
+            <!-- {{ form_payment_account.expirationDate.label}}
+            {{ form_payment_account.expirationDate}} -->
+
+            <!-- {{ form_payment_account.days.label}}
+            {{ form_payment_account.days}} -->
+<!-- 
+            {{ form_payment_account.value.label}}
+            {{ form_payment_account.value}} -->
+
+            <div class="form-row">
+                <table class="table" id="paymentMethod_account">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                {{form_AccountsPayable.numberOfInstallments.label}}
+                            </th>
+                            <th scope="col">
+                                {{form_AccountsPayable.date_init.label}}
+                            </th>
+                            <th scope="col">
+                                {{form_AccountsPayable.installment_Range.label}}
+                            </th>
+                            <th scope="col">
+                                {{ form_AccountsPayable.valueOfInstallments.label}}
+                            </th>
+                            <th scope="col">
+                                {{ form_AccountsPayable.totalValue.label}}
+                            </th>
+                            <th scope="col">
+                                
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>{{form_AccountsPayable.numberOfInstallments}}</td>
+                            <td>
+                                <div class="input-group date" data-provide="datepicker">
+                                    {{form_AccountsPayable.date_init}}
+
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-th"></span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{form_AccountsPayable.installment_Range}}</td>
+                            <td>{{ form_AccountsPayable.valueOfInstallments}}</td>
+                            <td>{{ form_AccountsPayable.totalValue}}</td>
+                            <td>
+                                <button id="generate" type="button">GERAR</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+                        
+            
+            <div id="payment-method-container">
+                {{ form_payment_account.management_form }}
+                {% for form in form_payment_account %}
+                    <div class="form-row">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">
+                                        {{form.expirationDate.label}}
+                                    </th>
+                                    <th scope="col">
+                                        {{form.forma_pagamento.label}}
+                                    </th>
+                                    <th scope="col">
+                                        {{ form.days.label}}
+                                    </th>
+                                    <th scope="col">
+                                        {{form.value.label}}
+                                    </th>
+                                    <th scol="col">
+                                        Ações
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{form.forma_pagamento}}</td>
+                                    <td>
+                                        <div class="input-group date" data-provide="datepicker" id="payment_method">
+                                            {{form.expirationDate}}
+                                            <div class="input-group-addon">
+                                                <span class="glyphicon glyphicon-th"></span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{form.days}}</td>
+                                    <td>{{form.value}}</td>
+                                    <td>
+                                        <label for="">Deletar</label>
+                                        {{form.DELETE}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                          
+                    </div>
+                {% endfor %}
+            </div>
+        <button type="button" onclick="addPaymentMethod()" class="btn btn-outline-success mb-5">Adicionar Forma de Pagamento</button>
+
+        <div class="row">
+
+            <div class="col">
+                <label for="">{{form_AccountsPayable.peopleWatching.label}}</label>
+                {{form_AccountsPayable.peopleWatching}}
+            </div>
+
+            <div class="col">
+                <label for="">{{form_AccountsPayable.systemWatching.label}}</label>
+                {{form_AccountsPayable.systemWatching}}
+            </div>
+        </div>
+
+            <br><br>
+            <div class="row">
+                <div class="col text-end">
+                    <button type="submit"  class="btn bg-adapted">Enviar</button>
+                </div>
+                
+            </div>
+            
+        </form>
+    </div>
+
+    <template id="empty-payment-method-form">
+        <div class="form-row">
+            <!-- Clona o formulário vazio de payment_method_formset -->
+            <!-- {{ payment_method_formset.empty_form.as_p }} -->
+            <table class="table">
+                <thead>
+                    <tr>
+                    </tr>
+                </thead>
+
+                <tbody> 
+                    <tr>
+                        <td>{{ form_payment_account.empty_form.forma_pagamento }}</td>
+                        <td>
+                            <div class="input-group date" data-provide="datepicker">
+                                {{form_payment_account.empty_form.expirationDate}}
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-th"></span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ form_payment_account.empty_form.days }}</td>
+                        <td>{{form_payment_account.empty_form.value}}</td>
+                        <td>
+                            <label for="">Deletar</label>
+                            {{form_payment_account.empty_form.DELETE}}
+                        </td>
+                    </tr>
+                </tbody>
+              </table>
+        </div>
+    </template>
+
+    <script src="{% static 'js/jquery-3.7.1.js' %}"></script>
+    <script src="{% static 'js/jquery.mask.min.js' %}"></script>
+    <script src="{% static 'js/mask.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/interest.js' %}"></script>
+    <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap-datepicker.pt-BR.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/date.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/additem.js' %}"></script>     
+
+    {% endblock %}
+</body>
+</html>

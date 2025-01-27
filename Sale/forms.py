@@ -93,7 +93,7 @@ class PaymentMethodVendaForm(forms.ModelForm):
     class Meta:
         model = PaymentMethod_Venda
         fields = ['forma_pagamento', 'expirationDate', 'valor']
-        widgets = {
+        widgets = { 
             'forma_pagamento':forms.Select(attrs={
                 'class':'form-select row'
             }),
