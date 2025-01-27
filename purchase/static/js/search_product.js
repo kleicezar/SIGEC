@@ -2,6 +2,7 @@ const input = document.getElementById("searchInput");
 const resultContainer = document.getElementById("results");
 const messageContainer = document.getElementById("messageContainer");
 const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
 input.addEventListener("input",()=>{
     const query = input.value;
     fetch(`/Sdct/buscar_produtos/?query=${encodeURIComponent(query)}`)

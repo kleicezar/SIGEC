@@ -68,6 +68,14 @@
                     {% endfor %}
                 </tbody>
             </table>
+            <div id="paginationContainer">
+                {% if vendas.has_previous %}
+                <a href="{% url 'venda_list' %}?page={{ vendas.previous_page_number }}&query={{ query }}">Anterior</a>
+                {% endif %}
+                {% if vendas.has_next %}
+                <a href="{% url 'venda_list' %}?page={{ vendas.next_page_number }}&query={{ query  }}">Proximo</a>
+                {% endif %}
+            </div>
         </div> 
         {% endblock %}
         {% block scripts %}

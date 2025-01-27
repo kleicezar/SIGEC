@@ -13,8 +13,29 @@ from django.core.paginator import Paginator
 
 @login_required
 def venda_list(request):
-    vendas = Venda.objects.all()
-    return render(request, 'sale/venda_list.html', {'vendas': vendas})
+    search_query = request.GET.get('query','')
+
+
+    if search_query:
+        sales = Venda.objects.filter(
+        Q(id__istartswith=search_query) | 
+        Q(pessoa__id_FisicPerson_fk__name__istartswith=search_query) |
+        Q(pessoa__id_ForeignPerson_fk__name_foreigner__istartswith=search_query) |
+        Q(pessoa__id_LegalPerson_fk__fantasyName__istartswith=search_query)
+    ).order_by('id')
+    else:
+        sales = Venda.objects.all()
+
+    paginator = Paginator(sales,1)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+
+    return render(request, 'sale/venda_list.html', {
+        'vendas': page,
+        'query':search_query
+        })
+    # vendas = Venda.objects.all()
+    # return render(request, 'sale/venda_list.html', {'vendas': vendas})
 
     # 
     # @login_requiredCriar uma nova Venda
@@ -314,7 +335,7 @@ def buscar_vendas(request):
         for venda in resultados
     ]
 
-    usuario_paginator = Paginator(sales,20)
+    usuario_paginator = Paginator(sales,2)
     page = usuario_paginator.get_page(page_num)
 
     response_data = {
@@ -327,7 +348,7 @@ def buscar_vendas(request):
             'current_page': page.number,
             'total_pages': usuario_paginator.num_pages,
         },
-        'message': f"{len(sales)} Clientes encontrados." if page.object_list else "Nenhum cliente encontrado."
+        'message': f"{len(sales)} Vendas encontrados." if page.object_list else "Nenhum cliente encontrado."
     }
 
     return JsonResponse(response_data)

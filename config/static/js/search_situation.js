@@ -23,10 +23,16 @@ input.addEventListener("input",()=>{
         if (data.situations.length > 0){
             data.situations.forEach(situacao=>{
                 const row = document.createElement("tr");
+                let is_Active;
+                if(situacao.is_Active){
+                    is_Active = "Sim";
+                }
+                is_Active= "Não";
+
                 row.innerHTML = `
                     <td>${situacao.id}</td>
                     <td>${situacao.name_Situation}</td>
-                    <td>${situacao.is_Active}</td>
+                    <td>${is_Active}</td>
                     <td>
                            <a href="/Stn/upt/${situacao.id}">
                                 <button class="btn" style="background-color: #117027;color: white;" >Editar</button>

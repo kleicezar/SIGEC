@@ -2,6 +2,7 @@ const input = document.getElementById("searchInput");
 const resultContainer = document.getElementById("results");
 const messageContainer = document.getElementById("messageContainer");
 const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+let paginationContainer = document.getElementById("paginationContainer");
 input.addEventListener("input",()=>{
     const query = input.value;
     fetch(`/venda/buscar_vendas/?query=${encodeURIComponent(query)}`)
@@ -46,8 +47,10 @@ input.addEventListener("input",()=>{
             });
            
         }
-        
+        paginationContainer.innerHTML = "";
+
         if(data.pagination){
+            console.log(data.pagination)
             const { has_previous, has_next, previous_page, next_page } = data.pagination;
             if (has_previous){
                 const prevLink = document.createElement("a");
@@ -60,7 +63,7 @@ input.addEventListener("input",()=>{
 
             if(has_next){
                 const nextLink = document.createElement("a");
-                nextLink.href = `/venda/?prsn/?page=${next_page}&query=${encodeURIComponent(query)}`;
+                nextLink.href = `/venda/?page=${next_page}&query=${encodeURIComponent(query)}`;
                 nextLink.textContent = "Próximo";
                 nextLink.className = "pagination-link";
                 paginationContainer.appendChild(nextLink);
