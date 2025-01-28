@@ -198,6 +198,69 @@ def deleteSituation(request, id_situation):
 
     return render(request, 'config/Situation.html', context)
 
+### ChartOfAccounts
+
+@login_required
+def chartOfAccounts(request):
+    context = {
+        'ChartOfAccountss': ChartOfAccounts.objects.all()
+    }
+    return render(request, 'config/ChartOfAccounts.html', context)
+
+@login_required
+def ChartOfAccountsForm(request):
+    if request.method == "GET":
+        chartOfAccountsForm = ChartOfAccountsModelForm()
+        context = {
+            'ChartOfAccounts' : chartOfAccountsForm
+        }
+        return render(request, 'config/ChartOfAccountsForm.html', context)
+    else:
+        chartOfAccountsForm = ChartOfAccountsModelForm(request.POST)
+        if chartOfAccountsForm.is_valid():
+            chartOfAccountsForm.save()
+            messages.success(request, "Forma de Pagamento cadastrado com sucesso")
+            return redirect('ChartOfAccounts')
+    context = {
+        'ChartOfAccounts' : chartOfAccountsForm
+    }
+    return render(request, 'config/ChartOfAccounts.html', context)
+
+@login_required
+def updateChartOfAccounts(request, id_chartOfAccounts):
+    chartOfAccounts = get_object_or_404(ChartOfAccounts, id=id_chartOfAccounts)
+    if request.method == "GET":
+        chartOfAccountsForm = ChartOfAccountsModelForm(instance=chartOfAccounts)
+
+        context = {
+            'chartOfAccounts': chartOfAccounts,
+            'ChartOfAccounts': chartOfAccountsForm
+        }
+        return render(request, 'config/ChartOfAccountsForm.html',context)
+    elif request.method == "POST":
+        chartOfAccountsForm = ChartOfAccountsModelForm(request.POST, instance=chartOfAccounts)
+        if chartOfAccountsForm.is_valid():
+            chartOfAccountsForm.save()
+            messages.success(request, "Forma de Pagamento cadastrado com sucesso")
+            return redirect('ChartOfAccounts')
+    context = {
+        'ChartOfAccounts' : chartOfAccountsForm
+    }
+    return render(request, 'config/ChartOfAccounts.html', context)
+
+@login_required
+def deleteChartOfAccounts(request, id_chartOfAccounts):
+    chartOfAccounts = get_object_or_404(ChartOfAccounts, id=id_chartOfAccounts)
+    if request.method == "POST":
+        chartOfAccounts.delete()
+        messages.success(request, "Situação deletada com sucesso.")
+        return redirect('ChartOfAccounts')  # Redirecione para onde desejar
+    context = {
+        'chartOfAccounts': chartOfAccounts
+    }
+
+    return render(request, 'config/ChartOfAccounts.html', context)
+
 @login_required
 def buscar_situacao(request):
     query = request.GET.get('query','').strip()

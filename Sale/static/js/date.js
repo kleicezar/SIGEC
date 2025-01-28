@@ -25,3 +25,12 @@ $(document).ready(function() {
         language: 'pt-BR'
     });
 });
+$(document).ready(function() {
+    $('#payment_method').datepicker({
+        format: 'dd/mm/yyyy', // Formato de data
+        autoclose: true,     // Fecha o calendário automaticamente após a seleção
+        todayHighlight: true, // Destaca o dia atual
+        startDate: '+0d',
+        language: 'pt-BR'
+    });
+});
