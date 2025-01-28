@@ -13,11 +13,19 @@ const p_product = document.createElement("p");
 // let container_options_item = document.getElementById("")
 document.addEventListener("focusin",(event)=>{
     // pra uma caixa de sugestões nao sobrepor a outra
-    if(event.target.tagName ==="INPUT"){
+    if(event.target.tagName ==="INPUT" ){
         // const inputFocus = event.target.id;
         // if(inputFocus.startsWith("idProduct")){
             document.querySelectorAll(".suggest").forEach(el=>el.style.display="none");
         // }
+    }
+})
+
+
+itens_container.addEventListener("click",(event)=>{
+    if(event.target.tagName === 'BUTTON'){
+        const item_forms = itens_container.querySelectorAll(".item-form");
+        Total(item_forms);
     }
 })
 itens_container.addEventListener("input",(event)=>{
@@ -32,7 +40,6 @@ itens_container.addEventListener("input",(event)=>{
         let price_total_value;
         let price_unit_value ;
         let search_p;
-        const list_products = item_form.querySelector("table tbody tr td .field-product");
         inputs_item_form.forEach((input)=>{
             const type_field = input.id;
             if(type_field.endsWith('product')){
@@ -58,12 +65,10 @@ itens_container.addEventListener("input",(event)=>{
         })
         if (inputModificado.id.startsWith("idProduct")){
             let tbody = inputModificado.parentElement.parentElement.parentElement;
-            console.log(tbody)
             let td = tbody.querySelector(".tre").querySelector("td");
     
             let products = td.querySelector("div");
           
-            console.log(products)
             if(inputModificado.value.length>=1){
                 let idoptions = 0;
                 const query = inputModificado.value;
@@ -101,7 +106,6 @@ itens_container.addEventListener("input",(event)=>{
                         button.addEventListener("click",()=>{
                             product_value.value = produto.id;
                             search_p.value = button.textContent;
-                            console.log()
                             price_unit_value.value = produto.selling_price;
                             td.style.display = "none";  
                         })
@@ -130,35 +134,64 @@ itens_container.addEventListener("input",(event)=>{
         let totalPrice = 0;
         let totalValue = 0;
         // function item(){
-        item_forms.forEach(item_form_array=>{
-            let quanti = 0;
-            let preco = 0;
-            const inputs = item_form_array.querySelectorAll("input");
-            // const divs = item_form_array.querySelectorAll("div");
-            inputs.forEach(input=>{
-                if(input.id.endsWith("quantidade")){
-                    n_produtos = Number(input.value) + n_produtos;
-                    quanti = input.value;
-                    totalValue = totalValue + preco*Number(quanti);
-                }
-                else if(input.id.endsWith("price_total")){
-                    totalPrice = totalPrice + Number(input.value);
-                }
-                else if(input.id.endsWith("preco_unitario")){
-                    preco = input.value;
-                    totalValue = totalValue + Number(preco)*quanti;
-                }
+        // item_forms.forEach(item_form_array=>{
+        //     let quanti = 0;
+        //     let preco = 0;
+        //     const inputs = item_form_array.querySelectorAll("input");
+        //     // const divs = item_form_array.querySelectorAll("div");
+        //     inputs.forEach(input=>{
+        //         if(input.id.endsWith("quantidade")){
+        //             n_produtos = Number(input.value) + n_produtos;
+        //             quanti = input.value;
+        //             totalValue = totalValue + preco*Number(quanti);
+        //         }
+        //         else if(input.id.endsWith("price_total")){
+        //             totalPrice = totalPrice + Number(input.value);
+        //         }
+        //         else if(input.id.endsWith("preco_unitario")){
+        //             preco = input.value;
+        //             totalValue = totalValue + Number(preco)*quanti;
+        //         }
 
-            })
-            valor_discontado = total - totalValue;
-            percentual_disconto = (valor_discontado/total)*100;
-            discountTotal.value = 11;
-            totalProducts.value = n_produtos;
-            total.value = totalPrice;
-        })
+        //     })
+        //     valor_discontado = total - totalValue;
+        //     percentual_disconto = (valor_discontado/total)*100;
+        //     discountTotal.value = 11;
+        //     totalProducts.value = n_produtos;
+        //     total.value = totalPrice;
+        // })
+        Total(item_forms);
       
     }
 })
+
+function Total(item_forms,n_produtos=0,totalPrice=0,totalValue=0){
+    item_forms.forEach(item_form_array=>{
+        let quanti = 0;
+        let preco = 0;
+        inpt = item_form_array.querySelectorAll("input");
+
+        inpt.forEach(input=>{
+            if(input.id.endsWith("quantidade")){
+                n_produtos = Number(input.value) + n_produtos;
+                quanti = input.value;
+                totalValue = totalValue + preco*Number(quanti);
+            }
+            else if(input.id.endsWith("price_total")){
+                totalPrice = totalPrice + Number(input.value);
+            }
+            else if(input.id.endsWith("preco_unitario")){
+                preco = input.value;
+                totalValue = totalValue + Number(preco)*quanti;
+            }
+        })
+        valor_discontado = total - totalValue;
+        discountTotal.value = 11;
+        totalProducts.value = n_produtos;
+        total.value = totalPrice;
+    })
+
+}
 const item_forms = document.querySelectorAll('.item-form');
 
 let index = 0;

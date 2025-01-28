@@ -82,6 +82,9 @@ function removeItem(button){
     let  parent_button_5 =  button.parentElement.parentElement.parentElement.parentElement;
     let  parent_button_6 =  button.parentElement.parentElement.parentElement.parentElement.parentElement;
     parent_button_6.removeChild(parent_button_5);
+
+
+
 }
 
 
