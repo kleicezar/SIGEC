@@ -29,13 +29,47 @@
 const itensIndex  = [0];
 function addItem() {
     const formset = document.getElementById('itens-container');
-    const formCountElem = document.getElementById('id_vendaitem_set-TOTAL_FORMS');
-    
-    if (!formCountElem) {
-        console.error("Elemento TOTAL_FORMS de VendaItem não encontrado!");
-        return;
+    const formCountSale = document.getElementById('id_vendaitem_set-TOTAL_FORMS');
+    // const formCountElem = document.getElementById('id_vendaitem_set-TOTAL_FORMS');
+    const formCountCompra = document.getElementById("id_compraitem_set-TOTAL_FORMS");
+    if(formCountSale){
+        const [formCount,newForm] = clone(formCountSale);
+        formCountSale.value = parseInt(formCount) + 1;
+
+        // field_product=  newForm.querySelector(".field-product ");
+        input_product = newForm.querySelector(".inputProduct");
+
+        // field_product.id = `products-${formCount}`;
+        input_product.id = `idProduct-${formCount}`
+
+        field_list_products = newForm.querySelector(".v");
+        field_list_products.parentElement.style.display = "none";
+        field_list_products.id = `options_products-${formCount}`;
+
+        formset.appendChild(newForm);
+    }
+    else{
+        formCount = clone(formCountCompra);
+        
     }
 
+
+  
+
+
+
+    // Cria ids para identificação da area em que sera requisitado os produtos pelo filtro do campo product
+   
+
+
+
+    
+    // btnDeletar.addEventListener('click',()=>{
+    //     formset.removeChild(newForm)
+    // })
+}
+
+function clone(formCountElem){
     const formCount = formCountElem.value;
     const emptyFormTemplate = document.getElementById('empty-form-template');
 
@@ -50,31 +84,10 @@ function addItem() {
         input.name = input.name.replace('__prefix__', formCount);
         input.id = input.id.replace('__prefix__', formCount);
         input.value = ''; // Limpa os valores dos campos
-        // console.log(input)
     });
 
-
-
-    // Cria ids para identificação da area em que sera requisitado os produtos pelo filtro do campo product
-    formCountElem.value = parseInt(formCount) + 1;
-    field_product=  newForm.querySelector(".field-product ");
-    input_product = newForm.querySelector(".inputProduct");
-    field_product.id = `products-${formCount}`;
-    input_product.id = `idProduct-${formCount}`
-    field_list_products = newForm.querySelector(".v");
-    field_list_products.parentElement.style.display = "none";
-    field_list_products.id = `options_products-${formCount}`;
-    // console.log(field_product)
-    formset.appendChild(newForm);
-
-
-
-    
-    // btnDeletar.addEventListener('click',()=>{
-    //     formset.removeChild(newForm)
-    // })
+    return [formCount,newForm];
 }
-
 
 function removeItem(button){
     let  parent_button_3 = button.parentElement.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]');
@@ -82,9 +95,6 @@ function removeItem(button){
     let  parent_button_5 =  button.parentElement.parentElement.parentElement.parentElement;
     let  parent_button_6 =  button.parentElement.parentElement.parentElement.parentElement.parentElement;
     parent_button_6.removeChild(parent_button_5);
-
-
-
 }
 
 

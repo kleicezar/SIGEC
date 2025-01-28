@@ -1,6 +1,6 @@
 
 // TOTAL VALOR DE FORMULARIO DE ITENS;
-const total = document.getElementById("id_total_value")
+const total = document.getElementById("id_total")
 const totalProducts = document.getElementById("id_product_total");
 const discountTotal = document.getElementById("id_discount_total");
 const itens_container = document.getElementById("itens-container");
@@ -41,7 +41,7 @@ itens_container.addEventListener("input",(event)=>{
         let price_unit_value ;
         let search_p;
         inputs_item_form.forEach((input)=>{
-            const type_field = input.id;
+            const type_field = input.id;            
             if(type_field.endsWith('product')){
                 product_value = input;
 
@@ -104,7 +104,7 @@ itens_container.addEventListener("input",(event)=>{
                     const button = td.querySelector(".x")
                 
                         button.addEventListener("click",()=>{
-                            product_value.value = produto.id;
+                            // product_value.value = produto.id;
                             search_p.value = button.textContent;
                             price_unit_value.value = produto.selling_price;
                             td.style.display = "none";  
