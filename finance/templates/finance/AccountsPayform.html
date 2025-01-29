@@ -31,58 +31,13 @@
 
             {{ form_AccountsPayable.date_account.label}}
             <td>
-                <div class="input-group date" data-provide="datepicker">
+                <div class="input-group date" data-provide="datepicker" id="payment_method">
                     {{ form_AccountsPayable.date_account}}
                     <div class="input-group-addon">
                         <span class="glyphicon glyphicon-th"></span>
                     </div>
                 </div>
             </td>
-
-            <!-- {{ form_payment_account.interestType.label}}
-            {{ form_payment_account.interestType}}
-            
-            {{ form_payment_account.fineType.label}}
-            {{ form_payment_account.fineType}}
-
-            <div id="interest_percent_field">
-                {{ form_payment_account.interestPercent.label}}
-                {{ form_payment_account.interestPercent}}
-            </div>
-            <div id="interest_value_field">
-                {{ form_payment_account.interestValue.label}}
-                {{ form_payment_account.interestValue}}
-            </div>
-            <div id="fine_percent_field">
-                {{ form_payment_account.finePercent.label}}
-                {{ form_payment_account.finePercent}}
-            </div>
-            <div id="fine_value_field">
-                {{ form_payment_account.fineValue.label}}
-                {{ form_payment_account.fineValue}}
-            </div> -->
-
-            <!-- {{ form_AccountsPayable.numberOfInstallments.label}}
-            {{ form_AccountsPayable.numberOfInstallments}}
-
-            {{ form_AccountsPayable.valueOfInstallments.label}}
-            {{ form_AccountsPayable.valueOfInstallments}}
-
-            {{ form_AccountsPayable.totalValue.label}}
-            {{ form_AccountsPayable.totalValue}} -->
-
-            <!-- forma de pagamento -->
-            <!-- {{ form_payment_account.forma_pagamento.label}}
-            {{ form_payment_account.forma_pagamento}} -->
-
-            <!-- {{ form_payment_account.expirationDate.label}}
-            {{ form_payment_account.expirationDate}} -->
-
-            <!-- {{ form_payment_account.days.label}}
-            {{ form_payment_account.days}} -->
-<!-- 
-            {{ form_payment_account.value.label}}
-            {{ form_payment_account.value}} -->
 
             <div class="form-row">
                 <table class="table" id="paymentMethod_account">
@@ -113,9 +68,8 @@
                         <tr>
                             <td>{{form_AccountsPayable.numberOfInstallments}}</td>
                             <td>
-                                <div class="input-group date" data-provide="datepicker">
-                                    {{form_AccountsPayable.date_init}}
-
+                                <div class="input-group date" data-provide="datepicker" id="date_init">
+                                    {{ form_AccountsPayable.date_init }}
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-th"></span>
                                     </div>
@@ -133,19 +87,19 @@
             </div>
             
                         
-            
             <div id="payment-method-container">
                 {{ form_payment_account.management_form }}
+                <div style="display: none;">
                 {% for form in form_payment_account %}
                     <div class="form-row">
                         <table class="table">
                             <thead>
                                 <tr>
                                     <th scope="col">
-                                        {{form.expirationDate.label}}
+                                        {{form.forma_pagamento.label}}
                                     </th>
                                     <th scope="col">
-                                        {{form.forma_pagamento.label}}
+                                        {{form.expirationDate.label}}
                                     </th>
                                     <th scope="col">
                                         {{ form.days.label}}
@@ -158,28 +112,29 @@
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>{{form.forma_pagamento}}</td>
-                                    <td>
-                                        <div class="input-group date" data-provide="datepicker" id="payment_method">
-                                            {{form.expirationDate}}
-                                            <div class="input-group-addon">
-                                                <span class="glyphicon glyphicon-th"></span>
+                                <tbody>
+                                    <tr>
+                                        <td>{{form.forma_pagamento}}</td>
+                                        <td>
+                                            <div class="input-group date" data-provide="datepicker">
+                                                {{form.expirationDate}}
+                                                <div class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-th"></span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td>{{form.days}}</td>
-                                    <td>{{form.value}}</td>
-                                    <td>
-                                        <label for="">Deletar</label>
-                                        {{form.DELETE}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                          
-                    </div>
-                {% endfor %}
+                                        </td>
+                                        <td>{{form.days}}</td>
+                                        <td>{{form.value}}</td>
+                                        <td>
+                                            <label for="">Deletar</label>
+                                            {{form.DELETE}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                        </div>
+                        {% endfor %}
+                </div>
             </div>
         <button type="button" onclick="addPaymentMethod()" class="btn btn-outline-success mb-5">Adicionar Forma de Pagamento</button>
 
@@ -221,7 +176,7 @@
                     <tr>
                         <td>{{ form_payment_account.empty_form.forma_pagamento }}</td>
                         <td>
-                            <div class="input-group date" data-provide="datepicker">
+                            <div id="payment_method" class="input-group date" data-provide="datepicker">
                                 {{form_payment_account.empty_form.expirationDate}}
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-th"></span>
