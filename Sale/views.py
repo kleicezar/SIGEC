@@ -212,7 +212,12 @@ def venda_update(request, pk):
 
             messages.success(request, "Venda atualizada com sucesso!")
             return redirect('venda_list')
-
+        if not venda_form.is_valid():
+            print('Erros no venda_form: ',venda_form.errors)
+        elif not venda_item_formset.is_valid():
+            print('Erros no venda_item_formset',venda_item_formset.errors)
+        elif not payment_method_formset.is_valid():
+            print('Erros no payment_method_formset',payment_method_formset.errors)
         else:
             messages.error(request, "Erro ao atualizar a venda. Verifique os campos.")
 
@@ -288,6 +293,16 @@ def client_search(request):
     ]
     return JsonResponse({'clientes': clients})
 
+def get_product_id(request):
+    query = request.GET.get('query','')
+    resultados = Product.objects.filter(
+        Q(id=query) 
+    )
+    resultados_json = list(resultados.values("product_code","description"))
+    print(resultados_json)
+ 
+   
+    return JsonResponse({'produto':resultados_json})
 def product_search(request):
     query = request.GET.get('query','')
     resultados = Product.objects.filter(

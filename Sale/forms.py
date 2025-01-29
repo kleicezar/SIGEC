@@ -10,7 +10,7 @@ class VendaForm(forms.ModelForm):
                 'class':'form-control row-xl-5' 
             }),
             'data_da_venda':forms.DateTimeInput(attrs={
-                'class':'form-control row-xl-2 mask-date' ,
+                'class':'form-control row-xl-2 ' ,
                 'id' : "date_sale",
             }),
             'observacao_pessoas':forms.Textarea(attrs={
