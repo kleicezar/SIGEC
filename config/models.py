@@ -12,7 +12,7 @@ class PaymentMethod(models.Model):
 
 class ChartOfAccounts(models.Model): 
     name_ChartOfAccounts = models.CharField('Nome do Plano de Contas', max_length=50)
-    is_Active = models.BooleanField('ativo')
+    is_Active = models.BooleanField('ativo',default=True)
 
     def __str__(self):
         return self.name_ChartOfAccounts
@@ -26,7 +26,7 @@ class Situation(models.Model):
     
 class Position(models.Model):
     name_position = models.CharField('Nome do Cargo', max_length=25)
-    is_Active = models.BooleanField('ativo')
+    is_Active = models.BooleanField('ativo',default=True)
 
     def __str__(self):
         return self.name_position

@@ -18,7 +18,7 @@
         <form method="POST">
             {% csrf_token %}
             
-            <h4 class="mt-5 mb-5 c-adapted">Cadastro de Contas A Pagar</h4>
+            <h4 class="mt-5 mb-5 c-adapted">Cadastro de Contas A Receber</h4>
             <!-- dados da conta a pagar -->
             {{ form_AccountsPayable.pessoa_id.label}}
             {{ form_AccountsPayable.pessoa_id}}
@@ -31,7 +31,7 @@
 
             {{ form_AccountsPayable.date_account.label}}
             <td>
-                <div class="input-group date" data-provide="datepicker" >
+                <div class="input-group date" data-provide="datepicker" id="payment_method">
                     {{ form_AccountsPayable.date_account}}
                     <div class="input-group-addon">
                         <span class="glyphicon glyphicon-th"></span>
@@ -65,7 +65,7 @@
                         <tr>
                             <td>{{form_AccountsPayable.numberOfInstallments}}</td>
                             <td>
-                                <div class="input-group date" data-provide="datepicker" >
+                                <div class="input-group date" data-provide="datepicker" id="date_init">
                                     {{ form_AccountsPayable.date_init }}
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-th"></span>

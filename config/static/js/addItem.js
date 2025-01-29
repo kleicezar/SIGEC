@@ -28,10 +28,13 @@
 // }
 const emptyFormTemplate = document.getElementById('empty-form-template');
 const emptyPaymentMethodTemplate = document.getElementById('empty-payment-method-form');
+
 const itensIndex  = [0];
 function addItem() {
     const formset = document.getElementById('itens-container');
     const formCountSale = document.getElementById('id_vendaitem_set-TOTAL_FORMS');
+
+
     // const formCountElem = document.getElementById('id_vendaitem_set-TOTAL_FORMS');
     const formCountCompra = document.getElementById("id_compraitem_set-TOTAL_FORMS");
     if(formCountSale){
@@ -50,7 +53,7 @@ function addItem() {
 
         formset.appendChild(newForm);
     }
-    else{
+    if(formCountCompra){
         console.log('opo')
         // const emptyFormTemplate = document.getElementById('empty-form-template');
         const [formCount,newForm] = clone(formCountCompra,emptyFormTemplate);
@@ -67,6 +70,7 @@ function addItem() {
         formset.appendChild(newForm)
         
     }
+    
 
 
   
@@ -88,7 +92,7 @@ function clone(formCountElem,template){
     const formCount = formCountElem.value;
     // const emptyFormTemplate = document.getElementById('empty-form-template');
 
-    if (!emptyFormTemplate) {
+    if (!template) {
         console.error("Template de formulário vazio (empty-form-template) não encontrado!");
         return;
     }
@@ -120,15 +124,20 @@ function addPaymentMethod() {
     const container = document.getElementById('payment-method-container');
     const formCountCompra = document.getElementById('id_paymentmethod_venda_set-TOTAL_FORMS');
     const formCountSale = document.getElementById('id_paymentmethod_compra_set-TOTAL_FORMS');
-
+    const formCountAccountPayable = document.getElementById('id_paymentmethod_accountspayable_set-TOTAL_FORMS');
     if(formCountSale){
         const [formCount,newForm] = clone(formCountSale,emptyPaymentMethodTemplate);
         formCountSale.value = parseInt(formCount);
         container.appendChild(newForm);
     }
-    else{
+    if(formCountCompra){
         const [formCount,newForm] = clone(formCountCompra,emptyPaymentMethodTemplate);
         formCountCompra.value = parseInt(formCount);
+        container.appendChild(newForm);
+    }
+    if(formCountAccountPayable){
+        const [formCount,newForm] = clone(formCountAccountPayable,emptyPaymentMethodTemplate);
+        formCountAccountPayable.value = parseInt(formCount) + 1;
         container.appendChild(newForm);
     }
 

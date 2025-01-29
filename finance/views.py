@@ -10,7 +10,7 @@ from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
 from django.core.paginator import Paginator
 
-# ### CLIENT
+### CONTAS A PAGAR
 
 @login_required
 def AccountsPayable_Create(request):
@@ -26,6 +26,10 @@ def AccountsPayable_Create(request):
                     if produto.current_quantity < quantidade:
                         estoque_suficiente = False
                         form.add_error('quantidade', f'Não há estoque suficiente para o produto {produto.description}. Estoque disponível: {produto.current_quantity}.')
+        elif not form_AccountsPayable.is_valid():
+            print("Erros",form_AccountsPayable.errors)
+        elif not PaymentMethod_AccountsPayable_FormSet.is_valid():
+            print("Erros",PaymentMethod_AccountsPayable_FormSet.errors)
     else: 
         form_AccountsPayable = AccountsPayableForm()
         PaymentMethod_AccountsPayable_FormSet = PaymentMethodAccountsPayableFormSet(queryset=PaymentMethod_AccountsPayable.objects.none())
@@ -91,6 +95,69 @@ def AccountsPayable_list(request):
 #     'Cliente pediu para ajustar o prazo.', -- Observação para a pessoa
 #     'Sistema gerou conta automaticamente.' -- Observação para o sistema
 # );
+
+### CONTAS A RECEBER
+
+@login_required
+def AccountsReceivable_Create(request):
+    PaymentMethodAccountsReceivableFormSet = inlineformset_factory(AccountsReceivable, PaymentMethod_AccountsReceivable, form=PaymentMethodAccountsReceivableForm, extra=1, can_delete=True)
+    if request.method == "POST":
+        form_AccountsReceivable = AccountsReceivableForm(request.POST)
+        PaymentMethod_AccountsReceivable_FormSet = PaymentMethodAccountsReceivableFormSet(request.POST)
+        if form_AccountsReceivable.is_valid() and PaymentMethod_AccountsReceivable_FormSet.is_valid():
+          for form in PaymentMethod_AccountsReceivable_FormSet:
+                if form.cleaned_data:
+                    produto = form.cleaned_data['product']
+                    quantidade = form.cleaned_data['quantidade']
+                    if produto.current_quantity < quantidade:
+                        estoque_suficiente = False
+                        form.add_error('quantidade', f'Não há estoque suficiente para o produto {produto.description}. Estoque disponível: {produto.current_quantity}.')
+    else: 
+        form_AccountsReceivable = AccountsReceivableForm()
+        PaymentMethod_AccountsReceivable_FormSet = PaymentMethodAccountsReceivableFormSet(queryset=PaymentMethod_AccountsReceivable.objects.none())
+        
+    context = {
+        'form_AccountsReceivable': form_AccountsReceivable,
+        'form_payment_account': PaymentMethod_AccountsReceivable_FormSet
+    }
+    return render(request, 'finance/AccountsReceivableform.html', context)
+
+@login_required
+def AccountsReceivable_list(request):
+    # Obtenha o termo de pesquisa da requisição
+    search_query = request.GET.get('query', '')
+
+    # Filtrar os clientes com base no termo de pesquisa
+    if search_query:
+        accountReceivable = AccountsReceivable.objects.filter(
+        (   # campo pessoa
+            Q(id__icontains=search_query) | 
+            Q(pessoa_id__id_FisicPerson_fk__name__icontains=search_query) | 
+            Q(pessoa_id__id_LegalPerson_fk__name_foreigner__icontains=search_query) | 
+            Q(pessoa_id__id_ForeignPerson_fk__fantasyName__icontains=search_query) | 
+            Q(documentNumber__icontains=search_query)
+        ),
+        isActive = True 
+    ).order_by('id')
+    else:
+        accountReceivable = AccountsReceivable.objects.all()
+
+    for i in accountReceivable:
+        print(accountReceivable) 
+    # Configure o Paginator com o queryset filtrado
+    paginator = Paginator(accountReceivable, 20)  # 5 itens por página
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+
+    return render(request, 'finance/AccountsReceivable_list.html', {
+        'accountsReceivable': page,
+        'query': search_query,  # Envie o termo de pesquisa para o template
+    })
+
+
+#+------------------------------------------+
+#
+#+------------------------------------------+
 
 @login_required
 def buscar_clientes(request):

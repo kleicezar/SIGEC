@@ -75,10 +75,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // Obtém os elementos principais
     const formContainer = document.getElementById("payment-method-container");
     const dateInitsemvalor = document.getElementById("id_date_init"); // Data de início das faturas
-    const formCountElem = document.getElementById("id_paymentmethod_accountspayable_set-TOTAL_FORMS");
+    const formCountElem = document.getElementById("id_paymentmethod_accountspayable_set-TOTAL_FORMS");//TOTAL FORMS
     const installments = document.getElementById('generate')//gerador de parcelas
-    
-    
+
+    let part = 0
+    let table = null;
     installments.addEventListener('click', () => {
         const itensPaymentMethodContainer = formContainer.querySelectorAll("item-form");
         itensPaymentMethodContainer.forEach(item=>{
@@ -88,24 +89,50 @@ document.addEventListener('DOMContentLoaded', function () {
         const numberOfInstallments = parseInt(document.getElementById("id_numberOfInstallments").value); // Número de parcelas
         const dateInit = document.getElementById("id_date_init"); // Data de início das faturas
         const installment_Range = parseInt(document.getElementById("installment_Range").value); // Intervalo entre faturas (em dias)
-        const valueOfInstallments = parseFloat(document.getElementById("id_valueOfInstallments").value); // Valor de cada parcela
         const totalValue = parseFloat(document.getElementById("id_totalValue").value); // Valor de cada parcela
-        // Validações básicas
-        console.log(numberOfInstallments)
-        console.log(dateInit.value)
-        console.log(installment_Range)
-        console.log(valueOfInstallments)
-        console.log(totalValue)
 
-        const selectedDate = new Date(dateInit.value);
-        console.log(selectedDate)
-        if (isNaN(numberOfInstallments) || isNaN(installment_Range) || isNaN(valueOfInstallments) || isNaN(selectedDate.getTime())) {
+
+        // --------------------------------- //
+        // Validações básicas
+        // converter a data no formato js 
+        const convertToDate = (dateStr) => {
+            const [day, month, year] = dateStr.split('/').map(num => parseInt(num, 10));
+            return new Date(year, month - 1, day); // Mês no JavaScript é baseado em zero
+        };
+        const inputDate = dateInit.value.trim();
+        // Converter a data inicial
+        const startDate = convertToDate(inputDate);
+        // Verifica se a data foi convertida corretamente
+        if (isNaN(startDate.getTime())) {
+            console.error('Data inválida');
+            return;
+        }
+        // --------------------------------- //
+
+        if (isNaN(numberOfInstallments) || isNaN(installment_Range)  || isNaN(startDate) || isNaN(totalValue)) { 
             alert("Por favor, preencha todos os campos corretamente. BY: kleitin");
             return;
         }
         
-        for (let index = 0; index < numberOfInstallments - 1; index++) {
-            const emptyFormTemplate = document.getElementById('empty-payment-method-form');
+        console.log(numberOfInstallments)
+        //apaga tudo
+        if (table != null) {
+            console.log(formCountElem)
+                for (let index = 1; index <= formCountElem.value; index++) {
+                    let div = document.getElementById('del') ;
+                    if (div != null) {
+                        div.remove();
+                    }
+                }
+
+
+            table = null;
+            formCountElem.value = 1
+        }
+        
+        const valueOfinstallments = compair(numberOfInstallments, totalValue)     
+        const emptyFormTemplate = document.getElementById('empty-payment-method-form');
+        for (let index = 1; index < numberOfInstallments + 1 ; index++) {
             if (!emptyFormTemplate) {
                 console.error("Template de formulário vazio (empty-payment-method-form) não encontrado!");
                 return;
@@ -115,123 +142,48 @@ document.addEventListener('DOMContentLoaded', function () {
             newForm.querySelectorAll("input, select").forEach(async (input) => {
                 input.name = input.name.replace("__prefix__", formCountElem.value);
                 input.id = input.id.replace("__prefix__", formCountElem.value);
-                console.log(input.name)
                 // Preenche os valores iniciais nos campos do formulário
+
+                // CALCULO DE DADAS DE VENCIMENTO
                 if (input.name.includes("-expirationDate")) {
                     // Calcula a data da parcela
-                    const installmentDate = new Date(dateInit);
-                    // console.log('-----------------------')
-                    // console.log(installmentDate)
-                    input.value = installmentDate.setDate(installmentDate.getDate() + installment_Range * index);
-
-                    //------------------------
-
-        
-                    //------------------------
-
-                    }else if (input.name.includes("-value")) {
-                        // Define o valor da parcela
-                        input.value = valueOfInstallments.toFixed(2);
+                    days = (parseInt(installmentRange.value,10))
+                    new_date = startDate.setDate(startDate.getDate() + days);
+                    final_date = new Date(new_date)
                     
+                    input.value = `${final_date.getDate()}/${(final_date.getMonth() + 1).toString().padStart(2, '0')}/${final_date.getFullYear()} `  
+                    // CALCULO DE VALOR
+                }else if (input.name.includes("-value")) {
+                    // Define o valor da parcela
+                    input.value = valueOfinstallments[index-1];
+                    //CALCULO DE DIAS
                     }else if (input.name.includes("-days")) {
                         // Define os dias entre as parcelas
-                        input.value = installment_Range;
+                        input.value = installment_Range*index;
                     }
                     // Adiciona o formulário ao contêiner
-            // console.log(newForm)
-            await formContainer.appendChild(newForm);
-            })
-        }
+                    await formContainer.appendChild(newForm);
+                })
+                formCountElem.value = Number(formCountElem.value) + 1
+            }
+        table = 'null';
+        part = formCountElem
+        
     })
 })
-    // console.log(numberOfInstallments)
-    // console.log(installment_Range)
-    // console.log(valueOfInstallments)
-    // console.log(formCountElem)
-    
-    // dateInit.addEventListener('change', () => {
-    //     if (dateInit.value.trim() !== '') {
-    //       console.log('Informação confirmada:', dateInit.value);
-    //       // Execute sua lógica aqui
-    //     }
-    //   });
-    // numberOfInstallments.addEventListener('change', () => {
-    //     if (numberOfInstallments.value.trim() !== '') {
-    //       console.log('Informação confirmada:', numberOfInstallments.value);
-    //       // Execute sua lógica aqui
-    //     }
-    //   });
-    // installment_Range.addEventListener('change', () => {
-    //     if (installment_Range.value.trim() !== '') {
-    //       console.log('Informação confirmada:', installment_Range.value);
-    //       // Execute sua lógica aqui
-    //     }
-    //   });
-    // valueOfInstallments.addEventListener('change', () => {
-    //     if (valueOfInstallments.value.trim() !== '') {
-    //       console.log('Informação confirmada:', valueOfInstallments.value);
-    //       // Execute sua lógica aqui
-    //     }
-    //   });
-    // formCountElem.addEventListener('change', () => {
-    //     if (formCountElem.value.trim() !== '') {
-    //       console.log('Informação confirmada:', formCountElem.value);
-    //       // Execute sua lógica aqui
-    //     }
-    //   });
 
-
-
-
-    // if (!formCountElem) {
-    //     console.error("Elemento TOTAL_FORMS não encontrado!");
-    //     return;
-    // }
-
-    // const initialFormCount = parseInt(formCountElem.value); // Valor inicial de TOTAL_FORMS
-        
-    // // Validações básicas
-    // if (isNaN(numberOfInstallments) || isNaN(installment_Range) || isNaN(valueOfInstallments) || isNaN(dateInit.getTime())) {
-    //     alert("Por favor, preencha todos os campos corretamente.");
-    //     return;
-    // }
-
-    // for (let index = 0; index < numberOfInstallments; index++) {
-    //     const emptyPaymentMethodTemplate = document.getElementById("empty-payment-method-form");
-
-    //     if (!emptyPaymentMethodTemplate) {
-    //         console.error("Template de formulário vazio (empty-payment-method-form) não encontrado!");
-    //         return;
-    //     }
-
-    //     // Clona o template vazio
-    //     const newForm = emptyPaymentMethodTemplate.content.cloneNode(true);
-
-    //     // Define o índice do formulário no formset
-    //     const formIndex = initialFormCount + index;
-
-    //     // Atualiza os campos do formulário clonado
-    //     newForm.querySelectorAll("input, select").forEach((input) => {
-    //         input.name = input.name.replace("__prefix__", formIndex);
-    //         input.id = input.id.replace("__prefix__", formIndex);
-
-    //         // Preenche os valores iniciais nos campos do formulário
-    //         if (input.name.includes("-expirationDate")) {
-    //             // Calcula a data da parcela
-    //             const installmentDate = new Date(dateInit);
-    //             input.value = installmentDate.setDate(dateInit.getDate() + installment_Range * index);
-
-    //         } else if (input.name.includes("-value")) {
-    //             // Define o valor da parcela
-    //             input.value = valueOfInstallments.toFixed(2);
-    //         }
-    //     });
-
-    //     // Adiciona o formulário ao contêiner
-    //     formContainer.appendChild(newForm);
-    // }
-
-    // // Atualiza o número total de formulários no formset
-    // formCountElem.value = initialFormCount;
-
-    // alert("Formulários de parcelas gerados com sucesso!");
+    function compair(numero_parcelas, valor_total){
+        const array_valor_parcelas = [];
+        let all_parcela = 0
+        for (let index = 0; index <= numero_parcelas-1; index++) {
+            let valor_parcela = (valor_total/numero_parcelas).toFixed(2)
+             
+            all_parcela = parseFloat(all_parcela) + parseFloat(valor_parcela)
+            if(index==numero_parcelas-1){
+                array_valor_parcelas[index] = parseFloat(valor_parcela) + parseFloat(valor_total-all_parcela);
+            }else {
+                array_valor_parcelas[index] = valor_parcela;
+            }
+        }
+        return array_valor_parcelas
+    }

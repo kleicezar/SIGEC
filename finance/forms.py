@@ -16,7 +16,6 @@ class AccountsPayableForm(forms.ModelForm):
             'date_account', 
             'numberOfInstallments',
             'installment_Range',
-            'valueOfInstallments',
             'totalValue',
             'peopleWatching',
             'systemWatching',
@@ -26,8 +25,8 @@ class AccountsPayableForm(forms.ModelForm):
             'pessoa_id': forms.Select(attrs={ 
                 'class': 'form-select row'
             }),
-            'chartOfAccounts': forms.TextInput(attrs={
-                'class': 'form-control row'
+            'chartOfAccounts': forms.Select(attrs={
+                'class': 'form-select row'
             }),
             'documentNumber': forms.NumberInput(attrs={
                 'class': 'form-control row',
@@ -37,14 +36,6 @@ class AccountsPayableForm(forms.ModelForm):
                 'class': 'form-control row mask-date'
             }),
             'numberOfInstallments': forms.NumberInput(attrs={
-                'class': 'form-control row',
-                'min': 0
-            }),
-            # 'installment_Range': forms.NumberInput(attrs={
-            #     'class': 'form-control row',
-            #     'min': 0
-            # }),
-            'valueOfInstallments': forms.NumberInput(attrs={
                 'class': 'form-control row',
                 'min': 0
             }),
@@ -64,14 +55,6 @@ class AccountsPayableForm(forms.ModelForm):
                 'class': 'form-control row mask-date'
             }),
         }
-
-
- 
-class PaymentMethod_AccountsPayableModelForm(forms.ModelForm):
-    class Meta:
-        model = PaymentMethod_AccountsPayable
-        fields = "__all__"
-    
 class PaymentMethodAccountsPayableForm(forms.ModelForm):
     # Definindo os campos manualmente
     interestType = forms.ChoiceField(
@@ -132,20 +115,76 @@ class PaymentMethodAccountsPayableForm(forms.ModelForm):
             }),
         }
 
-class AccountsReceivableModelForm(forms.ModelForm):
+class AccountsPayableModelForm(forms.ModelForm):
+    class Meta:
+        model = AccountsPayable
+        fields = "__all__"
+
+
+class PaymentMethod_AccountsReceivableForm (forms.ModelForm):
+    class Meta:
+        model = PaymentMethod_AccountsReceivable 
+        fields = "__all__"
+
+class AccountsReceivableForm(forms.ModelForm):
+    installment_Range = forms.ChoiceField(
+        choices=AccountsReceivable.INSTALLMENT_RANGE_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control row','id': 'installment_Range'}),
+        label="Intervalo de Parcelas"
+    )
     class Meta:
         model = AccountsReceivable
-        fields = "__all__"
-       
+        fields = [
+            'pessoa_id', 
+            'chartOfAccounts', 
+            'documentNumber', 
+            'date_account', 
+            'numberOfInstallments',
+            'installment_Range',
+            'totalValue',
+            'peopleWatching',
+            'systemWatching',
+            'date_init',
+        ]
+        widgets = { 
+            'pessoa_id': forms.Select(attrs={ 
+                'class': 'form-select row'
+            }),
+            'chartOfAccounts': forms.TextInput(attrs={
+                'class': 'form-control row'
+            }),
+            'documentNumber': forms.NumberInput(attrs={
+                'class': 'form-control row',
+                'min': 0
+            }),
+            'date_account': forms.TextInput(attrs={
+                'class': 'form-control row mask-date'
+            }),
+            'numberOfInstallments': forms.NumberInput(attrs={
+                'class': 'form-control row',
+                'min': 0
+            }),
+            'totalValue': forms.NumberInput(attrs={
+                'class': 'form-control row',
+                'min': 0
+            }),
+            'peopleWatching': forms.NumberInput(attrs={
+                'class': 'form-control row',
+                'min': 0
+            }),
+            'systemWatching': forms.NumberInput(attrs={
+                'class': 'form-control row',
+                'min': 0
+            }),
+            'date_init': forms.TextInput(attrs={
+                'class': 'form-control row mask-date'
+            }),
+        }
 
 
-class PaymentMethod_AccountsReceivableForm(forms.ModelForm):
-    class Meta:
-        model = PaymentMethod_AccountsReceivable
-        fields = "__all__"
         
 # class PersonForm(forms.ModelForm):
-#     class Meta:
+#     class Meta: 
 #         model = Person
 #         fields = ['WorkPhone', 
 #                   'PersonalPhone', 
