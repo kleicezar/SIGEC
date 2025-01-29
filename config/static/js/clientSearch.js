@@ -1,6 +1,6 @@
 
 // TOTAL VALOR DE FORMULARIO DE ITENS;
-const total = document.getElementById("id_total")
+const total = document.getElementById("id_total_value");
 const totalProducts = document.getElementById("id_product_total");
 const discountTotal = document.getElementById("id_discount_total");
 const itens_container = document.getElementById("itens-container");
@@ -42,7 +42,7 @@ itens_container.addEventListener("input",(event)=>{
         let search_p;
         inputs_item_form.forEach((input)=>{
             const type_field = input.id;            
-            if(type_field.endsWith('product')){
+            if(type_field.endsWith('product') || type_field.endsWith('produto')){
                 product_value = input;
 
             }
@@ -104,7 +104,7 @@ itens_container.addEventListener("input",(event)=>{
                     const button = td.querySelector(".x")
                 
                         button.addEventListener("click",()=>{
-                            // product_value.value = produto.id;
+                            product_value.value = produto.id;
                             search_p.value = button.textContent;
                             price_unit_value.value = produto.selling_price;
                             td.style.display = "none";  
@@ -292,6 +292,8 @@ input_client.addEventListener("input",()=>{
                             const button = document.getElementById(selectClient.id);
                             button.addEventListener("click",()=>{
                                 input_client.value = button.textContent ;
+                                console.log('--')
+                                console.log(input_client)
                                 id_pessoa.value = `${cliente.id}`;
                                 td_container_options.style.display="none";
                             })

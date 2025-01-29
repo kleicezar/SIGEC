@@ -61,7 +61,7 @@ class ProductModelForm(forms.ModelForm):
 class CompraForm(forms.ModelForm):
     class Meta:
         model = Compra
-        fields = ['data_da_compra', 'fornecedor', 'situacao','total','product_total','discount_total'] 
+        fields = ['data_da_compra', 'fornecedor', 'situacao','total_value','product_total','discount_total'] 
         widgets = {
                 'fornecedor':forms.TextInput(attrs={
                     'class':'form-control row-5' 
@@ -73,7 +73,7 @@ class CompraForm(forms.ModelForm):
                 'situacao':forms.Select(attrs={
                     'class':'form-select row'
                 }),
-                'total':forms.TextInput(attrs={
+                'total_value':forms.TextInput(attrs={
                     'class':'form-control row-5',
                     'readonly':'readonly'
                 }),

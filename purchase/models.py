@@ -24,16 +24,16 @@ class Product(models.Model):
 
 class Compra(models.Model):
     data_da_compra = models.DateTimeField(verbose_name='Data da Compra')
-    total = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Total", blank=True, null=True)
+    total_value = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Total", blank=True, null=True)
     product_total =  models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Total de Produtos")
     discount_total = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Total de Descontos")
     fornecedor = models.ForeignKey(Person, on_delete=models.SET_NULL, null=True, verbose_name="Fornecedor")
     situacao = models.ForeignKey(Situation, on_delete=models.SET_NULL, null=True, verbose_name="Situação")
     is_active = models.BooleanField(default=True, verbose_name='Está Ativo')  # está ativo
 
-    def calcular_total(self):
-        self.total = sum(item.subtotal() for item in self.itens.all())
-        self.save()
+    # def calcular_total(self):
+    #     self.total = sum(item.subtotal() for item in self.itens.all())
+    #     self.save()
 
     def __str__(self):
         return f"Compra {self.id} por {self.usuario.username}"
@@ -48,12 +48,12 @@ class CompraItem(models.Model):
 
     # Calcula o total automaticamente ao salvar a instância
     def save(self, *args, **kwargs):
-        if self.total_value == self.quantidade * self.preco_unitario:  # Calcula o total
-            self.total_value = self.quantidade * self.preco_unitario  # Calcula o total
-            super().save(*args, **kwargs)
+        # if self.total_value == self.quantidade * self.preco_unitario:  # Calcula o total
+        self.total = self.quantidade * self.preco_unitario  # Calcula o total
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.product.description} - {self.quantidade} unidades"
+        return f"{self.produto.description} - {self.quantidade} unidades"
 
 class PaymentMethod_Compra(models.Model):
     compra = models.ForeignKey(Compra, on_delete=models.SET_NULL, null=True, verbose_name='id_compra')
