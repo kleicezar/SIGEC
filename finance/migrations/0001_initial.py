@@ -32,7 +32,6 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='PaymentMethod_Accounts',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('expirationDate', models.DateField(max_length=50, verbose_name='Data de Vencimento')),
@@ -48,4 +47,5 @@ class Migration(migrations.Migration):
                 ('forma_pagamento', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='config.paymentmethod', verbose_name='Forma de Pagamento')),
             ],
         ),
-    ]
+
+]

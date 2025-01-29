@@ -31,7 +31,7 @@ class AccountsForm(forms.ModelForm):
             }),
             'chartOfAccounts': forms.Select(attrs={
                 'class': 'form-control row'
-            }),
+
             'documentNumber': forms.NumberInput(attrs={
                 'class': 'form-control row',
                 'min': 0

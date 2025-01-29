@@ -15,7 +15,7 @@
         <div class='content'>
             <div class="container">
                 <a href="{% url 'compras_create' %}">
-                    <button class="register-button">Criar nova Compra</button>
+                    <button class="btn btn-success">Criar nova Compra</button>
                 </a>
                 <div class="form-group">
                     <form method="GET" action="{% url 'Client' %}">
@@ -40,7 +40,7 @@
                     {% for compra in compras %}
                     <tr>
                         <td>{{ compra.id }}</td>
-                        <td>{{ compra.fornecedor.fantasyName }}</td>
+                        <td>{{ compra.fornecedor }}</td>
                         <td>{{ compra.situacao }}</td>
                         <td>
                             <!-- <a href="{% url 'compras_update' pk=compra.pk %}">Editar</a>

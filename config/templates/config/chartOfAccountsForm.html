@@ -18,7 +18,6 @@
             {% block content %}
             <div class='content'>
                 <div class='center col'>
-                
                     <form action="." method='post' autocomplete='off' class="row">
                         {% csrf_token %}
                         <div class="container">
@@ -26,14 +25,14 @@
                                 <div class="col-lg-4 col-md-6 col-sm-8 col-10">
                                     <div class="card mt-5 text-center">
                                         <div class="card-body">
-                                            <h5 class="card-title">Forma de Pagamento</h5>
+                                            <h5 class="card-title">Plano de Contas</h5>
                         
                                             <div class="mt-4">
                                                 <label for="" class="p-2">
-                                                    {{paymentMethod.name_paymentMethod.label}}
+                                                    {{ChartOfAccounts.name_ChartOfAccounts.label}}
                                                 </label>
                                                 <div class="p-2 ">
-                                                    {{paymentMethod.name_paymentMethod}}
+                                                    {{ChartOfAccounts.name_ChartOfAccounts}}
                                                 </div>
                                             </div>
                         

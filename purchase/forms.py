@@ -61,16 +61,29 @@ class ProductModelForm(forms.ModelForm):
 class CompraForm(forms.ModelForm):
     class Meta:
         model = Compra
-        fields = ['data_da_compra', 'fornecedor', 'situacao'] 
+        fields = ['data_da_compra', 'fornecedor', 'situacao','total_value','product_total','discount_total'] 
         widgets = {
                 'fornecedor':forms.TextInput(attrs={
                     'class':'form-control row-5' 
                 }),
                 'data_da_compra':forms.DateTimeInput(attrs={
-                    'class':'form-control row',
+                    'class':'form-control row-xl-2 mask-date',
+                    'id':"date_compra"
                 }),
                 'situacao':forms.Select(attrs={
                     'class':'form-select row'
+                }),
+                'total_value':forms.TextInput(attrs={
+                    'class':'form-control row-5',
+                    'readonly':'readonly'
+                }),
+                'product_total':forms.TextInput(attrs={
+                    'class':'form-control row-5',
+                    'readonly': 'readonly',
+                }),
+                'discount_total':forms.TextInput(attrs={
+                    'class':'form-control row-5',
+                    'readonly': 'readonly',
                 })
             }
     def __init__(self, *args, **kwargs):
@@ -84,7 +97,7 @@ class CompraItemForm(forms.ModelForm):
         model = CompraItem
         fields = ['produto', 'quantidade', 'preco_unitario','discount','price_total']
         widgets = {
-            'product':forms.TextInput(attrs={
+            'produto':forms.TextInput(attrs={
                 'class':'form-control row-2'
             }),
             'quantidade':forms.TextInput(attrs={

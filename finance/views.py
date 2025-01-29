@@ -71,7 +71,7 @@ def Accounts_Create(request):
 @login_required
 def Accounts_list(request):
     # Obtenha o termo de pesquisa da requisição
-    search_query = request.GET.get('query', '')
+    search_query = request.GET.get('query', '') 
 
     # Filtrar os clientes com base no termo de pesquisa
     if search_query:

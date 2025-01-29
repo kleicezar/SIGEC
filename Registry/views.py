@@ -38,6 +38,7 @@ def Client_Create(request):
                 person.id_FisicPerson_fk = fisicPerson
                 person.isActive = 1
                 person.save()
+                return redirect('Client')
 
             if form_legalPerson.is_valid():
                 legalPerson = form_legalPerson.save(commit=False)
@@ -48,6 +49,7 @@ def Client_Create(request):
                 person.id_LegalPerson_fk = legalPerson
                 person.isActive = 1
                 person.save()
+                return redirect('Client')
 
             if form_foreigner.is_valid():
                 foreigner = form_foreigner.save(commit=False)
@@ -59,6 +61,8 @@ def Client_Create(request):
                 person.isActive = 1
                 person.save()
                 return redirect('Client')
+            if not form_legalPerson.is_valid():
+                print("Erros: ",form_legalPerson.errors)
 
     else: 
         form_address = AddressForm()

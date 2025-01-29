@@ -4,7 +4,7 @@ from .models import *
 class VendaForm(forms.ModelForm):
     class Meta:
         model = Venda
-        fields = ['data_da_venda',  'pessoa', 'situacao', 'is_active','observacao_pessoas', 'observacao_sistema', 'total_value', 'product_total', 'discount_total']
+        fields = ['data_da_venda', 'pessoa', 'situacao', 'is_active','observacao_pessoas', 'observacao_sistema', 'total_value', 'product_total', 'discount_total']
         widgets = {
             'pessoa':forms.TextInput(attrs={
                 'class':'form-control row-xl-5' 
