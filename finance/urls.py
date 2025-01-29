@@ -3,7 +3,7 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path('acctpay/', Accounts_list, name='Accounts'),
+    path('acctpay/', Accounts_list, name='AccountsPayable'),
     path('c/acctpay/', Accounts_Create, name='Accounts_Create'),
     # path('b-acctpay/', buscar_Accounts, name='buscar_Accounts'),
     # path('acctpay/upt/<int:id_Accounts>/', update_Accounts, name='update_Accounts'),  # Atualizar cliente

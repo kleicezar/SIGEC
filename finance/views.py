@@ -20,9 +20,9 @@ def Accounts_Create(request):
     if request.method == "POST":
         form_Accounts = AccountsForm(request.POST)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
-        print(f'deu certo ate aqui "primeiro IF"')
-        print(f'Erros em form_Accounts: {form_Accounts.errors}')
-        print(f'Erros em PaymentMethod_Accounts_FormSet: {PaymentMethod_Accounts_FormSet.errors}')
+        # print(f'deu certo ate aqui "primeiro IF"')
+        # print(f'Erros em form_Accounts: {form_Accounts.errors}')
+        # print(f'Erros em PaymentMethod_Accounts_FormSet: {PaymentMethod_Accounts_FormSet.errors}')
 
         if form_Accounts.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
             print(form_Accounts)
@@ -47,7 +47,7 @@ def Accounts_Create(request):
                 for installment in installments:
                     installment.conta = form_Accounts.instance
                     installment.save()
-                return redirect('Accounts')
+                return redirect('AccountsPayable')
             else:
                 print(f'deu certo ate aqui "primeiro ELSE"')
                 # form.add_error('value', f'O valor do somatorio das parcelas ({parcela}) é inferior ao Valor Total ({total_value}).')

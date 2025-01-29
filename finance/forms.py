@@ -25,13 +25,13 @@ class AccountsForm(forms.ModelForm):
             'systemWatching',
             'date_init',
         ]
-        widgets = { 
+        widgets = {
             'pessoa_id': forms.Select(attrs={ 
                 'class': 'form-select row'
             }),
             'chartOfAccounts': forms.Select(attrs={
                 'class': 'form-control row'
-
+            }),
             'documentNumber': forms.NumberInput(attrs={
                 'class': 'form-control row',
                 'min': 0
@@ -59,6 +59,7 @@ class AccountsForm(forms.ModelForm):
                 'class': 'form-control row mask-date'
             }),
         }
+
 class PaymentMethodAccountsForm(forms.ModelForm):
     # Definindo os campos manualmente
     interestType = forms.ChoiceField(
@@ -75,7 +76,7 @@ class PaymentMethodAccountsForm(forms.ModelForm):
     class Meta:
         model = PaymentMethod_Accounts
         fields = [
-            'forma_pagamento', 
+            'forma_pagamento',  
             'expirationDate', 
             'days', 
             'value', 
