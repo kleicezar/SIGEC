@@ -18,7 +18,6 @@ class SituationModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SituationModelForm, self).__init__(*args, **kwargs)
         self.fields['name_Situation'].widget.attrs.update({'class': 'label-text'})
-        self.fields['is_Active'].widget.attrs.update({'class': 'boll'})
 
 class ChartOfAccountsModelForm(forms.ModelForm):
     class Meta:
@@ -36,7 +35,6 @@ class ChartOfAccountsModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SituationModelForm, self).__init__(*args, **kwargs)
         self.fields['name_Situation'].widget.attrs.update({'class': 'label-text'})
-        self.fields['is_Active'].widget.attrs.update({'class': 'boll'})
 
 class PaymentMethodModelForm(forms.ModelForm):
     class Meta:
@@ -55,4 +53,3 @@ class PositionModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(PositionModelForm, self).__init__(*args, **kwargs)
         self.fields['name_position'].widget.attrs.update({'class': 'label-text'})
-        self.fields['is_Active'].widget.attrs.update({'class': 'boll'})
