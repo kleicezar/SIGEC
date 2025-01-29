@@ -6,6 +6,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         {% block css %}
+        <meta name="csrf-token" content="{{ csrf_token }}">
         <link rel="stylesheet" href="{% static 'css/Table.css' %}">
         {% endblock  %}
         <title>Formulário</title>
@@ -18,15 +19,21 @@
                     <button class="btn btn-success">Criar nova Venda</button>
                 </a>
                 <div class="form-group">
-                    <form method="GET" action="{% url 'Client' %}">
+                    <form method="GET" action="{% url 'venda_list' %}">
                         {% csrf_token %}
-                        <div>
-                            {{ form.as_p }}
-                            <button type="submit">Pesquisar</button>
+                        <div class="row">
+                            <div class="col">
+                                <label for="" class="">{{form.search.label}}</label>
+                                {{form.search}}
+                                <div class="col-sm-8" id="search_sale">
+                                    <input type="text" id="searchInput"  class="search-input" value="{{ request.GET.query }}" placeholder="Pesquisar venda(s)"> 
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
             </div>
+            <div id="messageContainer"></div>  
             <table>
                 <thead>
                     <tr>
@@ -38,11 +45,11 @@
                         <th>Ações</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="results">
                     {% for venda in vendas %}
                     <tr>
                         <td>{{ venda.id }}</td>
-                        <td>{{ venda.pessoa.pessoa_fisica.name }}</td>
+                        <td>{{ venda.pessoa}}</td>
                         <td>{{ venda.data_da_venda|date:"d/m/Y" }}</td>
                         <td>{{ venda.situacao }}</td>
                         <td>{{ venda.is_active|yesno:"Sim,Não" }}</td>
@@ -61,8 +68,19 @@
                     {% endfor %}
                 </tbody>
             </table>
+            <div id="paginationContainer">
+                {% if vendas.has_previous %}
+                <a href="{% url 'venda_list' %}?page={{ vendas.previous_page_number }}&query={{ query }}">Anterior</a>
+                {% endif %}
+                {% if vendas.has_next %}
+                <a href="{% url 'venda_list' %}?page={{ vendas.next_page_number }}&query={{ query  }}">Proximo</a>
+                {% endif %}
+            </div>
         </div> 
         {% endblock %}
+        {% block scripts %}
         <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+        <script src="{% static 'js/search_sale.js' %}"></script>
+        {% endblock %}
     </body>
 </html>

@@ -8,12 +8,34 @@ from .forms import *
 from .models import *
 from django.http import JsonResponse
 from django.db.models import Q
+from django.core.paginator import Paginator
 ### SALE
 
 @login_required
 def venda_list(request):
-    vendas = Venda.objects.all()
-    return render(request, 'sale/venda_list.html', {'vendas': vendas})
+    search_query = request.GET.get('query','')
+
+
+    if search_query:
+        sales = Venda.objects.filter(
+        Q(id__istartswith=search_query) | 
+        Q(pessoa__id_FisicPerson_fk__name__istartswith=search_query) |
+        Q(pessoa__id_ForeignPerson_fk__name_foreigner__istartswith=search_query) |
+        Q(pessoa__id_LegalPerson_fk__fantasyName__istartswith=search_query)
+    ).order_by('id')
+    else:
+        sales = Venda.objects.all()
+
+    paginator = Paginator(sales,1)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+
+    return render(request, 'sale/venda_list.html', {
+        'vendas': page,
+        'query':search_query
+        })
+    # vendas = Venda.objects.all()
+    # return render(request, 'sale/venda_list.html', {'vendas': vendas})
 
     # 
     # @login_requiredCriar uma nova Venda
@@ -63,6 +85,7 @@ def venda_create(request):
     if request.method == 'POST':
         venda_form = VendaForm(request.POST)
         venda_item_formset = VendaItemFormSet(request.POST)
+        print()
         payment_method_formset = PaymentMethodVendaFormSet(request.POST)
         # Percorrer VendaForm, manipular,
 
@@ -92,12 +115,16 @@ def venda_create(request):
                         produto = form.cleaned_data['product']
                         quantidade = form.cleaned_data['quantidade']
                         preco_unitario = form.cleaned_data['preco_unitario']
+                        discount = form.cleaned_data['discount']
+                        price_total = form.cleaned_data['price_total']
                         if not form.cleaned_data.get("DELETE"):
                             VendaItem.objects.create(
                                 venda=venda,
                                 product=produto,
                                 quantidade=quantidade,
-                                preco_unitario=preco_unitario
+                                preco_unitario=preco_unitario,
+                                discount = discount,
+                                price_total = price_total
                             )
                             
                             produto.current_quantity -= quantidade
@@ -108,12 +135,35 @@ def venda_create(request):
                 # Salva as formas de pagamento associadas à venda
 
 
+                # payment_method_formset.instance = venda
+                # payment_method_formset.save()
+                # for form in payment_method_formset.deleted_objects:
+                #     form.delete()
+                #     form.save()
                 payment_method_formset.instance = venda
-                payment_method_formset.save()
-                for form in payment_method_formset.deleted_objects:
-                    form.delete()
-                    form.save()
-               
+                total_payment = 0
+                for form in payment_method_formset: 
+                    if form.cleaned_data:
+                        valor = form.cleaned_data['valor']
+                        total_payment+=valor
+                if(total_payment == venda_form.cleaned_data['total_value']):  
+                    payment_method_formset.save()
+                    for form in payment_method_formset.deleted_objects:
+                        form.delete()
+                        form.save()
+                else:
+                    messages.warning(request, "Ação cancelada! O valor não foi salvo completamente.")
+                    venda_form = VendaForm()
+                    venda_item_formset = VendaItemFormSet(queryset=VendaItem.objects.none())
+                    payment_method_formset = PaymentMethodVendaFormSet(queryset=PaymentMethod_Venda.objects.none())
+                    context = {
+                        'venda_form': venda_form,       
+                        'venda_item_formset': venda_item_formset,
+                        'payment_method_formset': payment_method_formset
+                    }
+                    return render(request, 'sale/venda_form.html', context)
+
+                    # raise Exception("Cancelando transação")
                 # for form in payment_method_formset:
                 #     if form.cleaned_data:
                 #         forma_pagamento = form.cleaned_data['forma_pagamento']
@@ -134,7 +184,7 @@ def venda_create(request):
         venda_item_formset = VendaItemFormSet(queryset=VendaItem.objects.none())
         payment_method_formset = PaymentMethodVendaFormSet(queryset=PaymentMethod_Venda.objects.none())
     context = {
-        'venda_form': venda_form,   
+        'venda_form': venda_form,       
         'venda_item_formset': venda_item_formset,
         'payment_method_formset': payment_method_formset
     }
@@ -257,7 +307,51 @@ def product_search(request):
     ]
     return JsonResponse({'produtos':products})
 
+@login_required
+def buscar_vendas(request):
+    query = request.GET.get('query','').strip()
+    page_num = request.GET.get('page',1)
 
+
+    resultados = Venda.objects.filter(
+        Q(id__istartswith=query) | 
+        Q(pessoa__id_FisicPerson_fk__name__istartswith=query) |
+        Q(pessoa__id_ForeignPerson_fk__name_foreigner__istartswith=query) |
+        Q(pessoa__id_LegalPerson_fk__fantasyName__istartswith=query)
+    ).order_by('id')
+
+    sales = [
+        {
+            'id':venda.id,
+            'pessoa':(
+                venda.pessoa.id_FisicPerson_fk.name if venda.pessoa.id_FisicPerson_fk else
+                (venda.pessoa.id_ForeignPerson_fk.name_foreigner if venda.pessoa.id_FisicPerson_fk else
+                (venda.pessoa.LegalPerson_fk.fantasyName if venda.pessoa.LegalPerson_fk else 'Nome não disponível'))
+            ),
+            'data_da_venda':venda.data_da_venda,
+            'situacao':venda.situacao.name_Situation,
+            'is_active':venda.is_active
+        } 
+        for venda in resultados
+    ]
+
+    usuario_paginator = Paginator(sales,2)
+    page = usuario_paginator.get_page(page_num)
+
+    response_data = {
+        'vendas':list(page.object_list),
+        'pagination': {
+            'has_previous': page.has_previous(),
+            'previous_page': page.previous_page_number() if page.has_previous() else None,
+            'has_next': page.has_next(),
+            'next_page': page.next_page_number() if page.has_next() else None,
+            'current_page': page.number,
+            'total_pages': usuario_paginator.num_pages,
+        },
+        'message': f"{len(sales)} Vendas encontrados." if page.object_list else "Nenhum cliente encontrado."
+    }
+
+    return JsonResponse(response_data)
 # nome = request.GET.get('nome','')
 # usuarios = User.objects.filter(nome__icontains = nome).values('nome')
 # return JsonResponse({'usuarios':list(usuarios)})

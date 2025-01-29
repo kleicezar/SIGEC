@@ -2,7 +2,7 @@ const input = document.getElementById("searchInput");
 const resultsContainer = document.getElementById("results");
 const messageContainer = document.getElementById("messageContainer");  // Elemento onde a mensagem será exibida
 const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-
+let paginationContainer = document.getElementById("paginationContainer");
 input.addEventListener("input", () => {
     const query = input.value;
 

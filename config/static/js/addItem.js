@@ -26,7 +26,7 @@
 //     formCountElem.value = parseInt(formCount) + 1;
 //     formset.appendChild(newForm);
 // }
-
+const itensIndex  = [0];
 function addItem() {
     const formset = document.getElementById('itens-container');
     const formCountElem = document.getElementById('id_vendaitem_set-TOTAL_FORMS');
@@ -61,24 +61,12 @@ function addItem() {
     input_product = newForm.querySelector(".inputProduct");
     field_product.id = `products-${formCount}`;
     input_product.id = `idProduct-${formCount}`
+    field_list_products = newForm.querySelector(".v");
+    field_list_products.parentElement.style.display = "none";
+    field_list_products.id = `options_products-${formCount}`;
     // console.log(field_product)
     formset.appendChild(newForm);
 
-    const itens = formset.querySelectorAll(".item-form");
-
-    itens.forEach(item => {
-        const table = item.querySelector("table");
-        const tbody = table.querySelector("tbody");
-        const tr = tbody.querySelector("tr")
-        const delet = tr.querySelector(".delete");
-      
-
-        delet.addEventListener("click", () => {
-            tbody.style.display = "none";
-            const deleteField = tr.querySelector('input[type="hidden"][name$="-DELETE"]');
-            deleteField.value = "on";
-        });
-    });
 
 
     
@@ -86,6 +74,18 @@ function addItem() {
     //     formset.removeChild(newForm)
     // })
 }
+
+
+function removeItem(button){
+    let  parent_button_3 = button.parentElement.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]');
+    parent_button_3.value = "on";
+    let  parent_button_5 =  button.parentElement.parentElement.parentElement.parentElement;
+    let  parent_button_6 =  button.parentElement.parentElement.parentElement.parentElement.parentElement;
+    parent_button_6.removeChild(parent_button_5);
+}
+
+
+
 
 
 function addPaymentMethod() {
@@ -113,9 +113,17 @@ function addPaymentMethod() {
     });
 
     formCountElem.value = parseInt(formCount) + 1;
-    container.appendChild(newForm);
+container.appendChild(newForm);
 }
 
+
+function removePayment(button){
+    let parent_button_payment_3 = button.parentElement.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]');
+    parent_button_payment_3.value="on";
+    let parent_button_payment_5 = button.parentElement.parentElement.parentElement.parentElement;
+    let parent_button_payment_6 = button.parentElement.parentElement.parentElement.parentElement.parentElement;
+    parent_button_payment_6.removeChild(parent_button_payment_5);
+}
 
 function addItemCompra() {
     const formset = document.getElementById('itens-container');
@@ -144,6 +152,9 @@ function addItemCompra() {
 
     formCountElem.value = parseInt(formCount) + 1;
     formset.appendChild(newForm);
+
+
+    
 }
 
 function addPaymentMethodCompra() {
