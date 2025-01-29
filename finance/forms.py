@@ -16,7 +16,6 @@ class AccountsPayableForm(forms.ModelForm):
             'date_account', 
             'numberOfInstallments',
             'installment_Range',
-            'valueOfInstallments',
             'totalValue',
             'peopleWatching',
             'systemWatching',
@@ -37,14 +36,6 @@ class AccountsPayableForm(forms.ModelForm):
                 'class': 'form-control row mask-date'
             }),
             'numberOfInstallments': forms.NumberInput(attrs={
-                'class': 'form-control row',
-                'min': 0
-            }),
-            # 'installment_Range': forms.NumberInput(attrs={
-            #     'class': 'form-control row',
-            #     'min': 0
-            # }),
-            'valueOfInstallments': forms.NumberInput(attrs={
                 'class': 'form-control row',
                 'min': 0
             }),

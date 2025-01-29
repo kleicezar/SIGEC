@@ -77,8 +77,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const dateInitsemvalor = document.getElementById("id_date_init"); // Data de início das faturas
     const formCountElem = document.getElementById("id_paymentmethod_accountspayable_set-TOTAL_FORMS");//TOTAL FORMS
     const installments = document.getElementById('generate')//gerador de parcelas
+    // const valueOfInstallments = parseFloat(document.getElementById("id_valueOfInstallments").value); // Valor de cada parcela
     
-    // console.log(formCountElem.value)
+    // // console.log(formCountElem.value)
+    // valueOfInstallments.addEventListener()
+
     
     installments.addEventListener('click', () => {
         const itensPaymentMethodContainer = formContainer.querySelectorAll("item-form");
@@ -89,8 +92,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const numberOfInstallments = parseInt(document.getElementById("id_numberOfInstallments").value); // Número de parcelas
         const dateInit = document.getElementById("id_date_init"); // Data de início das faturas
         const installment_Range = parseInt(document.getElementById("installment_Range").value); // Intervalo entre faturas (em dias)
-        const valueOfInstallments = parseFloat(document.getElementById("id_valueOfInstallments").value); // Valor de cada parcela
+        // const valueOfInstallments = parseFloat(document.getElementById("id_valueOfInstallments")); // Valor de cada parcela
         const totalValue = parseFloat(document.getElementById("id_totalValue").value); // Valor de cada parcela
+
+        // valueOfInstallments.value = (parseFloat(totalValue).toFixed(2) / parseFloat(numberOfInstallments)).toFixed(2)
+
         // --------------------------------- //
         // Validações básicas
         // converter a data no formato js 
@@ -108,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         // --------------------------------- //
 
-        if (isNaN(numberOfInstallments) || isNaN(installment_Range) || isNaN(valueOfInstallments) || isNaN(startDate) || isNaN(totalValue)) {
+        if (isNaN(numberOfInstallments) || isNaN(installment_Range)  || isNaN(startDate) || isNaN(totalValue)) {  //  || isNaN(valueOfInstallments)
             alert("Por favor, preencha todos os campos corretamente. BY: kleitin");
             return;
         }
@@ -118,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         }else if(numberOfInstallments >= (Number(formCountElem.value) || numberOfInstallments == 1)){
-            compair(numberOfInstallments,valueOfInstallments, totalValue)     
+            const valueOfinstallments = compair(numberOfInstallments, totalValue)     
             const emptyFormTemplate = document.getElementById('empty-payment-method-form');
             for (let index = 1; index < numberOfInstallments + 1 ; index++) {
                 if (!emptyFormTemplate) {
@@ -146,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         // CALCULO DE VALOR
                         }else if (input.name.includes("-value")) {
                             // Define o valor da parcela
-                            input.value = compair[index].toFixed(2);
+                            input.value = valueOfinstallments[index-1];
                         //CALCULO DE DIAS
                         }else if (input.name.includes("-days")) {
                             // Define os dias entre as parcelas

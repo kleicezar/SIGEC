@@ -39,11 +39,6 @@ class AccountsPayable(models.Model):
     date_init = models.DateTimeField(
         verbose_name="Data de Inicio"
         )
-    valueOfInstallments = models.DecimalField(
-        decimal_places=2, 
-        max_digits=8,
-        verbose_name="Valor da Parcelas"
-        )
     totalValue = models.DecimalField(
         decimal_places=2, 
         max_digits=8,
@@ -129,7 +124,6 @@ class AccountsReceivable(models.Model):
     documentNumber = models.PositiveIntegerField(verbose_name="Numero do Documento")
     data_da_conta = models.DateTimeField(verbose_name="Data da Conta a Pagar")
     numberOfInstallments = models.PositiveIntegerField(verbose_name="Numero de Parcelas")
-    valueOfInstallments = models.DecimalField(decimal_places=2, max_digits=8,verbose_name="Numero de Parcelas")
     totalValue = models.DecimalField(decimal_places=2, max_digits=8,verbose_name="Valor Total")
     peopleWatching = models.TextField(verbose_name="Observações para a Pessoas",blank=True,null=True)
     systemWatching = models.TextField(verbose_name="Observações para o Sistema",blank=True,null=True)
