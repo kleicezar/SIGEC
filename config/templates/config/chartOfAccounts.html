@@ -32,13 +32,19 @@
                     </tr>
                 </thead>
                 <tbody>  
-                {% for chartOfAccount in ChartOfAccounts %}
+                {% for ChartOfAccount in ChartOfAccounts %}
                 <tr>
-                    <td>{{ chartOfAccount.id }}</td>
-                    <td>{{ chartOfAccount.name_ChartOfAccounts }}</td>
-                    <td>{{ chartOfAccount.is_Active|yesno:"Sim,Não" }}</td>
+                    <td>{{ ChartOfAccount.id }}</td>
+                    <td>{{ ChartOfAccount.name_ChartOfAccounts }}</td>
+                    <td>{{ ChartOfAccount.is_Active|yesno:"Sim,Não" }}</td>
                     <td>
-                       
+                        <a href="{% url 'updateChartOfAccounts' id_chartOfAccounts=ChartOfAccount.id %}">
+                            <button class="btn" style="background-color: #117027;color: white;">Editar</button>
+                        </a>
+                        <form action="{% url 'deleteChartOfAccounts' id_chartOfAccounts=ChartOfAccount.id %}" method="POST" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
+                        </form>
                         {% comment %} <button>Deletar</button> {% endcomment %}
                         {% comment %} <button>Mais</button> {% endcomment %}
                     </td>
