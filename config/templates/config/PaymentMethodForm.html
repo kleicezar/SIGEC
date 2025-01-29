@@ -21,31 +21,31 @@
                 
                     <form action="." method='post' autocomplete='off' class="row">
                         {% csrf_token %}
-                        <div class="card mt-5 text-center" style="margin-left:25%;width:40%;">
-                                <div class="card-body">
-                                    <h5 class="card-title">Forma de Pagamento</h5>
-
-                                    <div class="row mt-5" >
-                                        <label for="" class="">{{paymentMethod.name_paymentMethod.label}}</label>
-                                        <div>
-                                            {{paymentMethod.name_paymentMethod}}
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-4 col-md-6 col-sm-8 col-10">
+                                    <div class="card mt-5 text-center">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Forma de Pagamento</h5>
+                        
+                                            <div class="mt-4">
+                                                <label for="" class="p-2">
+                                                    {{paymentMethod.name_paymentMethod.label}}
+                                                </label>
+                                                <div class="p-2 ">
+                                                    {{paymentMethod.name_paymentMethod}}
+                                                </div>
+                                            </div>
+                        
+                                            <div class="p-4">
+                                                <button type="submit" class="btn  bg-adapted w-50">Cadastrar</button>   
+                                            </div>
+                        
                                         </div>
                                     </div>
-
-                                    <div class="row">
-                                        <label for="">{{paymentMethod.is_Active.label}}</label>
-                                        <div>
-                                            {{paymentMethod.is_Active}}
-                                        </div>
-                                    </div>
-                                    <button Type='submit' class="btn bg-adapted" >Cadastrar</button>       
                                 </div>
-                      
-                            <!-- {{ paymentMethod.as_p }} -->
-                
-                           
-                        </div>
-                       
+                            </div>
+                        </div>          
                     </form>
                 </div>
             </div>

@@ -40,7 +40,7 @@
                     {% for compra in compras %}
                     <tr>
                         <td>{{ compra.id }}</td>
-                        <td>{{ compra.fornecedor.fantasyName }}</td>
+                        <td>{{ compra.fornecedor }}</td>
                         <td>{{ compra.situacao }}</td>
                         <td>
                             <!-- <a href="{% url 'compras_update' pk=compra.pk %}">Editar</a>

@@ -21,31 +21,33 @@
                 
                     <form action="." method='post' autocomplete='off' class="row">
                         {% csrf_token %}
-                        <div class="card mt-5 text-center" style="margin-left:25%;width:40%;">
-                            <div class="card-body">
-                                <h5 class="card-title ">Situação Personalizada</h5>
-                                <div class="row mt-5" >
-                                    <label for="" >
-                                        {{Situation.name_Situation.label}}
-                                    </label>
-                                    <div>
-                                        {{Situation.name_Situation}}
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-4 col-md-6 col-sm-8 col-10">
+                                    <div class="card mt-5 text-center">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Situação Personalizada</h5>
+                        
+                                            <div class="mt-4">
+                                                <label for="" class="p-2">
+                                                    {{Situation.name_Situation.label}}
+                                                </label>
+                                                <div class="p-2 ">
+                                                      {{Situation.name_Situation}}
+                                                </div>
+                                            </div>
+                        
+                                            <div class="p-4">
+                                                <button type="submit" class="btn  bg-adapted w-50">Cadastrar</button>   
+                                            </div>
+                        
+                                        </div>
                                     </div>
                                 </div>
-    
-                                <div class="row">
-                                    <label for="" class="">
-                                        {{Situation.is_Active.label}}
-                                    </label>
-                                    <div>
-                                        {{Situation.is_Active}}
-                                    </div>
-                                </div>
-                    
-                                <button Type='submit' class="btn bg-adapted">Cadastrar</button>   
                             </div>
-                            
-                        </div>  
+                        </div>
+                        
+                        
                     </form>
                 </div>
             </div>
