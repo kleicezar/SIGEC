@@ -75,8 +75,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Obtém os elementos principais
     const formContainer = document.getElementById("payment-method-container");
     const dateInitsemvalor = document.getElementById("id_date_init"); // Data de início das faturas
-    const formCountElem = document.getElementById("id_paymentmethod_accountspayable_set-TOTAL_FORMS");//TOTAL FORMS
+    const formCountElem = document.getElementById("id_paymentmethod_accounts_set-TOTAL_FORMS");//TOTAL FORMS
     const installments = document.getElementById('generate')//gerador de parcelas
+    const templatenone = document.getElementById('id_paymentmethod_accounts_set-0-DELETE')//gerador de parcelas
 
     let part = 0
     let table = null;
@@ -91,7 +92,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const installment_Range = parseInt(document.getElementById("installment_Range").value); // Intervalo entre faturas (em dias)
         const totalValue = parseFloat(document.getElementById("id_totalValue").value); // Valor de cada parcela
 
-
+        if (templatenone) {
+            templatenone.remove()
+        }
         // --------------------------------- //
         // Validações básicas
         // converter a data no formato js 

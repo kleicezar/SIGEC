@@ -1,14 +1,18 @@
 from django import forms
 from .models import *
 
-class AccountsPayableForm(forms.ModelForm):
+class AccountsForm(forms.ModelForm):
     installment_Range = forms.ChoiceField(
-        choices=AccountsPayable.INSTALLMENT_RANGE_CHOICES,
+        choices=Accounts.INSTALLMENT_RANGE_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control row','id': 'installment_Range'}),
         label="Intervalo de Parcelas"
     )
+    # date_account = forms.DateField(
+    #     widget=forms.DateInput(attrs={'type': 'date'}),  # Isso mostra um campo de data no HTML
+    #     input_formats=['%d/%m/%Y']  # Formato que o Django espera para validar a data
+    # )
     class Meta:
-        model = AccountsPayable
+        model = Accounts
         fields = [
             'pessoa_id', 
             'chartOfAccounts', 
@@ -25,7 +29,7 @@ class AccountsPayableForm(forms.ModelForm):
             'pessoa_id': forms.Select(attrs={ 
                 'class': 'form-select row'
             }),
-            'chartOfAccounts': forms.TextInput(attrs={
+            'chartOfAccounts': forms.Select(attrs={
                 'class': 'form-control row'
             }),
             'documentNumber': forms.NumberInput(attrs={
@@ -47,7 +51,7 @@ class AccountsPayableForm(forms.ModelForm):
                 'class': 'form-control row',
                 'min': 0
             }),
-            'systemWatching': forms.NumberInput(attrs={
+            'systemWatching': forms.TextInput(attrs={
                 'class': 'form-control row',
                 'min': 0
             }),
@@ -55,21 +59,21 @@ class AccountsPayableForm(forms.ModelForm):
                 'class': 'form-control row mask-date'
             }),
         }
-class PaymentMethodAccountsPayableForm(forms.ModelForm):
+class PaymentMethodAccountsForm(forms.ModelForm):
     # Definindo os campos manualmente
     interestType = forms.ChoiceField(
-        choices=PaymentMethod_AccountsPayable.INTEREST_CHOICES,
+        choices=PaymentMethod_Accounts.INTEREST_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control row','id': 'interest_type'}),
         label="Tipo de Juros"
     )
     fineType = forms.ChoiceField(
-        choices=PaymentMethod_AccountsPayable.FINE_CHOICES,
+        choices=PaymentMethod_Accounts.FINE_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control row','id': 'fine_type'}),
         label="Tipo de Multa"
     )
 
     class Meta:
-        model = PaymentMethod_AccountsPayable
+        model = PaymentMethod_Accounts
         fields = [
             'forma_pagamento', 
             'expirationDate', 
@@ -86,8 +90,9 @@ class PaymentMethodAccountsPayableForm(forms.ModelForm):
             'forma_pagamento': forms.Select(attrs={ 
                 'class': 'form-select row'
             }),
-            'expirationDate': forms.TextInput(attrs={
-                'class': 'form-control row mask-date'
+            'expirationDate': forms.DateInput(format='%d/%m/%Y', attrs={
+                'class': 'form-control row mask-date', 
+                'placeholder': 'dd/mm/yyyy'
             }),
             'days': forms.NumberInput(attrs={
                 'class': 'form-control row',
@@ -114,92 +119,14 @@ class PaymentMethodAccountsPayableForm(forms.ModelForm):
                 'min': 0
             }),
         }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['interestType'].required = False
+        self.fields['fineType'].required = False
 
-class AccountsPayableModelForm(forms.ModelForm):
+class AccountsModelForm(forms.ModelForm):
     class Meta:
-        model = AccountsPayable
+        model = Accounts
         fields = "__all__"
 
 
-class PaymentMethod_AccountsReceivableForm (forms.ModelForm):
-    class Meta:
-        model = PaymentMethod_AccountsReceivable 
-        fields = "__all__"
-
-class AccountsReceivableForm(forms.ModelForm):
-    installment_Range = forms.ChoiceField(
-        choices=AccountsReceivable.INSTALLMENT_RANGE_CHOICES,
-        widget=forms.Select(attrs={'class': 'form-control row','id': 'installment_Range'}),
-        label="Intervalo de Parcelas"
-    )
-    class Meta:
-        model = AccountsReceivable
-        fields = [
-            'pessoa_id', 
-            'chartOfAccounts', 
-            'documentNumber', 
-            'date_account', 
-            'numberOfInstallments',
-            'installment_Range',
-            'totalValue',
-            'peopleWatching',
-            'systemWatching',
-            'date_init',
-        ]
-        widgets = { 
-            'pessoa_id': forms.Select(attrs={ 
-                'class': 'form-select row'
-            }),
-            'chartOfAccounts': forms.TextInput(attrs={
-                'class': 'form-control row'
-            }),
-            'documentNumber': forms.NumberInput(attrs={
-                'class': 'form-control row',
-                'min': 0
-            }),
-            'date_account': forms.TextInput(attrs={
-                'class': 'form-control row mask-date'
-            }),
-            'numberOfInstallments': forms.NumberInput(attrs={
-                'class': 'form-control row',
-                'min': 0
-            }),
-            'totalValue': forms.NumberInput(attrs={
-                'class': 'form-control row',
-                'min': 0
-            }),
-            'peopleWatching': forms.NumberInput(attrs={
-                'class': 'form-control row',
-                'min': 0
-            }),
-            'systemWatching': forms.NumberInput(attrs={
-                'class': 'form-control row',
-                'min': 0
-            }),
-            'date_init': forms.TextInput(attrs={
-                'class': 'form-control row mask-date'
-            }),
-        }
-
-
-        
-# class PersonForm(forms.ModelForm):
-#     class Meta: 
-#         model = Person
-#         fields = ['WorkPhone', 
-#                   'PersonalPhone', 
-#                   'site', 'salesman', 
-#                   'creditLimit', 
-#                   'isClient', 
-#                   'isSupllier', 
-#                   'isUser', 
-#                   'isEmployee', 
-#                   'isSalesman', 
-#                   'isFormer_employee', 
-#                   'isCarrier', 
-#                   'isDelivery_man', 
-#                   'isTechnician'] # 'isActive'
-
-        
-# class ClientSearchForm(forms.Form): 
-#     search = forms.CharField(max_length=100, required=False, label="Pesquisar Cliente")

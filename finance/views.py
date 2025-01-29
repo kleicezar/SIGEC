@@ -13,58 +13,90 @@ from django.core.paginator import Paginator
 ### CONTAS A PAGAR
 
 @login_required
-def AccountsPayable_Create(request):
-    PaymentMethodAccountsPayableFormSet = inlineformset_factory(AccountsPayable, PaymentMethod_AccountsPayable, form=PaymentMethodAccountsPayableForm, extra=1, can_delete=True)
+def Accounts_Create(request):
+    verify = 0
+    installments = []
+    PaymentMethodAccountsFormSet = inlineformset_factory(Accounts, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
     if request.method == "POST":
-        form_AccountsPayable = AccountsPayableForm(request.POST)
-        PaymentMethod_AccountsPayable_FormSet = PaymentMethodAccountsPayableFormSet(request.POST)
-        if form_AccountsPayable.is_valid() and PaymentMethod_AccountsPayable_FormSet.is_valid():
-          for form in PaymentMethod_AccountsPayable_FormSet:
+        form_Accounts = AccountsForm(request.POST)
+        PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
+        print(f'deu certo ate aqui "primeiro IF"')
+        print(f'Erros em form_Accounts: {form_Accounts.errors}')
+        print(f'Erros em PaymentMethod_Accounts_FormSet: {PaymentMethod_Accounts_FormSet.errors}')
+
+        if form_Accounts.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
+            print(form_Accounts)
+            form_Accounts.acc = 0
+            form_Accounts.save()
+            # print(f'deu certo ate aqui "segundo IF"')
+
+            total_value = form_Accounts.cleaned_data.get('totalValue')
+            for form in PaymentMethod_Accounts_FormSet:
+                print(f'form {form}')
                 if form.cleaned_data:
-                    produto = form.cleaned_data['product']
-                    quantidade = form.cleaned_data['quantidade']
-                    if produto.current_quantity < quantidade:
-                        estoque_suficiente = False
-                        form.add_error('quantidade', f'Não há estoque suficiente para o produto {produto.description}. Estoque disponível: {produto.current_quantity}.')
+                    # print(f'deu certo ate aqui "terceiro IF"')
+                    parcela = form.cleaned_data['value']
+                    verify += parcela
+                    form_cleaned = form.save(commit=False)
+                    installments.append(form_cleaned)
+            print(f'parcela {parcela}')
+            print(f'verify {verify}')
+            print(f'total_value {total_value}')
+            if float(verify) == float(total_value):
+                print(f'deu certo ate aqui "quarto IF"')
+                for installment in installments:
+                    installment.conta = form_Accounts.instance
+                    installment.save()
+                return redirect('Accounts')
+            else:
+                print(f'deu certo ate aqui "primeiro ELSE"')
+                # form.add_error('value', f'O valor do somatorio das parcelas ({parcela}) é inferior ao Valor Total ({total_value}).')
+        elif not form_Accounts.is_valid():
+            ('problema no formulario de contas')
+            # print(form_Accounts.errors)
+        elif not form_Accounts.is_valid():
+            ('problema no formulario de parcelas')
+            print(PaymentMethod_Accounts_FormSet.errors)
     else: 
-        form_AccountsPayable = AccountsPayableForm()
-        PaymentMethod_AccountsPayable_FormSet = PaymentMethodAccountsPayableFormSet(queryset=PaymentMethod_AccountsPayable.objects.none())
+        # print('nao deu certo')
+        form_Accounts = AccountsForm()
+        PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
         
     context = {
-        'form_AccountsPayable': form_AccountsPayable,
-        'form_payment_account': PaymentMethod_AccountsPayable_FormSet
+        'form_Accounts': form_Accounts,
+        'form_payment_account': PaymentMethod_Accounts_FormSet
     }
     return render(request, 'finance/AccountsPayform.html', context)
 
 @login_required
-def AccountsPayable_list(request):
+def Accounts_list(request):
     # Obtenha o termo de pesquisa da requisição
     search_query = request.GET.get('query', '')
 
     # Filtrar os clientes com base no termo de pesquisa
     if search_query:
-        accountPayable = AccountsPayable.objects.filter(
+        account = PaymentMethod_Accounts.objects.filter(
         (   # campo pessoa
             Q(id__icontains=search_query) | 
-            Q(pessoa_id__id_FisicPerson_fk__name__icontains=search_query) | 
-            Q(pessoa_id__id_LegalPerson_fk__name_foreigner__icontains=search_query) | 
-            Q(pessoa_id__id_ForeignPerson_fk__fantasyName__icontains=search_query) | 
+            Q(conta__pessoa_id__id_FisicPerson_fk__name__icontains=search_query) | 
+            Q(conta__pessoa_id__id_LegalPerson_fk__name_foreigner__icontains=search_query) | 
+            Q(conta__pessoa_id__id_ForeignPerson_fk__fantasyName__icontains=search_query) | 
             Q(documentNumber__icontains=search_query)
         ),
-        isActive = True 
+        acc = True 
     ).order_by('id')
     else:
-        accountPayable = AccountsPayable.objects.all()
+        account = PaymentMethod_Accounts.objects.all() #filter(acc = False)
 
-    for i in accountPayable:
-        print(accountPayable) 
+    # for i in account:
+    #     print(account) 
     # Configure o Paginator com o queryset filtrado
-    paginator = Paginator(accountPayable, 20)  # 5 itens por página
+    paginator = Paginator(account, 20)  # 5 itens por página
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
 
     return render(request, 'finance/AccountsPay_list.html', {
-        'accountsPayable': page,
+        'accounts': page,
         'query': search_query,  # Envie o termo de pesquisa para o template
     })
 
