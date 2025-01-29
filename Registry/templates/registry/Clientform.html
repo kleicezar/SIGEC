@@ -130,6 +130,11 @@
                     </div>
 
                     <div class="col-xl-3">
+                        <label for="">{{form_legalPerson.MunicipalRegistration.label}}</label>
+                        {{form_legalPerson.MunicipalRegistration}}
+                    </div>
+
+                    <div class="col-xl-3">
                         <label for="">{{form_legalPerson.typeOfTaxpayer.label}}</label>
                         {{form_legalPerson.typeOfTaxpayer}}
                     </div>
@@ -168,38 +173,44 @@
             </div>
             
             <!-- cadastro de atributos -->
-            <div>
-                <div class="col-xl-4">
-                    {{form_Person.isClient}}
-                    {{form_Person.isClient.label}}
-                    
-                    {{form_Person.isSupllier}}
-                    {{form_Person.isSupllier.label}}
-                    
-                    {{form_Person.isUser}}
-                    {{form_Person.isUser.label}}
-                </div>
-                <div class="col-xl-4">
-                    {{form_Person.isEmployee}}
-                    {{form_Person.isEmployee.label}}
-                    
-                    {{form_Person.isSalesman}}
-                    {{form_Person.isSalesman.label}}
-                    
-                    {{form_Person.isFormer_employee}}
-                    {{form_Person.isFormer_employee.label}}
-                </div>
-                <div class="col-xl-4">
-                    {{form_Person.isCarrier}}
-                    {{form_Person.isCarrier.label}}
-                    
-                    {{form_Person.isDelivery_man}}
-                    {{form_Person.isDelivery_man.label}}
-                    
-                    {{form_Person.isTechnician}}
-                    {{form_Person.isTechnician.label}}
+            <div class="row mb-5 mt-5">
+                <h6>
+                    Atributos
+                </h6>
+                <div class="form-margin row">
+                    <div class="row-xl-4 mb-2">
+                        {{form_Person.isClient}}
+                        {{form_Person.isClient.label}}
+                        
+                        {{form_Person.isSupllier}}
+                        {{form_Person.isSupllier.label}}
+                        
+                        {{form_Person.isUser}}
+                        {{form_Person.isUser.label}}
+                    </div>
+                    <div class="row-xl-4 mb-2">
+                        {{form_Person.isEmployee}}
+                        {{form_Person.isEmployee.label}}
+                        
+                        {{form_Person.isSalesman}}
+                        {{form_Person.isSalesman.label}}
+                        
+                        {{form_Person.isFormer_employee}}
+                        {{form_Person.isFormer_employee.label}}
+                    </div>
+                    <div class="row-xl-4 mb-2">
+                        {{form_Person.isCarrier}}
+                        {{form_Person.isCarrier.label}}
+                        
+                        {{form_Person.isDelivery_man}}
+                        {{form_Person.isDelivery_man.label}}
+                        
+                        {{form_Person.isTechnician}}
+                        {{form_Person.isTechnician.label}}
+                    </div>
                 </div>
             </div>
+          
                
             <!-- {{ form_Person.as_p }} -->
 
