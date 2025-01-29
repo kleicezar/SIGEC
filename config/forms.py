@@ -32,10 +32,9 @@ class ChartOfAccountsModelForm(forms.ModelForm):
             )
         }
 
-
     def __init__(self, *args, **kwargs):
-        super(SituationModelForm, self).__init__(*args, **kwargs)
-        self.fields['name_Situation'].widget.attrs.update({'class': 'label-text'})
+        super(ChartOfAccountsModelForm, self).__init__(*args, **kwargs)
+        self.fields['name_ChartOfAccounts'].widget.attrs.update({'class': 'label-text'})
 
 class PaymentMethodModelForm(forms.ModelForm):
     class Meta:

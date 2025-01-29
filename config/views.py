@@ -203,7 +203,7 @@ def deleteSituation(request, id_situation):
 @login_required
 def chartOfAccounts(request):
     context = {
-        'ChartOfAccountss': ChartOfAccounts.objects.all()
+        'ChartOfAccounts': ChartOfAccounts.objects.all()
     }
     return render(request, 'config/ChartOfAccounts.html', context)
 
@@ -219,8 +219,10 @@ def ChartOfAccountsForm(request):
         chartOfAccountsForm = ChartOfAccountsModelForm(request.POST)
         if chartOfAccountsForm.is_valid():
             chartOfAccountsForm.save()
-            messages.success(request, "Forma de Pagamento cadastrado com sucesso")
+            messages.success(request, "Plano de Contas cadastrado com sucesso")
             return redirect('ChartOfAccounts')
+        else:
+            print('Erros:',chartOfAccountsForm.errors)
     context = {
         'ChartOfAccounts' : chartOfAccountsForm
     }
