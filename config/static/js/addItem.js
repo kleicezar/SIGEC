@@ -119,7 +119,13 @@ function removeItem(button){
 
 }
 
-
+function removeItemUpdate(button){
+    let parent_button_3 = button.parentElement.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]')
+    parent_button_3.value = 'on'
+    let  parent_button_4 =  button.parentElement.parentElement.parentElement.parentElement.parentElement;
+    let  parent_button_5 =  button.parentElement.parentElement.parentElement.parentElement; 
+    parent_button_4.style.display ="none"
+}
 
 
 

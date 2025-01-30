@@ -200,7 +200,7 @@ def venda_update(request, pk):
     PaymentMethodVendaFormSet = inlineformset_factory(Venda, PaymentMethod_Venda, form=PaymentMethodVendaForm, extra=0, can_delete=True)
 
     if request.method == 'POST':
-        print('Dados do Post',request.POST)
+        # print('Dados do Post',request.POST)
         venda_form = VendaForm(request.POST, instance=venda)
         venda_item_formset = VendaItemFormSet(request.POST, instance=venda)
         payment_method_formset = PaymentMethodVendaFormSet(request.POST, instance=venda)
@@ -208,7 +208,31 @@ def venda_update(request, pk):
         if venda_form.is_valid() and venda_item_formset.is_valid() and payment_method_formset.is_valid():
             # Salvar a venda
             venda_form.save()
-            venda_item_formset.save()
+            venda_item_instances = venda_item_formset.save(commit=False) 
+            venda_item_formset.save_m2m()  
+
+           
+            itens_para_deletar = []
+            for form in venda_item_formset.deleted_forms:
+                if form.instance.pk is not None:  
+                    itens_para_deletar.append(form.instance)
+
+            
+            for instance in venda_item_instances:
+                instance.save() 
+
+            for item in itens_para_deletar:
+                item.delete()
+
+
+            # venda_item_formset.save()
+            payment_method_formset.save()
+
+           
+            # for item in deletar_itens:
+            #     item.delete()
+                        
+
             payment_method_formset.save()
 
             messages.success(request, "Venda atualizada com sucesso!")

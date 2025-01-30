@@ -1,14 +1,18 @@
 
 // TOTAL VALOR DE FORMULARIO DE ITENS;
-const total = document.getElementById("id_total_value");
-const totalProducts = document.getElementById("id_product_total");
-const discountTotal = document.getElementById("id_discount_total");
+const id_total_value = document.getElementById("id_total_value");
+const id_total_products = document.getElementById("id_product_total");
+const id_discount_total = document.getElementById("id_discount_total");
 const itens_container = document.getElementById("itens-container");
-let p_2 = document.createElement("p");
-let container_options_2 = document.getElementById("options_products-0")
-let td_container_options_2 = container_options_2.parentElement;
-td_container_options_2.style.display = "none";  
+
+
+
+let container_options_products = document.getElementById("options_products-0")
+let td_container_options_products = container_options_products.parentElement;
+td_container_options_products.style.display = "none";  
 const p_product = document.createElement("p");
+
+
 document.querySelectorAll(".suggest").forEach(el=>el.style.display="none");
 // let container_options_item = document.getElementById("")
 document.addEventListener("focusin",(event)=>{
@@ -19,25 +23,31 @@ document.addEventListener("focusin",(event)=>{
     }
 })
 
-
+// ATUALIZA O TOTAL DO DESCONTO, VALOR TOTAL, E TOTAL DE PRODUTOS  AO CLICAR NO BOTÃO DELETAR
 itens_container.addEventListener("click",(event)=>{
     if(event.target.tagName === 'BUTTON'){
         const item_forms = itens_container.querySelectorAll(".item-form");
-        Total(item_forms);
+        total(item_forms);
     }
 })
+
+
 itens_container.addEventListener("input",(event)=>{
     if(event.target.tagName==='INPUT'){
         const item_forms = itens_container.querySelectorAll(".item-form");
         const inputModificado = event.target;
         const item_form = inputModificado.closest(".item-form");
         const inputs_item_form = item_form.querySelectorAll("input");
+
+
         let product_value;
         let quantidade_value;
         let descont_value;
         let price_total_value;
         let price_unit_value ;
         let search_p;
+
+
         inputs_item_form.forEach((input)=>{
             const type_field = input.id;            
             if(type_field.endsWith('product') || type_field.endsWith('produto')){
@@ -61,6 +71,8 @@ itens_container.addEventListener("input",(event)=>{
             }
             
         })
+
+        //MONITORA O CAMPO ID_PRODUCT
         if (inputModificado.id.startsWith("idProduct")){
             let tbody = inputModificado.parentElement.parentElement.parentElement;
             let td = tbody.querySelector(".tre").querySelector("td");
@@ -80,6 +92,7 @@ itens_container.addEventListener("input",(event)=>{
                 }
             })
             .then(data=>{
+
                 products.innerHTML="";
                 p_product.textContent = "COD - DESC";
                 p_product.className="title-product text-center";
@@ -128,35 +141,42 @@ itens_container.addEventListener("input",(event)=>{
             }
             
         }
-        Total(item_forms);
+        total(item_forms);
       
     }
 })
 
-function Total(item_forms,n_produtos=0,totalPrice=0,totalValue=0){
-    item_forms.forEach(item_form_array=>{
+
+function total(item_forms,n_produtos=0,totalPrice=0,totalValue=0){
+    item_forms.forEach(item_form=>{
+        const style = window.getComputedStyle(item_form);
         let quanti = 0;
         let preco = 0;
-        inpt = item_form_array.querySelectorAll("input");
-
-        inpt.forEach(input=>{
-            if(input.id.endsWith("quantidade")){
-                n_produtos = Number(input.value) + n_produtos;
-                quanti = input.value;
-                totalValue = totalValue + preco*Number(quanti);
-            }
-            else if(input.id.endsWith("price_total")){
-                totalPrice = totalPrice + Number(input.value);
-            }
-            else if(input.id.endsWith("preco_unitario")){
-                preco = input.value;
-                totalValue = totalValue + Number(preco)*quanti;
-            }
-        })
-        valor_discontado = total - totalValue;
-        discountTotal.value = 11;
-        totalProducts.value = n_produtos;
-        total.value = totalPrice;
+        inpt = item_form.querySelectorAll("input");
+        console.log(item_form)
+        if (style.display !== 'none') {
+            // Só execute o código se o elemento não estiver com display: none
+            // Sua lógica aqui
+            inpt.forEach(input=>{
+                if(input.id.endsWith("quantidade")){
+                    n_produtos = Number(input.value) + n_produtos;
+                    quanti = input.value;
+                    totalValue = totalValue + preco*Number(quanti);
+                }
+                else if(input.id.endsWith("price_total")){
+                    totalPrice = totalPrice + Number(input.value);
+                }
+                else if(input.id.endsWith("preco_unitario")){
+                    preco = input.value;
+                    totalValue = totalValue + Number(preco)*quanti;
+                }
+            })
+        }
+       
+        // valor_discontado = total - totalValue;
+        id_discount_total.value = 11;
+        id_total_products.value = n_produtos;
+        id_total_value.value = totalPrice;
     })
 
 }
@@ -173,8 +193,7 @@ const input_products = document.querySelectorAll('input[type="hidden"][name$="-p
 input_products.forEach(input_product=>{
     let x = input_product.parentElement;
     console.log('uepad')
-    let input_text = x.querySelector('input[type="text"')
-    console.log(input_text)
+    let input_text = x.querySelector('input[type="text"]')
 
     // let d = document.getElementById(input_text);
     if(input_product.value!==''){
@@ -201,8 +220,10 @@ const input_client = document.getElementById("idSearch");
 
 
 if(id_pessoa.value!=""){
+
     invertAutoComplete = !invertAutoComplete;
 }
+
 if(invertAutoComplete){
     anotherQuery = id_pessoa.value;
     //MUDAR ISSO PARA BUSCA POR ID;
@@ -225,21 +246,18 @@ if(invertAutoComplete){
 }
 
 let p = document.createElement("p");
-let container_options = document.getElementById(`options-1`);
+let container_options_client = document.getElementById(`options-1`);
 
-let td_container_options = container_options.parentElement;
-td_container_options.style.display = "none";
+let td_container_options_client = container_options_client.parentElement;
+td_container_options_client.style.display = "none";
 
 // FILTRO IRÁ PREENCHER O CAMPO DE PESQUISA E COLOCAR NO VALOR DE PESSOA O SEU ID
 input_client.addEventListener("input",()=>{
-    td_container_options.style.display="none";
+    td_container_options_client.style.display="none";
 
-    console.log(td_container_options)
     if ( (input_client.value.length >=1 && input_client.value != " ")){
             let id_options = 0;
             const query = input_client.value;
-            // console.log(input_client.value)
-            // console.log(input_client.value)
             fetch(`/buscar_pessoas/?query=${encodeURIComponent(query)}`)
             .then(response=>{
                 if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
@@ -272,11 +290,12 @@ input_client.addEventListener("input",()=>{
             
                             const button = document.getElementById(selectClient.id);
                             button.addEventListener("click",()=>{
+
                                 input_client.value = button.textContent ;
-                                console.log(input_client)
                                 id_pessoa.value = `${cliente.id}`;
                                 td_container_options.style.display="none";
                             })
+
                             id_options+=1;
                         }
                     })
@@ -286,11 +305,6 @@ input_client.addEventListener("input",()=>{
     }else{
         td_container_options.style.display="none";
     }
-    
-
-    
-    
-
 })
 
 

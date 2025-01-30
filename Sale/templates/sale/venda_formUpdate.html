@@ -103,7 +103,70 @@
                     
                     <!-- Itens de Venda -->
                     <h6>Itens de Venda</h6>
-                    <div id="itens-container">      
+                    <div id="itens-container">
+                        {{ venda_item_formset.management_form }}
+                        
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Produto</th>
+                                    <th scope="col">Quantidade</th>
+                                    <th scope="col">Preço Unitário</th>
+                                    <th scope="col">Desconto(%)</th>
+                                    <th scope="col">Valor Total</th>
+                                    <th scope="col">Ações</th>
+                                </tr>
+                            </thead>
+                        </table>
+                        {% for form in venda_item_formset %}
+                            <div class="item-form">
+                                <table class="table">
+                                    
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="hidden" name="{{ form.prefix }}-id" value="{{ form.instance.id }}">
+                                                {{form.product.as_hidden}}
+                                                <input type="text" class="row form-control" id="idProduct-0">
+                                                <div id="products-0" class="mt-3 field-product row">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <!-- Campo Quantidade -->
+                                                {{ form.quantidade }}
+                                            </td>
+                                            <td>
+                                                <!-- Campo Preço Unitário -->
+                                                {{ form.preco_unitario }}
+                                            </td>
+                                            <td>
+                                                <!-- Campo Desconto -->
+                                                {{ form.discount }}
+                                            </td>
+                                            <td>
+                                                <!-- Campo Valor Total (readonly) -->
+                                                {{ form.price_total }}
+                                            </td>
+                                            <td>
+                                                <!-- Checkbox para exclusão -->
+                                                <button type="button" class="btn btn-danger delete" onclick="removeItemUpdate(this)" >Deletar</button>
+                                                {{form.DELETE.as_hidden}}
+                                            </td>
+                                        </tr>
+                                        <tr class="tre">
+                                            <td class="z-2 position-absolute suggest" style="display: none;">
+                                                <div id="options_products-{{ forloop.counter0 }}" class="row form-control z-1 v">
+                                                    <p class="text-center title-product">CODIGO - DESC</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- <div id="itens-container">      
                         <table class="table">
                             <thead>
                                 <tr>
@@ -115,61 +178,53 @@
                                     <th scope="col">Ações</th>
                                 </tr>
                             </thead>
-                           
-                            <!-- <tbody class="itens"> -->
+                            {{ venda_item_formset.management_form }}
+                            {% for form in venda_item_formset %}
+                            <tbody>
                                 <tr>
-                                    {{ venda_item_formset.management_form }}
-                                    {% for form in venda_item_formset %}
-                                    <div class="item-form">
+                                    <td>   
                                         <input type="hidden" name="{{ form.prefix }}-id" value="{{ form.instance.id }}">
-                                        <table>
-                                            
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        {{form.product.as_hidden}}
-                                                        <input type="text" class="row form-control" id="idProduct-0">
-                                                        <div id="products-0" class="mt-3 field-product row">
-                                                        </div>
-                                                    </td>
-                                                    
-                                                    <td>
-                                                        {{form.quantidade}}    
-                                                    </td>
-                                                    <td>
-                                                        {{form.preco_unitario}}
-                                                    </td>
-                                                    <td>
-                                                        {{form.discount}}
-                                                    </td>
-                                                    <td>
-                                                        {{form.price_total}}
-                                                    </td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-danger delete" onclick="removeItem(this)" >Deletar</button>
-                                                        {{form.DELETE.as_hidden}}
-                                                    </td>
-                                                </tr>
-                                                <tr class="tre">
-                                                    <td class="z-2 position-absolute suggest">
-                                                        <div id="options_products-0" class="row form-control z-1 field-product v">
-                                                            <p class="text-center  title-product">CODIGO - DESC</p>
-                
-                
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                          
-                                        </table>
-                                        {% endfor %}
-                                    </div>
-                                   
-                                </tr> 
+                                        {{form.product.as_hidden}}
+                                        <input type="text" class="row form-control" id="idProduct-0">
+                                        <div id="products-0" class="mt-3 field-product row">
+                                        </div>
+                                    </td>
+                                    
+                                    <td>
+                                        {{form.quantidade}}    
+                                    </td>
+                                    <td>
+                                        {{form.preco_unitario}}
+                                    </td>
+                                    <td>
+                                        {{form.discount}}
+                                    </td>
+                                    <td>
+                                        {{form.price_total}}
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger delete" onclick="removeItemUpdate(this)" >Deletar</button>
+                                        {{form.DELETE.as_hidden}}
+                                    </td>
+                                </tr>
+                                <tr class="tre">
+                                    <td class="z-2 position-absolute suggest">
+                                        <div id="options_products-0" class="row form-control z-1 field-product v">
+                                            <p class="text-center  title-product">CODIGO - DESC</p>
+
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            {% endfor %}
+
+                         
+                            
                             <!-- </tbody> -->
                            
-                        </table>
-                    </div>
+                        <!-- </table> -->
+                    <!-- </div> --> 
                     <button id="item" type="button" onclick="addItem()" class="btn btn-outline-success mb-5 z-2">Adicionar Item</button>
                     <template id="empty-form-template">
                         <div class="item-form">
