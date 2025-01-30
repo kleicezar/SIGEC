@@ -1,13 +1,13 @@
 
 // TOTAL VALOR DE FORMULARIO DE ITENS;
 const id_total_value = document.getElementById("id_total_value");
-const id_total_products = document.getElementById("id_product_total");
+const id_total_products = document.getElementById("id_service_total");
 const id_discount_total = document.getElementById("id_discount_total");
 const itens_container = document.getElementById("itens-container");
 
 
 
-let container_options_products = document.getElementById("options_products-0")
+let container_options_products = document.getElementById("options_services-0")
 let td_container_options_products = container_options_products.parentElement;
 td_container_options_products.style.display = "none";  
 const p_product = document.createElement("p");
@@ -34,55 +34,47 @@ itens_container.addEventListener("click",(event)=>{
 
 itens_container.addEventListener("input",(event)=>{
     if(event.target.tagName==='INPUT'){
+
         const item_forms = itens_container.querySelectorAll(".item-form");
         const inputModificado = event.target;
         const item_form = inputModificado.closest(".item-form");
         const inputs_item_form = item_form.querySelectorAll("input");
 
 
-        let product_value;
-        let quantidade_value;
-        let descont_value;
-        let price_total_value;
-        let price_unit_value ;
-        let search_p;
-
-
-        inputs_item_form.forEach((input)=>{
-            const type_field = input.id;            
-            if(type_field.endsWith('product') || type_field.endsWith('produto') || type_field.endsWith('service')){
-                product_value = input;
-
-            }
-            else if (type_field.endsWith('quantidade')){
-                quantidade_value = input;
-            }
-            else if(type_field.endsWith('preco_unitario')){
-                price_unit_value = input;
-            }
-            else if (type_field.endsWith('discount')){
-                descont_value = input;
-            }
-            else if(type_field.endsWith('price_total')){
-                price_total_value = input;
-            }
-            else if(type_field.startsWith("idProduct")){
-                search_p = input;
-            }
-            
-        })
-
         //MONITORA O CAMPO ID_PRODUCT
-        if (inputModificado.id.startsWith("idProduct")){
+        if (inputModificado.id.startsWith("idService")){
             let tbody = inputModificado.parentElement.parentElement.parentElement;
+    
+
             let td = tbody.querySelector(".tre").querySelector("td");
     
+
             let products = td.querySelector("div");
-          
+
+
+            let product_value;
+            let search_p;
+
+            inputs_item_form.forEach((input)=>{
+                const type_field = input.id;
+                if(type_field.endsWith('service')){
+                    product_value = input;
+                }
+                else if(type_field.startsWith("idService")){
+                    search_p = input;
+                }
+                else if(type_field.endsWith('preco')){
+                    price_unit_value = input;
+                    
+                    console.log('opa')
+                }
+            })
             if(inputModificado.value.length>=1){
                 let idoptions = 0;
+
+
                 const query = inputModificado.value;
-                fetch(`/buscar_produtos/?query=${encodeURIComponent(query)}`)
+                fetch(`/buscar_servicos/?query=${encodeURIComponent(query)}`)
                 .then(response=>{
                 if(response.ok && response.headers.get('Content-Type').includes('application/json')){
                     return response.json();
@@ -90,64 +82,61 @@ itens_container.addEventListener("input",(event)=>{
                 else {
                     throw new Error('Resposta não é JSON');
                 }
+                
             })
             .then(data=>{
-
                 products.innerHTML="";
-                p_product.textContent = "COD - DESC";
-                p_product.className="title-product text-center";
+                p_product.textContent = "ID - NOME"
+                p_product.className="title-service text-center"
                 products.style.width = "300px";
                 products.appendChild(p_product)
 
+                if(data.servicos.length>0){
+                    data.servicos.forEach(servico=>{
+                
 
-                if(data.produtos.length>0){    
-                    data.produtos.forEach(produto=>{
                         td.style.display="block";
                         let selectProduct = document.createElement("button");
+                        console.log(selectProduct)
                         selectProduct.className = "btn btn-outline-secondary form-control x mb-2";
                         selectProduct.type="button";
-                        selectProduct.id = `option-product-${idoptions}`;
+                        selectProduct.id = `option-service-${idoptions}`;
 
-                        selectProduct.textContent = `${produto.product_code} - ${produto.description}`
-                        let title_product = td.querySelector(".title-product");
+                        selectProduct.textContent = `${servico.id} - ${servico.name_Service}`;
+                        let title_product = td.querySelector('.title-service');
+                        
 
                         title_product.insertAdjacentElement('afterend',selectProduct);
+                        
                         const button = td.querySelector(".x")
-                
+
+
                         button.addEventListener("click",()=>{
-                            product_value.value = produto.id;
+                            product_value.value = servico.id;
                             search_p.value = button.textContent;
-                            price_unit_value.value = produto.selling_price;
-                            td.style.display = "none";  
+                            console.log(price_unit_value.value)
+                            price_unit_value.value = servico.price;
+
+                            td.style.display = "none";
                         })
                         idoptions+=1;
                     })
                 }
-                else if(data.produtos.length == query.length){
-                    price_unit_value = produto.selling_price;
-                }
             })
+    
             } else {
                 td.style.display ="none";
             }
             
         } 
-        if(descont_value != undefined && quantidade_value!=undefined && price_unit_value!=undefined){
-          
-            if(descont_value.value != 0){
-                price_total_value.value = ((price_unit_value.value - ((descont_value.value/100) * price_unit_value.value))*quantidade_value.value).toFixed(2);
-            } else {
-                price_total_value.value = (price_unit_value.value*quantidade_value.value).toFixed(2);
-            }
-            
-        }
+        
         total(item_forms);
       
     }
 })
 
 
-function total(item_forms,n_produtos=0,totalPrice=0,totalValue=0){
+function total(item_forms,n_servicos=0,totalPrice=0,totalValue=0){
     item_forms.forEach(item_form=>{
         const style = window.getComputedStyle(item_form);
         let quanti = 0;
@@ -158,14 +147,11 @@ function total(item_forms,n_produtos=0,totalPrice=0,totalValue=0){
             // Sua lógica aqui
             inpt.forEach(input=>{
                 if(input.id.endsWith("quantidade")){
-                    n_produtos = Number(input.value) + n_produtos;
+                    n_servicos = Number(input.value) + n_servicos;
                     quanti = input.value;
                     totalValue = totalValue + preco*Number(quanti);
                 }
-                else if(input.id.endsWith("price_total")){
-                    totalPrice = totalPrice + Number(input.value);
-                }
-                else if(input.id.endsWith("preco_unitario")){
+                else if(input.id.endsWith("preco")){
                     preco = input.value;
                     totalValue = totalValue + Number(preco)*quanti;
                 }
@@ -174,7 +160,7 @@ function total(item_forms,n_produtos=0,totalPrice=0,totalValue=0){
        
         // valor_discontado = total - totalValue;
         id_discount_total.value = 11;
-        id_total_products.value = n_produtos;
+        id_total_products.value = n_servicos;
         id_total_value.value = totalPrice;
     })
 
@@ -315,56 +301,58 @@ input_client.addEventListener("input",()=>{
 
 
 
-document.addEventListener("DOMContentLoaded", function () {
-    let container = document.querySelector("#itens-container"); // O container que contém todos os item-form
-    if (container) {
-        // Monitorar mudanças nos selects dentro do container
-        container.addEventListener("change", function (event) {
-            if (event.target.matches("[id^='id_vendaitemservice_set-'][id$='-service']")) {
-                let selectElement = event.target;
-                let formContainer = selectElement.closest(".item-form"); // Encontra o item-form mais próximo
+// document.addEventListener("DOMContentLoaded", function () {
+//     let container = document.querySelector("#itens-container"); // O container que contém todos os item-form
+//     if (container) {
+//         // Monitorar mudanças nos selects dentro do container
+//         container.addEventListener("change", function (event) {
+//             if (event.target.matches("[id^='id_vendaitemservice_set-'][id$='-service']")) {
+//                 let selectElement = event.target;
+//                 let formContainer = selectElement.closest(".item-form"); // Encontra o item-form mais próximo
                 
-                if (formContainer) {
-                    let precoInput = formContainer.querySelector("[id^='id_vendaitemservice_set-'][id$='-preco']");
-                    let serviceInput = formContainer.querySelector("[id^='id_vendaitemservice_set-'][id$='-service']")
-                    const teste = serviceInput.textContent;
-                    console.log(serviceInput.textContent)
-                    fetch(`/buscar_servicos/?query=${encodeURIComponent(teste)}`)
-                    .then(response=>{
-                        if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
+//                 if (formContainer) {
+//                     let precoInput = formContainer.querySelector("[id^='id_vendaitemservice_set-'][id$='-preco']");
+//                     let serviceInput = formContainer.querySelector("[id^='id_vendaitemservice_set-'][id$='-service']")
+//                     const teste = serviceInput.textContent;
+//                     console.log(serviceInput.textContent)
+//                     fetch(`/buscar_servicos/?query=${encodeURIComponent(teste)}`)
+//                     .then(response=>{
+//                         if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
                             
-                            return response.json();
+//                             return response.json();
                             
-                        } else {
-                            throw new Error('Resposta não é JSON');
-                        }
+//                         } else {
+//                             throw new Error('Resposta não é JSON');
+//                         }
                         
-                    })
-                    .then(data=>{
-                        if (precoInput) {
-                            precoInput.value = data.servico[0].value_Service // Define ou limpa o valor
-                        }
-                    })
+//                     })
+//                     .then(data=>{
+//                         if (precoInput) {
+//                             precoInput.value = data.servico[0].value_Service // Define ou limpa o valor
+//                         }
+//                     })
                     
-                }
-            }
-        });
+//                 }
+//             }
+//         });
 
-        // Monitorar cliques nos botões de deletar dentro do container
-        container.addEventListener("click", function (event) {
-            if (event.target.matches(".delete")) {
-                let button = event.target;
-                let formContainer = button.closest(".item-form"); // Encontra o item-form mais próximo
+//         // Monitorar cliques nos botões de deletar dentro do container
+//         container.addEventListener("click", function (event) {
+//             if (event.target.matches(".delete")) {
+//                 let button = event.target;
+//                 let formContainer = button.closest(".item-form"); // Encontra o item-form mais próximo
                 
-                if (formContainer) {
-                    let precoInput = formContainer.querySelector("[id^='id_vendaitemservice_set-'][id$='-DELETE']");
-                    if (precoInput) {
-                        precoInput.value = "on"; // Altera o preço para "urro" ao deletar
-                        console.log(precoInput.val)
-                    }
-                }
-            }
-        });
-    }
-});
+//                 if (formContainer) {
+//                     console.log('uep')
+//                     let precoInput = formContainer.querySelector("[id^='id_vendaitemservice_set-'][id$='-DELETE']");
+//                     console.log(precoInput)
+//                     if (precoInput) {
+//                         precoInput.value = "on"; // Altera o preço para "urro" ao deletar
+//                         console.log(precoInput.value)
+//                     }
+//                 }
+//             }
+//         });
+//     }
+// });
 

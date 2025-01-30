@@ -47,9 +47,9 @@ class VendaItemForm(forms.ModelForm):
         model = VendaItemService
         fields = ['service', 'preco','discount']
         widgets = {
-            # 'service':forms.TextInput(attrs={
-            #     'class':'form-control row-2'
-            # }),
+                'service':forms.TextInput(attrs={
+                    'class':'form-control row-2'
+                }),
             'preco':forms.TextInput(attrs={
                 'class':'form-control row'
             }),

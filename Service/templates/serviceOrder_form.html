@@ -122,7 +122,10 @@
 
                                     <tbody class="itens">
                                         <tr>
-                                            <td >{{form.service}}
+                                            <td >{{form.service.as_hidden}}
+                                                <input type="text" class="row form-control" id="idService-0">
+                                                <div id="services-0" class="mt-3 field-product row">
+                                                </div>
                                             </td>
                     
                                             <td>
@@ -138,8 +141,8 @@
                                         </tr>
                                         <tr class="tre">
                                             <td class="z-2 position-absolute suggest">
-                                                <div id="options_products-0" class="row form-control z-1 field-product v">
-                                                    <p class="text-center  title-product">CODIGO - DESC</p>
+                                                <div id="options_services-0" class="row form-control z-1 field-service v">
+                                                    <p class="text-center  title-service">CODIGO - DESC</p>
 
             
                                                 </div>
@@ -161,9 +164,9 @@
 
                                 <tbody>
                                     <tr >
-                                        <td>{{ venda_item_formset.empty_form.service}}
-                                            <!-- <input type="text" class="row form-control inputProduct">
-                                            <div class="mt-3 field-product row"> -->
+                                        <td>{{ venda_item_formset.empty_form.service.as_hidden}}
+                                            <input type="text" class="row form-control inputService">
+                                            <div class="mt-3 field-product row">
                                     
                                             </div>
                                         </td>
@@ -175,6 +178,15 @@
                                         <td>
                                             <button type="button" class="btn btn-danger delete" onclick="removeItem(this)">Deletar</button>
                                             {{venda_item_formset.empty_form.DELETE.as_hidden}}</td>
+                                    </tr>
+                                    <tr class="tre">
+                                        <td class="z-2 position-absolute suggest ">
+                                            <div id="" class="row form-control z-1 v">
+                                                <p class="text-center title-service">CODIGO - DESC</p>
+
+        
+                                            </div>
+                                        </td>
                                     </tr>
                                 </tbody>
                               </table>
@@ -329,7 +341,7 @@
         <script type="text/javascript" src="{% static 'js/jquery.mask.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/mask.js' %}"></script> -
         <script src="{% static 'js/addItem.js' %}" defer></script>
-        <script src="{% static 'js/clientSearch.js' %}"></script>  <!-- pesquisa clientes -->
+        <script src="{% static 'js/order.js' %}"></script>  <!-- pesquisa clientes -->
         <script src="{% static 'js/venda_item.js' %}"></script> <!-- pesquisa produtos em vendas-->
         <script src="{% static 'js/date.js' %   }"></script>
         <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>

@@ -26,6 +26,8 @@ def service_create(request):
             service_form.save()
             messages.success(request, "Tipo de Serviço cadastrado com sucesso")
             return redirect('orderServiceForm')
+       
+
 def orderService_create(request):
     VendaItemFormSet  = inlineformset_factory(VendaService,VendaItemService,form=VendaItemForm,extra=1,can_delete=True)
     PaymentMethodVendaFormSet = inlineformset_factory(VendaService,PaymentMethod_VendaService,form=PaymentMethodVendaForm,extra=1,can_delete=True)
@@ -45,3 +47,23 @@ def orderService_create(request):
         }
 
         return render(request,'serviceOrder_form.html',context)
+    
+def service_search(request):
+   
+    query = request.GET.get('query', '') 
+    print(query)
+    resultados = Service.objects.filter(
+        Q(id__icontains=query) |
+       Q(name_Service__icontains=query)
+    ).order_by('id')[:5]
+    services = [
+        {
+            'id':servico.id,
+            'name_Service':servico.name_Service,
+            'price':servico.value_Service
+        }
+        for servico in resultados
+    ]
+
+    return JsonResponse({'servicos':services})
+    
