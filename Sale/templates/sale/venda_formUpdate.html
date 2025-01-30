@@ -312,27 +312,26 @@
 
                     <!-- Formas de Pagamento -->
                     <h6>Formas de Pagamento</h6>
+
                     <div id="payment-method-container">
+                        {{ payment_method_formset.management_form }}
+                        
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Produto</th>
+                                    <th scope="col">Quantidade</th>
+                                    <th scope="col">Preço Unitário</th>
+                                    <th scope="col">Desconto(%)</th>
+                                    <th scope="col">Valor Total</th>
+                                    <th scope="col">Ações</th>
+                                </tr>
+                            </thead>
+                        </table>
+                        {% for form in payment_method_formset %}
                             <div class="form-row">
                                 <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">
-                                                Forma de Pagamento
-                                            </th>
-                                            <th scope="col">
-                                                Data de Expiração
-                                            </th>
-                                            <th scope="col">
-                                                Valor
-                                            </th>
-                                            <th scol="col">
-                                                Ações
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    {{ payment_method_formset.management_form }}
-                                    {% for form in payment_method_formset %}
+                                    
                                     <tbody>
                                         <input type="hidden" name="{{ form.prefix }}-id" value="{{ form.instance.id }}">
                                         <tr>
@@ -355,12 +354,11 @@
                                                 {{ form.DELETE.as_hidden }}
                                         </tr>
                                     </tbody>
-                                     {% endfor %}
-                                  </table>
-                                  
+                                </table>
                             </div>
-                       
+                        {% endfor %}
                     </div>
+
                     <template id="empty-payment-method-form">
                         <div class="form-row">
                             <!-- Clona o formulário vazio de payment_method_formset -->

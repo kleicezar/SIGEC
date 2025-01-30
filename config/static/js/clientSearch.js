@@ -153,7 +153,6 @@ function total(item_forms,n_produtos=0,totalPrice=0,totalValue=0){
         let quanti = 0;
         let preco = 0;
         inpt = item_form.querySelectorAll("input");
-        console.log(item_form)
         if (style.display !== 'none') {
             // Só execute o código se o elemento não estiver com display: none
             // Sua lógica aqui
@@ -267,17 +266,17 @@ input_client.addEventListener("input",()=>{
                 }
             })
             .then(data=>{
-                container_options.innerHTML = '';
+                container_options_client.innerHTML = '';
                 p.textContent = "ID - CLIENTE";
                 p.id = "title-client";
                 p.className= "text-center";
-                container_options.style.width = "300px";
-                container_options.appendChild(p);
+                container_options_client.style.width = "300px";
+                container_options_client.appendChild(p);
                 if(data.clientes.length > 0){
                     data.clientes.forEach(cliente=>{
                         if (data.clientes.length <= query.length){
-                            td_container_options.style.display = "block";
-                            container_options = document.getElementById(`options-1`);
+                            td_container_options_client.style.display = "block";
+                            container_options_client = document.getElementById(`options-1`);
 
                             selectClient = document.createElement("button");
                             selectClient.className ="btn btn-outline-secondary form-control mb-2";
@@ -293,7 +292,7 @@ input_client.addEventListener("input",()=>{
 
                                 input_client.value = button.textContent ;
                                 id_pessoa.value = `${cliente.id}`;
-                                td_container_options.style.display="none";
+                                td_container_options_client.style.display="none";
                             })
 
                             id_options+=1;
@@ -303,7 +302,7 @@ input_client.addEventListener("input",()=>{
             })
         // }
     }else{
-        td_container_options.style.display="none";
+        td_container_options_client.style.display="none";
     }
 })
 

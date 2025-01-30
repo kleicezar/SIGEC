@@ -123,7 +123,6 @@ function removeItemUpdate(button){
     let parent_button_3 = button.parentElement.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]')
     parent_button_3.value = 'on'
     let  parent_button_4 =  button.parentElement.parentElement.parentElement.parentElement.parentElement;
-    let  parent_button_5 =  button.parentElement.parentElement.parentElement.parentElement; 
     parent_button_4.style.display ="none"
 }
 
@@ -132,10 +131,12 @@ function removeItemUpdate(button){
 
 function addPaymentMethod() {
     const container = document.getElementById('payment-method-container');
+    console.log('entrei')
     const formCountCompra = document.getElementById('id_paymentmethod_compra_set-TOTAL_FORMS');
     const formCountSale = document.getElementById('id_paymentmethod_venda_set-TOTAL_FORMS');
     const formCountAccountPayable = document.getElementById('id_paymentmethod_accountspayable_set-TOTAL_FORMS');
     if(formCountSale){
+        console.log('oi')
         const [formCount,newForm] = clone(formCountSale,emptyPaymentMethodTemplate);
         formCountSale.value = parseInt(formCount)+1;
         container.appendChild(newForm);
