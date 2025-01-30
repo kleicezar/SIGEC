@@ -137,31 +137,35 @@ itens_container.addEventListener("input",(event)=>{
 
 
 function total(item_forms,n_servicos=0,totalPrice=0,totalValue=0){
+    let total = 0;
+    let preco = 0;
     item_forms.forEach(item_form=>{
         const style = window.getComputedStyle(item_form);
         let quanti = 0;
-        let preco = 0;
+        
+    
         inpt = item_form.querySelectorAll("input");
         if (style.display !== 'none') {
             // Só execute o código se o elemento não estiver com display: none
             // Sua lógica aqui
             inpt.forEach(input=>{
                 if(input.id.endsWith("quantidade")){
-                    n_servicos = Number(input.value) + n_servicos;
-                    quanti = input.value;
+
                     totalValue = totalValue + preco*Number(quanti);
+
                 }
                 else if(input.id.endsWith("preco")){
                     preco = input.value;
-                    totalValue = totalValue + Number(preco)*quanti;
+                    totalValue = totalValue + Number(preco);
                 }
-            })
+            });
+            total+=1;
         }
        
         // valor_discontado = total - totalValue;
         id_discount_total.value = 11;
-        id_total_products.value = n_servicos;
-        id_total_value.value = totalPrice;
+        id_total_products.value = total;
+        id_total_value.value = totalValue;
     })
 
 }
