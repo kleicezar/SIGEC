@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'login',
     'bootstrap4',
     'stdimage',
+    'Service'
 ]
 
 MIDDLEWARE = [

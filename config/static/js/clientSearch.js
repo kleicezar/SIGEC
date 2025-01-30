@@ -50,7 +50,7 @@ itens_container.addEventListener("input",(event)=>{
 
         inputs_item_form.forEach((input)=>{
             const type_field = input.id;            
-            if(type_field.endsWith('product') || type_field.endsWith('produto')){
+            if(type_field.endsWith('product') || type_field.endsWith('produto') || type_field.endsWith('service')){
                 product_value = input;
 
             }

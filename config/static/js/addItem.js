@@ -33,9 +33,10 @@ const itensIndex  = [0];
 function addItem() {
     const formset = document.getElementById('itens-container');
     const formCountSale = document.getElementById('id_vendaitem_set-TOTAL_FORMS');
-
+    console.log('addItem')
 
     // const formCountElem = document.getElementById('id_vendaitem_set-TOTAL_FORMS');
+    const formCountService = document.getElementById("id_vendaitemservice_set-TOTAL_FORMS");
     const formCountCompra = document.getElementById("id_compraitem_set-TOTAL_FORMS");
     if(formCountSale){
         const [formCount,newForm] = clone(formCountSale,emptyFormTemplate);
@@ -69,6 +70,12 @@ function addItem() {
         field_list_products.id = `options_products-${formCount}`;
         formset.appendChild(newForm)
         
+    }
+
+    if(formCountService){
+        const [formCount,newForm] = clone(formCountService,emptyFormTemplate);
+        formCountService.value = parseInt(formCount) + 1;
+        formset.appendChild(newForm)
     }
     
 
@@ -131,12 +138,11 @@ function removeItemUpdate(button){
 
 function addPaymentMethod() {
     const container = document.getElementById('payment-method-container');
-    console.log('entrei')
     const formCountCompra = document.getElementById('id_paymentmethod_compra_set-TOTAL_FORMS');
     const formCountSale = document.getElementById('id_paymentmethod_venda_set-TOTAL_FORMS');
     const formCountAccountPayable = document.getElementById('id_paymentmethod_accountspayable_set-TOTAL_FORMS');
+    const formCountService = document.getElementById("id_paymentmethod_vendaservice_set-TOTAL_FORMS");
     if(formCountSale){
-        console.log('oi')
         const [formCount,newForm] = clone(formCountSale,emptyPaymentMethodTemplate);
         formCountSale.value = parseInt(formCount)+1;
         container.appendChild(newForm);
@@ -149,6 +155,11 @@ function addPaymentMethod() {
     if(formCountAccountPayable){
         const [formCount,newForm] = clone(formCountAccountPayable,emptyPaymentMethodTemplate);
         formCountAccountPayable.value = parseInt(formCount) + 1;
+        container.appendChild(newForm);
+    }
+    if(formCountService){
+        const [formCount,newForm] = clone(formCountService,emptyFormTemplate);
+        formCountService.value = parseInt(formCount)+1;
         container.appendChild(newForm);
     }
 
