@@ -34,7 +34,43 @@ def orderService_create(request):
 
     if(request.method == 'POST'):
         venda_form = VendaServiceForm(request.POST)
-        ...
+        venda_item_formset = VendaItemFormSet(request.POST)
+
+        payment_method_formset = PaymentMethodVendaFormSet(request.POST)
+        if(venda_form.is_valid() and venda_item_formset.is_valid() and payment_method_formset.is_valid()):
+            print('formulários válidos')
+            venda = venda_form.save()
+            for form in venda_item_formset:
+                if form.cleaned_data:
+                    servico = form.cleaned_data['service']
+                    preco = form.cleaned_data['preco']
+                    discount = form.cleaned_data['discount']
+                    if not form.cleaned_data.get("DELETE"):
+                        VendaItemService.objects.create(
+                            venda = venda,
+                            service = servico,
+                            preco = preco,
+                            discount = discount
+                        )
+                    payment_method_formset.instance = venda
+                    total_payment = 0
+                    for form in payment_method_formset:
+                        if form.cleaned_data:
+                            valor = form.cleaned_data['valor']
+                            total_payment+=valor
+                    if(total_payment==venda_form.cleaned_data['total_value']):
+                        payment_method_formset.save()
+                        for form in payment_method_formset.deleted_objects:
+                            form.delete()
+                            form.save()
+
+        elif not venda_form.is_valid():
+            print("Erro  no ServiceForm",venda_form.errors)
+        elif not venda_item_formset.is_valid():
+            print("Erro no VendaServiceItem",venda_item_formset.errors)
+        elif not payment_method_formset.is_valid():
+            print("Erro no VendaPagamentoService",payment_method_formset.errors)
+        return  redirect('serviceForm')
     else:
         venda_form = VendaServiceForm()
         venda_item_formset = VendaItemFormSet(queryset=VendaItemService.objects.none())
