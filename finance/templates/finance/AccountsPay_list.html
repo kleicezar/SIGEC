@@ -73,6 +73,7 @@
                     <td>{{ account.expirationDate|date:"d/m/Y" }}</td>
                     <td>{{ account.value }}</td>
                     <td>
+                        {% if ContasP %}
                         <form action="{% url 'get_Accounts' id_Accounts=account.id %}" method="GET" style="display:inline-block;">
                             {% csrf_token %}
                             <button type="submit" class="btn" style="background-color: #117027;color: white;">Visualizar</button>
@@ -85,6 +86,21 @@
                             {% csrf_token %}
                             <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
                         </form>
+                        {% endif %}
+                        {% if ContasR %}
+                        <form action="{% url 'get_AccountsReceivable' id_Accounts=account.id %}" method="GET" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: #117027;color: white;">Visualizar</button>
+                        </form>
+                        <form action="{% url 'update_AccountsReceivable' id_Accounts=account.id %}" method="GET" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: #117027;color: white;">Editar</button>
+                        </form>
+                        <form action="{% url 'delete_AccountsReceivable' id_Accounts=account.id %}" method="POST" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
+                        </form>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}

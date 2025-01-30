@@ -13,9 +13,9 @@ urlpatterns = [
     path('acctrec/', AccountsReceivable_list, name='AccountsReceivable'),
     path('c/acctrec/', AccountsReceivable_Create, name='AccountsReceivable_Create'),
     # path('b-acctrec/', buscar_AccountsReceivable, name='buscar_AccountsReceivable'),
-    # path('acctrec/upt/<int:id_Accounts>/', update_AccountsReceivable, name='update_AccountsReceivable'),  # Atualizar cliente
+    path('acctrec/upt/<int:id_Accounts>/', update_AccountsReceivable, name='update_AccountsReceivable'),  # Atualizar cliente
     path('acctrec/del/<int:id_Accounts>/', delete_AccountsReceivable, name='delete_AccountsReceivable'),
-    # path('acctrec/get/<int:id_Accounts>/', get_AccountsReceivable, name='get_AccountsReceivable'),
+    path('acctrec/get/<int:id_Accounts>/', get_AccountsReceivable, name='get_AccountsReceivable'),
 
     path('b-tech/', search_tech, name='buscar_tech'),
 ]
