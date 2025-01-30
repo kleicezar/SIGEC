@@ -1,5 +1,6 @@
 from django.db import models
 from Registry.models import Person
+from Sale.models import Venda
 from config.models import ChartOfAccounts, PaymentMethod, Situation
 
 class Accounts(models.Model):
@@ -67,6 +68,7 @@ class PaymentMethod_Accounts(models.Model):
     ]
 
     conta = models.ForeignKey(Accounts, on_delete=models.CASCADE, null=True, verbose_name='id_Accounts')
+    venda = models.ForeignKey(Venda, on_delete=models.CASCADE, null=True, verbose_name='id_venda')
     forma_pagamento = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True, verbose_name='Forma de Pagamento')
     expirationDate = models.DateField(max_length=50, verbose_name='Data de Vencimento')
     days = models.IntegerField(verbose_name='Dias') #dias entre as parcelas
@@ -117,8 +119,6 @@ class PaymentMethod_Accounts(models.Model):
         blank=True)
     acc = models.BooleanField(
         verbose_name='Tipo de Conta',
-        blank=True,
-        null=True
         )
 
 # class AccountsReceivable(models.Model):
