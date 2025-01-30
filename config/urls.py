@@ -26,7 +26,9 @@ urlpatterns = [
 
 
     path('chartAcc/',chartOfAccounts,name='ChartofAccounts'),
-    path('chartAccForm/',ChartOfAccountsForm,name='ChartOfAccountsForm')
+    path('chartAccForm/',ChartOfAccountsForm,name='ChartOfAccountsForm'),
+    path('chartAcc/upt/<int:id_chartOfAccounts>/',updateChartOfAccounts,name='updateChartOfAccounts'),
+    path('chartAcc/dlt/<int:id_chartOfAccounts>/',deleteChartOfAccounts,name='deleteChartOfAccounts')
     # path('Sdct/', product, name='Product'),
     # path('SdctForm/', productForm, name='ProductForm'),
     # path('Sdct/upt/<int:id_product>/', updateProduct, name='updateProduct'),
