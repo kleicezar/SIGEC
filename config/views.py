@@ -220,7 +220,7 @@ def ChartOfAccountsForm(request):
         if chartOfAccountsForm.is_valid():
             chartOfAccountsForm.save()
             messages.success(request, "Plano de Contas cadastrado com sucesso")
-            return redirect('ChartOfAccounts')
+            return redirect('ChartofAccounts')
         else:
             print('Erros:',chartOfAccountsForm.errors)
     context = {
@@ -244,7 +244,7 @@ def updateChartOfAccounts(request, id_chartOfAccounts):
         if chartOfAccountsForm.is_valid():
             chartOfAccountsForm.save()
             messages.success(request, "Forma de Pagamento cadastrado com sucesso")
-            return redirect('ChartOfAccounts')
+            return redirect('ChartofAccounts')
     context = {
         'ChartOfAccounts' : chartOfAccountsForm
     }
@@ -256,7 +256,7 @@ def deleteChartOfAccounts(request, id_chartOfAccounts):
     if request.method == "POST":
         chartOfAccounts.delete()
         messages.success(request, "Situação deletada com sucesso.")
-        return redirect('ChartOfAccounts')  # Redirecione para onde desejar
+        return redirect('ChartofAccounts')  # Redirecione para onde desejar
     context = {
         'chartOfAccounts': chartOfAccounts
     }
