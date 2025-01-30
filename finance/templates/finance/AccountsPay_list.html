@@ -17,9 +17,16 @@
         {% block content %}
         <div class='content'>
             <div class="container">
+                {% if ContasP %}
                 <a href="{% url 'Accounts_Create' %}">
                     <button class="btn btn-success">Cadastrar</button>
                 </a>
+                {% endif %}
+                {% if ContasR %}
+                <a href="{% url 'AccountsReceivable_Create' %}">
+                    <button class="btn btn-success">Cadastrar</button>
+                </a>
+                {% endif %}
                 <div class="form-group">
                     <form method="GET" action="{% url 'AccountsPayable' %}">
                         {% csrf_token %}
@@ -66,7 +73,18 @@
                     <td>{{ account.expirationDate|date:"d/m/Y" }}</td>
                     <td>{{ account.value }}</td>
                     <td>
-
+                        <form action="{% url 'get_Accounts' id_Accounts=account.id %}" method="GET" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: #117027;color: white;">Visualizar</button>
+                        </form>
+                        <form action="{% url 'update_Accounts' id_Accounts=account.id %}" method="GET" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: #117027;color: white;">Editar</button>
+                        </form>
+                        <form action="{% url 'delete_Accounts' id_Accounts=account.id %}" method="POST" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
+                        </form>
                     </td>
                 </tr>
                 {% endfor %}

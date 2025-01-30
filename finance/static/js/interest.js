@@ -153,8 +153,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     days = (parseInt(installmentRange.value,10))
                     new_date = startDate.setDate(startDate.getDate() + days);
                     final_date = new Date(new_date)
-                    
-                    input.value = `${final_date.getDate()}/${(final_date.getMonth() + 1).toString().padStart(2, '0')}/${final_date.getFullYear()} `  
+                    input.value = `${final_date.getDate().toString().padStart(2, '0')}/${(final_date.getMonth() + 1).toString().padStart(2, '0')}/${final_date.getFullYear()} `  
                     // CALCULO DE VALOR
                 }else if (input.name.includes("-value")) {
                     // Define o valor da parcela
@@ -182,8 +181,9 @@ document.addEventListener('DOMContentLoaded', function () {
             let valor_parcela = (valor_total/numero_parcelas).toFixed(2)
              
             all_parcela = parseFloat(all_parcela) + parseFloat(valor_parcela)
-            if(index==numero_parcelas-1){
-                array_valor_parcelas[index] = parseFloat(valor_parcela) + parseFloat(valor_total-all_parcela);
+            if(index===numero_parcelas-1){
+                let ultima_parcela = parseFloat(valor_parcela) + (valor_total - all_parcela);
+                array_valor_parcelas[index] = ultima_parcela.toFixed(2);
             }else {
                 array_valor_parcelas[index] = valor_parcela;
             }

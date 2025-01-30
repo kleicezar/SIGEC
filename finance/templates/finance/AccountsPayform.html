@@ -18,7 +18,7 @@
         <form method="POST">
             {% csrf_token %}
             
-            <h4 class="mt-5 mb-5 c-adapted">Cadastro de Contas A Pagar</h4>
+            <h4 class="mt-5 mb-5 c-adapted">Cadastro de {{Contas}} </h4>
             <!-- dados da conta a pagar -->
             {{ form_Accounts.pessoa_id.label}}
             {{ form_Accounts.pessoa_id}}

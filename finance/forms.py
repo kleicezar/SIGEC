@@ -13,7 +13,7 @@ class AccountsForm(forms.ModelForm):
     # )
     class Meta:
         model = Accounts
-        fields = [
+        fields = [ 
             'pessoa_id', 
             'chartOfAccounts', 
             'documentNumber', 

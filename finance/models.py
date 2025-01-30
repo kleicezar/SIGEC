@@ -54,11 +54,7 @@ class Accounts(models.Model):
         blank=True,
         null=True
         )
-    acc = models.BooleanField(
-        verbose_name='Tipo de Conta',
-        blank=True,
-        null=True
-        )
+    
 
 class PaymentMethod_Accounts(models.Model):
     INTEREST_CHOICES = [
@@ -70,7 +66,7 @@ class PaymentMethod_Accounts(models.Model):
         ('value', '(R$)'),
     ]
 
-    conta = models.ForeignKey(Accounts, on_delete=models.SET_NULL, null=True, verbose_name='id_Accounts')
+    conta = models.ForeignKey(Accounts, on_delete=models.CASCADE, null=True, verbose_name='id_Accounts')
     forma_pagamento = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True, verbose_name='Forma de Pagamento')
     expirationDate = models.DateField(max_length=50, verbose_name='Data de Vencimento')
     days = models.IntegerField(verbose_name='Dias') #dias entre as parcelas
@@ -119,6 +115,11 @@ class PaymentMethod_Accounts(models.Model):
         verbose_name='multa R$',
         null=True,
         blank=True)
+    acc = models.BooleanField(
+        verbose_name='Tipo de Conta',
+        blank=True,
+        null=True
+        )
 
 # class AccountsReceivable(models.Model):
 #     INSTALLMENT_RANGE_CHOICES = [
