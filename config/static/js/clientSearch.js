@@ -169,30 +169,29 @@ let index = 0;
 let invertAutoComplete = false;
 const id_pessoa = document.getElementById("id_pessoa") || document.getElementById("id_fornecedor");
 const input_products = document.querySelectorAll('input[type="hidden"][name$="-product"]');
-let e;
-let d;
+
 input_products.forEach(input_product=>{
     let x = input_product.parentElement;
-    let input_text = x.querySelector('input[type="text"]');
-    
-    console.log(input_product.value)
+    console.log('uepad')
+    let input_text = x.querySelector('input[type="text"')
+    console.log(input_text)
+
+    // let d = document.getElementById(input_text);
     if(input_product.value!==''){
-        query = input_product.value;
-        console.log(query)
+       
+        const query = input_product.value;
         fetch(`/get_product_id/?query=${encodeURIComponent(query)}`)
         .then(response=>{
             if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
                 return response.json();
             } else {
-
                 throw new Error('Resposta não é JSON');
-                
             }
         })
         .then(data=>{
-            // console.log(data)
-            input_text=`${data.produto.product_code} - ${data.produto[0].description}`
+            input_text.value =`${data.produto[0].product_code} - ${data.produto[0].description}`
             console.log(data.produto[0].description)
+            
            
         })    
     }
@@ -200,9 +199,6 @@ input_products.forEach(input_product=>{
 
 const input_client = document.getElementById("idSearch");
 
-// const input_mount = document.getElementById("idSearch");
-
-// const input_mount = document.getElementById("idSearch");
 
 if(id_pessoa.value!=""){
     invertAutoComplete = !invertAutoComplete;

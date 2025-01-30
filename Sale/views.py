@@ -196,10 +196,11 @@ def venda_update(request, pk):
     venda = get_object_or_404(Venda, pk=pk)
 
     # Criar formsets para itens de venda e formas de pagamento
-    VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=1, can_delete=True)
-    PaymentMethodVendaFormSet = inlineformset_factory(Venda, PaymentMethod_Venda, form=PaymentMethodVendaForm, extra=1, can_delete=True)
+    VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=0, can_delete=True)
+    PaymentMethodVendaFormSet = inlineformset_factory(Venda, PaymentMethod_Venda, form=PaymentMethodVendaForm, extra=0, can_delete=True)
 
     if request.method == 'POST':
+        print('Dados do Post',request.POST)
         venda_form = VendaForm(request.POST, instance=venda)
         venda_item_formset = VendaItemFormSet(request.POST, instance=venda)
         payment_method_formset = PaymentMethodVendaFormSet(request.POST, instance=venda)
@@ -214,9 +215,9 @@ def venda_update(request, pk):
             return redirect('venda_list')
         if not venda_form.is_valid():
             print('Erros no venda_form: ',venda_form.errors)
-        elif not venda_item_formset.is_valid():
+        if not venda_item_formset.is_valid():
             print('Erros no venda_item_formset',venda_item_formset.errors)
-        elif not payment_method_formset.is_valid():
+        if not payment_method_formset.is_valid():
             print('Erros no payment_method_formset',payment_method_formset.errors)
         else:
             messages.error(request, "Erro ao atualizar a venda. Verifique os campos.")
@@ -233,7 +234,7 @@ def venda_update(request, pk):
         'venda': venda,
     }
 
-    return render(request, 'sale/venda_form.html', context)
+    return render(request, 'sale/venda_formUpdate.html', context)
 
 @login_required# Deletar uma Venda
 def venda_delete(request, pk):

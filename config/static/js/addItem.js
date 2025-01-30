@@ -113,8 +113,12 @@ function removeItem(button){
     parent_button_3.value = "on";
     let  parent_button_5 =  button.parentElement.parentElement.parentElement.parentElement;
     let  parent_button_6 =  button.parentElement.parentElement.parentElement.parentElement.parentElement;
+    console.log(parent_button_6)
+    console.log(parent_button_5)
     parent_button_6.removeChild(parent_button_5);
+
 }
+
 
 
 
@@ -122,17 +126,17 @@ function removeItem(button){
 
 function addPaymentMethod() {
     const container = document.getElementById('payment-method-container');
-    const formCountCompra = document.getElementById('id_paymentmethod_venda_set-TOTAL_FORMS');
-    const formCountSale = document.getElementById('id_paymentmethod_compra_set-TOTAL_FORMS');
+    const formCountCompra = document.getElementById('id_paymentmethod_compra_set-TOTAL_FORMS');
+    const formCountSale = document.getElementById('id_paymentmethod_venda_set-TOTAL_FORMS');
     const formCountAccountPayable = document.getElementById('id_paymentmethod_accountspayable_set-TOTAL_FORMS');
     if(formCountSale){
         const [formCount,newForm] = clone(formCountSale,emptyPaymentMethodTemplate);
-        formCountSale.value = parseInt(formCount);
+        formCountSale.value = parseInt(formCount)+1;
         container.appendChild(newForm);
     }
     if(formCountCompra){
         const [formCount,newForm] = clone(formCountCompra,emptyPaymentMethodTemplate);
-        formCountCompra.value = parseInt(formCount);
+        formCountCompra.value = parseInt(formCount)+1;
         container.appendChild(newForm);
     }
     if(formCountAccountPayable){
