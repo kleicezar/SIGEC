@@ -187,16 +187,21 @@ let index = 0;
 // EDIÇÃO DE VENDA, IRÁ INVERTER A LÓGICA - O VALOR DO INPUT DE PESSOA SERÁ USADO PARA PREENCHER O INPUT DE PESQUISA DE PESSOA;
 let invertAutoComplete = false;
 const id_pessoa = document.getElementById("id_pessoa") || document.getElementById("id_fornecedor");
-const input_products = document.querySelectorAll('input[type="hidden"][name$="-product"]');
+
+
+let input_products = document.querySelectorAll('input[type="hidden"][name$="-product"]')
+if (input_products.length==0){
+    input_products= document.querySelectorAll('input[type="hidden"][name$="-produto"]') ;
+}
+
 
 input_products.forEach(input_product=>{
     let x = input_product.parentElement;
-    console.log('uepad')
     let input_text = x.querySelector('input[type="text"]')
 
-    // let d = document.getElementById(input_text);
+
     if(input_product.value!==''){
-       
+        console.log('estou requistiando')
         const query = input_product.value;
         fetch(`/get_product_id/?query=${encodeURIComponent(query)}`)
         .then(response=>{
@@ -207,7 +212,6 @@ input_products.forEach(input_product=>{
             }
         })
         .then(data=>{
-            console.log(data)
             input_text.value =`${data.produto[0].product_code} - ${data.produto[0].description}`
             console.log(data.produto[0].description)
             

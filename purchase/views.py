@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.forms import inlineformset_factory
@@ -181,8 +182,8 @@ def compras_update(request, pk):
     compra = get_object_or_404(Compra, pk=pk)
 
     # Configuração do formset para itens de compra e métodos de pagamento
-    CompraItemFormSet = inlineformset_factory(Compra, CompraItem, form=CompraItemForm, extra=1, can_delete=True)
-    PaymentMethodCompraFormSet = inlineformset_factory(Compra, PaymentMethod_Compra, form=PaymentMethodCompraForm, extra=1, can_delete=True)
+    CompraItemFormSet = inlineformset_factory(Compra, CompraItem, form=CompraItemForm, extra=0, can_delete=True)
+    PaymentMethodCompraFormSet = inlineformset_factory(Compra, PaymentMethod_Compra, form=PaymentMethodCompraForm, extra=0, can_delete=True)
 
     if request.method == 'POST':
         # Recupera os dados do formulário de compra e formsets de itens e métodos de pagamento
@@ -192,12 +193,12 @@ def compras_update(request, pk):
 
         if compra_form.is_valid() and compra_item_formset.is_valid() and payment_method_formset.is_valid():
             # Salva a compra (atualiza os dados da compra)
-            compra = compra_form.save()
-
+            print('opa')
+            compra_form.save()
+            compra_item_instances = compra_item_formset.save(commit=False)
+            compra_item_formset.save_m2m()
             # Atualiza os itens de compra
-            compra_item_formset.save()
-
-            # Atualiza o estoque, adicionando as quantidades compradas
+            # compra_item_formset.save()
             for form in compra_item_formset:
                 if form.cleaned_data:
                     produto = form.cleaned_data['produto']
@@ -207,11 +208,36 @@ def compras_update(request, pk):
                     produto.current_quantity += quantidade
                     produto.save()
 
-            # Salva as formas de pagamento associadas à compra
+            itens_para_deletar = []
+            for form in compra_item_formset.deleted_forms:
+                if form.instance.pk is not None:
+                    itens_para_deletar.append(form.instance)
+            
+            for instance in compra_item_instances:
+                instance.save()
+
+            for item in itens_para_deletar:
+                item.delete()
+            
+
+
             payment_method_formset.save()
 
-            # Redireciona para a lista de compras após a atualização
+            messages.success(request,"Compra atualizada com sucesso!")
             return redirect('compras_list')
+            # Atualiza o estoque, adicionando as quantidades compradas
+            # for form in compra_item_formset:
+               
+            # Salva as formas de pagamento associadas à compra
+            # payment_method_formset.save()
+
+            # Redireciona para a lista de compras após a atualização
+        if not compra_form.is_valid():
+            print('Erro no CompraForms', compra_form.errors)
+        if not compra_item_formset.is_valid():
+            print("Erro no CompraItem",compra_item_formset.errors)
+        if not payment_method_formset.is_valid():
+            print("Erro na FormPagamento",payment_method_formset.errors)
 
     else:
         # Se for um GET, inicializa o formulário com os dados da compra existente
@@ -224,7 +250,7 @@ def compras_update(request, pk):
         'compra_item_formset': compra_item_formset,
         'payment_method_formset': payment_method_formset,
     }
-    return render(request, 'purchase/compras_form.html', context)
+    return render(request, 'purchase/compras_formUpdate.html', context)
 
     # def compras_update(request, pk):
     #     compra = get_object_or_404(Compra, pk=pk)
@@ -375,3 +401,14 @@ def buscar_produtos(request):
     }
 
     return JsonResponse(response_data)
+
+def get_product_id(request):
+    query = request.GET.get('query','')
+    resultados = Product.objects.filter(
+        Q(id=query) 
+    )
+    resultados_json = list(resultados.values("product_code","description"))
+    print(resultados_json)
+ 
+   
+    return JsonResponse({'produto':resultados_json})

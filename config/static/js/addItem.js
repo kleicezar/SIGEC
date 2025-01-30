@@ -140,9 +140,6 @@ function removeItemUpdate(button){
     parent_button_4.style.display ="none"
 }
 
-
-
-
 function addPaymentMethod() {
     const container = document.getElementById('payment-method-container');
     const formCountCompra = document.getElementById('id_paymentmethod_compra_set-TOTAL_FORMS');
