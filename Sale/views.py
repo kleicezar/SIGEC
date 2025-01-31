@@ -196,10 +196,11 @@ def venda_update(request, pk):
     venda = get_object_or_404(Venda, pk=pk)
 
     # Criar formsets para itens de venda e formas de pagamento
-    VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=1, can_delete=True)
-    PaymentMethodVendaFormSet = inlineformset_factory(Venda, PaymentMethod_Venda, form=PaymentMethodVendaForm, extra=1, can_delete=True)
+    VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=0, can_delete=True)
+    PaymentMethodVendaFormSet = inlineformset_factory(Venda, PaymentMethod_Venda, form=PaymentMethodVendaForm, extra=0, can_delete=True)
 
     if request.method == 'POST':
+        # print('Dados do Post',request.POST)
         venda_form = VendaForm(request.POST, instance=venda)
         venda_item_formset = VendaItemFormSet(request.POST, instance=venda)
         payment_method_formset = PaymentMethodVendaFormSet(request.POST, instance=venda)
@@ -207,16 +208,90 @@ def venda_update(request, pk):
         if venda_form.is_valid() and venda_item_formset.is_valid() and payment_method_formset.is_valid():
             # Salvar a venda
             venda_form.save()
-            venda_item_formset.save()
+            # id = 1
+            # VendaItem.objects.get(pk=id)
+            venda_item_instances = venda_item_formset.save(commit=False) 
+            venda_item_formset.save_m2m()  
+
+            itens_para_deletar = []
+            for form in venda_item_formset:
+                if form.cleaned_data:
+                    produto = form.cleaned_data['product']
+                    quantidade = form.cleaned_data['quantidade']
+                    preco_unitario = form.cleaned_data['preco_unitario']
+                    discount = form.cleaned_data['discount']
+                    price_total = form.cleaned_data['price_total']
+                    delete = form.cleaned_data["DELETE"]
+                    
+                    item_id = form.instance.id
+                    try:
+                        # if not form.cleaned_data
+                        venda_item_quantidade = VendaItem.objects.get(id=item_id).quantidade
+                        if not delete:
+                           
+                            # if form.cleaned_data['quantidade'] > venda_item_quantidade:
+                            # SALVA A QUANTIDADE ATUAL DE PRODUTOS - VENDAITENS QUE JA EXISTIAM
+                            produto.current_quantity =  produto.current_quantity + venda_item_quantidade - form.cleaned_data['quantidade'] 
+                            produto.save()
+                        else:
+
+                            # RETORNA A QUANTIDADE ATUAL DE PRODUTOS - VENDAITENS MARCADOS PARA SER EXCLUIDOS
+                            produto.current_quantity = produto.current_quantity + venda_item_quantidade
+                            produto.save()
+                            
+                    except:
+                        
+                       
+                        # SALVA A QUANTIDADE ATUAL DE PRODUTOS - NOVO VENDA ITENS
+                        
+                            
+                        produto.current_quantity -= quantidade
+                        produto.save()  
+        
+            for form in venda_item_formset.deleted_forms:
+                if form.instance.pk is not None:  
+                    itens_para_deletar.append(form.instance)
+
+            
+            for instance in venda_item_instances:
+                instance.save() 
+
+            for item in itens_para_deletar:
+                item.delete()
+
+
+            payments_intances = venda_item_formset.save(commit=False)
+            # payment_method_formset.save_m2m()
+            print('oi')
+            pagamentos_para_deletar = []
+
+            for form in payment_method_formset.deleted_forms:
+                if form.instance.pk is not None:
+                    pagamentos_para_deletar.append(form.instance)
+
+
+            for instance in payments_intances:
+                instance.save()
+            
+            for pagamento in pagamentos_para_deletar:
+                pagamento.delete()
+            # venda_item_formset.save()
             payment_method_formset.save()
+
+           
+            # for item in deletar_itens:
+            #     item.delete()
+                        
+
+            # payment_method_formset.save()
 
             messages.success(request, "Venda atualizada com sucesso!")
             return redirect('venda_list')
         if not venda_form.is_valid():
             print('Erros no venda_form: ',venda_form.errors)
-        elif not venda_item_formset.is_valid():
+        if not venda_item_formset.is_valid():
             print('Erros no venda_item_formset',venda_item_formset.errors)
-        elif not payment_method_formset.is_valid():
+        if not payment_method_formset.is_valid():
             print('Erros no payment_method_formset',payment_method_formset.errors)
         else:
             messages.error(request, "Erro ao atualizar a venda. Verifique os campos.")
@@ -233,7 +308,7 @@ def venda_update(request, pk):
         'venda': venda,
     }
 
-    return render(request, 'sale/venda_form.html', context)
+    return render(request, 'sale/venda_formUpdate.html', context)
 
 @login_required# Deletar uma Venda
 def venda_delete(request, pk):

@@ -1,8 +1,9 @@
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.forms import inlineformset_factory
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import authenticate, login, logout
 from .forms import *
 from .models import *
@@ -57,7 +58,6 @@ def compras_list(request):
 
 @login_required
 def compras_create(request):
-    # Configuração do formset para itens de compra e métodos de pagamento
     CompraItemFormSet = inlineformset_factory(Compra, CompraItem, form=CompraItemForm, extra=1, can_delete=True)
     PaymentMethodCompraFormSet = inlineformset_factory(Compra, PaymentMethod_Compra, form=PaymentMethodCompraForm, extra=1, can_delete=True)
 
@@ -67,113 +67,67 @@ def compras_create(request):
         payment_method_formset = PaymentMethodCompraFormSet(request.POST)
 
         if compra_form.is_valid() and compra_item_formset.is_valid() and payment_method_formset.is_valid():
-            compra = compra_form.save()
-
-            # A instância dos formsets de CompraItem e PaymentMethod_Compra é associada à nova instância de Compra
-            # compra_item_formset.instance = compra
-
-            # Salva os itens de compra (isso vai associar os CompraItem à compra)
-            # compra_item_formset.save()
             
-            # Atualiza o estoque, adicionando a quantidade comprada
+            compra = compra_form.save(commit=False)
+            compra.save()  
+            
+          
+            compra_item_formset.instance = compra
+            compra_item_formset.save()
+
+            # Atualizar estoque
             for form in compra_item_formset:
                 if form.cleaned_data:
                     produto = form.cleaned_data['produto']
                     quantidade = form.cleaned_data['quantidade']
-                    preco_unitario = form.cleaned_data['preco_unitario']
-                    discount = form.cleaned_data['discount']
-                    price_total = form.cleaned_data['price_total']
-                    if not form.cleaned_data.get("DELETE"):
+                    produto.current_quantity += quantidade
+                    produto.save()
 
-                        # Cria o item de compra
-                        CompraItem.objects.create(
-                            compra=compra,
-                            produto=produto,
-                            quantidade=quantidade,
-                            preco_unitario=preco_unitario,
-                            discount = discount,
-                            price_total = price_total
-                        )
-                        
-                        # Atualiza o estoque, somando a quantidade comprada
-                        produto.current_quantity += quantidade
-                        produto.save()
 
-            # Salva as formas de pagamento associadas à compra
             payment_method_formset.instance = compra
-            payment_method_formset.save()
-            for form in payment_method_formset.deleted_objects:
-                form.delete()
-                form.save()
-            return redirect('compras_list')
-        elif not compra_form.is_valid():
-            print("Erros: ",compra_form.errors)
-    
-        
+            total_payment = 0
+            valid_payments = []
+            payments_to_delete = []
+
+            for form in payment_method_formset:
+                if form.cleaned_data:
+                    if form.cleaned_data.get("DELETE", False):
+                        payments_to_delete.append(form.instance)
+                    else:
+                        valor = form.cleaned_data['valor']
+                        total_payment += valor
+                        valid_payments.append(form)
+
+            # Verificar se os pagamentos somam corretamente antes de salvar
+            if total_payment == compra.total_value:
+                for form in valid_payments:
+                    form.instance.compra = compra  # Garante que a compra está associada
+                    form.save()
+
+                # Remover pagamentos marcados para exclusão
+                for payment in payments_to_delete:
+                    payment.delete()
+
+                return redirect('compras_list')
+            else:
+                messages.warning(request, "Ação cancelada! O valor total dos pagamentos não corresponde ao total da compra.")
+
+        compra_form = CompraForm()
+        compra_item_formset = CompraItemFormSet(queryset=CompraItem.objects.none())
+        payment_method_formset = PaymentMethodCompraFormSet(queryset=PaymentMethod_Compra.objects.none())
+
     else:
         compra_form = CompraForm()
         compra_item_formset = CompraItemFormSet(queryset=CompraItem.objects.none())
         payment_method_formset = PaymentMethodCompraFormSet(queryset=PaymentMethod_Compra.objects.none())
-    
+
     context = {
         'compra_form': compra_form,
         'compra_item_formset': compra_item_formset,
-        'payment_method_formset': payment_method_formset,
+        'payment_method_formset': payment_method_formset
     }
     return render(request, 'purchase/compras_form.html', context)
 
-    # def compras_create(request):
-    #     # Configuração do formset para itens de compra e métodos de pagamento
-    #     CompraItemFormSet = inlineformset_factory(Compra, CompraItem, form=CompraItemForm, extra=1, can_delete=True)
-    #     PaymentMethodCompraFormSet = inlineformset_factory(Compra, PaymentMethod_Compra, form=PaymentMethodCompraForm, extra=1, can_delete=True)
-
-    #     if request.method == 'POST':
-    #         compra_form = CompraForm(request.POST)
-    #         compra_item_formset = CompraItemFormSet(request.POST)
-    #         payment_method_formset = PaymentMethodCompraFormSet(request.POST)
-
-    #         if compra_form.is_valid() and compra_item_formset.is_valid() and payment_method_formset.is_valid():
-    #             compra = compra_form.save()
-
-    #             # Salva os itens da compra e adiciona ao estoque
-    #             compra_item_formset.instance = compra
-    #             compra_item_formset.save()
-                
-    #             for form in compra_item_formset:
-    #                 if form.cleaned_data:
-    #                     produto = form.cleaned_data['produto']
-    #                     quantidade = form.cleaned_data['quantidade']
-    #                     preco_unitario = form.cleaned_data['preco_unitario']
-                        
-    #                     # Cria o item de compra
-    #                     CompraItem.objects.create(
-    #                         compra=compra,
-    #                         product=produto,
-    #                         quantidade=quantidade,
-    #                         preco_unitario=preco_unitario
-    #                     )
-                        
-    #                     # Atualiza o estoque, adicionando a quantidade comprada
-    #                     produto.current_quantity += quantidade
-    #                     produto.save()
-
-    #             # Salva as formas de pagamento associadas à compra
-    #             payment_method_formset.instance = compra
-    #             payment_method_formset.save()
-                
-    #             return redirect('compra_list')
-            
-    #     else:
-    #         compra_form = CompraForm()
-    #         compra_item_formset = CompraItemFormSet(queryset=CompraItem.objects.none())
-    #         payment_method_formset = PaymentMethodCompraFormSet(queryset=PaymentMethod_Compra.objects.none())
-        
-    #     context = {
-    #         'compra_form': compra_form,
-    #         'compra_item_formset': compra_item_formset,
-    #         'payment_method_formset': payment_method_formset
-    #     }
-    #     return render(request, 'purchase/compras_form.html', context)
 
 @login_required
 def compras_update(request, pk):
@@ -181,37 +135,110 @@ def compras_update(request, pk):
     compra = get_object_or_404(Compra, pk=pk)
 
     # Configuração do formset para itens de compra e métodos de pagamento
-    CompraItemFormSet = inlineformset_factory(Compra, CompraItem, form=CompraItemForm, extra=1, can_delete=True)
-    PaymentMethodCompraFormSet = inlineformset_factory(Compra, PaymentMethod_Compra, form=PaymentMethodCompraForm, extra=1, can_delete=True)
+    CompraItemFormSet = inlineformset_factory(Compra, CompraItem, form=CompraItemForm, extra=0, can_delete=True)
+    PaymentMethodCompraFormSet = inlineformset_factory(Compra, PaymentMethod_Compra, form=PaymentMethodCompraForm, extra=0, can_delete=True)
 
     if request.method == 'POST':
         # Recupera os dados do formulário de compra e formsets de itens e métodos de pagamento
         compra_form = CompraForm(request.POST, instance=compra)
         compra_item_formset = CompraItemFormSet(request.POST, instance=compra)
         payment_method_formset = PaymentMethodCompraFormSet(request.POST, instance=compra)
-
+        print(request.POST)
         if compra_form.is_valid() and compra_item_formset.is_valid() and payment_method_formset.is_valid():
             # Salva a compra (atualiza os dados da compra)
-            compra = compra_form.save()
-
+            print(compra_item_formset)
+            compra_form.save(commit=False)
+            compra_item_instances = compra_item_formset.save(commit=False)
+            print(compra_item_instances)
+            compra_item_formset.save_m2m()
             # Atualiza os itens de compra
-            compra_item_formset.save()
-
-            # Atualiza o estoque, adicionando as quantidades compradas
+            # compra_item_formset.save()
             for form in compra_item_formset:
+                print('observando')
                 if form.cleaned_data:
                     produto = form.cleaned_data['produto']
                     quantidade = form.cleaned_data['quantidade']
+                    preco_unitario = form.cleaned_data['preco_unitario']
+                    discount = form.cleaned_data['discount']
+                    price_total = form.cleaned_data['price_total']
+                    delete = form.cleaned_data["DELETE"]
 
-                    # Atualiza o estoque, somando a quantidade comprada
-                    produto.current_quantity += quantidade
-                    produto.save()
+                    item_id = form.instance.id
+                    try:
+                        compra_item_quantidade = CompraItem.objects.get(id=item_id).quantidade  
+                        if not delete:
+                            # SALVA A QUANTIDADE ATUAL DE PRODUTOS - COMPRAITENS QUE JA EXISTIAM
+                            produto.current_quantity =  produto.current_quantity + form.cleaned_data['quantidade']- compra_item_quantidade 
 
-            # Salva as formas de pagamento associadas à compra
+                            # print(produto.current_quantity - compra_item_quantidade + form.cleaned_data['quantidade'] )
+                            produto.save()
+                        else:
+                            if not delete:  
+                                print('entrei')
+                                CompraItem.objects.create(
+                                    compra = compra,
+                                    product = produto,
+                                    quantidade = quantidade,
+                                    preco_unitario = preco_unitario,
+                                    discount = discount,
+                                    price_total = price_total
+                                )
+                            # RETORNA A QUANTIDADE ATUAL DE PRODUTOS - COMPRAITENS MARCADOS PARA SER EXCLUIDOS
+                            produto.current_quantity = produto.current_quantity - compra_item_quantidade
+                            produto.save()
+                    except:
+                        # SALVA A QUANTIDADE ATUAL DE PRODUTOS - NOVO COMPRA ITENS
+                        produto.current_quantity += quantidade
+                        produto.save()  
+
+            itens_para_deletar = []
+            for form in compra_item_formset.deleted_forms:
+                if form.instance.pk is not None:
+                    itens_para_deletar.append(form.instance)
+            print()
+            print(compra_item_instances)
+            for instance in compra_item_instances:
+                print('instac')
+                print(instance)
+                instance.save()
+
+            for item in itens_para_deletar:
+                item.delete()
+            
+
+
+            payments_intances = compra_item_formset.save(commit=False)
+            # payment_method_formset.save_m2m()
+          
+            pagamentos_para_deletar = []
+            for form in payment_method_formset.deleted_forms:
+                if form.instance.pk is not None:
+                    pagamentos_para_deletar.append(form.instance)
+
+
+            for instance in payments_intances:
+                instance.save()
+            
+            for pagamento in pagamentos_para_deletar:
+                pagamento.delete()
+            # venda_item_formset.save()
             payment_method_formset.save()
 
-            # Redireciona para a lista de compras após a atualização
+            messages.success(request,"Compra atualizada com sucesso!")
             return redirect('compras_list')
+            # Atualiza o estoque, adicionando as quantidades compradas
+            # for form in compra_item_formset:
+               
+            # Salva as formas de pagamento associadas à compra
+            # payment_method_formset.save()
+
+            # Redireciona para a lista de compras após a atualização
+        if not compra_form.is_valid():
+            print('Erro no CompraForms', compra_form.errors)
+        if not compra_item_formset.is_valid():
+            print("Erro no CompraItem",compra_item_formset.errors)
+        if not payment_method_formset.is_valid():
+            print("Erro na FormPagamento",payment_method_formset.errors)
 
     else:
         # Se for um GET, inicializa o formulário com os dados da compra existente
@@ -224,7 +251,7 @@ def compras_update(request, pk):
         'compra_item_formset': compra_item_formset,
         'payment_method_formset': payment_method_formset,
     }
-    return render(request, 'purchase/compras_form.html', context)
+    return render(request, 'purchase/compras_formUpdate.html', context)
 
     # def compras_update(request, pk):
     #     compra = get_object_or_404(Compra, pk=pk)
@@ -310,6 +337,7 @@ def product(request):
     return render(request, 'purchase/product_list.html', {'products': products})
 
 @login_required
+@permission_required('purchase.add_product', raise_exception=True)
 def productForm(request):
     if request.method == 'POST':
         form = ProductModelForm(request.POST)
@@ -375,3 +403,14 @@ def buscar_produtos(request):
     }
 
     return JsonResponse(response_data)
+
+def get_product_id(request):
+    query = request.GET.get('query','')
+    resultados = Product.objects.filter(
+        Q(id=query) 
+    )
+    resultados_json = list(resultados.values("product_code","description"))
+    print(resultados_json)
+ 
+   
+    return JsonResponse({'produto':resultados_json})
