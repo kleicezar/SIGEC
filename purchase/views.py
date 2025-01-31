@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.forms import inlineformset_factory
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import authenticate, login, logout
 from .forms import *
 from .models import *
@@ -310,6 +310,7 @@ def product(request):
     return render(request, 'purchase/product_list.html', {'products': products})
 
 @login_required
+@permission_required('purchase.add_product', raise_exception=True)
 def productForm(request):
     if request.method == 'POST':
         form = ProductModelForm(request.POST)
