@@ -225,23 +225,18 @@ def AccountsReceivable_Create(request):
     if request.method == "POST":
         form_Accounts = AccountsForm(request.POST)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
-        print(f'deu certo ate aqui "primeiro IF"')
 
         if form_Accounts.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
             account = form_Accounts.save()
-            print(f'deu certo ate aqui "segundo IF"')
-
             total_value = account.totalValue
             for form in PaymentMethod_Accounts_FormSet:
                 if form.cleaned_data:
-                    print(f'deu certo ate aqui "terceiro IF"')
                     parcela = form.cleaned_data['value']
                     verify += parcela
                     form_cleaned = form.save(commit=False)
                     installments.append(form_cleaned)
             if float(verify) == float(total_value):
                 for installment in installments:
-                    print(f'deu certo ate aqui "vai salvar"')
                     installment.conta = account
                     installment.acc = False
                     installment.save()

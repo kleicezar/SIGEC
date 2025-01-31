@@ -66,7 +66,7 @@ class CompraForm(forms.ModelForm):
                     'class':'form-control row-5' 
                 }),
                 'data_da_compra':forms.DateTimeInput(attrs={
-                    'class':'form-control row-xl-2 mask-date',
+                    'class':'form-control row-xl-2 ',
                     'id':"date_compra"
                 }),
                 'situacao':forms.Select(attrs={
@@ -121,21 +121,5 @@ class CompraItemForm(forms.ModelForm):
             cleaned_data['total'] = preco_unitario * quantidade
         return cleaned_data
 
-class PaymentMethodCompraForm(forms.ModelForm):
-    class Meta:
-        model = PaymentMethod_Compra
-        fields = ['forma_pagamento', 'expirationDate', 'valor']
-        widgets = {
-            'forma_pagamento':forms.Select(attrs={
-                'class':'form-select row'
-            }),
-            'expirationDate':forms.TextInput(attrs={
-                'class':'form-control row mask-date',
-            }),
-            'valor':forms.NumberInput(attrs={
-                'class':'form-control row',
-                'min':0
-            })
-        }
 class ProductSearchForm(forms.Form):
     search = forms.CharField(max_length=100,required=False,label='Pesquisar Produto')

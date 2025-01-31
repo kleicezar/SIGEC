@@ -33,9 +33,10 @@ const itensIndex  = [0];
 function addItem() {
     const formset = document.getElementById('itens-container');
     const formCountSale = document.getElementById('id_vendaitem_set-TOTAL_FORMS');
-
+    console.log('addItem')
 
     // const formCountElem = document.getElementById('id_vendaitem_set-TOTAL_FORMS');
+    const formCountService = document.getElementById("id_vendaitemservice_set-TOTAL_FORMS");
     const formCountCompra = document.getElementById("id_compraitem_set-TOTAL_FORMS");
     if(formCountSale){
         const [formCount,newForm] = clone(formCountSale,emptyFormTemplate);
@@ -54,7 +55,6 @@ function addItem() {
         formset.appendChild(newForm);
     }
     if(formCountCompra){
-        console.log('opo')
         // const emptyFormTemplate = document.getElementById('empty-form-template');
         const [formCount,newForm] = clone(formCountCompra,emptyFormTemplate);
         formCount.value = parseInt(formCount) + 1;
@@ -68,6 +68,19 @@ function addItem() {
         field_list_products.parentElement.style.display = "none";
         field_list_products.id = `options_products-${formCount}`;
         formset.appendChild(newForm)
+        
+    }
+
+    if(formCountService){
+        const [formCount,newForm] = clone(formCountService,emptyFormTemplate);
+        formCountService.value = parseInt(formCount) + 1;
+        input_product = newForm.querySelector(".inputService");
+        input_product.id = `idService-${formCount}`;
+        console.log(input_product)
+        field_list_products = newForm.querySelector(".v");
+        field_list_products.parentElement.style.display = "none";
+        field_list_products.id = `options_services-${formCount}`;
+        formset.appendChild(newForm);
         
     }
     
@@ -114,30 +127,41 @@ function removeItem(button){
     let  parent_button_5 =  button.parentElement.parentElement.parentElement.parentElement;
     let  parent_button_6 =  button.parentElement.parentElement.parentElement.parentElement.parentElement;
     parent_button_6.removeChild(parent_button_5);
+
 }
 
-
-
-
+function removeItemUpdate(button){
+    let parent_button_3 = button.parentElement.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]')
+    parent_button_3.value = 'on'
+    let  parent_button_4 =  button.parentElement.parentElement.parentElement.parentElement.parentElement;
+    parent_button_4.style.display ="none"
+    console.log(parent_button_3)
+}
 
 function addPaymentMethod() {
     const container = document.getElementById('payment-method-container');
-    const formCountCompra = document.getElementById('id_paymentmethod_venda_set-TOTAL_FORMS');
-    const formCountSale = document.getElementById('id_paymentmethod_compra_set-TOTAL_FORMS');
+    const formCountCompra = document.getElementById('id_paymentmethod_compra_set-TOTAL_FORMS');
+    const formCountSale = document.getElementById('id_paymentmethod_venda_set-TOTAL_FORMS');
     const formCountAccountPayable = document.getElementById('id_paymentmethod_accountspayable_set-TOTAL_FORMS');
+    const formCountService = document.getElementById("id_paymentmethod_vendaservice_set-TOTAL_FORMS");
     if(formCountSale){
         const [formCount,newForm] = clone(formCountSale,emptyPaymentMethodTemplate);
-        formCountSale.value = parseInt(formCount);
+        formCountSale.value = parseInt(formCount)+1;
         container.appendChild(newForm);
     }
     if(formCountCompra){
         const [formCount,newForm] = clone(formCountCompra,emptyPaymentMethodTemplate);
-        formCountCompra.value = parseInt(formCount);
+        formCountCompra.value = parseInt(formCount)+1;
         container.appendChild(newForm);
     }
     if(formCountAccountPayable){
         const [formCount,newForm] = clone(formCountAccountPayable,emptyPaymentMethodTemplate);
         formCountAccountPayable.value = parseInt(formCount) + 1;
+        container.appendChild(newForm);
+    }
+    if(formCountService){
+        const [formCount,newForm] = clone(formCountService,emptyPaymentMethodTemplate);
+        formCountService.value = parseInt(formCount)+1;
         container.appendChild(newForm);
     }
 
