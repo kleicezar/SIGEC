@@ -162,7 +162,7 @@ function addPaymentMethod() {
         container.appendChild(newForm);
     }
     if(formCountService){
-        const [formCount,newForm] = clone(formCountService,emptyFormTemplate);
+        const [formCount,newForm] = clone(formCountService,emptyPaymentMethodTemplate);
         formCountService.value = parseInt(formCount)+1;
         container.appendChild(newForm);
     }

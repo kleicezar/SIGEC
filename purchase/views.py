@@ -102,10 +102,31 @@ def compras_create(request):
 
             # Salva as formas de pagamento associadas à compra
             payment_method_formset.instance = compra
-            payment_method_formset.save()
-            for form in payment_method_formset.deleted_objects:
-                form.delete()
-                form.save()
+            total_payment = 0
+            for form in payment_method_formset:
+                if form.cleaned_data:
+                    valor = form.cleaned_data['valor']
+                    total_payment+=valor
+            
+            if total_payment == compra_form.cleaned_data['total_value']:
+                payment_method_formset.save()
+                for form in payment_method_formset.deleted_objects:
+                    form.delete()
+                    form.save()
+            else:
+                messages.warning(request,"Ação cancelada! O valor não foi salvo completamente.")
+                compra_form = CompraForm()
+                compra_item_formset = CompraItemFormSet(queryset=CompraItem.objects.none())
+                payment_method_formset = PaymentMethodCompraFormSet(queryset=PaymentMethod_Compra.objects.none())
+    
+                context = {
+                    'compra_form': compra_form,
+                    'compra_item_formset': compra_item_formset,
+                    'payment_method_formset': payment_method_formset,
+                }
+                return render(request, 'purchase/compras_form.html', context)
+
+
             return redirect('compras_list')
         elif not compra_form.is_valid():
             print("Erros: ",compra_form.errors)
