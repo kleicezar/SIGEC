@@ -10,9 +10,13 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.http import HttpResponse
-
-def index(request):
-    return HttpResponse("Olá, esta é a minha nova app Django!")
+@login_required
+def service(request):
+    context = {
+        'Services':Service.objects.all()
+    }
+    return render(request,'service_list.html',context)
+    # return HttpResponse("Olá, esta é a minha nova app Django!")
 
 
 def service_create(request):
@@ -32,7 +36,7 @@ def service_create(request):
 def service_update(request,pk):
     servico = get_object_or_404(Service,pk=pk)
     if request.method == "POST":
-        service_form = ServiceForm(request.POST)
+        service_form = ServiceForm(request.POST,instance=servico)
         if service_form.is_valid():
             service_form.save()
             messages.success(request, "Tipo de Serviço atualizado com sucesso")
@@ -164,6 +168,16 @@ def workerService_update(request,pk):
         }
 
         return render(request,'serviceOrderUpdate.html',context) 
+def delete_service(request,pk):
+    servico = get_object_or_404(Service, pk=pk)
+    if request.method == "POST":
+        servico.delete()
+        messages.success(request, "Serviço deletada com sucesso.")
+        return redirect('service_list')
+    context ={
+        'service':servico
+    }
+    return render(request,'service_list',context)
 def service_search(request):
    
     query = request.GET.get('query', '') 
