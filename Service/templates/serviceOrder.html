@@ -1,4 +1,4 @@
-<!-- {% extends 'login/menu.html' %}
+{% extends 'login/menu.html' %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -14,7 +14,7 @@
         {% block content %}
         <div class='content'>
             <div class="container">
-                <a href="{% url 'orderworkServiceForm' %}">
+                <a href="{% url 'orderServiceForm' %}">
                     <button class="btn btn-success">Cadastrar</button>
                 </a>
                 <div class="form-group">
@@ -42,7 +42,15 @@
                     <td>{{ workService.situacao}}</td>
                     <td>{{ workService.is_Active|yesno:"Sim,Não" }}</td>
                     <td>
-                      
+                        <a href="{% url 'orderServiceUpdate' pk=workService.id %}">
+                            <button class="btn" style="background-color: #117027;color: white;">Editar</button>
+                        </a>
+                        <form action="{% url 'deleteWorkService' pk=workService.id %}" method="POST" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
+                        </form>
+                        {% comment %} <button>Deletar</button> {% endcomment %}
+                        {% comment %} <button>Mais</button> {% endcomment %}
                         
                     </td>
                 </tr>
@@ -53,4 +61,4 @@
         {% endblock %}
         <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
     </body>
-    </html> -->
+    </html>

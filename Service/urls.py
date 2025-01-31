@@ -5,6 +5,7 @@ from .views import *
 urlpatterns = [
     path('os/create/',workerService_create,name='orderServiceForm'),
     path('os/update/<int:pk>/',workerService_update,name='orderServiceUpdate'),
+    path('os/delete/<int:pk>/',deleteWorkService,name='deleteWorkService'),
     path('os/',workService,name='OrderService'),
     path('service/', service, name='service_list'),
    

@@ -180,9 +180,22 @@ def workerService_update(request,pk):
 
 def workService(request):
     context = {
+        
         'workServices':VendaService.objects.all()
     }
-    return render(request,'service_list.html',context)
+    return render(request,'serviceOrder.html',context)
+
+def deleteWorkService(request,pk):
+        workService = get_object_or_404(VendaService, pk=pk)
+        if request.method == "POST":
+            workService.delete()
+            messages.success(request, "Serviço deletada com sucesso.")
+            return redirect('OrderService')
+        print('opa')
+        context ={
+            'workService':workService
+        }
+        return render(request,'OrderService',context)
 def service_search(request):
    
     query = request.GET.get('query', '') 
