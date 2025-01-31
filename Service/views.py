@@ -29,6 +29,24 @@ def service_create(request):
             messages.success(request, "Tipo de Serviço cadastrado com sucesso")
             return redirect('orderServiceForm')
        
+def service_update(request,pk):
+    servico = get_object_or_404(Service,pk=pk)
+    if request.method == "POST":
+        service_form = ServiceForm(request.POST)
+        if service_form.is_valid():
+            service_form.save()
+            messages.success(request, "Tipo de Serviço atualizado com sucesso")
+            return redirect('orderServiceForm')
+
+        print(service_form.errors)
+    else:
+        service_form = ServiceForm(instance=servico)
+        context = {
+            'service':service_form,
+        }
+        return render(request,'service_form.html',context)
+
+
 
 def workerService_create(request):
     ServiceItemFormSet  = inlineformset_factory(VendaService,VendaItemService,form=VendaItemForm,extra=1,can_delete=True)
@@ -145,8 +163,7 @@ def workerService_update(request,pk):
             'payment_method_formset':payment_method_formset
         }
 
-        return render(request,'serviceOrderUpdate.html',context)
-    
+        return render(request,'serviceOrderUpdate.html',context) 
 def service_search(request):
    
     query = request.GET.get('query', '') 
