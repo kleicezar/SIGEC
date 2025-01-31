@@ -431,7 +431,7 @@ def update_AccountsReceivable(request, id_Accounts):
         #         person.id_ForeignPerson_fk = foreigner
         #         person.save()
 
-            return redirect('AccountsReceivable')  # Redirecionar após salvar as alterações
+                return redirect('AccountsReceivable')  # Redirecionar após salvar as alterações
     else:
         # Preencher os formulários com os dados existentes
         form_accounts = AccountsForm(instance=accounts)
