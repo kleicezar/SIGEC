@@ -208,11 +208,46 @@ def venda_update(request, pk):
         if venda_form.is_valid() and venda_item_formset.is_valid() and payment_method_formset.is_valid():
             # Salvar a venda
             venda_form.save()
+            # id = 1
+            # VendaItem.objects.get(pk=id)
             venda_item_instances = venda_item_formset.save(commit=False) 
             venda_item_formset.save_m2m()  
 
-           
             itens_para_deletar = []
+            for form in venda_item_formset:
+                if form.cleaned_data:
+                    produto = form.cleaned_data['product']
+                    quantidade = form.cleaned_data['quantidade']
+                    preco_unitario = form.cleaned_data['preco_unitario']
+                    discount = form.cleaned_data['discount']
+                    price_total = form.cleaned_data['price_total']
+                    delete = form.cleaned_data["DELETE"]
+                    
+                    item_id = form.instance.id
+                    try:
+                        # if not form.cleaned_data
+                        venda_item_quantidade = VendaItem.objects.get(id=item_id).quantidade
+                        if not delete:
+                           
+                            # if form.cleaned_data['quantidade'] > venda_item_quantidade:
+                            # SALVA A QUANTIDADE ATUAL DE PRODUTOS - VENDAITENS QUE JA EXISTIAM
+                            produto.current_quantity =  produto.current_quantity + venda_item_quantidade - form.cleaned_data['quantidade'] 
+                            produto.save()
+                        else:
+
+                            # RETORNA A QUANTIDADE ATUAL DE PRODUTOS - VENDAITENS MARCADOS PARA SER EXCLUIDOS
+                            produto.current_quantity = produto.current_quantity + venda_item_quantidade
+                            produto.save()
+                            
+                    except:
+                        
+                       
+                        # SALVA A QUANTIDADE ATUAL DE PRODUTOS - NOVO VENDA ITENS
+                        
+                            
+                        produto.current_quantity -= quantidade
+                        produto.save()  
+        
             for form in venda_item_formset.deleted_forms:
                 if form.instance.pk is not None:  
                     itens_para_deletar.append(form.instance)
@@ -225,6 +260,21 @@ def venda_update(request, pk):
                 item.delete()
 
 
+            payments_intances = venda_item_formset.save(commit=False)
+            # payment_method_formset.save_m2m()
+            print('oi')
+            pagamentos_para_deletar = []
+
+            for form in payment_method_formset.deleted_forms:
+                if form.instance.pk is not None:
+                    pagamentos_para_deletar.append(form.instance)
+
+
+            for instance in payments_intances:
+                instance.save()
+            
+            for pagamento in pagamentos_para_deletar:
+                pagamento.delete()
             # venda_item_formset.save()
             payment_method_formset.save()
 
@@ -233,7 +283,7 @@ def venda_update(request, pk):
             #     item.delete()
                         
 
-            payment_method_formset.save()
+            # payment_method_formset.save()
 
             messages.success(request, "Venda atualizada com sucesso!")
             return redirect('venda_list')

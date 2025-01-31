@@ -1,374 +1,317 @@
+// TOTAL VALOR DE FORMULÁRIO DE ITENS
+const totalValueInput = document.getElementById("id_total_value");
+const totalProductsInput = document.getElementById("id_product_total");
+const totalDiscountInput = document.getElementById("id_discount_total");
+const itemsContainer = document.getElementById("itens-container");
 
-// TOTAL VALOR DE FORMULARIO DE ITENS;
-const id_total_value = document.getElementById("id_total_value");
-const id_total_products = document.getElementById("id_product_total");
-const id_discount_total = document.getElementById("id_discount_total");
-const itens_container = document.getElementById("itens-container");
+const productOptionsContainer = document.getElementById("options_products-0");
+const productOptionsParent = productOptionsContainer.parentElement;
+productOptionsParent.style.display = "none";
 
+const productTitle = document.createElement("p");
 
+// Esconder todas as sugestões iniciais
+document.querySelectorAll(".suggest").forEach(el => el.style.display = "none");
 
-let container_options_products = document.getElementById("options_products-0")
-let td_container_options_products = container_options_products.parentElement;
-td_container_options_products.style.display = "none";  
-const p_product = document.createElement("p");
-
-
-document.querySelectorAll(".suggest").forEach(el=>el.style.display="none");
-// let container_options_item = document.getElementById("")
-document.addEventListener("focusin",(event)=>{
-    // pra uma caixa de sugestões nao sobrepor a outra
-    if(event.target.tagName ==="INPUT" ){
-        // const inputFocus = event.target.id;
-            document.querySelectorAll(".suggest").forEach(el=>el.style.display="none");
+document.addEventListener("focusin", (event) => {
+    if (event.target.tagName === "INPUT") {
+        document.querySelectorAll(".suggest").forEach(el => el.style.display = "none");
     }
-})
+});
 
-// ATUALIZA O TOTAL DO DESCONTO, VALOR TOTAL, E TOTAL DE PRODUTOS  AO CLICAR NO BOTÃO DELETAR
-itens_container.addEventListener("click",(event)=>{
-    if(event.target.tagName === 'BUTTON'){
-        const item_forms = itens_container.querySelectorAll(".item-form");
-        total(item_forms);
+// Atualiza totais ao clicar no botão deletar
+
+itemsContainer.addEventListener("click", (event) => {
+    if (event.target.tagName === 'BUTTON') {
+        const itemForms = itemsContainer.querySelectorAll(".item-form");
+        updateTotals(itemForms);
     }
-})
+});
 
 
-itens_container.addEventListener("input",(event)=>{
-    if(event.target.tagName==='INPUT'){
-        const item_forms = itens_container.querySelectorAll(".item-form");
-        const inputModificado = event.target;
-        const item_form = inputModificado.closest(".item-form");
-        const inputs_item_form = item_form.querySelectorAll("input");
+itemsContainer.addEventListener("input", (event) => {
+  
+    if (event.target.tagName === 'INPUT') {
+        const modifiedInput = event.target;
+        const itemForm = modifiedInput.closest(".item-form");
+        const inputs = itemForm.querySelectorAll("input");
+        let productInput, quantityInput, discountInput, totalPriceInput, unitPriceInput, searchProductInput;
 
-
-        let product_value;
-        let quantidade_value;
-        let descont_value;
-        let price_total_value;
-        let price_unit_value ;
-        let search_p;
-
-
-        inputs_item_form.forEach((input)=>{
-            const type_field = input.id;            
-            if(type_field.endsWith('product') || type_field.endsWith('produto') || type_field.endsWith('service')){
-                product_value = input;
-
+        inputs.forEach(input => {
+            const fieldType = input.id;
+            if (fieldType.endsWith('product') || fieldType.endsWith('produto') || fieldType.endsWith('service')) {
+                productInput = input;
+            } else if (fieldType.endsWith('quantidade')) {
+                quantityInput = input;
+            } else if (fieldType.endsWith('preco_unitario')) {
+                unitPriceInput = input;
+            } else if (fieldType.endsWith('discount')) {
+                discountInput = input;
+            } else if (fieldType.endsWith('price_total')) {
+                totalPriceInput = input;
+            } else if (fieldType.startsWith("idProduct")) {
+                searchProductInput = input;
             }
-            else if (type_field.endsWith('quantidade')){
-                quantidade_value = input;
-            }
-            else if(type_field.endsWith('preco_unitario')){
-                price_unit_value = input;
-            }
-            else if (type_field.endsWith('discount')){
-                descont_value = input;
-            }
-            else if(type_field.endsWith('price_total')){
-                price_total_value = input;
-            }
-            else if(type_field.startsWith("idProduct")){
-                search_p = input;
-            }
-            
-        })
+        });
 
-        //MONITORA O CAMPO ID_PRODUCT
-        if (inputModificado.id.startsWith("idProduct")){
-            let tbody = inputModificado.parentElement.parentElement.parentElement;
-            let td = tbody.querySelector(".tre").querySelector("td");
-    
-            let products = td.querySelector("div");
-          
-            if(inputModificado.value.length>=1){
-                let idoptions = 0;
-                const query = inputModificado.value;
-                fetch(`/buscar_produtos/?query=${encodeURIComponent(query)}`)
-                .then(response=>{
-                if(response.ok && response.headers.get('Content-Type').includes('application/json')){
-                    return response.json();
-                }
-                else {
-                    throw new Error('Resposta não é JSON');
-                }
-            })
-            .then(data=>{
+        // Monitorar o campo de produto
+        if (modifiedInput.id.startsWith("idProduct")) {
+            const tbody = modifiedInput.closest("tbody");
+            const td = tbody.querySelector(".tre td");
+            const productContainer = td.querySelector("div");
+           
+            if (modifiedInput.value.length >= 1) {
+                fetch(`/buscar_produtos/?query=${encodeURIComponent(modifiedInput.value)}`)
+                .then(response => response.json())
+                .then(data => {
+                    productContainer.innerHTML = "";
+                    productTitle.textContent = "COD - DESC";
+                    productTitle.className = "title-product text-center";
+                    productContainer.style.width = "300px";
+                    productContainer.appendChild(productTitle);
 
-                products.innerHTML="";
-                p_product.textContent = "COD - DESC";
-                p_product.className="title-product text-center";
-                products.style.width = "300px";
-                products.appendChild(p_product)
+                    if (data.produtos.length > 0) {
+                        data.produtos.forEach((produto, index) => {
+                            td.style.display = "block";
+                            const productButton = document.createElement("button");
+                            productButton.className = "btn btn-outline-secondary form-control x mb-2";
+                            productButton.type = "button";
+                            productButton.id = `option-product-${index}`;
+                            productButton.textContent = `${produto.product_code} - ${produto.description}`;
 
+                            productTitle.insertAdjacentElement('afterend', productButton);
 
-                if(data.produtos.length>0){    
-                    data.produtos.forEach(produto=>{
-                        td.style.display="block";
-                        let selectProduct = document.createElement("button");
-                        selectProduct.className = "btn btn-outline-secondary form-control x mb-2";
-                        selectProduct.type="button";
-                        selectProduct.id = `option-product-${idoptions}`;
-
-                        selectProduct.textContent = `${produto.product_code} - ${produto.description}`
-                        let title_product = td.querySelector(".title-product");
-
-                        title_product.insertAdjacentElement('afterend',selectProduct);
-                        const button = td.querySelector(".x")
-                
-                        button.addEventListener("click",()=>{
-                            product_value.value = produto.id;
-                            search_p.value = button.textContent;
-                            price_unit_value.value = produto.selling_price;
-                            td.style.display = "none";  
-                        })
-                        idoptions+=1;
-                    })
-                }
-                else if(data.produtos.length == query.length){
-                    price_unit_value = produto.selling_price;
-                }
-            })
+                            productButton.addEventListener("click", () => {
+                                productInput.value = produto.id;
+                                searchProductInput.value = productButton.textContent;
+                                unitPriceInput.value = produto.selling_price;
+                                td.style.display = "none";
+                            });
+                        });
+                    }
+                });
             } else {
-                td.style.display ="none";
+                td.style.display = "none";
             }
-            
-        } 
-        if(descont_value != undefined && quantidade_value!=undefined && price_unit_value!=undefined){
-          
-            if(descont_value.value != 0){
-                price_total_value.value = ((price_unit_value.value - ((descont_value.value/100) * price_unit_value.value))*quantidade_value.value).toFixed(2);
+        }
+
+        if (discountInput && quantityInput && unitPriceInput) {
+            if (discountInput.value != 0) {
+                totalPriceInput.value = ((unitPriceInput.value - ((discountInput.value / 100) * unitPriceInput.value)) * quantityInput.value).toFixed(2);
             } else {
-                price_total_value.value = (price_unit_value.value*quantidade_value.value).toFixed(2);
+                totalPriceInput.value = (unitPriceInput.value * quantityInput.value).toFixed(2);
             }
-            
         }
-        total(item_forms);
-      
+        updateTotals(itemsContainer.querySelectorAll(".item-form"));
     }
-})
+});
 
+function updateTotals(itemForms) {
+    let totalSemDesconto = 0;
+    let totalComDesconto = 0;
+    let totalProdutos = 0;
 
-function total(item_forms,n_produtos=0,totalPrice=0,totalValue=0){
-    item_forms.forEach(item_form=>{
-        const style = window.getComputedStyle(item_form);
-        let quanti = 0;
-        let preco = 0;
-        inpt = item_form.querySelectorAll("input");
-        if (style.display !== 'none') {
-            // Só execute o código se o elemento não estiver com display: none
-            // Sua lógica aqui
-            inpt.forEach(input=>{
-                if(input.id.endsWith("quantidade")){
-                    n_produtos = Number(input.value) + n_produtos;
-                    quanti = input.value;
-                    totalValue = totalValue + preco*Number(quanti);
+    itemForms.forEach(itemForm => {
+        if (window.getComputedStyle(itemForm).display !== 'none') {
+            const inputs = itemForm.querySelectorAll("input");
+            let quantidade = 0, precoUnitario = 0, desconto = 0, totalItem = 0;
+
+            inputs.forEach(input => {
+                if (input.id.endsWith("quantidade")) {
+                    quantidade = Number(input.value) || 0;
+                } else if (input.id.endsWith("preco_unitario")) {
+                    precoUnitario = Number(input.value) || 0;
+                } else if (input.id.endsWith("discount")) {
+                    desconto = Number(input.value) || 0;
+                } else if (input.id.endsWith("price_total")) {
+                    totalItem = Number(input.value) || 0;
                 }
-                else if(input.id.endsWith("price_total")){
-                    totalPrice = totalPrice + Number(input.value);
-                }
-                else if(input.id.endsWith("preco_unitario")){
-                    preco = input.value;
-                    totalValue = totalValue + Number(preco)*quanti;
-                }
-            })
+            });
+
+            let subtotalSemDesconto = precoUnitario * quantidade;
+            let subtotalComDesconto = subtotalSemDesconto * (1 - desconto / 100);
+
+            totalSemDesconto += subtotalSemDesconto;
+            totalComDesconto += subtotalComDesconto;
+            totalProdutos += quantidade;
         }
-       
-        // valor_discontado = total - totalValue;
-        id_discount_total.value = 11;
-        id_total_products.value = n_produtos;
-        id_total_value.value = totalPrice;
-    })
+    });
 
+    let percentualDesconto = totalSemDesconto > 0
+        ? ((1 - totalComDesconto / totalSemDesconto) * 100).toFixed(2)
+        : 0;
+
+    totalDiscountInput.value = percentualDesconto;
+    totalProductsInput.value = totalProdutos;
+    totalValueInput.value = totalComDesconto.toFixed(2);
 }
-const item_forms = document.querySelectorAll('.item-form');
 
+const itemForms = document.querySelectorAll('.item-form');
 let index = 0;
 
+// EDIÇÃO DE VENDA - INVERTER A LÓGICA
+let isAutoCompleteInverted = false;
+const personInput = document.getElementById("id_pessoa") || document.getElementById("id_fornecedor");
 
-// EDIÇÃO DE VENDA, IRÁ INVERTER A LÓGICA - O VALOR DO INPUT DE PESSOA SERÁ USADO PARA PREENCHER O INPUT DE PESQUISA DE PESSOA;
-let invertAutoComplete = false;
-const id_pessoa = document.getElementById("id_pessoa") || document.getElementById("id_fornecedor");
-
-
-let input_products = document.querySelectorAll('input[type="hidden"][name$="-product"]')
-if (input_products.length==0){
-    input_products= document.querySelectorAll('input[type="hidden"][name$="-produto"]') ;
+let productInputs = document.querySelectorAll('input[type="hidden"][name$="-product"]');
+if (productInputs.length === 0) {
+    productInputs = document.querySelectorAll('input[type="hidden"][name$="-produto"]');
 }
 
+productInputs.forEach(productInput => {
+    const parentElement = productInput.parentElement;
+    const textInput = parentElement.querySelector('input[type="text"]');
 
-input_products.forEach(input_product=>{
-    let x = input_product.parentElement;
-    let input_text = x.querySelector('input[type="text"]')
-
-
-    if(input_product.value!==''){
-        console.log('estou requistiando')
-        const query = input_product.value;
+    if (productInput.value !== '') {
+        console.log('Fetching product data');
+        const query = productInput.value;
         fetch(`/get_product_id/?query=${encodeURIComponent(query)}`)
-        .then(response=>{
-            if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
-                return response.json();
-            } else {
-                throw new Error('Resposta não é JSON');
-            }
-        })
-        .then(data=>{
-            input_text.value =`${data.produto[0].product_code} - ${data.produto[0].description}`
-            console.log(data.produto[0].description)
-            
-           
-        })    
-    }
-})
-
-const input_client = document.getElementById("idSearch");
-
-
-if(id_pessoa.value!=""){
-
-    invertAutoComplete = !invertAutoComplete;
-}
-
-if(invertAutoComplete){
-    anotherQuery = id_pessoa.value;
-    //MUDAR ISSO PARA BUSCA POR ID;
-    fetch(`/buscar_pessoas/?query=${encodeURIComponent(anotherQuery)}`)
-    .then(response=>{
-        if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
-            return response.json();
-        } else {
-            throw new Error('Resposta não é JSON');
-        }
-    })
-    .then(data=>{
-        data.clientes.forEach(cliente=>{
-            input_client.value = `${cliente.id} - ${cliente.name}`
-        })
-        
-        
-    })
-    
-}
-
-let p = document.createElement("p");
-let container_options_client = document.getElementById(`options-1`);
-
-let td_container_options_client = container_options_client.parentElement;
-td_container_options_client.style.display = "none";
-
-// FILTRO IRÁ PREENCHER O CAMPO DE PESQUISA E COLOCAR NO VALOR DE PESSOA O SEU ID
-input_client.addEventListener("input",()=>{
-    td_container_options_client.style.display="none";
-
-    if ( (input_client.value.length >=1 && input_client.value != " ")){
-            let id_options = 0;
-            const query = input_client.value;
-            fetch(`/buscar_pessoas/?query=${encodeURIComponent(query)}`)
-            .then(response=>{
+            .then(response => {
                 if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
                     return response.json();
                 } else {
-                    throw new Error('Resposta não é JSON');
+                    throw new Error('Response is not JSON');
                 }
             })
-            .then(data=>{
-                container_options_client.innerHTML = '';
-                p.textContent = "ID - CLIENTE";
-                p.id = "title-client";
-                p.className= "text-center";
-                container_options_client.style.width = "300px";
-                container_options_client.appendChild(p);
-                if(data.clientes.length > 0){
-                    data.clientes.forEach(cliente=>{
-                        if (data.clientes.length <= query.length){
-                            td_container_options_client.style.display = "block";
-                            container_options_client = document.getElementById(`options-1`);
-
-                            selectClient = document.createElement("button");
-                            selectClient.className ="btn btn-outline-secondary form-control mb-2";
-                            selectClient.id = `option-${id_options}`
-                            selectClient.textContent= `${cliente.id} - ${cliente.name}`
-                            selectClient.type="button";
-
-                            let title_client = document.getElementById("title-client")
-                            title_client.insertAdjacentElement('afterend',selectClient)
-            
-                            const button = document.getElementById(selectClient.id);
-                            button.addEventListener("click",()=>{
-
-                                input_client.value = button.textContent ;
-                                id_pessoa.value = `${cliente.id}`;
-                                td_container_options_client.style.display="none";
-                            })
-
-                            id_options+=1;
-                        }
-                    })
-                }
-            })
-        // }
-    }else{
-        td_container_options_client.style.display="none";
+            .then(data => {
+                textInput.value = `${data.produto[0].product_code} - ${data.produto[0].description}`;
+               
+            });
     }
-})
+});
 
+const clientSearchInput = document.getElementById("idSearch");
 
+if (personInput.value !== "") {
+    isAutoCompleteInverted = !isAutoCompleteInverted;
+}
 
+if (isAutoCompleteInverted) {
+    const query = personInput.value;
+    // MUDAR ISSO PARA BUSCA POR ID;
+    fetch(`/buscar_pessoas/?query=${encodeURIComponent(query)}`)
+        .then(response => {
+            if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
+                return response.json();
+            } else {
+                throw new Error('Response is not JSON');
+            }
+        })
+        .then(data => {
+            data.clientes.forEach(cliente => {
+                clientSearchInput.value = `${cliente.id} - ${cliente.name}`;
+            });
+        });
+}
 
+let titleElement = document.createElement("p");
+let clientOptionsContainer = document.getElementById("options-1");
+let tdClientOptionsContainer = clientOptionsContainer.parentElement;
+tdClientOptionsContainer.style.display = "none";
 
+// FILTRO IRÁ PREENCHER O CAMPO DE PESQUISA E COLOCAR NO VALOR DE PESSOA O SEU ID
+clientSearchInput.addEventListener("input", () => {
+    tdClientOptionsContainer.style.display = "none";
 
+    if (clientSearchInput.value.length >= 1 && clientSearchInput.value.trim() !== "") {
+        let optionId = 0;
+        const query = clientSearchInput.value;
 
+        fetch(`/buscar_pessoas/?query=${encodeURIComponent(query)}`)
+            .then(response => {
+                if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
+                    return response.json();
+                } else {
+                    throw new Error('Response is not JSON');
+                }
+            })
+            .then(data => {
+                clientOptionsContainer.innerHTML = '';
+                titleElement.textContent = "ID - CLIENTE";
+                titleElement.id = "title-client";
+                titleElement.className = "text-center";
+                clientOptionsContainer.style.width = "300px";
+                clientOptionsContainer.appendChild(titleElement);
 
+                if (data.clientes.length > 0) {
+                    data.clientes.forEach(cliente => {
+                        if (data.clientes.length <= query.length) {
+                            tdClientOptionsContainer.style.display = "block";
+                            clientOptionsContainer = document.getElementById("options-1");
 
+                            const clientButton = document.createElement("button");
+                            clientButton.className = "btn btn-outline-secondary form-control mb-2";
+                            clientButton.id = `option-${optionId}`;
+                            clientButton.textContent = `${cliente.id} - ${cliente.name}`;
+                            clientButton.type = "button";
+
+                            const titleClient = document.getElementById("title-client");
+                            titleClient.insertAdjacentElement('afterend', clientButton);
+
+                            const button = document.getElementById(clientButton.id);
+                            button.addEventListener("click", () => {
+                                clientSearchInput.value = button.textContent;
+                                personInput.value = `${cliente.id}`;
+                                tdClientOptionsContainer.style.display = "none";
+                            });
+
+                            optionId += 1;
+                        }
+                    });
+                }
+            });
+    } else {
+        tdClientOptionsContainer.style.display = "none";
+    }
+});
+
+// Função de monitoramento de alterações nos itens
 document.addEventListener("DOMContentLoaded", function () {
-    let container = document.querySelector("#itens-container"); // O container que contém todos os item-form
-    if (container) {
+    const itemsContainer = document.querySelector("#itens-container");
+    if (itemsContainer) {
         // Monitorar mudanças nos selects dentro do container
-        container.addEventListener("change", function (event) {
+        itemsContainer.addEventListener("change", function (event) {
             if (event.target.matches("[id^='id_vendaitemservice_set-'][id$='-service']")) {
-                let selectElement = event.target;
-                let formContainer = selectElement.closest(".item-form"); // Encontra o item-form mais próximo
-                
+                const selectElement = event.target;
+                const formContainer = selectElement.closest(".item-form");
+
                 if (formContainer) {
-                    let precoInput = formContainer.querySelector("[id^='id_vendaitemservice_set-'][id$='-preco']");
-                    let serviceInput = formContainer.querySelector("[id^='id_vendaitemservice_set-'][id$='-service']")
-                    const teste = serviceInput.textContent;
-                    console.log(serviceInput.textContent)
-                    fetch(`/buscar_servicos/?query=${encodeURIComponent(teste)}`)
-                    .then(response=>{
-                        if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
-                            
-                            return response.json();
-                            
-                        } else {
-                            throw new Error('Resposta não é JSON');
-                        }
-                        
-                    })
-                    .then(data=>{
-                        if (precoInput) {
-                            precoInput.value = data.servico[0].value_Service // Define ou limpa o valor
-                        }
-                    })
+                    const priceInput = formContainer.querySelector("[id^='id_vendaitemservice_set-'][id$='-preco']");
+                    const serviceInput = formContainer.querySelector("[id^='id_vendaitemservice_set-'][id$='-service']");
+                    const serviceText = serviceInput.textContent;
+
                     
+                    fetch(`/buscar_servicos/?query=${encodeURIComponent(serviceText)}`)
+                        .then(response => {
+                            if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
+                                return response.json();
+                            } else {
+                                throw new Error('Response is not JSON');
+                            }
+                        })
+                        .then(data => {
+                            if (priceInput) {
+                                priceInput.value = data.servico[0].value_Service;
+                            }
+                        });
                 }
             }
         });
 
         // Monitorar cliques nos botões de deletar dentro do container
-        container.addEventListener("click", function (event) {
+        itemsContainer.addEventListener("click", function (event) {
             if (event.target.matches(".delete")) {
-                let button = event.target;
-                let formContainer = button.closest(".item-form"); // Encontra o item-form mais próximo
-                
+                const button = event.target;
+                const formContainer = button.closest(".item-form");
+
                 if (formContainer) {
-                    let precoInput = formContainer.querySelector("[id^='id_vendaitemservice_set-'][id$='-DELETE']");
-                    if (precoInput) {
-                        precoInput.value = "on"; // Altera o preço para "urro" ao deletar
-                        console.log(precoInput.val)
+                    const deleteInput = formContainer.querySelector("[id^='id_vendaitemservice_set-'][id$='-DELETE']");
+                    if (deleteInput) {
+                        deleteInput.value = "on";
+                        
                     }
                 }
             }
         });
     }
 });
-
