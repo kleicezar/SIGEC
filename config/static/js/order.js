@@ -3,14 +3,14 @@ const totalValueField = document.getElementById("id_total_value");
 const totalProductsField = document.getElementById("id_service_total");
 const discountTotalField = document.getElementById("id_discount_total");
 const itemsContainer = document.getElementById("itens-container");
-
+console.log('agora')
 let serviceOptionsContainer = document.getElementById("options_services-0");
 let serviceOptionsCell = serviceOptionsContainer.parentElement;
 serviceOptionsCell.style.display = "none";  
 const serviceInfoParagraph = document.createElement("p");
 
 document.querySelectorAll(".suggest").forEach(el => el.style.display = "none");
-
+console.log('oura')
 // Listener para garantir que apenas uma sugestão apareça de cada vez
 document.addEventListener("focusin", (event) => {
     if (event.target.tagName === "INPUT") {
@@ -106,6 +106,33 @@ itemsContainer.addEventListener("input", (event) => {
     }
 });
 
+const serviceInputs = document.querySelectorAll('input[type="hidden"][name$="-service"]')
+serviceInputs.forEach(serviceInput=>{
+    console.log('fdddddddd')
+    const parentElement = serviceInput.parentElement;
+    const textInput = parentElement.querySelector('input[type="text"]');
+
+    if(serviceInput.value!=''){
+        console.log('Fetching service data');
+        const query = serviceInput.value;
+        console.log(query);
+        fetch(`/get_service_id/?query=${encodeURIComponent(query)}`)
+        .then(response => {
+            if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
+                return response.json();
+            } else {
+                throw new Error('Response is not JSON');
+            }
+        })
+        .then(data=>{
+            console.log(data)
+            textInput.value = `${data.servico[0].id} - ${data.servico[0].name_Service}`;
+            console.log('ofdasfdas')
+        });
+
+    }
+    
+})
 function updateTotal(itemForms, numServices = 0, totalPrice = 0, totalValue = 0) {
     let total = 0;
     let price = 0;
@@ -128,7 +155,7 @@ function updateTotal(itemForms, numServices = 0, totalPrice = 0, totalValue = 0)
     });
 
     discountTotalField.value = 11;
-    totalProductsField.value = total;
+    totalProductsField.value = 20;
     totalValueField.value = totalValue;
 }
 

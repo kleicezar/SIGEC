@@ -40,23 +40,32 @@
                     {% csrf_token %}
                 
                     <!-- Formulário de Venda -->
-                    <h6>Dados da Venda</h6>
+                    <h6>Dados da Vendda</h6>
                     <!-- {{ service_form.as_p }} -->
+                    {% if messages %}
+                    <div>
+                      {% for message in messages %}
+                        <div class="alert {{ message.tags }}">
+                          {{ message }}
+                        </div>
+                      {% endfor %}
+                    </div>
+                    {% endif %}
                     <table class="table">
                         <thead>
                             <tr>
                                 <th scope="col">
                                     Pessoa
-                                </th>
+                                </th>dd
                                 <th scope="col">
                                     Data da Venda
                                 </th>
                                 <th scope="col">
                                     Situação
                                 </th>
-                                <th>
+                                <!-- <th>
                                     Ativo
-                                </th>
+                                </th> -->
                             </tr>
                         </thead>
 
@@ -78,7 +87,7 @@
                                     </div>
                                 </td>
                                 <td>{{service_form.situacao}}</td>
-                                <td>{{service_form.is_active}}</td>
+                                <!-- <td>{{service_form.is_active}}</td> -->
                             </tr>
                             <tr>
                                 <td class="z-2 position-absolute suggest">
@@ -94,65 +103,120 @@
                     
                     <!-- Itens de Venda -->
                     <h6>Itens de Venda</h6>
-                    <div id="itens-container">      
+                    <div id="itens-container">
                         {{ service_item_formset.management_form }}
+                        
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Serviço</th>
+                                    <th scope="col">Desconto(%)</th>
+                                    <th scope="col">Valor Total</th>
+                                    <th scope="col">Ações</th>
+                                </tr>
+                            </thead>
+                        </table>
                         {% for form in service_item_formset %}
                             <div class="item-form">
-                                <!-- {{ form.as_p }} -->
-                                  <table class="table">
-                                    <thead >
+                                <table class="table">
+                                
+                                    <tbody>
                                         <tr>
-                                            <th scope="col">
-                                                Serviço
-                                            </th>
-    
-                                            <th scope="col">
-                                                Desconto(%)
-                                            </th>
-
-                                            <th scope="col">
-                                                Preço
-                                            </th>
-                                            
-                                            <th scope="col">
-                                                Ações
-                                            </th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody class="itens">
-                                        <tr>
-                                            <td >{{form.service.as_hidden}}
-                                                <input type="text" class="row form-control" id="idService-0">
-                                                <div id="services-0" class="mt-3 field-product row">
+                                            <td>
+                                                <input type="hidden" name="{{ form.prefix }}-id" value="{{ form.instance.id }}">
+                                                {{form.service.as_hidden}}
+                                                <input type="text" class="row form-control" id="idProduct-0">
+                                                <div id="products-0" class="mt-3 field-product row">
                                                 </div>
                                             </td>
-                    
                                             <td>
-                                                {{form.discount}}
+                                                <!-- Campo Quantidade -->
+                                                {{ form.discount }}
                                             </td>
                                             <td>
-                                                {{form.preco}}
+                                                <!-- Campo Preço Unitário -->
+                                                {{ form.preco }}
                                             </td>
+                                            
                                             <td>
-                                                <button type="button" class="btn btn-danger delete" onclick="removeItem(this)" >Deletar</button>
+                                                <!-- Checkbox para exclusão -->
+                                                <button type="button" class="btn btn-danger delete" onclick="removeItemUpdate(this)" >Deletar</button>
                                                 {{form.DELETE.as_hidden}}
                                             </td>
                                         </tr>
                                         <tr class="tre">
-                                            <td class="z-2 position-absolute suggest">
-                                                <div id="options_services-0" class="row form-control z-1 field-service v">
-                                                    <p class="text-center  title-service">CODIGO - DESC</p>
-
-            
+                                            <td class="z-2 position-absolute suggest" style="display: none;">
+                                                <div id="options_services-{{ forloop.counter0 }}" class="row form-control z-1 v">
+                                                    <p class="text-center title-product">CODIGO - DESC</p>
                                                 </div>
                                             </td>
                                         </tr>
                                     </tbody>
-                                  </table>
+                                </table>
                             </div>
                         {% endfor %}
                     </div>
+                    
+                    <!-- <div id="itens-container">      
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col"> Produto</th>
+                                    <th scope="col">Quantidade</th>
+                                    <th scope="col">Preço Unitário</th>
+                                    <th scope="col">Desconto(%)</th>
+                                    <th scope="col">Valor Total</th>
+                                    <th scope="col">Ações</th>
+                                </tr>
+                            </thead>
+                            {{ service_item_formset.management_form }}
+                            {% for form in service_item_formset %}
+                            <tbody>
+                                <tr>
+                                    <td>   
+                                        <input type="hidden" name="{{ form.prefix }}-id" value="{{ form.instance.id }}">
+                                        {{form.product.as_hidden}}
+                                        <input type="text" class="row form-control" id="idProduct-0">
+                                        <div id="products-0" class="mt-3 field-product row">
+                                        </div>
+                                    </td>
+                                    
+                                    <td>
+                                        {{form.quantidade}}    
+                                    </td>
+                                    <td>
+                                        {{form.preco_unitario}}
+                                    </td>
+                                    <td>
+                                        {{form.discount}}
+                                    </td>
+                                    <td>
+                                        {{form.price_total}}
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger delete" onclick="removeItemUpdate(this)" >Deletar</button>
+                                        {{form.DELETE.as_hidden}}
+                                    </td>
+                                </tr>
+                                <tr class="tre">
+                                    <td class="z-2 position-absolute suggest">
+                                        <div id="options_products-0" class="row form-control z-1 field-product v">
+                                            <p class="text-center  title-product">CODIGO - DESC</p>
+
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            {% endfor %}
+
+                         
+                            
+                            </tbody> -->
+                           
+                        <!-- </table> -->
+                    <!-- </div> --> 
+                    <button id="item" type="button" onclick="addItem()" class="btn btn-outline-success mb-5 z-2">Adicionar Item</button>
                     <template id="empty-form-template">
                         <div class="item-form">
                             <!-- {{ service_item_formset.empty_form.as_p }} -->
@@ -164,29 +228,30 @@
 
                                 <tbody>
                                     <tr >
-                                        <td>{{ service_item_formset.empty_form.service.as_hidden}}
+                                        <td>{{ service_item_formset.empty_form.service.as_hidden }}
                                             <input type="text" class="row form-control inputService">
                                             <div class="mt-3 field-product row">
                                     
                                             </div>
                                         </td>
-
+                                        
                                         <td>
                                             {{service_item_formset.empty_form.discount}}
                                         </td>
+                                
                                         <td>
                                             {{service_item_formset.empty_form.preco}}
-                                        <td>
+                                        </td>
                                         <td>
                                             <button type="button" class="btn btn-danger delete" onclick="removeItem(this)">Deletar</button>
-                                            {{service_item_formset.empty_form.DELETE.as_hidden}}</td>
+                                            {{service_item_formset.empty_form.DELETE.as_hidden}}
                                         </td>
-                                            
+                                           
                                     </tr>
                                     <tr class="tre">
                                         <td class="z-2 position-absolute suggest ">
                                             <div id="" class="row form-control z-1 v">
-                                                <p class="text-center title-service">CODIGO - DESC</p>
+                                                <p class="text-center title-product">CODIGO - DESC</p>
 
         
                                             </div>
@@ -196,7 +261,7 @@
                               </table>
                         </div>
                     </template>
-                    <button id="item" type="button" onclick="addItem()" class="btn btn-outline-success mb-5 z-2">Adicionar Item</button>
+                   
                 
                     <table class="table">
                         <thead>
@@ -217,7 +282,7 @@
                             <tr>
                                 <td>
                                     <!-- <input type="text" id="id_all_total_products" readonly> -->
-                                    {{service_form.service_total}}
+                                    {{service_form.service_total }}
                                 </td>
                                 <td>
                                     <!-- <input type="text" id="id_all_total_discount" readonly> -->
@@ -235,29 +300,25 @@
 
                     <!-- Formas de Pagamento -->
                     <h6>Formas de Pagamento</h6>
+
                     <div id="payment-method-container">
                         {{ payment_method_formset.management_form }}
+                        
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Forma de Pagamento</th>
+                                    <th scope="col">Data de Expiração</th>
+                                    <th scope="col">Valor</th>
+                                </tr>
+                            </thead>
+                        </table>
                         {% for form in payment_method_formset %}
                             <div class="form-row">
                                 <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">
-                                                Forma de Pagamento
-                                            </th>
-                                            <th scope="col">
-                                                Data de Expiração
-                                            </th>
-                                            <th scope="col">
-                                                Valor
-                                            </th>
-                                            <th scol="col">
-                                                Ações
-                                            </th>
-                                        </tr>
-                                    </thead>
-
+                                    
                                     <tbody>
+                                        <input type="hidden" name="{{ form.prefix }}-id" value="{{ form.instance.id }}">
                                         <tr>
                                             <td class="field_type_payment">{{form.forma_pagamento}}</td>
                                             <td style="width: 200px;">
@@ -274,15 +335,15 @@
                                             
                                             <td>
                                                 <!-- <label for="">Deletar</label> -->
-                                                <button type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
+                                                <button type="button" class="btn btn-danger delete" onclick="removeItemUpdate(this)">Deletar</button>
                                                 {{ form.DELETE.as_hidden }}
                                         </tr>
                                     </tbody>
-                                  </table>
-                                  
+                                </table>
                             </div>
                         {% endfor %}
                     </div>
+
                     <template id="empty-payment-method-form">
                         <div class="form-row">
                             <!-- Clona o formulário vazio de payment_method_formset -->

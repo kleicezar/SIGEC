@@ -37,7 +37,6 @@ def workerService_create(request):
     if(request.method == 'POST'):
         service_form = VendaServiceForm(request.POST)
         service_item_formset = ServiceItemFormSet(request.POST)
-
         payment_method_formset = PaymentMethodServiceFormSet(request.POST)
         if(service_form.is_valid() and service_item_formset.is_valid() and payment_method_formset.is_valid()):
             print('formulários válidos')
@@ -85,6 +84,68 @@ def workerService_create(request):
         }
 
         return render(request,'serviceOrder_form.html',context)
+
+def workerService_update(request,pk):
+
+    servico = get_object_or_404(VendaService, pk=pk)
+
+    ServiceItemFormSet  = inlineformset_factory(VendaService,VendaItemService,form=VendaItemForm,extra=0,can_delete=True)
+    PaymentMethodServiceFormSet = inlineformset_factory(VendaService,PaymentMethod_VendaService,form=PaymentMethodVendaForm,extra=0,can_delete=True)
+    if request.method == 'POST':
+
+        service_form = VendaServiceForm(request.POST)
+        service_item_formset = ServiceItemFormSet(request.POST)
+        payment_method_formset = PaymentMethodServiceFormSet(request.POST)
+        if(service_form.is_valid() and service_item_formset.is_valid() and payment_method_formset.is_valid()):
+
+            print('formulários válidos')
+            venda = service_form.save()
+            for form in service_item_formset:
+                if form.cleaned_data:
+                    servico = form.cleaned_data['service']
+                    preco = form.cleaned_data['preco']
+                    discount = form.cleaned_data['discount']
+                    if not form.cleaned_data.get("DELETE"):
+                        VendaItemService.objects.create(
+                            venda = venda,
+                            service = servico,
+                            preco = preco,
+                            discount = discount
+                        )
+                        service_item_formset.instance = venda
+
+            payment_method_formset.instance = venda
+            total_payment = 0
+            for form in payment_method_formset:
+                if form.cleaned_data:
+                    valor = form.cleaned_data['valor']
+                    total_payment+=valor
+            if(total_payment==service_form.cleaned_data['total_value']):
+                payment_method_formset.save()
+                for form in payment_method_formset.deleted_objects:
+                    form.delete()
+                    form.save()
+
+        elif not service_form.is_valid():
+            print("Erro  no ServiceForm",service_form.errors)
+        elif not service_item_formset.is_valid():
+            print("Erro no VendaServiceItem",service_item_formset.errors)
+        elif not payment_method_formset.is_valid():
+            print("Erro no VendaPagamentoService",payment_method_formset.errors)
+        return  redirect('serviceForm')
+    
+    else:
+        service_form = VendaServiceForm(instance=servico)
+        service_item_formset = ServiceItemFormSet(instance=servico)
+        payment_method_formset = PaymentMethodServiceFormSet(instance=servico)
+
+        context = {
+            'service_form':service_form,
+            'service_item_formset':service_item_formset,
+            'payment_method_formset':payment_method_formset
+        }
+
+        return render(request,'serviceOrderUpdate.html',context)
     
 def service_search(request):
    
@@ -104,4 +165,11 @@ def service_search(request):
     ]
 
     return JsonResponse({'servicos':services})
-    
+
+def get_service_id(request):
+    query = request.GET.get('query','')
+    resultados = Service.objects.filter(
+        Q(id=query)
+    )
+    resultados_json = list(resultados.values('id','name_Service'))
+    return JsonResponse({'servico':resultados_json})

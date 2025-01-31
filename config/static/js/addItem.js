@@ -138,6 +138,7 @@ function removeItemUpdate(button){
     parent_button_3.value = 'on'
     let  parent_button_4 =  button.parentElement.parentElement.parentElement.parentElement.parentElement;
     parent_button_4.style.display ="none"
+    console.log(parent_button_3)
 }
 
 function addPaymentMethod() {
