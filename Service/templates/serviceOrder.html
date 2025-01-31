@@ -1,0 +1,56 @@
+<!-- {% extends 'login/menu.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>  
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block css %}
+            <link rel="stylesheet" href="{% static 'css/Table.css' %}">
+        {% endblock  %}
+        <title>Formulário</title>
+    </head>
+    <body>
+        {% block content %}
+        <div class='content'>
+            <div class="container">
+                <a href="{% url 'orderworkServiceForm' %}">
+                    <button class="btn btn-success">Cadastrar</button>
+                </a>
+                <div class="form-group">
+                    <input type="text" placeholder="Pesquisar..." class="search-input">
+                    <button class="search-button">Pesquisar</button>
+                </div>
+            </div>
+            <table >
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Pessoa</th>
+                        <th>Data da Venda</th>
+                        <th>Situação</th>
+                        <th>Ativo</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>  
+                {% for workService in workServices %}
+                <tr>
+                    <td>{{ workService.id }}</td>
+                    <td>{{ workService.pessoa }}</td>
+                    <td>{{ workService.data_da_venda }}</td>
+                    <td>{{ workService.situacao}}</td>
+                    <td>{{ workService.is_Active|yesno:"Sim,Não" }}</td>
+                    <td>
+                      
+                        
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div> 
+        {% endblock %}
+        <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+    </body>
+    </html> -->

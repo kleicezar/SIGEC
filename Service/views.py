@@ -50,7 +50,16 @@ def service_update(request,pk):
         }
         return render(request,'service_form.html',context)
 
-
+def delete_service(request,pk):
+    servico = get_object_or_404(Service, pk=pk)
+    if request.method == "POST":
+        servico.delete()
+        messages.success(request, "Serviço deletada com sucesso.")
+        return redirect('service_list')
+    context ={
+        'service':servico
+    }
+    return render(request,'service_list',context)
 
 def workerService_create(request):
     ServiceItemFormSet  = inlineformset_factory(VendaService,VendaItemService,form=VendaItemForm,extra=1,can_delete=True)
@@ -110,7 +119,7 @@ def workerService_create(request):
 def workerService_update(request,pk):
 
     servico = get_object_or_404(VendaService, pk=pk)
-
+    print('achei')
     ServiceItemFormSet  = inlineformset_factory(VendaService,VendaItemService,form=VendaItemForm,extra=0,can_delete=True)
     PaymentMethodServiceFormSet = inlineformset_factory(VendaService,PaymentMethod_VendaService,form=PaymentMethodVendaForm,extra=0,can_delete=True)
     if request.method == 'POST':
@@ -168,16 +177,12 @@ def workerService_update(request,pk):
         }
 
         return render(request,'serviceOrderUpdate.html',context) 
-def delete_service(request,pk):
-    servico = get_object_or_404(Service, pk=pk)
-    if request.method == "POST":
-        servico.delete()
-        messages.success(request, "Serviço deletada com sucesso.")
-        return redirect('service_list')
-    context ={
-        'service':servico
+
+def workService(request):
+    context = {
+        'workServices':VendaService.objects.all()
     }
-    return render(request,'service_list',context)
+    return render(request,'service_list.html',context)
 def service_search(request):
    
     query = request.GET.get('query', '') 

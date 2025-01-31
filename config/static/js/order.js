@@ -3,10 +3,9 @@ const totalValueField = document.getElementById("id_total_value");
 const totalProductsField = document.getElementById("id_service_total");
 const discountTotalField = document.getElementById("id_discount_total");
 const itemsContainer = document.getElementById("itens-container");
-console.log('agora')
-let serviceOptionsContainer = document.getElementById("options_services-0");
-let serviceOptionsCell = serviceOptionsContainer.parentElement;
-serviceOptionsCell.style.display = "none";  
+// let serviceOptionsContainer = document.getElementById("options_services-0");
+// let serviceOptionsCell = serviceOptionsContainer.parentElement;
+// serviceOptionsCell.style.display = "none";  
 const serviceInfoParagraph = document.createElement("p");
 
 document.querySelectorAll(".suggest").forEach(el => el.style.display = "none");
