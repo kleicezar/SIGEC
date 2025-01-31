@@ -23,7 +23,7 @@ class Accounts(models.Model):
     documentNumber = models.PositiveIntegerField(
         verbose_name="Numero do Documento"
         )
-    date_account = models.DateTimeField(
+    date_account = models.DateField(
         verbose_name="Data da Conta"
         )
     numberOfInstallments = models.PositiveIntegerField(
@@ -78,7 +78,7 @@ class PaymentMethod_Accounts(models.Model):
         max_length=10,
         choices=INTEREST_CHOICES,
         verbose_name="Tipo de Juros",
-        default='percent',
+        default='value',
         null=True,
         blank=True
     )
@@ -100,7 +100,7 @@ class PaymentMethod_Accounts(models.Model):
         max_length=10,
         choices=FINE_CHOICES,
         verbose_name="Tipo de Multa",
-        default='percent',
+        default='value',
         null=True,
         blank=True
     )

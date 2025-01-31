@@ -93,7 +93,6 @@ class PaymentMethodAccountsForm(forms.ModelForm):
             }),
             'expirationDate': forms.DateInput(format='%d/%m/%Y', attrs={
                 'class': 'form-control row mask-date', 
-                'placeholder': 'dd/mm/yyyy'
             }),
             'days': forms.NumberInput(attrs={
                 'class': 'form-control row',

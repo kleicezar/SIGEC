@@ -350,99 +350,99 @@ def get_AccountsReceivable(request, id_Accounts):
     return render(request, 'finance/AccountsPay_GET.html', {'client': client})
 
 @login_required
-def update_AccountsReceivable(request, id_client):
+def update_AccountsReceivable(request, id_Accounts):
+
     # Buscar o cliente e os dados relacionados
-    selected_form = 'a'
-    try:
-        person = Person.objects.get(id=id_client)
-        # print(person)
-        if person.id_FisicPerson_fk:
-            fisicPerson = person.id_FisicPerson_fk
-            address = person.id_FisicPerson_fk.id_address_fk
-            selected_form = "Pessoa Fisica"
-            legalPerson = None
-            foreigner = None
-        else:
-            fisicPerson = None
-            if person.id_LegalPerson_fk:
-                legalPerson = person.id_LegalPerson_fk
-                address = person.id_LegalPerson_fk.id_address_fk
-                selected_form = "Pessoa Juridica"
-                foreigner = None
-            else:
-                legalPerson = None
-                if person.id_ForeignPerson_fk:
-                    foreigner = person.id_ForeignPerson_fk
-                    address = person.id_ForeignPerson_fk.id_address_fk
-                    selected_form = "Estrangeiro"
-                else:
-                    foreigner = None
-                    selected_form = ""
+    # selected_form = 'a'
+    # try:
+    #     person = Person.objects.get(id=id_client)
+    #     # print(person)
+    #     if person.id_FisicPerson_fk:
+    #         fisicPerson = person.id_FisicPerson_fk
+    #         address = person.id_FisicPerson_fk.id_address_fk
+    #         selected_form = "Pessoa Fisica"
+    #         legalPerson = None
+    #         foreigner = None
+    #     else:
+    #         fisicPerson = None
+    #         if person.id_LegalPerson_fk:
+    #             legalPerson = person.id_LegalPerson_fk
+    #             address = person.id_LegalPerson_fk.id_address_fk
+    #             selected_form = "Pessoa Juridica"
+    #             foreigner = None
+    #         else:
+    #             legalPerson = None
+    #             if person.id_ForeignPerson_fk:
+    #                 foreigner = person.id_ForeignPerson_fk
+    #                 address = person.id_ForeignPerson_fk.id_address_fk
+    #                 selected_form = "Estrangeiro"
+    #             else:
+    #                 foreigner = None
+    #                 selected_form = ""
 
-    except Person.DoesNotExist:
-        return redirect('Client')  # Redirecionar para pagina inicial de clientes
+    # except Person.DoesNotExist:
+    #     return redirect('Client')  # Redirecionar para pagina inicial de clientes
 
+    paymentMethodAccounts = get_object_or_404(PaymentMethod_Accounts, id=id_Accounts)
+    accounts = get_object_or_404(Accounts, id=paymentMethodAccounts.conta_id)
     if request.method == "POST":
-        form_address = AddressForm(request.POST, instance=address)
-        form_fisicPerson = FisicPersonForm(request.POST, instance=fisicPerson)
-        form_legalPerson = LegalPersonModelForm(request.POST, instance=legalPerson)
-        form_foreigner = ForeignerModelForm(request.POST, instance=foreigner)
-        form_Person = PersonForm(request.POST, instance=person)
+        if paymentMethodAccounts.is_valid() and accounts.is_valid():
+            accounts.save()
+            paymentMethodAccounts.save(commit=False)
+            if  paymentMethodAccounts.interestPercent:
 
-        # Atualização do endereço
-        if form_address.is_valid():
-            address = form_address.save()
 
-        # Atualização dos dados principais
-        if form_Person.is_valid():
-            if fisicPerson and form_fisicPerson.is_valid():
-                fisicPerson = form_fisicPerson.save(commit=False)
-                fisicPerson.id_address_fk = address
-                fisicPerson.save()
+        # # PaymentMethodAccountsFormSet = inlineformset_factory(Accounts, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
 
-                person = form_Person.save(commit=False)
-                person.id_FisicPerson_fk = fisicPerson
-                person.save()
+        # form_accounts = AccountsForm(request.POST, instance=accounts)
+        # form_paymentMethodAccounts = PaymentMethodAccountsForm(request.POST, instance=paymentMethodAccounts)
 
-            elif legalPerson and form_legalPerson.is_valid():
-                legalPerson = form_legalPerson.save(commit=False)
-                legalPerson.id_address_fk = address
-                legalPerson.save()
+        # # Atualização do endereço
+        # if form_accounts.is_valid() and form_paymentMethodAccounts.is_valid():
+        #     accounts_save = form_accounts.save()
+        #     paymentMethodAccounts_save = form_paymentMethodAccounts.save()
 
-                person = form_Person.save(commit=False)
-                person.id_LegalPerson_fk = legalPerson
-                person.save()
+        # # Atualização dos dados principais
+        # if form_Person.is_valid():
+        #     if fisicPerson and form_fisicPerson.is_valid():
+        #         fisicPerson = form_fisicPerson.save(commit=False)
+        #         fisicPerson.id_address_fk = address
+        #         fisicPerson.save()
 
-            elif foreigner and form_foreigner.is_valid():
-                foreigner = form_foreigner.save(commit=False)
-                foreigner.id_address_fk = address
-                foreigner.save()
+        #         person = form_Person.save(commit=False)
+        #         person.id_FisicPerson_fk = fisicPerson
+        #         person.save()
 
-                person = form_Person.save(commit=False)
-                person.id_ForeignPerson_fk = foreigner
-                person.save()
+        #     elif legalPerson and form_legalPerson.is_valid():
+        #         legalPerson = form_legalPerson.save(commit=False)
+        #         legalPerson.id_address_fk = address
+        #         legalPerson.save()
 
-            return redirect('Client')  # Redirecionar após salvar as alterações
+        #         person = form_Person.save(commit=False)
+        #         person.id_LegalPerson_fk = legalPerson
+        #         person.save()
+
+        #     elif foreigner and form_foreigner.is_valid():
+        #         foreigner = form_foreigner.save(commit=False)
+        #         foreigner.id_address_fk = address
+        #         foreigner.save()
+
+        #         person = form_Person.save(commit=False)
+        #         person.id_ForeignPerson_fk = foreigner
+        #         person.save()
+
+            return redirect('AccountsReceivable')  # Redirecionar após salvar as alterações
     else:
         # Preencher os formulários com os dados existentes
-        form_address = AddressForm(instance=address)
-        form_fisicPerson = FisicPersonForm(instance=fisicPerson)
-        form_legalPerson = LegalPersonModelForm(instance=legalPerson)
-        form_foreigner = ForeignerModelForm(instance=foreigner)
-        form_Person = PersonForm(instance=person)
+        form_accounts = AccountsForm(instance=accounts)
+        form_paymentMethodAccounts = PaymentMethodAccountsForm(instance=paymentMethodAccounts)
 
     context = {
-        'form_address': form_address,
-        'form_fisicPerson': form_fisicPerson,
-        'form_legalPerson': form_legalPerson,
-        'form_foreigner': form_foreigner,
-        'form_Person': form_Person,
-        'selected_form': selected_form,
+        'form_Accounts': form_accounts,
+        'form_paymentMethodAccounts': form_paymentMethodAccounts,
     }
-    # print(selected_form)
-    # print(type(selected_form))
 
-    return render(request, 'registry/ClientformUpdate.html', context)
+    return render(request, 'finance/AccountsPayformUpdate.html', context)
 
 # funcionando
 @login_required
@@ -450,7 +450,24 @@ def delete_AccountsReceivable(request, id_Accounts):
     # Recupera o accounte com o id fornecido
     account_deleta_pelo_amor_De_Deus = PaymentMethod_Accounts.objects.filter(id=id_Accounts,acc = False).delete() #filter(acc = False)
     return redirect('AccountsReceivable')
+
 #+------------------------------------------+
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
 #
 #+------------------------------------------+
 

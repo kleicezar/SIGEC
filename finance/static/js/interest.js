@@ -1,78 +1,37 @@
 // Usando jQuery para facilitar o controle da visibilidade
 document.addEventListener('DOMContentLoaded', function () {
-    const interestType = document.getElementById('interest_type');
-    const interestValueField = document.getElementById('interest_value_field');
-    const interestPercentField = document.getElementById('interest_percent_field');
-    const fineType = document.getElementById('fine_type');
-    const fineValueField = document.getElementById('fine_value_field');
-    const finePercentField = document.getElementById('fine_percent_field');
     
-    // Função para exibir o campo correto
-    function toggleFields_Interest() {
-        if (interestType.value === 'percent') {
-            interestPercentField.style.display = 'block'; // Mostrar o campo de porcentagem
-            interestValueField.style.display = 'none';   // Esconder o campo de valor
-        } else if (interestType.value === 'value') {
-            interestValueField.style.display = 'block';   // Mostrar o campo de valor
-            interestPercentField.style.display = 'none';  // Esconder o campo de porcentagem
-        } else {
-            interestValueField.style.display = 'none';    // Esconder ambos os campos
-            interestPercentField.style.display = 'none';
-        }
-    }
-    
-    function toggleFields_Fine() {
-        if (fineType.value === 'percent') {
-            finePercentField.style.display = 'block'; // Mostrar o campo de porcentagem
-            fineValueField.style.display = 'none';   // Esconder o campo de valor
-        } else if (fineType.value === 'value') {
-            fineValueField.style.display = 'block';   // Mostrar o campo de valor
-            finePercentField.style.display = 'none';  // Esconder o campo de porcentagem
-        } else {
-            fineValueField.style.display = 'none';    // Esconder ambos os campos
-            finePercentField.style.display = 'none';
-        }
-    }
-
-    const installmentRange = document.getElementById('installment_Range');
-
-    // Chama a função ao carregar a página para garantir que o campo certo apareça
-    // toggleFields_Interest();
-    // toggleFields_Fine();
-    // toggleFields_installment_Range();
-
-    // Chama a função sempre que a seleção mudar
-    // interestType.addEventListener('change', toggleFields_Interest);
-    // fineType.addEventListener('change', toggleFields_Fine);
+  
 
 
 
     
     // rascunho 01
-    function toggleFields_installment_Range() {
-        if (installmentRange.value == 'A cada 15 dias') {
-            finePercentField.style.display = 'block'; // Mostrar o campo de porcentagem
-            fineValueField.style.display = 'none';   // Esconder o campo de valor
-        } else if (installmentRange.value === 'A cada 20 dias') {
-            fineValueField.style.display = 'block';   // Mostrar o campo de valor
-            finePercentField.style.display = 'none';  // Esconder o campo de porcentagem
-        } else if (installmentRange.value === 'A cada 23 dias') {
-            fineValueField.style.display = 'block';   // Mostrar o campo de valor
-            finePercentField.style.display = 'none';  // Esconder o campo de porcentagem
-        } else if (installmentRange.value === 'A cada 28 dias') {
-            fineValueField.style.display = 'block';   // Mostrar o campo de valor
-            finePercentField.style.display = 'none';  // Esconder o campo de porcentagem
-        } else if (installmentRange.value === 'A cada 30 dias') {
-            fineValueField.style.display = 'block';   // Mostrar o campo de valor
-            finePercentField.style.display = 'none';  // Esconder o campo de porcentagem
-        } else {
+    // function toggleFields_installment_Range() {
+    //     if (installmentRange.value == 'A cada 15 dias') {
+    //         finePercentField.style.display = 'block'; // Mostrar o campo de porcentagem
+    //         fineValueField.style.display = 'none';   // Esconder o campo de valor
+    //     } else if (installmentRange.value === 'A cada 20 dias') {
+    //         fineValueField.style.display = 'block';   // Mostrar o campo de valor
+    //         finePercentField.style.display = 'none';  // Esconder o campo de porcentagem
+    //     } else if (installmentRange.value === 'A cada 23 dias') {
+    //         fineValueField.style.display = 'block';   // Mostrar o campo de valor
+    //         finePercentField.style.display = 'none';  // Esconder o campo de porcentagem
+    //     } else if (installmentRange.value === 'A cada 28 dias') {
+    //         fineValueField.style.display = 'block';   // Mostrar o campo de valor
+    //         finePercentField.style.display = 'none';  // Esconder o campo de porcentagem
+    //     } else if (installmentRange.value === 'A cada 30 dias') {
+    //         fineValueField.style.display = 'block';   // Mostrar o campo de valor
+    //         finePercentField.style.display = 'none';  // Esconder o campo de porcentagem
+    //     } else {
             
-        }
-    }
+    //     }
+    // }
     
     // rascunho 02
     // CODIGO A PARTIR DAQ
     // Obtém os elementos principais
+    const installmentRange = document.getElementById('installment_Range')
     const formContainer = document.getElementById("payment-method-container");
     const dateInitsemvalor = document.getElementById("id_date_init"); // Data de início das faturas
     const formCountElem = document.getElementById("id_paymentmethod_accounts_set-TOTAL_FORMS");//TOTAL FORMS
@@ -117,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
         
-        console.log(numberOfInstallments)
+        // console.log(numberOfInstallments)
         //apaga tudo
         if (table != null) {
             console.log(formCountElem)
@@ -154,6 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     new_date = startDate.setDate(startDate.getDate() + days);
                     final_date = new Date(new_date)
                     input.value = `${final_date.getDate().toString().padStart(2, '0')}/${(final_date.getMonth() + 1).toString().padStart(2, '0')}/${final_date.getFullYear()} `  
+                    // console.log(input.value)
                     // CALCULO DE VALOR
                 }else if (input.name.includes("-value")) {
                     // Define o valor da parcela
