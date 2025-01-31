@@ -67,7 +67,7 @@ class CompraForm(forms.ModelForm):
                     'class':'form-control row-5' 
                 }),
                 'data_da_compra':forms.DateTimeInput(attrs={
-                    'class':'form-control row-xl-2 mask-date',
+                    'class':'form-control row-xl-2 ',
                     'id':"date_compra"
                 }),
                 'situacao':forms.Select(attrs={

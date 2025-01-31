@@ -9,9 +9,17 @@
     {% block css %}
         <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
         <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.min.css' %}">
     {% endblock %}
-    <title>{% if compra.pk %}Editar{% else %}Criar{% endif %} Compra</title>
+    <!-- <title>{% if venda.pk %}Editar{% else %}Criar{% endif %} Venda</title> -->
     {% bootstrap_css %}
+    <style>
+        input[readonly] {
+            background-color: #e9ecef; /* Cinza claro */
+            color: #6c757d; /* Texto cinza escuro */
+            cursor: not-allowed; /* Cursor indicando que não é editável */
+        }
+    </style>
     <style>
         input[readonly] {
             background-color: #e9ecef; /* Cinza claro */
@@ -27,14 +35,13 @@
         {% block content %}
         <div class='content'>
             <div class='center'>
-                <!-- <h4 class="mt-5 mb-5 c-adapted">{% if Compra.pk %}Editar{% else %}Criar{% endif %} Compra</h4> -->
-
+                <!-- <h4 class="mt-5 mb-5 c-adapted">{% if venda.pk %}Editar{% else %}Criar{% endif %} Venda</h4> -->
                 <form method="post">
                     {% csrf_token %}
                 
-                    <!-- Formulário de Compra -->
-                    <h6>Dados da Compra</h6>
-                    <!-- {{ compra_form.as_p }} -->
+                    <!-- Formulário de Venda -->
+                    <h6>Dados da Venda</h6>
+                    <!-- {{ service_form.as_p }} -->
                     <table class="table">
                         <thead>
                             <tr>
@@ -42,10 +49,13 @@
                                     Pessoa
                                 </th>
                                 <th scope="col">
-                                    Data da Compra
+                                    Data da Venda
                                 </th>
                                 <th scope="col">
                                     Situação
+                                </th>
+                                <th>
+                                    Ativo
                                 </th>
                             </tr>
                         </thead>
@@ -53,62 +63,57 @@
                         <tbody>
                             <tr>
                                 <td id="form-client" class="">
-                                    {{compra_form.fornecedor.as_hidden}}
+                                    {{service_form.pessoa.as_hidden}}
                                 <input type="text" class="row form-control" id="idSearch">
-    
+                                <div id="clients" class="mt-3 c row">
+                                    
+                                </div>
                                 </td>
-                                <td style="width: 200px;"> 
-                                    <!-- <div class="input-group date" id="date_purchase" data-provide="datepicker">
-                                        {{compra_form.data_da_compra}}
-                                        <div class="input-group-addon">
-                                            <span class="glyphicon glyphicon-th"></span>
-                                        </div>
-                                    </div> -->
-
-                                    <div class="input-group date" data-provide="datepicker">
-                                        {{compra_form.data_da_compra}}
+                                <td style="width: 200px;">
+                                    <div class="input-group date " data-provide="datepicker">
+                                        {{service_form.data_da_venda}}
                                         <div class="input-group-addon">
                                             <span class="glyphicon glyphicon-th"></span>
                                         </div>
                                     </div>
                                 </td>
-                                <td>{{compra_form.situacao}}</td>
+                                <td>{{service_form.situacao}}</td>
+                                <td>{{service_form.is_active}}</td>
                             </tr>
                             <tr>
                                 <td class="z-2 position-absolute suggest">
-                                    <div id="options-1" class="row form-control ">
-                                        <p id="title-client" class="text-center">ID - CLIENTE</p>
+                                    <div id="options-1"  class="row form-control z-1 ">
+                                        <p id="title-client"class="text-center ">ID - CLIENTE</p>
+                                        
+
                                     </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                     
-                    <!-- Itens de Compra -->
-                    <h6>Itens de Compra</h6>
+                    <!-- Itens de Venda -->
+                    <h6>Itens de Venda</h6>
                     <div id="itens-container">      
-                        {{ compra_item_formset.management_form }}
-                        {% for form in compra_item_formset %}
+                        {{ service_item_formset.management_form }}
+                        {% for form in service_item_formset %}
                             <div class="item-form">
                                 <!-- {{ form.as_p }} -->
                                   <table class="table">
-                                    <thead>
+                                    <thead >
                                         <tr>
                                             <th scope="col">
-                                                Produto
+                                                Serviço
                                             </th>
-                                            <th scope="col">
-                                                Quantidade
-                                            </th>
-                                            <th scope="col">
-                                                Preço Unitário
-                                            </th>
+    
                                             <th scope="col">
                                                 Desconto(%)
                                             </th>
+
                                             <th scope="col">
-                                                Valor Total
+                                                Preço
                                             </th>
+                                            
                                             <th scope="col">
                                                 Ações
                                             </th>
@@ -117,32 +122,27 @@
 
                                     <tbody class="itens">
                                         <tr>
-                                            <td >{{form.produto.as_hidden}}
-                                                <input type="text" class="row form-control" id="idProduct-0">
+                                            <td >{{form.service.as_hidden}}
+                                                <input type="text" class="row form-control" id="idService-0">
+                                                <div id="services-0" class="mt-3 field-product row">
+                                                </div>
                                             </td>
-                                            
-                                            <td>
-                                                {{form.quantidade}}    
-                                            </td>
-                                            <td>
-                                                {{form.preco_unitario}}
-                                            </td>
+                    
                                             <td>
                                                 {{form.discount}}
                                             </td>
                                             <td>
-                                                {{form.price_total}}
+                                                {{form.preco}}
                                             </td>
                                             <td>
-                                                <button  type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
-                                                {{ form.DELETE.as_hidden }}
+                                                <button type="button" class="btn btn-danger delete" onclick="removeItem(this)" >Deletar</button>
+                                                {{form.DELETE.as_hidden}}
                                             </td>
                                         </tr>
-
                                         <tr class="tre">
                                             <td class="z-2 position-absolute suggest">
-                                                <div id="options_products-0" class="row form-control z-1 field-product v">
-                                                    <p class="text-center  title-product">CODIGO - DESC</p>
+                                                <div id="options_services-0" class="row form-control z-1 field-service v">
+                                                    <p class="text-center  title-service">CODIGO - DESC</p>
 
             
                                                 </div>
@@ -152,59 +152,51 @@
                                   </table>
                             </div>
                         {% endfor %}
-                        <template id="empty-form-template">
-                            <div class="item-form">
-                                <!-- {{ compra_item_formset.empty_form.as_p }} -->
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                        </tr>
-                                    </thead>
-    
-                                    <tbody>
-                                        <tr >
-                                            <td>{{ compra_item_formset.empty_form.produto.as_hidden }}
-                                                <input type="text" class="row form-control inputProduct">
-                                                <div class="mt-3 field-product row">
-                                        
-                                                </div>
-                                            </td>
-                                            
-                                            <td>
-                                                {{compra_item_formset.empty_form.quantidade}}
-                                            </td>
-                                    
-                                            <td>
-                                                {{compra_item_formset.empty_form.preco_unitario}}
-                                            </td>
-    
-                                            <td>
-                                                <!-- <input type="number" class="form-control row descont"> SUPER IMPORTANTE -->
-                                                {{compra_item_formset.empty_form.discount}}
-                                            </td>
-                                            <td>
-                                                <!-- <input type="number" class="form-control row totalValue" readonly> -->
-                                                {{compra_item_formset.empty_form.price_total}}
-                                            </td>
-                                            <td>
-                                                <button  type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
-                                                {{compra_item_formset.empty_form.DELETE.as_hidden}}</td>
-                                        </tr>
-                                        <tr class="tre">
-                                            <td class="z-2 position-absolute suggest ">
-                                                <div id="" class="row form-control z-1 v">
-                                                    <p class="text-center title-product">CODIGO - DESC</p>
-    
-            
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                  </table>
-                            </div>
-                        </template>
                     </div>
-                    <button id="item" type="button" onclick="addItem()" class="btn btn-outline-success mb-5">Adicionar Item</button>
+                    <template id="empty-form-template">
+                        <div class="item-form">
+                            <!-- {{ service_item_formset.empty_form.as_p }} -->
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr >
+                                        <td>{{ service_item_formset.empty_form.service.as_hidden}}
+                                            <input type="text" class="row form-control inputService">
+                                            <div class="mt-3 field-product row">
+                                    
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            {{service_item_formset.empty_form.discount}}
+                                        </td>
+                                        <td>
+                                            {{service_item_formset.empty_form.preco}}
+                                        <td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger delete" onclick="removeItem(this)">Deletar</button>
+                                            {{service_item_formset.empty_form.DELETE.as_hidden}}</td>
+                                        </td>
+                                            
+                                    </tr>
+                                    <tr class="tre">
+                                        <td class="z-2 position-absolute suggest ">
+                                            <div id="" class="row form-control z-1 v">
+                                                <p class="text-center title-service">CODIGO - DESC</p>
+
+        
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                              </table>
+                        </div>
+                    </template>
+                    <button id="item" type="button" onclick="addItem()" class="btn btn-outline-success mb-5 z-2">Adicionar Item</button>
                 
                     <table class="table">
                         <thead>
@@ -225,19 +217,21 @@
                             <tr>
                                 <td>
                                     <!-- <input type="text" id="id_all_total_products" readonly> -->
-                                    {{compra_form.product_total}}
+                                    {{service_form.service_total}}
                                 </td>
                                 <td>
                                     <!-- <input type="text" id="id_all_total_discount" readonly> -->
-                                    {{compra_form.discount_total}}
+                                    {{service_form.discount_total}}
                                 </td>
                                 <td>
                                     <!-- <input type="text" id="id_all_total_value"readonly> -->
-                                    {{compra_form.total_value}}
+                                    {{service_form.total_value}}
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+
+                
 
                     <!-- Formas de Pagamento -->
                     <h6>Formas de Pagamento</h6>
@@ -265,17 +259,21 @@
 
                                     <tbody>
                                         <tr>
-                                            <td>{{form.forma_pagamento}}</td>
-                                            <td>
-                                                <div class="input-group date">
+                                            <td class="field_type_payment">{{form.forma_pagamento}}</td>
+                                            <td style="width: 200px;">
+                                                <div class="input-group date" data-provide="datepicker">
                                                     {{form.expirationDate}}
                                                     <div class="input-group-addon">
                                                         <span class="glyphicon glyphicon-th"></span>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td>{{form.valor}}</td>
                                             <td>
+                                                {{form.valor}}
+                                            </td>
+                                            
+                                            <td>
+                                                <!-- <label for="">Deletar</label> -->
                                                 <button type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
                                                 {{ form.DELETE.as_hidden }}
                                         </tr>
@@ -285,21 +283,52 @@
                             </div>
                         {% endfor %}
                     </div>
+                    <template id="empty-payment-method-form">
+                        <div class="form-row">
+                            <!-- Clona o formulário vazio de payment_method_formset -->
+                            <!-- {{ payment_method_formset.empty_form.as_p }} -->
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                    </tr>
+                                </thead>
+            
+                                <tbody> 
+                                    <tr>
+                                        <td class="field_type_payment">{{ payment_method_formset.empty_form.forma_pagamento }}</td>
+                                        <td style="width: 200px;">
+                                            <div class="input-group date" data-provide="datepicker">
+                                                {{payment_method_formset.empty_form.expirationDate}}
+                                                <div class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-th"></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{{payment_method_formset.empty_form.valor}}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
+                                            {{payment_method_formset.empty_form.DELETE.as_hidden}}</td>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                              </table>
+                        </div>
+                    </template>
                     <button type="button" onclick="addPaymentMethod()" class="btn btn-outline-success mb-5">Adicionar Forma de Pagamento</button>
                     
 
-                    <!-- <div class="row">
+                    <div class="row">
 
                         <div class="col">
-                            <label for="">{{compra_form.observacao_pessoas.label}}</label>
-                            {{compra_form.observacao_pessoas}}
+                            <label for="">{{service_form.observacao_pessoas.label}}</label>
+                            {{service_form.observacao_pessoas}}
                         </div>
 
                         <div class="col">
-                            <label for="">{{compra_form.observacao_sistema.label}}</label>
-                            {{compra_form.observacao_sistema}}
+                            <label for="">{{service_form.observacao_sistema.label}}</label>
+                            {{service_form.observacao_sistema}}
                         </div>
-                    </div> -->
+                    </div>
 
                     <div class="row">
                         <div class="col mt-5 text-end">
@@ -311,38 +340,14 @@
             </div>
         </div>
         
-        <template id="empty-payment-method-form">
-            <div class="form-row">
-                <!-- Clona o formulário vazio de payment_method_formset -->
-                <!-- {{ payment_method_formset.empty_form.as_p }} -->
-                <table class="table">
-                    <thead>
-                        <tr>
-                        </tr>
-                    </thead>
-
-                    <tbody> 
-                        <tr>
-                            <td>{{ payment_method_formset.empty_form.forma_pagamento }}</td>
-                            <td>{{payment_method_formset.empty_form.expirationDate}}</td>
-                            <td>{{payment_method_formset.empty_form.valor}}</td>
-                            <td>
-                                <button type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
-                                {{payment_method_formset.empty_form.DELETE.as_hidden}}</td>
-                            </td>
-                        </tr>
-                    </tbody>
-                  </table>
-            </div>
-        </template>
+        
         <script type="text/javascript" src="{% static 'js/jquery-3.7.1.js' %}"></script>
-        <script src="{% static 'js/cep_api.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/jquery.mask.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/mask.js' %}"></script> -
         <script src="{% static 'js/addItem.js' %}" defer></script>
-        <script src="{% static 'js/date.js' %}"></script>
-        <script src="{% static 'js/clientSearch.js' %}"></script>  <!-- pesquisa clientes -->
-        <script src="{% static 'js/compra_item.js' %}"></script> <!-- pesquisa produtos em compras -->
+        <script src="{% static 'js/order.js' %}"></script>  <!-- pesquisa clientes -->
+        <script src="{% static 'js/venda_item.js' %}"></script> <!-- pesquisa produtos em vendas-->
+        <script src="{% static 'js/date.js' %   }"></script>
         <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
         <script src="{% static 'js/bootstrap-datepicker.pt-BR.js' %}"></script>
         {% endblock %}     
