@@ -7,10 +7,7 @@ class AccountsForm(forms.ModelForm):
         widget=forms.Select(attrs={'class': 'form-control row','id': 'installment_Range'}),
         label="Intervalo de Parcelas"
     )
-    # date_account = forms.DateField(
-    #     widget=forms.DateInput(attrs={'type': 'date'}),  # Isso mostra um campo de data no HTML
-    #     input_formats=['%d/%m/%Y']  # Formato que o Django espera para validar a data
-    # )
+
     class Meta:
         model = Accounts
         fields = [ 

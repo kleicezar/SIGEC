@@ -31,10 +31,6 @@ class Compra(models.Model):
     situacao = models.ForeignKey(Situation, on_delete=models.SET_NULL, null=True, verbose_name="Situação")
     is_active = models.BooleanField(default=True, verbose_name='Está Ativo')  # está ativo
 
-    # def calcular_total(self):
-    #     self.total = sum(item.subtotal() for item in self.itens.all())
-    #     self.save()
-
     def __str__(self):
         return f"Compra {self.id} por {self.usuario.username}"
     
@@ -48,7 +44,6 @@ class CompraItem(models.Model):
 
     # Calcula o total automaticamente ao salvar a instância
     def save(self, *args, **kwargs):
-        # if self.total_value == self.quantidade * self.preco_unitario:  # Calcula o total
         self.total = self.quantidade * self.preco_unitario  # Calcula o total
         super().save(*args, **kwargs)
 

@@ -106,5 +106,3 @@ class PaymentMethodVendaForm(forms.ModelForm):
             })
         }
 
-# class SaleSearchForm(forms.Form):
-#     search = forms.CharField(max_length=100,required=False,label='Pesquisar Cliente')

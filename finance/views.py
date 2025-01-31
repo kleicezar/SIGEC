@@ -22,28 +22,21 @@ def Accounts_Create(request):
         form_Accounts = AccountsForm(request.POST)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
         print(f'deu certo ate aqui "primeiro IF"')
-        # print(f'Erros em form_Accounts: {form_Accounts.errors}')
-        # print(f'Erros em PaymentMethod_Accounts_FormSet: {PaymentMethod_Accounts_FormSet.errors}')
 
         if form_Accounts.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
-            # print(form_Accounts)
             account = form_Accounts.save()
             print(f'deu certo ate aqui "segundo IF"')
 
             total_value = account.totalValue
             for form in PaymentMethod_Accounts_FormSet:
-                # print(f'form {form}')
                 if form.cleaned_data:
                     print(f'deu certo ate aqui "terceiro IF"')
                     parcela = form.cleaned_data['value']
                     verify += parcela
                     form_cleaned = form.save(commit=False)
                     installments.append(form_cleaned)
-            # print(f'parcela {parcela}')
-            # print(f'verify {verify}')
-            # print(f'total_value {total_value}')
+           
             if float(verify) == float(total_value):
-                # print(f'deu certo ate aqui "quarto IF"')
                 for installment in installments:
                     print(f'deu certo ate aqui "vai salvar"')
                     installment.conta = account
@@ -51,10 +44,8 @@ def Accounts_Create(request):
                     installment.save()
                 return redirect('AccountsPayable')
             else:
-                # print(f'deu certo ate aqui "primeiro ELSE"')
                 form.add_error('value', f'O valor do somatorio das parcelas ({parcela}) é inferior ao Valor Total ({total_value}).')
     else: 
-        # print('nao deu certo')
         form_Accounts = AccountsForm()
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
         
@@ -85,14 +76,14 @@ def Accounts_list(request):
         conta__acc = True 
     ).order_by('id')
     else:
-        account = PaymentMethod_Accounts.objects.filter(acc = True).order_by('id') #filter(acc = False)
+        account = PaymentMethod_Accounts.objects.filter(acc = True).order_by('id') 
 
-    paginator = Paginator(account, 20)  # 5 itens por página
+    paginator = Paginator(account, 20)  
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
 
     return render(request, 'finance/AccountsPay_list.html', {
-        'accounts': page,
+        'form_accounts': page,
         'query': search_query,  # Envie o termo de pesquisa para o template
         'ContasP' : 'Contas a Pagar'
     })
@@ -214,22 +205,13 @@ def update_Accounts(request, id_client):
         'form_Person': form_Person,
         'selected_form': selected_form,
     }
-    # print(selected_form)
-    # print(type(selected_form))
-
     return render(request, 'registry/ClientformUpdate.html', context)
 
 # funcionando
 @login_required
 def delete_Accounts(request, id_Accounts):
     # Recupera o accounte com o id fornecido
-    # account = Accounts.objects.filter(id=id_Accounts)
-    account_deleta_pelo_amor_De_Deus = PaymentMethod_Accounts.objects.filter(id=id_Accounts,acc = True).delete() #filter(acc = False)
-
-    # account_parcela = get_object_or_404(PaymentMethod_Accounts, id=id_Accounts)
-    # account = get_object_or_404(Accounts, (id=id_Accounts,acc = True))
-    # account.delete()
-    # account_parcela.delete()
+    account_deleta_pelo_amor_De_Deus = PaymentMethod_Accounts.objects.filter(id=id_Accounts,acc = True).delete() 
     return redirect('AccountsPayable')
 
 ### CONTAS A RECEBER
@@ -244,28 +226,20 @@ def AccountsReceivable_Create(request):
         form_Accounts = AccountsForm(request.POST)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
         print(f'deu certo ate aqui "primeiro IF"')
-        # print(f'Erros em form_Accounts: {form_Accounts.errors}')
-        # print(f'Erros em PaymentMethod_Accounts_FormSet: {PaymentMethod_Accounts_FormSet.errors}')
 
         if form_Accounts.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
-            # print(form_Accounts)
             account = form_Accounts.save()
             print(f'deu certo ate aqui "segundo IF"')
 
             total_value = account.totalValue
             for form in PaymentMethod_Accounts_FormSet:
-                # print(f'form {form}')
                 if form.cleaned_data:
                     print(f'deu certo ate aqui "terceiro IF"')
                     parcela = form.cleaned_data['value']
                     verify += parcela
                     form_cleaned = form.save(commit=False)
                     installments.append(form_cleaned)
-            # print(f'parcela {parcela}')
-            # print(f'verify {verify}')
-            # print(f'total_value {total_value}')
             if float(verify) == float(total_value):
-                # print(f'deu certo ate aqui "quarto IF"')
                 for installment in installments:
                     print(f'deu certo ate aqui "vai salvar"')
                     installment.conta = account
@@ -273,10 +247,8 @@ def AccountsReceivable_Create(request):
                     installment.save()
                 return redirect('AccountsReceivable')
             else:
-                # print(f'deu certo ate aqui "primeiro ELSE"')
                 form.add_error('value', f'O valor do somatorio das parcelas ({parcela}) é inferior ao Valor Total ({total_value}).')
     else: 
-        # print('nao deu certo')
         form_Accounts = AccountsForm()
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
         
@@ -306,12 +278,10 @@ def AccountsReceivable_list(request):
         acc = False 
     ).order_by('id')
     else:
-        account = PaymentMethod_Accounts.objects.filter(acc = False).order_by('id') #filter(acc = False)
+        account = PaymentMethod_Accounts.objects.filter(acc = False).order_by('id') 
 
-    # for i in account:
-    #     print(account) 
     # Configure o Paginator com o queryset filtrado
-    paginator = Paginator(account, 20)  # 5 itens por página
+    paginator = Paginator(account, 20) 
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
 
@@ -351,97 +321,44 @@ def get_AccountsReceivable(request, id_Accounts):
 
 @login_required
 def update_AccountsReceivable(request, id_Accounts):
+    payment_instance = get_object_or_404(PaymentMethod_Accounts, id=id_Accounts)
+    accounts_instance = get_object_or_404(Accounts, id=payment_instance.conta_id)
+    if request.method == "POST":  
+        payment_instance = PaymentMethodAccountsForm(request.POST, instance=payment_instance)
 
-    # Buscar o cliente e os dados relacionados
-    # selected_form = 'a'
-    # try:
-    #     person = Person.objects.get(id=id_client)
-    #     # print(person)
-    #     if person.id_FisicPerson_fk:
-    #         fisicPerson = person.id_FisicPerson_fk
-    #         address = person.id_FisicPerson_fk.id_address_fk
-    #         selected_form = "Pessoa Fisica"
-    #         legalPerson = None
-    #         foreigner = None
-    #     else:
-    #         fisicPerson = None
-    #         if person.id_LegalPerson_fk:
-    #             legalPerson = person.id_LegalPerson_fk
-    #             address = person.id_LegalPerson_fk.id_address_fk
-    #             selected_form = "Pessoa Juridica"
-    #             foreigner = None
-    #         else:
-    #             legalPerson = None
-    #             if person.id_ForeignPerson_fk:
-    #                 foreigner = person.id_ForeignPerson_fk
-    #                 address = person.id_ForeignPerson_fk.id_address_fk
-    #                 selected_form = "Estrangeiro"
-    #             else:
-    #                 foreigner = None
-    #                 selected_form = ""
+        accounts_form_instance = AccountsForm(request.POST, instance=accounts_instance)
 
-    # except Person.DoesNotExist:
-    #     return redirect('Client')  # Redirecionar para pagina inicial de clientes
+        print(accounts_instance.date_init)
 
-    paymentMethodAccounts = get_object_or_404(PaymentMethod_Accounts, id=id_Accounts)
-    accounts = get_object_or_404(Accounts, id=paymentMethodAccounts.conta_id)
-    if request.method == "POST":
-        if paymentMethodAccounts.is_valid() and accounts.is_valid():
-            accounts.save()
-            paymentMethodAccounts.save(commit=False)
-            if  paymentMethodAccounts.interestPercent:
-
-
-        # # PaymentMethodAccountsFormSet = inlineformset_factory(Accounts, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
-
-        # form_accounts = AccountsForm(request.POST, instance=accounts)
-        # form_paymentMethodAccounts = PaymentMethodAccountsForm(request.POST, instance=paymentMethodAccounts)
-
-        # # Atualização do endereço
-        # if form_accounts.is_valid() and form_paymentMethodAccounts.is_valid():
-        #     accounts_save = form_accounts.save()
-        #     paymentMethodAccounts_save = form_paymentMethodAccounts.save()
-
-        # # Atualização dos dados principais
-        # if form_Person.is_valid():
-        #     if fisicPerson and form_fisicPerson.is_valid():
-        #         fisicPerson = form_fisicPerson.save(commit=False)
-        #         fisicPerson.id_address_fk = address
-        #         fisicPerson.save()
-
-        #         person = form_Person.save(commit=False)
-        #         person.id_FisicPerson_fk = fisicPerson
-        #         person.save()
-
-        #     elif legalPerson and form_legalPerson.is_valid():
-        #         legalPerson = form_legalPerson.save(commit=False)
-        #         legalPerson.id_address_fk = address
-        #         legalPerson.save()
-
-        #         person = form_Person.save(commit=False)
-        #         person.id_LegalPerson_fk = legalPerson
-        #         person.save()
-
-        #     elif foreigner and form_foreigner.is_valid():
-        #         foreigner = form_foreigner.save(commit=False)
-        #         foreigner.id_address_fk = address
-        #         foreigner.save()
-
-        #         person = form_Person.save(commit=False)
-        #         person.id_ForeignPerson_fk = foreigner
-        #         person.save()
+        if payment_instance.is_valid() and accounts_form_instance.is_valid():
+            print('funciona pelo amor de Deus')
+            accounts_form_instance.save()
+            payment_instance.save(commit=False)
+            if payment_instance.interestPercent == '':
+                print(payment_instance.interestPercent)
+                payment_instance.interestPercent = None
+            if payment_instance.interestValue == 0: 
+                print(payment_instance.interestValue)
+                payment_instance.interestValue = None
+            if payment_instance.finePercent == '':
+                print(payment_instance.finePercent)
+                payment_instance.finePercent = None
+            if payment_instance.fineValue == 0:
+                print(payment_instance.fineValue)
+                payment_instance.fineValue = None
+            payment_instance.save()
 
             return redirect('AccountsReceivable')  # Redirecionar após salvar as alterações
     else:
         # Preencher os formulários com os dados existentes
-        form_accounts = AccountsForm(instance=accounts)
-        form_paymentMethodAccounts = PaymentMethodAccountsForm(instance=paymentMethodAccounts)
+        accounts_form_instance = AccountsForm(instance=accounts_instance)
+        payment_instance = PaymentMethodAccountsForm(instance=payment_instance)
 
     context = {
-        'form_Accounts': form_accounts,
-        'form_paymentMethodAccounts': form_paymentMethodAccounts,
+        'form_Accounts': accounts_form_instance,
+        'form_paymentMethodAccounts': payment_instance,
     }
-
+ 
     return render(request, 'finance/AccountsPayformUpdate.html', context)
 
 # funcionando
@@ -450,325 +367,3 @@ def delete_AccountsReceivable(request, id_Accounts):
     # Recupera o accounte com o id fornecido
     account_deleta_pelo_amor_De_Deus = PaymentMethod_Accounts.objects.filter(id=id_Accounts,acc = False).delete() #filter(acc = False)
     return redirect('AccountsReceivable')
-
-#+------------------------------------------+
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#+------------------------------------------+
-
-@login_required
-def buscar_clientes(request):
-    # """Busca clientes dinamicamente, retorna dados paginados em JSON."""
-    query = request.GET.get('query', '').strip()  # Recebe a entrada do usuário
-    page_num = request.GET.get('page', 1)  # Número da página atual
-
-    # Realiza a busca com base no termo de pesquisa
-    resultados = Person.objects.filter(
-        Q(id__icontains=query) | 
-        Q(id_FisicPerson_fk__name__icontains=query) | 
-        Q(id_ForeignPerson_fk__name_foreigner__icontains=query) | 
-        Q(id_LegalPerson_fk__fantasyName__icontains=query)
-    ).order_by('id')
-
-    # Serializa os resultados em uma lista de dicionários
-    clients = [
-        {
-            'id': cliente.id,
-            'name': (
-                cliente.id_FisicPerson_fk.name if cliente.id_FisicPerson_fk else 
-                (cliente.id_ForeignPerson_fk.name_foreigner if cliente.id_ForeignPerson_fk else 
-                (cliente.id_LegalPerson_fk.fantasyName if cliente.id_LegalPerson_fk else 'Nome não disponível'))),
-            'WorkPhone': cliente.WorkPhone,
-            'PersonalPhone': cliente.PersonalPhone,
-        }
-        for cliente in resultados
-    ]
-
-    # Paginação
-    usuario_paginator = Paginator(clients, 20)  # 20 resultados por página
-    page = usuario_paginator.get_page(page_num)
-
-    # Constrói a resposta JSON
-    response_data = {
-        'clientes': list(page.object_list),
-        'pagination': {
-            'has_previous': page.has_previous(),
-            'previous_page': page.previous_page_number() if page.has_previous() else None,
-            'has_next': page.has_next(),
-            'next_page': page.next_page_number() if page.has_next() else None,
-            'current_page': page.number,
-            'total_pages': usuario_paginator.num_pages,
-        },
-        'message': f"{len(clients)} Clientes encontrados." if page.object_list else "Nenhum cliente encontrado."
-    }
-    return JsonResponse(response_data)
-
-@login_required
-def update_client(request, id_client):
-    # Buscar o cliente e os dados relacionados
-    selected_form = 'a'
-    try:
-        person = Person.objects.get(id=id_client)
-        # print(person)
-        if person.id_FisicPerson_fk:
-            fisicPerson = person.id_FisicPerson_fk
-            address = person.id_FisicPerson_fk.id_address_fk
-            selected_form = "Pessoa Fisica"
-            legalPerson = None
-            foreigner = None
-        else:
-            fisicPerson = None
-            if person.id_LegalPerson_fk:
-                legalPerson = person.id_LegalPerson_fk
-                address = person.id_LegalPerson_fk.id_address_fk
-                selected_form = "Pessoa Juridica"
-                foreigner = None
-            else:
-                legalPerson = None
-                if person.id_ForeignPerson_fk:
-                    foreigner = person.id_ForeignPerson_fk
-                    address = person.id_ForeignPerson_fk.id_address_fk
-                    selected_form = "Estrangeiro"
-                else:
-                    foreigner = None
-                    selected_form = ""
-
-    except Person.DoesNotExist:
-        return redirect('Client')  # Redirecionar para pagina inicial de clientes
-
-    if request.method == "POST":
-        form_address = AddressForm(request.POST, instance=address)
-        form_fisicPerson = FisicPersonForm(request.POST, instance=fisicPerson)
-        form_legalPerson = LegalPersonModelForm(request.POST, instance=legalPerson)
-        form_foreigner = ForeignerModelForm(request.POST, instance=foreigner)
-        form_Person = PersonForm(request.POST, instance=person)
-
-        # Atualização do endereço
-        if form_address.is_valid():
-            address = form_address.save()
-
-        # Atualização dos dados principais
-        if form_Person.is_valid():
-            if fisicPerson and form_fisicPerson.is_valid():
-                fisicPerson = form_fisicPerson.save(commit=False)
-                fisicPerson.id_address_fk = address
-                fisicPerson.save()
-
-                person = form_Person.save(commit=False)
-                person.id_FisicPerson_fk = fisicPerson
-                person.save()
-
-            elif legalPerson and form_legalPerson.is_valid():
-                legalPerson = form_legalPerson.save(commit=False)
-                legalPerson.id_address_fk = address
-                legalPerson.save()
-
-                person = form_Person.save(commit=False)
-                person.id_LegalPerson_fk = legalPerson
-                person.save()
-
-            elif foreigner and form_foreigner.is_valid():
-                foreigner = form_foreigner.save(commit=False)
-                foreigner.id_address_fk = address
-                foreigner.save()
-
-                person = form_Person.save(commit=False)
-                person.id_ForeignPerson_fk = foreigner
-                person.save()
-
-            return redirect('Client')  # Redirecionar após salvar as alterações
-    else:
-        # Preencher os formulários com os dados existentes
-        form_address = AddressForm(instance=address)
-        form_fisicPerson = FisicPersonForm(instance=fisicPerson)
-        form_legalPerson = LegalPersonModelForm(instance=legalPerson)
-        form_foreigner = ForeignerModelForm(instance=foreigner)
-        form_Person = PersonForm(instance=person)
-
-    context = {
-        'form_address': form_address,
-        'form_fisicPerson': form_fisicPerson,
-        'form_legalPerson': form_legalPerson,
-        'form_foreigner': form_foreigner,
-        'form_Person': form_Person,
-        'selected_form': selected_form,
-    }
-    # print(selected_form)
-    # print(type(selected_form))
-
-    return render(request, 'registry/ClientformUpdate.html', context)
-
-@login_required
-def delete_client(request, id_client):
-    # Recupera o cliente com o id fornecido
-    client = get_object_or_404(Person, id=id_client)
-    client.delete()
-    return redirect('Client')
-
-@login_required
-def get_client(request, id_client):
-    person = Person.objects.get(id=id_client)
-    if person.id_FisicPerson_fk:
-        client = {
-                'id': person.id,
-                'name': ( person.id_FisicPerson_fk.name if person.id_FisicPerson_fk else 'Nome não disponível' ),
-                'cpf': ( person.id_FisicPerson_fk.cpf if person.id_FisicPerson_fk else 'Cadastro de Pessoa Fisica - CPF indisponível'),
-                'rg': ( person.id_FisicPerson_fk.rg if person.id_FisicPerson_fk else 'Registro Geral - RG indisponível'),
-                'dateOfBirth': ( person.id_FisicPerson_fk.dateOfBirth if person.id_FisicPerson_fk else 'Data de Aniversario indisponível'),
-                'WorkPhone': person.WorkPhone,
-                'PersonalPhone': person.PersonalPhone,
-                'Site': person.site if person.site else 'Não Informado',
-                'Salesman': person.salesman if person.salesman else 'Não Informado',
-                'CreditLimit': person.creditLimit if person.creditLimit else 'Não Informado',
-                'id_FisicPerson_fk': 1,
-                }
-    if person.id_LegalPerson_fk:
-        client = {
-                'id': person.id,
-                'name': ( person.id_LegalPerson_fk.fantasyName if person.id_LegalPerson_fk else 'Nome indisponível'),
-                'cnpj':( person.id_LegalPerson_fk.cnpj if person.id_LegalPerson_fk else 'CNPJ indisponível'),
-                'socialReason':( person.id_LegalPerson_fk.socialReason if person.id_LegalPerson_fk else 'Razão Social indisponível'),
-                'StateRegistration':( person.id_LegalPerson_fk.StateRegistration if person.id_LegalPerson_fk else 'Inscrição Estadual indisponível'),
-                'typeOfTaxpayer':( person.id_LegalPerson_fk.typeOfTaxpayer if person.id_LegalPerson_fk else 'Tipo de Contribuinte indisponível'),
-                'MunicipalRegistration':( person.id_LegalPerson_fk.MunicipalRegistration if person.id_LegalPerson_fk else 'Inscrição Municipal indisponível'),
-                'suframa':( person.id_LegalPerson_fk.suframa if person.id_LegalPerson_fk else 'Numero da Suframa indisponível'),
-                'Responsible':( person.id_LegalPerson_fk.Responsible if person.id_LegalPerson_fk else 'Nome do Responsavel indisponível'),
-                'WorkPhone': person.WorkPhone,
-                'PersonalPhone': person.PersonalPhone,
-                'Site': person.site if person.site else 'Não Informado',
-                'Salesman': person.salesman if person.salesman else 'Não Informado',
-                'CreditLimit': person.creditLimit if person.creditLimit else 'Não Informado',
-                'id_LegalPerson_fk': 1,
-            }
-        
-    if person.id_ForeignPerson_fk:
-        client = {
-                'id': person.id,
-                'name_foreigner': ( person.id_ForeignPerson_fk.name_foreigner if person.id_ForeignPerson_fk else 'Nome não disponível'),
-                'num_foreigner': ( person.id_ForeignPerson_fk.num_foreigner if person.id_ForeignPerson_fk else 'Numero do Documento Estrangeiro não disponível'),
-                'WorkPhone': person.WorkPhone,
-                'PersonalPhone': person.PersonalPhone,
-                'Site': person.site if person.site else 'Não Informado',
-                'Salesman': person.salesman if person.salesman else 'Não Informado',
-                'CreditLimit': person.creditLimit if person.creditLimit else 'Não Informado',
-                'id_ForeignPerson_fk': 1,
-            }
-        
-    return render(request, 'registry/Client_Get.html', {'client': client})
-
-    # print('-------------------')
-    # # print(client.id_FisicPerson_fk | None)
-    # # print(client.id_LegalPerson_fk | None)
-    # # print(client.id_ForeignPerson_fk | None)
-    # print(client)
-    # print('-------------------')
-
-        # clients = Person.objects.filter( Q(id__icontains=query) | 
-        # Q(id_FisicPerson_fk__name__icontains=query) | 
-        # Q(id_ForeignPerson_fk__name_foreigner__icontains=query) | 
-        # Q(id_LegalPerson_fk__fantasyName__icontains=query))
-        
-
-    #     form_address = AddressForm(request.POST, instance=address)
-    #     form_fisicPerson = FisicPersonForm(request.POST, instance=fisicPerson)
-    #     form_legalPerson = LegalPersonModelForm(request.POST, instance=legalPerson)
-    #     form_foreigner = ForeignerModelForm(request.POST, instance=foreigner)
-    #     form_Person = PersonForm(request.POST, instance=person)
-    # else:
-    #     form = CombinedForm()
-
-    # client = [
-    #     {
-    #         'id': person.id,
-    #         'name': (    person.id_FisicPerson_fk.name if person.id_FisicPerson_fk else 
-    #                     (person.id_ForeignPerson_fk.name_foreigner if person.id_ForeignPerson_fk else 
-    #                     (person.id_LegalPerson_fk.fantasyName if person.id_LegalPerson_fk else 'Nome não disponível'))),
-    #         'WorkPhone': person.WorkPhone,
-    #         'PersonalPhone': person.PersonalPhone,
-    #         'Site': person.site if person.site else 'Não Informado',
-    #         'Salesman': person.salesman if person.salesman else 'Não Informado',
-    #         'CreditLimit': person.salesman if person.salesman else 'Não Informado',
-    #         }
-    #     ]
-
-    return HttpResponse(client)
-
-### TECNICOS
-
-@login_required
-def search_tech(request):
-    # """Busca clientes dinamicamente, retorna dados paginados em JSON."""
-    query = request.GET.get('query', '').strip()  # Recebe a entrada do usuário
-    page_num = request.GET.get('page', 1)  # Número da página atual
-
-    # Realiza a busca com base no termo de pesquisa
-    if query:
-        resultados = Person.objects.filter(
-            (
-                Q(id__icontains=query) | 
-                Q(id_FisicPerson_fk__name__icontains=query) | 
-                Q(id_ForeignPerson_fk__name_foreigner__icontains=query) | 
-                Q(id_LegalPerson_fk__fantasyName__icontains=query),
-            ),
-            isTechnician=True, 
-            isActive=True
-        ).order_by('id')
-    else:  # Retorna um queryset vazio caso não haja busca
-        resultados = Person.objects.filter(
-            (
-                Q(id__icontains=query) | 
-                Q(id_FisicPerson_fk__name__icontains=query) | 
-                Q(id_ForeignPerson_fk__name_foreigner__icontains=query) | 
-                Q(id_LegalPerson_fk__fantasyName__icontains=query),
-            ),
-            isTechnician=True, 
-            isActive=True
-        ).order_by('id')
-
-    # Serializa os resultados em uma lista de dicionários
-    clients = [
-        { 
-            'id': cliente.id,
-            'name': (
-                cliente.id_FisicPerson_fk.name if cliente.id_FisicPerson_fk else 
-                (cliente.id_ForeignPerson_fk.name_foreigner if cliente.id_ForeignPerson_fk else 
-                (cliente.id_LegalPerson_fk.fantasyName if cliente.id_LegalPerson_fk else 'Nome não disponível'))),
-            'WorkPhone': cliente.WorkPhone,
-            'PersonalPhone': cliente.PersonalPhone,
-        }
-        for cliente in resultados
-    ]
-
-    # Paginação
-    usuario_paginator = Paginator(clients, 20)  # 20 resultados por página
-    page = usuario_paginator.get_page(page_num)
-
-    # Constrói a resposta JSON
-    response_data = { 
-        'clientes': list(page.object_list),
-        'pagination': {
-            'has_previous': page.has_previous(),
-            'previous_page': page.previous_page_number() if page.has_previous() else None,
-            'has_next': page.has_next(),
-            'next_page': page.next_page_number() if page.has_next() else None,
-            'current_page': page.number,
-            'total_pages': usuario_paginator.num_pages,
-        },
-        'message': f"{len(clients)} Clientes encontrados." if page.object_list else "Nenhum cliente encontrado."
-    }
-    return JsonResponse(response_data)

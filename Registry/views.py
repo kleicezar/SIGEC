@@ -10,7 +10,7 @@ from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
 from django.core.paginator import Paginator
 
-# ### CLIENT
+### CLIENT
 
 @login_required
 def Client_Create(request):
@@ -309,43 +309,6 @@ def get_client(request, id_client):
             }
         
     return render(request, 'registry/Client_Get.html', {'client': client})
-
-    print('-------------------')
-    # print(client.id_FisicPerson_fk | None)
-    # print(client.id_LegalPerson_fk | None)
-    # print(client.id_ForeignPerson_fk | None)
-    print(client)
-    print('-------------------')
-
-        # clients = Person.objects.filter( Q(id__icontains=query) | 
-        # Q(id_FisicPerson_fk__name__icontains=query) | 
-        # Q(id_ForeignPerson_fk__name_foreigner__icontains=query) | 
-        # Q(id_LegalPerson_fk__fantasyName__icontains=query))
-        
-
-    #     form_address = AddressForm(request.POST, instance=address)
-    #     form_fisicPerson = FisicPersonForm(request.POST, instance=fisicPerson)
-    #     form_legalPerson = LegalPersonModelForm(request.POST, instance=legalPerson)
-    #     form_foreigner = ForeignerModelForm(request.POST, instance=foreigner)
-    #     form_Person = PersonForm(request.POST, instance=person)
-    # else:
-    #     form = CombinedForm()
-
-    # client = [
-    #     {
-    #         'id': person.id,
-    #         'name': (    person.id_FisicPerson_fk.name if person.id_FisicPerson_fk else 
-    #                     (person.id_ForeignPerson_fk.name_foreigner if person.id_ForeignPerson_fk else 
-    #                     (person.id_LegalPerson_fk.fantasyName if person.id_LegalPerson_fk else 'Nome não disponível'))),
-    #         'WorkPhone': person.WorkPhone,
-    #         'PersonalPhone': person.PersonalPhone,
-    #         'Site': person.site if person.site else 'Não Informado',
-    #         'Salesman': person.salesman if person.salesman else 'Não Informado',
-    #         'CreditLimit': person.salesman if person.salesman else 'Não Informado',
-    #         }
-    #     ]
-
-    return HttpResponse(client)
 
 ### TECNICOS
 

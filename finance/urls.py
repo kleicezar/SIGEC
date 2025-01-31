@@ -17,5 +17,4 @@ urlpatterns = [
     path('acctrec/del/<int:id_Accounts>/', delete_AccountsReceivable, name='delete_AccountsReceivable'),
     path('acctrec/get/<int:id_Accounts>/', get_AccountsReceivable, name='get_AccountsReceivable'),
 
-    path('b-tech/', search_tech, name='buscar_tech'),
 ]

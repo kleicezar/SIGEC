@@ -56,7 +56,6 @@ class ProductModelForm(forms.ModelForm):
         # Desabilita o campo 'current_quantity' se for uma atualização
         if self.instance and self.instance.pk:
             self.fields['current_quantity'].disabled = True
-            # self.fields['current_quantity'].widget.attrs['readonly'] = True
 
 class CompraForm(forms.ModelForm):
     class Meta:
@@ -132,7 +131,6 @@ class PaymentMethodCompraForm(forms.ModelForm):
             }),
             'expirationDate':forms.TextInput(attrs={
                 'class':'form-control row mask-date',
-                # 'id' : 'payment_method',
             }),
             'valor':forms.NumberInput(attrs={
                 'class':'form-control row',

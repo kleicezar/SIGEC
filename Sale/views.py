@@ -34,53 +34,10 @@ def venda_list(request):
         'vendas': page,
         'query':search_query
         })
-    # vendas = Venda.objects.all()
-    # return render(request, 'sale/venda_list.html', {'vendas': vendas})
-
-    # 
-    # @login_requiredCriar uma nova Venda
-    # def venda_create(request):
-    #     if request.method == 'POST':
-    #         form = VendaForm(request.POST)
-    #         if form.is_valid():
-    #             form.save()
-    #             return redirect('venda_list')  # Redireciona para a lista de vendas
-    #     else:
-    #         form = VendaForm()
-    #     return render(request, 'sale/venda_form.html', {'form': form})
-
-
-    # 
-    # @login_requiredCriar uma nova Venda com itens
-    # def venda_create(request):
-    #     if request.method == 'POST':
-    #         venda_form = VendaForm(request.POST)
-    #         # Como o formulário de VendaItem precisa ser adicionado de forma dinâmica, vamos criar uma instância dele manualmente
-    #         venda_items = [VendaItemForm(request.POST, prefix=f"item_{i}") for i in range(1)]  # Inicia com 5 campos de item (ajuste conforme necessário)
-
-    #         if venda_form.is_valid():
-    #             venda = venda_form.save()
-
-    #             # Salvando os itens da venda
-    #             for item_form in venda_items:
-    #                 if item_form.is_valid():
-    #                     venda_item = item_form.save(commit=False)
-    #                     venda_item.venda = venda
-    #                     venda_item.save()
-
-    #             return redirect('venda_list')  # Redireciona para a lista de vendas
-    #     else:
-    #         venda_form = VendaForm()
-    #         venda_items = [VendaItemForm(prefix=f"item_{i}") for i in range(1)]  # Campos iniciais
-
-    #     return render(request, 'sale/venda_form.html', {'venda_form': venda_form, 'venda_items': venda_items})
-
 @login_required
 def venda_create(request):
     VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=1, can_delete=True)
     PaymentMethodVendaFormSet = inlineformset_factory(Venda, PaymentMethod_Venda, form=PaymentMethodVendaForm, extra=1, can_delete=True)
-    # VendaItemFormSet = modelformset_factory(VendaItem, form=VendaItemForm, extra=1)
-    # PaymentMethodVendaFormSet = modelformset_factory(PaymentMethod_Venda, form=PaymentMethodVendaForm, extra=1)
 
     if request.method == 'POST':
         venda_form = VendaForm(request.POST)
@@ -99,17 +56,9 @@ def venda_create(request):
                         estoque_suficiente = False
                         form.add_error('quantidade', f'Não há estoque suficiente para o produto {produto.description}. Estoque disponível: {produto.current_quantity}.')
 
-            # venda = venda_form.save(commit=False)
-            # venda_item_formset.instance = venda
-            # for obj in payment_method_formset.deleted_objects:
-            #         obj.delete()
-
             if estoque_suficiente:
                 venda = venda_form.save()
 
-                # venda_item_formset.instance = venda
-                # venda_item_formset.save()
-                # Salva os itens da venda
                 for form in venda_item_formset:
                     if form.cleaned_data:
                         produto = form.cleaned_data['product']
@@ -129,17 +78,7 @@ def venda_create(request):
                             
                             produto.current_quantity -= quantidade
                             produto.save()
-                        # for form in venda_item_formset.deleted_objects:
-                        #     form.delete()
-                        #     form.save()
-                # Salva as formas de pagamento associadas à venda
-
-
-                # payment_method_formset.instance = venda
-                # payment_method_formset.save()
-                # for form in payment_method_formset.deleted_objects:
-                #     form.delete()
-                #     form.save()
+                        
                 payment_method_formset.instance = venda
                 total_payment = 0
                 for form in payment_method_formset: 
@@ -162,23 +101,7 @@ def venda_create(request):
                         'payment_method_formset': payment_method_formset
                     }
                     return render(request, 'sale/venda_form.html', context)
-
-                    # raise Exception("Cancelando transação")
-                # for form in payment_method_formset:
-                #     if form.cleaned_data:
-                #         forma_pagamento = form.cleaned_data['forma_pagamento']
-                #         expiration_date = form.cleaned_data['expirationDate']
-                #         valor = form.cleaned_data['valor']
-                        
-                #         PaymentMethod_Venda.objects.create(
-                #             venda=venda,
-                #             forma_pagamento=forma_pagamento,
-                #             expirationDate=expiration_date,
-                #             valor=valor
-                #         )
-                
                 return redirect('venda_list')
-        
     else:
         venda_form = VendaForm()
         venda_item_formset = VendaItemFormSet(queryset=VendaItem.objects.none())
@@ -367,12 +290,3 @@ def buscar_vendas(request):
     }
 
     return JsonResponse(response_data)
-# nome = request.GET.get('nome','')
-# usuarios = User.objects.filter(nome__icontains = nome).values('nome')
-# return JsonResponse({'usuarios':list(usuarios)})
-
-# def client_search(request):
-#     nome = request.GET.get('pessoa', '')
-    # vendas = Person.objects.filter(WorkPhone__icontains=nome).values('WorkPhone')
-    # return JsonResponse({'pessoas': list(vendas)})
-
