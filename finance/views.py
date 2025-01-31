@@ -243,40 +243,24 @@ def AccountsReceivable_Create(request):
     if request.method == "POST":
         form_Accounts = AccountsForm(request.POST)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
-        print(f'deu certo ate aqui "primeiro IF"')
-        # print(f'Erros em form_Accounts: {form_Accounts.errors}')
-        # print(f'Erros em PaymentMethod_Accounts_FormSet: {PaymentMethod_Accounts_FormSet.errors}')
-
         if form_Accounts.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
-            # print(form_Accounts)
             account = form_Accounts.save()
-            print(f'deu certo ate aqui "segundo IF"')
-
             total_value = account.totalValue
             for form in PaymentMethod_Accounts_FormSet:
-                # print(f'form {form}')
                 if form.cleaned_data:
-                    print(f'deu certo ate aqui "terceiro IF"')
                     parcela = form.cleaned_data['value']
                     verify += parcela
                     form_cleaned = form.save(commit=False)
                     installments.append(form_cleaned)
-            # print(f'parcela {parcela}')
-            # print(f'verify {verify}')
-            # print(f'total_value {total_value}')
             if float(verify) == float(total_value):
-                # print(f'deu certo ate aqui "quarto IF"')
                 for installment in installments:
-                    print(f'deu certo ate aqui "vai salvar"')
                     installment.conta = account
                     installment.acc = False
                     installment.save()
                 return redirect('AccountsReceivable')
             else:
-                # print(f'deu certo ate aqui "primeiro ELSE"')
                 form.add_error('value', f'O valor do somatorio das parcelas ({parcela}) é inferior ao Valor Total ({total_value}).')
     else: 
-        # print('nao deu certo')
         form_Accounts = AccountsForm()
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
         

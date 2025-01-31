@@ -1,6 +1,7 @@
 from django.db import models
 from Registry.models import Person
 from Sale.models import Venda
+from purchase.models import Compra
 from config.models import ChartOfAccounts, PaymentMethod, Situation
 
 class Accounts(models.Model):
@@ -64,7 +65,6 @@ class Accounts(models.Model):
         null=True
         )
     
-
 class PaymentMethod_Accounts(models.Model):
     INTEREST_CHOICES = [
         ('percent', '(%)'),
@@ -74,19 +74,27 @@ class PaymentMethod_Accounts(models.Model):
         ('percent', '(%)'),
         ('value', '(R$)'),
     ]
-
     conta = models.ForeignKey(
         Accounts,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True,
         verbose_name='id_Accounts'
-        )
-    
+    )
     venda = models.ForeignKey(Venda,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True,
         verbose_name='id_venda'
     )
+    compra = models.ForeignKey(Compra,
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name='id_compra'
+    )
+    # ordem_servico = models.ForeignKey(Compra,
+    #     on_delete=models.CASCADE,
+    #     null=True,
+    #     verbose_name='id_compra'
+    # )
     forma_pagamento = models.ForeignKey(PaymentMethod,
         on_delete=models.SET_NULL,
         null=True,
@@ -99,12 +107,10 @@ class PaymentMethod_Accounts(models.Model):
     days = models.IntegerField(
         verbose_name='Dias'
     ) #dias entre as parcelas
-
     value = models.DecimalField(decimal_places=2,
         max_digits=8,
         verbose_name='Valor Pago:'
     )
-    
     interestType = models.CharField(
         max_length=10,
         choices=INTEREST_CHOICES,
@@ -118,15 +124,15 @@ class PaymentMethod_Accounts(models.Model):
         max_digits=8, 
         verbose_name='Juros (%)',
         null=True,
-        blank=True)
-    
+        blank=True
+    )
     interestValue = models.DecimalField(
         decimal_places=2, 
         max_digits=8, 
         verbose_name='juros R$',
         null=True,
-        blank=True)
-    
+        blank=True
+    )
     fineType = models.CharField(
         max_length=10,
         choices=FINE_CHOICES,
@@ -140,15 +146,15 @@ class PaymentMethod_Accounts(models.Model):
         max_digits=8, 
         verbose_name='multa (%)',
         null=True,
-        blank=True)
-    
+        blank=True
+    )
     fineValue = models.DecimalField(
         decimal_places=2, 
         max_digits=8, 
         verbose_name='multa R$',
         null=True,
-        blank=True)
-    
+        blank=True
+    )
     acc = models.BooleanField(
         verbose_name='Tipo de Conta',
-        )
+    )

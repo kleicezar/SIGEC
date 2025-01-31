@@ -124,11 +124,8 @@ function clone(formCountElem,template){
 function removeItem(button){
     let  parent_button_3 = button.parentElement.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]');
     parent_button_3.value = "on";
-    print(parent_button_3.value)
     let  parent_button_5 =  button.parentElement.parentElement.parentElement.parentElement;
     let  parent_button_6 =  button.parentElement.parentElement.parentElement.parentElement.parentElement;
-    console.log(parent_button_6)
-    console.log(parent_button_5)
     parent_button_6.removeChild(parent_button_5);
 
 }

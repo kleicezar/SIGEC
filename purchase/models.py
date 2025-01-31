@@ -55,9 +55,9 @@ class CompraItem(models.Model):
     def __str__(self):
         return f"{self.produto.description} - {self.quantidade} unidades"
 
-class PaymentMethod_Compra(models.Model):
-    compra = models.ForeignKey(Compra, on_delete=models.SET_NULL, null=True, verbose_name='id_compra')
-    forma_pagamento = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True, verbose_name='id_forma_de_pagamento')
-    expirationDate = models.CharField(max_length=50, verbose_name='Data de Vencimento')
-    valor = models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor Pago:')
+# class PaymentMethod_Compra(models.Model):
+#     compra = models.ForeignKey(Compra, on_delete=models.SET_NULL, null=True, verbose_name='id_compra')
+#     forma_pagamento = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True, verbose_name='id_forma_de_pagamento')
+#     expirationDate = models.CharField(max_length=50, verbose_name='Data de Vencimento')
+#     valor = models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor Pago:')
 
