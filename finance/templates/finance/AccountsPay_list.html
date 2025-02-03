@@ -17,11 +17,18 @@
         {% block content %}
         <div class='content'>
             <div class="container">
-                <a href="{% url 'AccountsPayable_Create' %}">
+                {% if ContasP %}
+                <a href="{% url 'Accounts_Create' %}">
                     <button class="btn btn-success">Cadastrar</button>
                 </a>
+                {% endif %}
+                {% if ContasR %}
+                <a href="{% url 'AccountsReceivable_Create' %}">
+                    <button class="btn btn-success">Cadastrar</button>
+                </a>
+                {% endif %}
                 <div class="form-group">
-                    <form method="GET" action="{% url 'Client' %}">
+                    <form method="GET" action="{% url 'AccountsPayable' %}">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col">
@@ -51,33 +58,60 @@
                     </tr>
                 </thead>
                 <tbody id="results">
-                {% for accountPayable in accountsPayable.object_list %}
+                {% for account in accounts.object_list %}
                 <tr>       
-                    <td>{{ accountPayable.id }}</td>
-                    {% if accountPayable.pessoa_id.id_FisicPerson_fk %}
-                        <td>{{ accountPayable.pessoa_id.id_FisicPerson_fk.name }}</td>
-                    {% elif accountPayable.pessoa_id.id_LegalPerson_fk %}
-                        <td>{{ accountPayable.pessoa_id.id_LegalPerson_fk.fantasyName }}</td>
-                    {% elif accountPayable.pessoa_id.id_ForeignPerson_fk %}
-                        <td>{{ accountPayable.pessoa_id.id_ForeignPerson_fk.name_foreigner }}</td>
+                    <td>{{ account.id }}</td>
+                    {% if account.conta.pessoa_id.id_FisicPerson_fk %}
+                        <td>{{ account.conta.pessoa_id.id_FisicPerson_fk.name }}</td>
+                    {% elif account.conta.pessoa_id.id_LegalPerson_fk %}
+                        <td>{{ account.conta.pessoa_id.id_LegalPerson_fk.fantasyName }}</td>
+                    {% elif account.conta.pessoa_id.id_ForeignPerson_fk %}
+                        <td>{{ account.conta.pessoa_id.id_ForeignPerson_fk.name_foreigner }}</td>
                     {% else  %}
-                        <td>{{ accountPayable.name }}</td>
+                        <td>{{ account.conta.name }}</td>
                     {% endif %}
-                    <td>{{ accountPayable.date_account }}</td>
-                    <td>{{ accountPayable.totalValue }}</td>
+                    <td>{{ account.expirationDate|date:"d/m/Y" }}</td>
+                    <td>{{ account.value }}</td>
                     <td>
-
+                        {% if ContasP %}
+                        <form action="{% url 'get_Accounts' id_Accounts=account.id %}" method="GET" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: #117027;color: white;">Visualizar</button>
+                        </form>
+                        <form action="{% url 'update_Accounts' id_Accounts=account.id %}" method="GET" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: #117027;color: white;">Editar</button>
+                        </form>
+                        <form action="{% url 'delete_Accounts' id_Accounts=account.id %}" method="POST" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
+                        </form>
+                        {% endif %}
+                        {% if ContasR %}
+                        <form action="{% url 'get_AccountsReceivable' id_Accounts=account.id %}" method="GET" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: #117027;color: white;">Visualizar</button>
+                        </form>
+                        <form action="{% url 'update_AccountsReceivable' id_Accounts=account.id %}" method="GET" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: #117027;color: white;">Editar</button>
+                        </form>
+                        <form action="{% url 'delete_AccountsReceivable' id_Accounts=account.id %}" method="POST" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
+                        </form>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
                 </tbody>
             </table>
             <div id="paginationContainer">
-                {% if accountsPayable.has_previous %}
-                <a href="{% url 'Client' %}?page={{ accountsPayable.previous_page_number }}&query={{ query }}">Anterior</a>
+                {% if accounts.has_previous %}
+                <a href="{% url 'Accounts' %}?page={{ accounts.previous_page_number }}&query={{ query }}">Anterior</a>
                 {% endif %}
-                {% if accountsPayable.has_next %}
-                <a href="{% url 'Client' %}?page={{ accountsPayable.next_page_number }}&query={{ query  }}">Proximo</a>
+                {% if accounts.has_next %}
+                <a href="{% url 'Accounts' %}?page={{ accounts.next_page_number }}&query={{ query  }}">Proximo</a>
                 {% endif %}
             </div>
         </div> 

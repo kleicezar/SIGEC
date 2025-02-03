@@ -24,96 +24,89 @@
                     <tbody id="results">
                         <tr>
                             <td>Codigo do Cliente</td>
-                            <td>{{ client.id }}</td>
-                        </tr>
-                        {% if client.id_FisicPerson_fk %}
-                        <tr>
-                            <td>Nome</td>
-                            <td>{{ client.name }}</td>
+                            <td>{{ client.pessoa_id }}</td>
                         </tr>
                         <tr>
-                            <td>CPF</td>
-                            <td>{{ client.cpf }}</td>
+                            <td>Plano de Contas</td>
+                            <td>{{ client.chartOfAccounts }}</td>
                         </tr>
                         <tr>
-                            <td>Registro Geral - RG</td>
-                            <td>{{ client.rg }}</td>
+                            <td>Numero do Documento</td>
+                            <td>{{ client.documentNumber }}</td>
                         </tr>
                         <tr>
-                            <td>Data de Nascimento</td>
-                            <td>{{ client.dateOfBirth }}</td>
-                        </tr>
-
-
-                        {% elif client.id_LegalPerson_fk %}
-                        <tr>
-                            <td>Nome</td>
-                            <td>{{ client.name }}</td>
+                            <td>Data da Conta</td>
+                            <td>{{ client.date_account|date:"d/m/Y" }}</td>
                         </tr>
                         <tr>
-                            <td>CNPJ</td>
-                            <td>{{ client.cnpj }}</td>
+                            <td>Numero de Parcelas</td>
+                            <td>{{ client.numberOfInstallments }}</td>
                         </tr>
                         <tr>
-                            <td>Razão Social</td>
-                            <td>{{ client.socialReason }}</td>
+                            <td>Intervalo de Parcelas</td>
+                            <td>{{ client.installment_Range }}</td>
                         </tr>
                         <tr>
-                            <td>Inscrição Estadual</td>
-                            <td>{{ client.StateRegistration }}</td>
+                            <td>Data da Parcela</td>
+                            <td>{{ client.date_init|date:"d/m/Y" }}</td>
                         </tr>
                         <tr>
-                            <td>Tipo de Contribuinte</td>
-                            <td>{{ client.typeOfTaxpayer }}</td>
+                            <td>Valor Total</td>
+                            <td>{{ client.totalValue }}</td>
                         </tr>
                         <tr>
-                            <td>Inscrição Municipal</td>
-                            <td>{{ client.MunicipalRegistration }}</td>
+                            <td>Forma de Pagamento</td>
+                            <td>{{ client.forma_pagamento }}</td>
                         </tr>
                         <tr>
-                            <td>SUFRAMA</td>
-                            <td>{{ client.suframa }}</td>
+                            <td>Data de Vencimento</td>
+                            <td>{{ client.expirationDate|date:"d/m/Y" }}</td>
                         </tr>
                         <tr>
-                            <td>Nome do Responsavel</td>
-                            <td>{{ client.Responsible }}</td>
+                            <td>Valor da Parcela</td>
+                            <td>{{ client.value }}</td>
                         </tr>
-
-                        {% elif client.id_ForeignPerson_fk %}
+                        {% if client.peopleWatching != '' %}
                         <tr>
-                            <td>Nome</td>
-                            <td>{{ client.name_foreigner }}</td>
-                        </tr>
-                        <tr>
-                            <td>Numero do Documento Estrangeiro</td>
-                            <td>{{ client.num_foreigner }}</td>
+                            <td>Observação Pessoa</td>
+                            <td>{{ client.peopleWatching }}</td>
                         </tr>
                         {% endif %}
+                        {% if client.systemWatching != '' %}
                         <tr>
-                            <td>Telefone Pessoal</td>
-                            <td>{{ client.WorkPhone }}</td>
+                            <td>Observação Systema</td>
+                            <td>{{ client.systemWatching }}</td>
                         </tr>
+                        {% endif %}
+                        {% if client.interestPercent != none %}
                         <tr>
-                            <td>Telefone de Trabalho</td>
-                            <td>{{ client.PersonalPhone }}</td>
+                            <td>Porcentagem de Juros</td>
+                            <td>{{ client.interestPercent }}</td>
                         </tr>
+                        {% endif %}
+                        {% if client.interestValue != none %}
                         <tr>
-                            <td>Site</td>
-                            <td>{{ client.Site }}</td>
+                            <td>Valor de Juros</td>
+                            <td>{{ client.interestValue }}</td>
                         </tr>
+                        {% endif %}
+                        {% if client.finePercent != none %}
                         <tr>
-                            <td>Vendedor Encarregado</td>
-                            <td>{{ client.Salesman }}</td>
+                            <td>Porcentagem de Multa</td>
+                            <td>{{ client.finePercent }}</td>
                         </tr>
+                        {% endif %}
+                        {% if client.fineValue != none %}
                         <tr>
-                            <td>Limite de Credito</td>
-                            <td>{{ client.CreditLimit }}</td>
+                            <td>Valor de Multa</td>
+                            <td>{{ client.fineValue }}</td>
                         </tr>
+                        {% endif %}
                     </tbody>
                 </table>
             </div> 
         </div>
-            {% endblock %}
+        {% endblock %}
         </main>
         
         <script src="{% static 'js/jquery-3.7.1.js' %}"></script>

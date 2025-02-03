@@ -3,50 +3,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.forms import inlineformset_factory
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import authenticate, login, logout
 from .forms import *
 from .models import *
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponse
-### SUPPLIER - em breve desativado
-
-# @login_required
-# def supplier(request):
-#     persons = Person.objects.all()
-#     return render(request, 'purchase/supplier.html', {'persons': persons})
-
-# @login_required
-# def supplierForm(request):
-#     if request.method == 'POST':
-#         form = SupplierModelForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('Supplier')
-#     else:
-#         form = SupplierModelForm()
-#     return render(request, 'purchase/supplierForm.html', {'form': form})
-
-# @login_required
-# def updateSupplier(request, id_supplier):
-#     person = get_object_or_404(Person, id=id_supplier)
-#     if request.method == 'POST':
-#         form = SupplierModelForm(request.POST, instance=person)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('Supplier')
-#     else:
-#         form = SupplierModelForm(instance=person)
-#     return render(request, 'purchase/supplierForm.html', {'form': form})
-
-# @login_required
-# def deleteSupplier(request, id_supplier):
-#     person = get_object_or_404(Person, id=id_supplier)
-#     if request.method == 'POST':
-#         person.delete()
-#         return redirect('Supplier')
-#     return render(request, 'purchase/person_confirm_delete.html', {'person': person})
+from finance.models import PaymentMethod_Accounts
+from finance.forms import PaymentMethodAccountsForm, AccountsForm
 
 
 ### PURCHASE
@@ -59,10 +24,14 @@ def compras_list(request):
 @login_required
 def compras_create(request):
     CompraItemFormSet = inlineformset_factory(Compra, CompraItem, form=CompraItemForm, extra=1, can_delete=True)
-    PaymentMethodCompraFormSet = inlineformset_factory(Compra, PaymentMethod_Compra, form=PaymentMethodCompraForm, extra=1, can_delete=True)
+    PaymentMethodCompraFormSet = inlineformset_factory(Compra, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
+    
+    PaymentMethodAccountsFormSet = inlineformset_factory(Compra, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
 
     if request.method == 'POST':
         compra_form = CompraForm(request.POST)
+        form_Accounts = AccountsForm(request.POST)
+        PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
         compra_item_formset = CompraItemFormSet(request.POST)
         payment_method_formset = PaymentMethodCompraFormSet(request.POST)
 
@@ -114,20 +83,23 @@ def compras_create(request):
 
         compra_form = CompraForm()
         compra_item_formset = CompraItemFormSet(queryset=CompraItem.objects.none())
-        payment_method_formset = PaymentMethodCompraFormSet(queryset=PaymentMethod_Compra.objects.none())
+        payment_method_formset = PaymentMethodCompraFormSet(queryset=PaymentMethod_Accounts.objects.none())
 
     else:
+        form_Accounts = AccountsForm()
+        PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
         compra_form = CompraForm()
         compra_item_formset = CompraItemFormSet(queryset=CompraItem.objects.none())
-        payment_method_formset = PaymentMethodCompraFormSet(queryset=PaymentMethod_Compra.objects.none())
+        payment_method_formset = PaymentMethodCompraFormSet(queryset=PaymentMethod_Accounts.objects.none())
 
     context = {
+        'form_Accounts': form_Accounts,
+        'form_payment_account': PaymentMethod_Accounts_FormSet,
         'compra_form': compra_form,
         'compra_item_formset': compra_item_formset,
         'payment_method_formset': payment_method_formset
     }
     return render(request, 'purchase/compras_form.html', context)
-
 
 @login_required
 def compras_update(request, pk):
@@ -253,29 +225,6 @@ def compras_update(request, pk):
     }
     return render(request, 'purchase/compras_formUpdate.html', context)
 
-    # def compras_update(request, pk):
-    #     compra = get_object_or_404(Compra, pk=pk)
-    #     CompraItemFormSet = inlineformset_factory(Compra, CompraItem, form=CompraItemForm, extra=1, can_delete=True)
-
-    #     if request.method == 'POST':
-    #         compra_form = CompraForm(request.POST, instance=compra)
-    #         compra_item_formset = CompraItemFormSet(request.POST, instance=compra)
-
-    #         if compra_form.is_valid() and compra_item_formset.is_valid():
-    #             compra_form.save()
-    #             compra_item_formset.save()
-    #             return redirect('compra_list')
-
-    #     else:
-    #         compra_form = CompraForm(instance=compra)
-    #         compra_item_formset = CompraItemFormSet(instance=compra)
-
-    #     context = {
-    #         'compra_form': compra_form,
-    #         'compra_item_formset': compra_item_formset,
-    #         'compra': compra,
-    #     }
-
 @login_required# Deletar uma Compra
 def compras_delete(request, pk):
     # Obtém o objeto Compra ou retorna 404 se não encontrado
@@ -337,6 +286,7 @@ def product(request):
     return render(request, 'purchase/product_list.html', {'products': products})
 
 @login_required
+@permission_required('purchase.add_product', raise_exception=True)
 def productForm(request):
     if request.method == 'POST':
         form = ProductModelForm(request.POST)

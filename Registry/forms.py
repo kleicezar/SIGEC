@@ -155,7 +155,6 @@ class PersonForm(forms.ModelForm):
             'creditLimit':forms.NumberInput(attrs={
                 'class':'form-control row',
                 'min':0,
-                # 'step':1
             })
         }
 

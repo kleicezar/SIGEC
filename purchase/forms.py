@@ -58,7 +58,6 @@ class ProductModelForm(forms.ModelForm):
         # Desabilita o campo 'current_quantity' se for uma atualização
         if self.instance and self.instance.pk:
             self.fields['current_quantity'].disabled = True
-            # self.fields['current_quantity'].widget.attrs['readonly'] = True
 
 class CompraForm(forms.ModelForm):
     class Meta:
@@ -124,22 +123,5 @@ class CompraItemForm(forms.ModelForm):
             cleaned_data['total'] = preco_unitario * quantidade
         return cleaned_data
 
-class PaymentMethodCompraForm(forms.ModelForm):
-    class Meta:
-        model = PaymentMethod_Compra
-        fields = ['forma_pagamento', 'expirationDate', 'valor']
-        widgets = {
-            'forma_pagamento':forms.Select(attrs={
-                'class':'form-select row'
-            }),
-            'expirationDate':forms.TextInput(attrs={
-                'class':'form-control row mask-date',
-                # 'id' : 'payment_method',
-            }),
-            'valor':forms.NumberInput(attrs={
-                'class':'form-control row',
-                'min':0
-            })
-        }
 class ProductSearchForm(forms.Form):
     search = forms.CharField(max_length=100,required=False,label='Pesquisar Produto')
