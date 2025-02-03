@@ -85,7 +85,7 @@ class CompraForm(forms.ModelForm):
                 'discount_total':forms.TextInput(attrs={
                     'class':'form-control row-5',
                     'readonly': 'readonly',
-                })
+                }),
             }
     def __init__(self, *args, **kwargs):
         super(CompraForm, self).__init__(*args, **kwargs)
