@@ -22,10 +22,12 @@ class ProductModelForm(forms.ModelForm):
                 'class':'form-control row'
             }),
             'cost_of_product':forms.NumberInput(attrs={
-                'class':'form-control row'
+                'class':'form-control row',
+                'min':0            
             }),
             'selling_price':forms.NumberInput(attrs={
-                'class':'form-control row'
+                'class':'form-control row',
+                'min':0
             }),
             'ncm':forms.TextInput(attrs={
                 'class':'form-control row'
@@ -36,13 +38,13 @@ class ProductModelForm(forms.ModelForm):
             'cfop':forms.TextInput(attrs={
                 'class':'form-control row'
             }),
-            'current_quantity':forms.TextInput(attrs={
+            'current_quantity':forms.NumberInput(attrs={
                 'class':'form-control row'
             }),
-            'maximum_quantity':forms.TextInput(attrs={
+            'maximum_quantity':forms.NumberInput(attrs={
                 'class':'form-control row'
             }),
-            'minimum_quantity':forms.TextInput(attrs={
+            'minimum_quantity':forms.NumberInput(attrs={
                 'class':'form-control row'
             }),
             'supplier':forms.Select(attrs={

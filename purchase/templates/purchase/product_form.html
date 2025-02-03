@@ -3,175 +3,158 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        {% block css %}
-        <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
-        {% endblock %}
-        <title>Formulário</title>
-        {% bootstrap_css %}
-    </head>
-    <body>
-            {% bootstrap_messages %}
-            {% block content %}
-            <div class='content'>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block css %}
+    <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
+    {% endblock %}
+    <title>Formulário</title>
+    {% bootstrap_css %}
+</head>
+<body>
+    {% block content %}
+    <div class="content">
+        <form method="POST">
+            {% csrf_token %}
+            
+            <h4 class="mt-5 mb-5 c-adapted">{% if form.instance.pk %}Editar Produto{% else %}Adicionar Produto{% endif %}</h4>
+            <h6>
+                Informações básicas
+            </h6>
+
+
+            <div class="form-margin row">
+
+                <div class="row">
+                    <div class="col">
+                        <label for="">{{form.product_code.label}}</label>
+                        {{form.product_code}}
+                    </div>
     
-                <form method="POST">
-                    {% csrf_token %}
-                    <h4 class="mt-5 mb-5 c-adapted">{% if form.instance.pk %}Editar Produto{% else %}Adicionar Produto{% endif %}</h4>
-                    <div class="row ">
-                        
-                            
-                        <div class="form-margin row">
-
-                            <div class="col-4 ">
-                                <label for="" class="">{{form.product_code.label}}</label>
-                                {{form.product_code}}
-                            </div>
-
-                            <div class="col-4">
-                                <label for="" class="">{{form.barcode.label}}</label>
-                                {{form.barcode}}
-                            </div>
-                            
-                        </div>
-                        <div class="form-margin row">
-                            <div class="col-4">
-                                <label class="" for="">{{form.unit_of_measure.label}}</label>
-                                {{form.unit_of_measure}}
-                            </div>
-                        </div>
-
-                        <div class="form-margin row">
-
-                            <div class="col">
-
-                                <label class="" for="">{{form.description.label}}</label>
-                                {{form.description}}
-
-                            </div>
-                            
-                        </div>
-
-                        <div class="form-margin row">
-                            <div class="col-5">
-
-                                <label class="" for="">{{form.brand.label}}</label>
-                                {{form.brand}}
-
-                            </div> 
-                        </div>
-
-                        <div class="form-margin row">
-
-                            <div class="col-3">
-                                <label  for="" class="">{{form.cost_of_product.label}}</label>
-                                {{form.cost_of_product}}
-                            </div>
-
-                            <div class="col-3">
-                                
-                            <label for="" class="">{{form.selling_price.label}}</label>
-                            {{form.selling_price}}
-
-                                
-                            </div>
-                        </div>
-
-                        <div class="form-margin row">
-
-                            <div class="col">
-                
-                                <label for="" class="">{{form.ncm.label}}</label>
-                                {{form.ncm}}
-
-                            </div>
-
-                            <div class="col">
-
-                                <label for="" class="">{{form.csosn.label}}</label>
-                                {{form.csosn}}
-
-                            </div>
-
-                            <div class="col">
-
-                                <label for="" class="">{{form.cfop.label}}</label>
-                                {{form.cfop}}
-
-                            </div>
-
-                        </div>
-
-                        <div class="form-margin row">
-
-                            <div class="col-2">
-
-                                <label for="" class="">{{form.maximum_quantity.label}}</label>
-                                {{form.maximum_quantity}}  
-
-                            </div>
-
-                            <div class="col-2">
-
-                                <label for="" class="">{{form.current_quantity.label}}</label>
-                                {{form.current_quantity}}  
-
-                            </div>
-
-                            <div class="col-2">
-
-                                <label for="" class="">{{form.minimum_quantity.label}}</label>
-                                {{form.minimum_quantity}}  
-
-                            </div>
-
-                        </div>
-
-                        <div class="form-margin row">
-
-                            <div class="col-2">
-
-                                <label for="" class="">{{form.is_active.label}}</label>
-                                {{form.is_active}}
-
-                            </div>
-
-                        </div>
-
-                        <div class="form-margin row">
-
-                            <div class="col-5">
-
-                                <label for="" class="">{{form.supplier.label}}</label>
-                                {{form.supplier}}
-
-                            </div>
-
-                        </div>
-                        
+                    <div class="col">
+                        <label for="">{{form.barcode.label}}</label>
+                        {{form.barcode}}
                     </div>
-
-                    <div class="row">
-
-                        <a href="{% url 'Product' %}">Voltar</a>
-
-                        <div class="col text-end">
-                            <button type="submit" class="btn bg-adapted ">Salvar</button>
-                        </div>
-
+    
+                    <div class="col">
+                        <label for="">{{form.unit_of_measure.label}}</label>
+                        {{form.unit_of_measure}}
                     </div>
-                    
-                </form>
-                    <!-- </div> -->
-                  
-                    <!-- <a href="{% url 'Product' %}">Voltar</a> -->
-                <!-- </div> -->
+    
+                    <div class="col">
+                        <label for="">{{form.brand.label}}</label>
+                        {{form.brand}}
+                    </div>
+    
+                    <!-- <div class="col">
+                        <label for="">{{form_Person.creditLimit.label}}</label>
+                        {{form_Person.creditLimit}}
+                    </div> -->
+                 </div>
+
             </div>
-            {% endblock %}
-        
-        
-        <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
-    </body>
+           
+            
+            <!-- cadastro de atributos -->
+          
+               
+            <!-- {{ form_Person.as_p }} -->
+
+            <div class="row mb-5 mt-5">
+                    <fieldset>
+                        <legend>
+                            <h6>
+                                Informações Específicas 
+                            </h6>
+                        </legend>
+                        <div class="form-margin row">
+                            <div class="row">
+
+                                <div class="col-xl-3">
+                                    <label for=>{{form.cost_of_product.label}}</label>
+                                    {{form.cost_of_product}}
+                                </div>
+
+                                <div class="col-xl-3">
+                                    <label for=>{{form.selling_price.label}}</label>
+                                    {{form.selling_price}}
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-xl-3">
+                                    <label for=>{{form.ncm.label}}</label>
+                                    {{form.ncm}}
+                                </div>
+
+                                <div class="col-xl-3">
+                                    <label for=>{{form.csosn.label}}</label>
+                                    {{form.csosn}}
+                                </div>
+                               
+                                <div class="col-xl-3">
+                                    <label for=>{{form.cfop.label}}</label>
+                                    {{form.cfop}}
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-xl-3">
+                                    <label for=>{{form.current_quantity.label}}</label>
+                                    {{form.current_quantity}}
+                                </div>
+
+                                <div class="col-xl-3">
+                                    <label for=>{{form.maximum_quantity.label}}</label>
+                                    {{form.maximum_quantity}}
+                                </div>
+
+                                <div class="col-xl-3">
+                                    <label for=>{{form.minimum_quantity.label}}</label>
+                                    {{form.minimum_quantity}}
+                                </div>
+
+                            </div>
+
+
+                            <div class="row">
+
+                                <div class="col-xl-3">
+                                    <label for=>{{form.supplier.label}}</label>
+                                    {{form.supplier}}
+                                </div>
+
+                            </div>
+                        
+
+                            
+                        </div>
+                    </fieldset>
+                </div>
+                       
+
+            <br><br>
+            <div class="row">
+                <div class="col text-end">
+                    <button type="submit"  class="btn bg-adapted">Enviar</button>
+                </div>
+                
+            </div>
+            
+        </form>
+    </div>
+
+    <script src="{% static 'js/jquery-3.7.1.js' %}"></script>
+    <script src="{% static 'js/jquery.mask.min.js' %}"></script>
+    <script src="{% static 'js/mask.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/cep_api.js' %}"></script>
+    <script src="{% static 'js/registryform.js' %}"></script>
+
+    {% endblock %}
+</body>
 </html>
