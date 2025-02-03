@@ -94,8 +94,8 @@ body {
     background-color: #140757;
     color: white;
     position: fixed;
-    padding: 50px 20px 20px 20px;
-    /* padding-top: 50px; */
+    /* padding: 50px 20px 20px 20px; */
+    padding-top: 50px;
     transition: transform 0.3s ease;
     overflow-y: scroll; /* Ativa a rolagem vertical */
     scrollbar-width: thin;
@@ -187,7 +187,6 @@ body {
     transform: rotate(180deg);
     margin-bottom: 5%;
 }
-
 
 .sub-menu li a:hover{
     text-decoration: underline;
