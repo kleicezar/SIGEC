@@ -55,7 +55,9 @@ def compras_create(request):
             total_payment = 0
             valid_payments = []
             payments_to_delete = []
-
+            print('OLÁ')
+            print(payment_method_formset)
+            print('Olá 2')
             for form in payment_method_formset:
                 if form.cleaned_data:
                     form.acc = True
@@ -218,14 +220,30 @@ def compras_update(request, pk):
 
     else:
         # Se for um GET, inicializa o formulário com os dados da compra existente
+        form_Accounts = AccountsForm()
         compra_form = CompraForm(instance=compra)
-        compra_item_formset = CompraItemFormSet(queryset=compra.compraitem_set.all(), instance=compra)
         payment_method_formset = PaymentMethodCompraFormSet(queryset=compra.paymentmethod_accounts_set.all(), instance=compra)
+        compra_item_formset = CompraItemFormSet(queryset=compra.compraitem_set.all(), instance=compra)
+      
+        payment_methods_qs = compra.paymentmethod_accounts_set.all()
+        # compra = Compra.objects.last()
+        # Ou compra.metodos_pagamento.all()
+        pagamentos = PaymentMethod_Accounts.objects.filter(compra=compra)
+
+        for form in payment_method_formset:
+            # obj = form.instance
+            # print(f"ID: {obj.id}, Valor: {obj.value}, Método: {obj.payment_method}, Conta: {obj.account_number}")
+            print(form) 
+         #Testar no 4
+
+
+        # payment_method_formset = PaymentMethodCompraFormSet(queryset=PaymentMethod_Accounts)
 
     context = {
+        'form_Accounts':form_Accounts,
         'compra_form': compra_form,
         'compra_item_formset': compra_item_formset,
-        'payment_method_formset': payment_method_formset,
+        'form_payment_account': payment_method_formset,
     }
     return render(request, 'purchase/compras_formUpdate.html', context)
 
