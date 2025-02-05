@@ -398,6 +398,7 @@
                                             <td>
                                                 {{form.value}}
                                             </td>
+                                            <td>{{form.DELETE.as_hidden}}</td>
                                             
                                            
                                         </tr>
@@ -430,10 +431,6 @@
                                         </td>
                                         <td>{{form_payment_account.empty_form.days}}</td>
                                         <td>{{form_payment_account.empty_form.value}}</td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
-                                            {{form_payment_account.empty_form.DELETE.as_hidden}}</td>
-                                        </td>
                                     </tr>
                                 </tbody>
                               </table>
@@ -469,8 +466,9 @@
         <script type="text/javascript" src="{% static 'js/jquery-3.7.1.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/jquery.mask.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/mask.js' %}"></script> -
+        <script type="text/javascript" src="{% static 'js/interest.js' %}"></script>
         <script src="{% static 'js/addItem.js' %}" defer></script>
-        <script src="{% static 'js/clientSearch.js' %}"></script> 
+        <script src="{% static 'js/clientSearch.js' %}"></script>
          <!-- pesquisa clientes -->
         <script src="{% static 'js/venda_item.js' %}"></script>
          <!-- pesquisa produtos em vendas-->
