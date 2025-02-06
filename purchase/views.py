@@ -27,7 +27,6 @@ def compras_create(request):
     PaymentMethodCompraFormSet = inlineformset_factory(Compra, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
     
     PaymentMethodAccountsFormSet = inlineformset_factory(Compra, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
-    print(request.POST)
     if request.method == 'POST':
         compra_form = CompraForm(request.POST)
         form_Accounts = AccountsForm(request.POST)
@@ -40,7 +39,7 @@ def compras_create(request):
             compra.save()  
             
             compra_item_formset.instance = compra
-            compra_item_formset.save()  # Isso pode ajudar a garantir que os dados são salvos corretamente
+            compra_item_formset.save() 
 
             print(f"Total de formulários processados: {compra_item_formset.total_form_count()}")
             # compra_item_formset.save()
@@ -85,10 +84,13 @@ def compras_create(request):
                 messages.warning(request, "Ação cancelada! O valor total dos pagamentos não corresponde ao total da compra.")
         if not compra_form.is_valid():
             print("Erro no CompraForm",compra_form.errors)
+
         if not compra_item_formset.is_valid():
-            print("Erro no compraItem",compra_item_formset.errors)
+            print("Erro no CompraItem",compra_item_formset.errors)
+
         if not payment_method_formset.is_valid():
-            print("Erro no paymentmethod",payment_method_formset.errors)
+            print("Erro no PaymentMethod",payment_method_formset.errors)
+
         compra_form = CompraForm()
         compra_item_formset = CompraItemFormSet(queryset=CompraItem.objects.none())
         payment_method_formset = PaymentMethodCompraFormSet(queryset=PaymentMethod_Accounts.objects.none())
@@ -143,8 +145,6 @@ def compras_update(request, pk):
                     discount = form.cleaned_data['discount']
                     price_total = form.cleaned_data['price_total']
                     delete = form.cleaned_data["DELETE"]
-                    print('piu')
-                    print(price_total)
                     item_id = form.instance.id
                     try:
                         compra_item_quantidade = CompraItem.objects.get(id=item_id).quantidade  
@@ -156,7 +156,6 @@ def compras_update(request, pk):
                             produto.save()
                         else:
                             if not delete:  
-                                print('entrei')
                                 CompraItem.objects.create(
                                     compra = compra,
                                     product = produto,
@@ -207,25 +206,18 @@ def compras_update(request, pk):
                         total_payment += valor
                     
             
-            if total_payment == compra.total_value:
-                ...
-                # print('entrei')
-            else:
+            if total_payment != compra.total_value:
                 messages.warning(request, "Ação cancelada! O valor total dos pagamentos não corresponde ao total da compra.")
 
             messages.success(request,"Compra atualizada com sucesso!")
             return redirect('compras_list')
             # Atualiza o estoque, adicionando as quantidades compradas
-            # for form in compra_item_formset:
-               
-            # Salva as formas de pagamento associadas à compra
-            # payment_method_formset.save()
-
-            # Redireciona para a lista de compras após a atualização
         if not compra_form.is_valid():
             print('Erro no CompraForms', compra_form.errors)
+
         if not compra_item_formset.is_valid():
             print("Erro no CompraItem",compra_item_formset.errors)
+            
         if not payment_method_formset.is_valid():
             print("Erro na FormPagamento",payment_method_formset.errors)
 
