@@ -28,7 +28,7 @@
 // }
 const emptyFormTemplate = document.getElementById('empty-form-template');
 const emptyPaymentMethodTemplate = document.getElementById('empty-payment-method-form');
-
+// const TOTAL_FORMS = document.getElementById("id_compraitem_set-TOTAL_FORMS")
 const itensIndex  = [0];
 function addItem() {
     const formset = document.getElementById('itens-container');
@@ -55,10 +55,13 @@ function addItem() {
         formset.appendChild(newForm);
     }
     if(formCountCompra){
+        console.log('opa')
+        // formCountCompra.value = 5
         // const emptyFormTemplate = document.getElementById('empty-form-template');
+        console.log(formCountCompra)
         const [formCount,newForm] = clone(formCountCompra,emptyFormTemplate);
-        formCount.value = parseInt(formCount) + 1;
-
+        formCountCompra.value = parseInt(formCount) + 1 ;
+        console.log(formCountCompra.value)
         input_product = newForm.querySelector(".inputProduct");
 
         // field_product.id = `products-${formCount}`;
@@ -102,9 +105,9 @@ function addItem() {
 }
 
 function clone(formCountElem,template){
-    const formCount = formCountElem.value;
+    const formCount = parseInt(formCountElem.value);
     // const emptyFormTemplate = document.getElementById('empty-form-template');
-
+    // console.log(formCount)
     if (!template) {
         console.error("Template de formulário vazio (empty-form-template) não encontrado!");
         return;
@@ -117,7 +120,6 @@ function clone(formCountElem,template){
         input.id = input.id.replace('__prefix__', formCount);
         input.value = ''; // Limpa os valores dos campos
     });
-
     return [formCount,newForm];
 }
 
