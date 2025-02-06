@@ -32,7 +32,8 @@ class Compra(models.Model):
     is_active = models.BooleanField(default=True, verbose_name='Está Ativo')  # está ativo
 
     def __str__(self):
-        return f"Compra {self.id} por {self.usuario.username}"
+        ...
+        # return f"Compra {self.id} por }"
     
 class CompraItem(models.Model):
     compra = models.ForeignKey(Compra, on_delete=models.SET_NULL, null=True, verbose_name="Compra")

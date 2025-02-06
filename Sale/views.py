@@ -88,6 +88,7 @@ def venda_create(request):
                 total_payment = 0
                 for form in payment_method_formset: 
                     if form.cleaned_data:
+                        form.acc = False
                         valor = form.cleaned_data['value']
                         total_payment+=valor
 
