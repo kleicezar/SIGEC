@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
         let initial_step =1;
-        
+        console.log('cheguei auqi')
         // console.log(numberOfInstallments)
         //apaga tudo de UPDATE(PAGAMENTOS)
         // ao clicar em gerar novamente, ele marcará  o campo DELETE,assim pagamentos antes cadastrados serão deletados ao serem enviados.
@@ -117,15 +117,19 @@ document.addEventListener('DOMContentLoaded', function () {
             formCountElem.value = initial_step;
         }
         
-        const valueOfinstallments = compair(numberOfInstallments, totalValue)     
+        const valueOfinstallments = compair(numberOfInstallments, totalValue);
+        let index_value = 0;     
         const emptyFormTemplate = document.getElementById('empty-payment-method-form');
         for (let index = parseInt(value_initial.value) + 1 ; index < parseInt(value_initial.value) + numberOfInstallments + 1 ; index++) {
             if (!emptyFormTemplate) {
                 console.error("Template de formulário vazio (empty-payment-method-form) não encontrado!");
                 return;
             }
+            
             const newForm = emptyFormTemplate.content.cloneNode(true);
             // Atualiza os campos do formulário clonado
+            console.log('formulários')
+            console.log(newForm)
             newForm.querySelectorAll("input, select").forEach(async (input) => {
                 input.name = input.name.replace("__prefix__", formCountElem.value);
                 input.id = input.id.replace("__prefix__", formCountElem.value);
@@ -142,15 +146,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     // CALCULO DE VALOR
                 }else if (input.name.includes("-value")) {
                     // Define o valor da parcela
-                    input.value = valueOfinstallments[index-1];
+                    input.value = valueOfinstallments[index_value];
                     //CALCULO DE DIAS
                     }else if (input.name.includes("-days")) {
                         // Define os dias entre as parcelas
-                        input.value = installment_Range*index;
+                        input.value = installment_Range*(index-value_initial.value);
+                     
                     }
                     // Adiciona o formulário ao contêiner
                     await formContainer.appendChild(newForm);
                 })
+                index_value+=1;
                 formCountElem.value = Number(formCountElem.value) + 1
             }
         table = 'null';
