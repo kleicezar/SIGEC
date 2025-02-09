@@ -178,35 +178,56 @@
                     Atributos
                 </h6>
                 <div class="form-margin row">
-                    <div class="row-xl-4 mb-2">
-                        {{form_Person.isClient}}
-                        {{form_Person.isClient.label}}
+                    <div class="col mb-2">
+                        <div class="form-check form-switch">
+                            {{form_Person.isClient}}
+                            {{form_Person.isClient.label}}
+                        </div>
                         
-                        {{form_Person.isSupllier}}
-                        {{form_Person.isSupllier.label}}
-                        
-                        {{form_Person.isUser}}
-                        {{form_Person.isUser.label}}
+                        <div class="col form-check form-switch">
+                            {{form_Person.isSupllier}}
+                            {{form_Person.isSupllier.label}}
+                        </div>
+
+                        <div class="col form-check form-switch">
+                            {{form_Person.isUser}}
+                            {{form_Person.isUser.label}}
+                        </div>
+                       
                     </div>
-                    <div class="row-xl-4 mb-2">
-                        {{form_Person.isEmployee}}
-                        {{form_Person.isEmployee.label}}
+                    <div class="col mb-2">
+                        <div class="form-check form-switch col">
+                            {{form_Person.isEmployee}}
+                            {{form_Person.isEmployee.label}}
+                        </div>
+                       
+                        <div class="form-check form-switch col">
+                            {{form_Person.isSalesman}}
+                            {{form_Person.isSalesman.label}}
+                        </div>
                         
-                        {{form_Person.isSalesman}}
-                        {{form_Person.isSalesman.label}}
-                        
-                        {{form_Person.isFormer_employee}}
-                        {{form_Person.isFormer_employee.label}}
+                        <div class="form-check form-switch col">
+                            {{form_Person.isFormer_employee}}
+                            {{form_Person.isFormer_employee.label}}
+                        </div>
+                       
                     </div>
-                    <div class="row-xl-4 mb-2">
-                        {{form_Person.isCarrier}}
-                        {{form_Person.isCarrier.label}}
-                        
-                        {{form_Person.isDelivery_man}}
-                        {{form_Person.isDelivery_man.label}}
-                        
-                        {{form_Person.isTechnician}}
-                        {{form_Person.isTechnician.label}}
+                    <div class="col  mb-2">
+                        <div class="form-check form-switch">
+                            {{form_Person.isCarrier}}
+                            {{form_Person.isCarrier.label}}
+                        </div>
+                       
+                        <div class="form-check form-switch">
+                            {{form_Person.isDelivery_man}}
+                            {{form_Person.isDelivery_man.label}}
+                        </div>
+                       
+                        <div class="form-check form-switch">
+                            {{form_Person.isTechnician}}
+                            {{form_Person.isTechnician.label}}
+                        </div>
+                       
                     </div>
                 </div>
             </div>

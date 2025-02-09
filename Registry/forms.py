@@ -156,15 +156,33 @@ class PersonForm(forms.ModelForm):
                 'class':'form-control row',
                 'min':0,
             }),
-            'isClient':forms.CheckboxInput(),
-            'isSupllier':forms.CheckboxInput(),
-            'isUser':forms.CheckboxInput(), 
-            'isEmployee':forms.CheckboxInput(), 
-            'isSalesman':forms.CheckboxInput(), 
-            'isFormer_employee':forms.CheckboxInput(), 
-            'isCarrier':forms.CheckboxInput(), 
-            'isDelivery_man':forms.CheckboxInput(), 
-            'isTechnician':forms.CheckboxInput()
+            'isClient':forms.CheckboxInput(attrs={
+                'class':'form-check-input'}
+            ),
+            'isSupllier':forms.CheckboxInput(attrs={
+                'class':'form-check-input'}
+            ),
+            'isUser':forms.CheckboxInput(attrs={
+                'class':'form-check-input'}
+            ), 
+            'isEmployee':forms.CheckboxInput(attrs={
+                'class':'form-check-input'}
+            ), 
+            'isSalesman':forms.CheckboxInput(attrs={
+                'class':'form-check-input'}
+            ), 
+            'isFormer_employee':forms.CheckboxInput(attrs={
+                'class':'form-check-input'}
+            ), 
+            'isCarrier':forms.CheckboxInput(attrs={
+                'class':'form-check-input'}
+            ), 
+            'isDelivery_man':forms.CheckboxInput(attrs={
+                'class':'form-check-input'}
+            ), 
+            'isTechnician':forms.CheckboxInput(attrs={
+                'class':'form-check-input'}
+            )
         }
 
     
