@@ -106,7 +106,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (table != null || value_initial.value != 0) {
                 for (let index = 1; index <= formCountElem.value; index++) {
                     let div = document.getElementById('del') ;
-                    // LOGAN DO FUTURO- AQUI VOCE DEVE REMOVER OS O DO UPDATE valeu
                     if (div != null) {
                         div.remove();
                     }
