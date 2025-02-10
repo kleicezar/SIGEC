@@ -61,7 +61,7 @@ def compras_create(request):
             # print(payment_method_formset)
             for form in payment_method_formset:
                 if form.cleaned_data:
-                    form.acc = True
+                    form.acc = False
                     if form.cleaned_data.get("DELETE", False):
                         payments_to_delete.append(form.instance)
                     else:

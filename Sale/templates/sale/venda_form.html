@@ -30,17 +30,17 @@
     
 </head>
 <body>
-    <main>
+    <main class="">
         {% bootstrap_messages %}
         {% block content %}
         <div class='content'>
-            <div class='center'>
-                <h4 class="mt-5 mb-5 c-adapted">{% if venda.pk %}Editar{% else %}Criar{% endif %} Venda</h4>
+            <div class='row justify-content-center m-5'>
+                <h4 class="c-adapted">{% if venda.pk %}Editar{% else %}Criar{% endif %} Venda</h4>
                 <form method="post">
                     {% csrf_token %}
                 
                     <!-- Formulário de Venda -->
-                    <h6>Dados da Venda</h6>
+                    <h6 class="mt-5 mb-3">Dados da Venda</h6>
                     <!-- {{ venda_form.as_p }} -->
                     {% if messages %}
                     <div>
@@ -63,9 +63,6 @@
                                 <th scope="col">
                                     Situação
                                 </th>
-                                <!-- <th>
-                                    Ativo
-                                </th> -->
                             </tr>
                         </thead>
 
@@ -102,13 +99,13 @@
                     </table>
                     
                     <!-- Itens de Venda -->
-                    <h6>Itens de Venda</h6>
+                    <h6 class="mt-5 mb-3 ">Itens de Venda</h6>
                     <div id="itens-container">      
                         {{ venda_item_formset.management_form }}
                         {% for form in venda_item_formset %}
                             <div class="item-form">
                                 <!-- {{ form.as_p }} -->
-                                  <table class="table">
+                                  <table class="table ">
                                     <thead >
                                         <tr>
                                             <th scope="col">
@@ -220,7 +217,7 @@
                     </template>
                     <button id="item" type="button" onclick="addItem()" class="btn btn-outline-success mb-5 z-2">Adicionar Item</button>
                 
-                    <table class="table">
+                    <table class="table mt-3">
                         <thead>
                             <tr>
                                 <th scope="col">
@@ -256,9 +253,9 @@
                 
 
                     <!-- Formas de Pagamento -->
-                    <h6>Formas de Pagamento</h6>
+                    <h6 class="mt-5 mb-3">Formas de Pagamento</h6>
                     <div class="form-row">
-                        <table class="table" id="paymentMethod_account">
+                        <table class="table mb-5" id="paymentMethod_account">
                             <thead>
 
                                 <tr>
@@ -294,7 +291,8 @@
                                     <td>{{form_Accounts.installment_Range}}</td>
                                     <td>{{ form_Accounts.totalValue}}</td>
                                     <td>
-                                        <button id="generate" type="button">GERAR</button>
+                                        <!-- <button id="generate" type="button">GERAR</button> -->
+                                        <button id="generate" type="button" class="btn btn-warning">Gerar</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -384,7 +382,7 @@
                     <!-- <button type="button" onclick="addPaymentMethod()" class="btn btn-outline-success mb-5">Adicionar Forma de Pagamento</button> -->
                     
 
-                    <div class="row">
+                    <div class="row mt-5">
 
                         <div class="col">
                             <label for="">{{venda_form.observacao_pessoas.label}}</label>
@@ -399,7 +397,7 @@
 
                     <div class="row">
                         <div class="col mt-5 text-end">
-                            <button  type="submit" class="btn bg-adapted">SALVAR VENDA</button>
+                            <button  type="submit" class="btn bg-adapted">Salvar Venda</button>
                         </div>
                     </div>
                 </form>

@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.forms import inlineformset_factory
@@ -75,43 +76,52 @@ def workerService_create(request):
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
         service_item_formset = ServiceItemFormSet(request.POST)
         payment_method_formset = PaymentMethodServiceFormSet(request.POST)
+
         if(service_form.is_valid() and service_item_formset.is_valid() and payment_method_formset.is_valid()):
             print('formulários válidos')
             service = service_form.save()
-        
-            for form in service_item_formset:
-                if form.cleaned_data:
-                    servico = form.cleaned_data['service']
-                    preco = form.cleaned_data['preco']
-                    discount = form.cleaned_data['discount']
-                    if not form.cleaned_data.get("DELETE"):
-                        VendaItemService.objects.create(
-                            venda = service,
-                            service = servico,
-                            preco = preco,
-                            discount = discount
-                        )
-                    payment_method_formset.instance = service
-                    total_payment = 0
-                    for form in payment_method_formset:
-                        form.instance = service
-                        if form.cleaned_data:
-                            form.acc = False
-                            valor = form.cleaned_data['value']
-                            total_payment+=valor
-                    if(total_payment==service_form.cleaned_data['total_value']):
-                        payment_method_formset.save()
-                        for form in payment_method_formset.deleted_objects:
-                            form.delete()
-                            form.save()
+            service_item_formset.instance = service
+            service_item_formset.save()
 
+            payment_method_formset.instance = service
+            total_payment = 0
+            payments_to_delete = []
+            valid_payments = []
+            for form in payment_method_formset:
+                # form.instance = service
+                if form.cleaned_data:
+                    form.acc = True
+                    if form.cleaned_data.get("DELETE",False):
+                        payments_to_delete.append(form.instance)
+                    else:
+                        valor = form.cleaned_data['value']
+                        total_payment+=valor
+                        valid_payments.append(form)
+
+            if(total_payment==service.total_value):
+                for form in valid_payments:
+                    form.instance.ordem_servico = service
+                    form.save()
+                    print('✅ Pagamentos foram salvos!')
+
+                    # 🔍 Tente recarregar um objeto do banco para testar
+                for payment in payments_to_delete:
+                    payment.delete()
+
+                # for form in payment_method_formset.deleted_objects:
+                #     form.delete()
+                #     form.save(
         elif not service_form.is_valid():
             print("Erro  no ServiceForm",service_form.errors)
+
         elif not service_item_formset.is_valid():
             print("Erro no VendaServiceItem",service_item_formset.errors)
+
         elif not payment_method_formset.is_valid():
             print("Erro no VendaPagamentoService",payment_method_formset.errors)
+
         return  redirect('serviceForm')
+    
     else:
         form_Accounts = AccountsForm()
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())

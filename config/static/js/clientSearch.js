@@ -105,7 +105,8 @@ itemsContainer.addEventListener("input", (event) => {
         updateTotals(itemsContainer.querySelectorAll(".item-form"));
     }
 });
-
+totalValue = document.getElementById("id_totalValue");
+console.log(totalValue)
 function updateTotals(itemForms) {
     let totalSemDesconto = 0;
     let totalComDesconto = 0;
@@ -135,6 +136,8 @@ function updateTotals(itemForms) {
             totalComDesconto += subtotalComDesconto;
             totalProdutos += quantidade;
         }
+        totalValue.value = totalComDesconto.toFixed(2);
+        console.log(totalValue)
     });
 
     let percentualDesconto = totalSemDesconto > 0
