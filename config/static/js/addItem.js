@@ -143,10 +143,14 @@ function removeItem(button){
     }
     
     else if(deleteButton.id.includes("0")){
-        formCount-=1
+        formCount-=1;
         TOTAL_FORMS.value = formCount;
         updateId(deleteButton,itensForms);
-        parent_button_5.removeChild(parent_button_4)
+        parent_button_6.removeChild(parent_button_5);
+        console.log('=========')
+        const next_tr = parent_button_6.parentElement.querySelector("table thead tr");
+        next_tr.style.display = "table-row";
+        console.log(next_tr)
         
     }
     else{

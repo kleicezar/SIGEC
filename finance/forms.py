@@ -4,7 +4,7 @@ from .models import *
 class AccountsForm(forms.ModelForm):
     installment_Range = forms.ChoiceField(
         choices=Accounts.INSTALLMENT_RANGE_CHOICES,
-        widget=forms.Select(attrs={'class': 'form-control row','id': 'installment_Range'}),
+        widget=forms.Select(attrs={'class': 'form-control row mb-3 mt-3','id': 'installment_Range'}),
         label="Intervalo de Parcelas"
     )
 
@@ -24,36 +24,36 @@ class AccountsForm(forms.ModelForm):
         ]
         widgets = {
             'pessoa_id': forms.Select(attrs={ 
-                'class': 'form-select row'
+                'class': 'form-select row mb-3 mt-3'
             }),
             'chartOfAccounts': forms.Select(attrs={
-                'class': 'form-control row'
+                'class': 'form-control row mb-3 mt-3'
             }),
             'documentNumber': forms.NumberInput(attrs={
-                'class': 'form-control row',
+                'class': 'form-control row mb-3 mt-3',
                 'min': 0
             }),
             'date_account': forms.TextInput(attrs={
-                'class': 'form-control row mask-date'
+                'class': 'form-control row mb-3 mt-3 mask-date'
             }),
             'numberOfInstallments': forms.NumberInput(attrs={
-                'class': 'form-control row',
+                'class': 'form-control row mb-3 mt-3',
                 'min': 0
             }),
             'totalValue': forms.NumberInput(attrs={
-                'class': 'form-control row',
+                'class': 'form-control row mb-3 mt-3',
                 'min': 0
             }),
             'peopleWatching': forms.NumberInput(attrs={
-                'class': 'form-control row',
+                'class': 'form-control row mb-3 mt-3',
                 'min': 0
             }),
             'systemWatching': forms.TextInput(attrs={
-                'class': 'form-control row',
+                'class': 'form-control row mb-3 mt-3',
                 'min': 0
             }),
             'date_init': forms.TextInput(attrs={
-                'class': 'form-control row mask-date'
+                'class': 'form-control row mb-3 mt-3 mask-date'
             }),
         }
 
@@ -87,17 +87,17 @@ class PaymentMethodAccountsForm(forms.ModelForm):
         ]
         widgets = { 
             'forma_pagamento': forms.Select(attrs={ 
-                'class': 'form-select row'
+                'class': 'form-select row mb-3 mt-3'
             }),
             'expirationDate': forms.DateInput(format='%d/%m/%Y', attrs={
-                'class': 'form-control row mask-date', 
+                'class': 'form-control row mask-date mb-3 mt-3', 
             }),
             'days': forms.NumberInput(attrs={
-                'class': 'form-control row',
+                'class': 'form-control row mb-3 mt-3',
                 'min': 0
             }),
             'value': forms.NumberInput(attrs={
-                'class': 'form-control row',
+                'class': 'form-control row mb-3 mt-3',
                 'min': 0
             }),
             'interestPercent': forms.NumberInput(attrs={
