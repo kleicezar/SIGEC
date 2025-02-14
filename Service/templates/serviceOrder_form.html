@@ -235,24 +235,68 @@
 
                     <!-- Formas de Pagamento -->
                     <h6>Formas de Pagamento</h6>
+                    <div class="form-row">
+                        <table class="table" id="paymentMethod_account">
+                            <thead>
+
+                                <tr>
+                                    <th scope="col">
+                                        {{form_Accounts.numberOfInstallments.label}}
+                                    </th>
+                                    <th scope="col">
+                                        {{form_Accounts.date_init.label}}
+                                    </th>
+                                    <th scope="col">
+                                        {{form_Accounts.installment_Range.label}}
+                                    </th>
+                                    <th scope="col">
+                                        {{ form_Accounts.totalValue.label}}
+                                    </th>
+                                    <th scope="col">
+                                        
+                                    </th>
+                                </tr>
+                            </thead>
+        
+                            <tbody>
+                                <tr>
+                                    <td>{{form_Accounts.numberOfInstallments}}</td>
+                                    <td>
+                                        <div class="input-group date" data-provide="datepicker" id="date_init">
+                                            {{ form_Accounts.date_init }}
+                                            <div class="input-group-addon">
+                                                <span class="glyphicon glyphicon-th"></span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{form_Accounts.installment_Range}}</td>
+                                    <td>{{ form_Accounts.totalValue}}</td>
+                                    <td>
+                                        <button id="generate" type="button">GERAR</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <div id="payment-method-container">
-                        {{ payment_method_formset.management_form }}
-                        {% for form in payment_method_formset %}
+                        {{ form_payment_account.management_form }}
+                        <div style="display:none;">
+                            {% for form in form_payment_account %}
                             <div class="form-row">
                                 <table class="table">
                                     <thead>
                                         <tr>
                                             <th scope="col">
-                                                Forma de Pagamento
+                                                {{form.forma_pagamento.label}}
                                             </th>
                                             <th scope="col">
-                                                Data de Expiração
+                                                {{form.expirationDate.label}}
                                             </th>
                                             <th scope="col">
-                                                Valor
+                                                {{ form.days.label}}
                                             </th>
-                                            <th scol="col">
-                                                Ações
+                                            <th scope="col">
+                                                {{form.value.label}}
                                             </th>
                                         </tr>
                                     </thead>
@@ -269,25 +313,29 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                {{form.valor}}
+                                                {{form.days}}
+                                            </td>
+                                            <td>
+                                                {{form.value}}
                                             </td>
                                             
-                                            <td>
+                                            <!-- <td> -->
                                                 <!-- <label for="">Deletar</label> -->
-                                                <button type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
-                                                {{ form.DELETE.as_hidden }}
+                                                <!-- <button type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
+                                                {{ form.DELETE.as_hidden }} -->
                                         </tr>
                                     </tbody>
                                   </table>
                                   
                             </div>
                         {% endfor %}
+                        </div>     
                     </div>
                     <template id="empty-payment-method-form">
-                        <div class="form-row">
+                        <div class="form-row" id="del">
                             <!-- Clona o formulário vazio de payment_method_formset -->
                             <!-- {{ payment_method_formset.empty_form.as_p }} -->
-                            <table class="table">
+                            <table class="table" id="table">
                                 <thead>
                                     <tr>
                                     </tr>
@@ -295,26 +343,23 @@
             
                                 <tbody> 
                                     <tr>
-                                        <td class="field_type_payment">{{ payment_method_formset.empty_form.forma_pagamento }}</td>
+                                        <td class="field_type_payment">{{form_payment_account.empty_form.forma_pagamento }}</td>
                                         <td style="width: 200px;">
                                             <div class="input-group date" data-provide="datepicker">
-                                                {{payment_method_formset.empty_form.expirationDate}}
+                                                {{form_payment_account.empty_form.expirationDate}}
                                                 <div class="input-group-addon">
                                                     <span class="glyphicon glyphicon-th"></span>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>{{payment_method_formset.empty_form.valor}}</td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
-                                            {{payment_method_formset.empty_form.DELETE.as_hidden}}</td>
-                                        </td>
+                                        <td>{{form_payment_account.empty_form.days}}</td>
+                                        <td>{{form_payment_account.empty_form.value}}</td>
                                     </tr>
                                 </tbody>
                               </table>
                         </div>
                     </template>
-                    <button type="button" onclick="addPaymentMethod()" class="btn btn-outline-success mb-5">Adicionar Forma de Pagamento</button>
+                    <!-- <button type="button" onclick="addPaymentMethod()" class="btn btn-outline-success mb-5">Adicionar Forma de Pagamento</button> -->
                     
 
                     <div class="row">
@@ -344,6 +389,8 @@
         <script type="text/javascript" src="{% static 'js/jquery-3.7.1.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/jquery.mask.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/mask.js' %}"></script> -
+        <script type="text/javascript" src="{% static 'js/interest.js' %}"></script>
+
         <script src="{% static 'js/addItem.js' %}" defer></script>
         <script src="{% static 'js/order.js' %}"></script>  <!-- pesquisa clientes -->
         <script src="{% static 'js/venda_item.js' %}"></script> <!-- pesquisa produtos em vendas-->

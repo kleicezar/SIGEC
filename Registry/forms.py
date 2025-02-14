@@ -155,7 +155,34 @@ class PersonForm(forms.ModelForm):
             'creditLimit':forms.NumberInput(attrs={
                 'class':'form-control row',
                 'min':0,
-            })
+            }),
+            'isClient':forms.CheckboxInput(attrs={
+                'class':'form-check-input'}
+            ),
+            'isSupllier':forms.CheckboxInput(attrs={
+                'class':'form-check-input'}
+            ),
+            'isUser':forms.CheckboxInput(attrs={
+                'class':'form-check-input'}
+            ), 
+            'isEmployee':forms.CheckboxInput(attrs={
+                'class':'form-check-input'}
+            ), 
+            'isSalesman':forms.CheckboxInput(attrs={
+                'class':'form-check-input'}
+            ), 
+            'isFormer_employee':forms.CheckboxInput(attrs={
+                'class':'form-check-input'}
+            ), 
+            'isCarrier':forms.CheckboxInput(attrs={
+                'class':'form-check-input'}
+            ), 
+            'isDelivery_man':forms.CheckboxInput(attrs={
+                'class':'form-check-input'}
+            ), 
+            'isTechnician':forms.CheckboxInput(attrs={
+                'class':'form-check-input'}
+            )
         }
 
     

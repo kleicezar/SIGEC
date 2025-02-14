@@ -1,6 +1,7 @@
 from django.db import models
 from Registry.models import Person
 from Sale.models import Venda
+from Service.models import VendaService
 from purchase.models import Compra
 from config.models import ChartOfAccounts, PaymentMethod, Situation
 
@@ -88,11 +89,11 @@ class PaymentMethod_Accounts(models.Model):
         null=True,
         verbose_name='id_compra'
     )
-    # ordem_servico = models.ForeignKey(Compra,
-    #     on_delete=models.CASCADE,
-    #     null=True,
-    #     verbose_name='id_compra'
-    # )
+    ordem_servico = models.ForeignKey(VendaService,
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name='id_vendaservico'
+    )
     forma_pagamento = models.ForeignKey(PaymentMethod,
         on_delete=models.SET_NULL,
         null=True,

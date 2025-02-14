@@ -1,4 +1,5 @@
 // Usando jQuery para facilitar o controle da visibilidade
+value_initial = document.getElementById("id_paymentmethod_accounts_set-INITIAL_FORMS");
 document.addEventListener('DOMContentLoaded', function () {
     
     // rascunho 02
@@ -24,8 +25,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const dateInit = document.getElementById("id_date_init"); // Data de início das faturas
         const installment_Range = parseInt(document.getElementById("installment_Range").value); // Intervalo entre faturas (em dias)
         const totalValue = parseFloat(document.getElementById("id_totalValue").value); // Valor de cada parcela
-
-        if (templatenone) {
+        // no caso, value_initial serve para o formulario de update, para nao apagar os pagamentos já cadastrados que vem para
+        // edição
+        if (templatenone && value_initial==0) {
             templatenone.remove()
         }
         // --------------------------------- //
@@ -51,11 +53,32 @@ document.addEventListener('DOMContentLoaded', function () {
             alert("Por favor, preencha todos os campos corretamente. BY: kleitin");
             return;
         }
-        
+        let initial_step =1;
+        console.log('cheguei auqi')
         // console.log(numberOfInstallments)
-        //apaga tudo
-        if (table != null) {
-            console.log(formCountElem)
+        //apaga tudo de UPDATE(PAGAMENTOS)
+        // ao clicar em gerar novamente, ele marcará  o campo DELETE,assim pagamentos antes cadastrados serão deletados ao serem enviados.
+        if(value_initial.value != 0){
+            instance_payments = value_initial.parentElement .querySelectorAll(".form-row table");
+
+            instance_payments.forEach(instance=>{
+                // console.log(instance)
+            //    ao clicar em gerar novamente
+            
+                delete_payment = instance.querySelector('.form-row table tr td input[type="hidden"][name$="DELETE"]');
+                if (delete_payment) {
+                    delete_payment.value = "on";
+                    console.log("Valor alterado para:", delete_payment.value);
+                } else {
+                    console.error("Input hidden para DELETE não encontrado!");
+                }
+                
+                instance.style.display = "none"; 
+                initial_step = parseInt(value_initial.value);
+                
+            })
+        }
+        if (table != null || value_initial.value != 0) {
                 for (let index = 1; index <= formCountElem.value; index++) {
                     let div = document.getElementById('del') ;
                     if (div != null) {
@@ -65,18 +88,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
             table = null;
-            formCountElem.value = 1
+            formCountElem.value = initial_step;
         }
         
-        const valueOfinstallments = compair(numberOfInstallments, totalValue)     
+        const valueOfinstallments = compair(numberOfInstallments, totalValue);
+        let index_value = 0;     
         const emptyFormTemplate = document.getElementById('empty-payment-method-form');
-        for (let index = 1; index < numberOfInstallments + 1 ; index++) {
+        for (let index = parseInt(value_initial.value) + 1 ; index < parseInt(value_initial.value) + numberOfInstallments + 1 ; index++) {
             if (!emptyFormTemplate) {
                 console.error("Template de formulário vazio (empty-payment-method-form) não encontrado!");
                 return;
             }
+            
             const newForm = emptyFormTemplate.content.cloneNode(true);
             // Atualiza os campos do formulário clonado
+            console.log('formulários')
+            console.log(newForm)
             newForm.querySelectorAll("input, select").forEach(async (input) => {
                 input.name = input.name.replace("__prefix__", formCountElem.value);
                 input.id = input.id.replace("__prefix__", formCountElem.value);
@@ -93,15 +120,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     // CALCULO DE VALOR
                 }else if (input.name.includes("-value")) {
                     // Define o valor da parcela
-                    input.value = valueOfinstallments[index-1];
+                    input.value = valueOfinstallments[index_value];
                     //CALCULO DE DIAS
                     }else if (input.name.includes("-days")) {
                         // Define os dias entre as parcelas
-                        input.value = installment_Range*index;
+                        input.value = installment_Range*(index-value_initial.value);
+                     
                     }
                     // Adiciona o formulário ao contêiner
                     await formContainer.appendChild(newForm);
                 })
+                index_value+=1;
                 formCountElem.value = Number(formCountElem.value) + 1
             }
         table = 'null';
