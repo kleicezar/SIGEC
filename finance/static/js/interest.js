@@ -1,33 +1,6 @@
 // Usando jQuery para facilitar o controle da visibilidade
 document.addEventListener('DOMContentLoaded', function () {
     
-  
-
-
-
-    
-    // rascunho 01
-    // function toggleFields_installment_Range() {
-    //     if (installmentRange.value == 'A cada 15 dias') {
-    //         finePercentField.style.display = 'block'; // Mostrar o campo de porcentagem
-    //         fineValueField.style.display = 'none';   // Esconder o campo de valor
-    //     } else if (installmentRange.value === 'A cada 20 dias') {
-    //         fineValueField.style.display = 'block';   // Mostrar o campo de valor
-    //         finePercentField.style.display = 'none';  // Esconder o campo de porcentagem
-    //     } else if (installmentRange.value === 'A cada 23 dias') {
-    //         fineValueField.style.display = 'block';   // Mostrar o campo de valor
-    //         finePercentField.style.display = 'none';  // Esconder o campo de porcentagem
-    //     } else if (installmentRange.value === 'A cada 28 dias') {
-    //         fineValueField.style.display = 'block';   // Mostrar o campo de valor
-    //         finePercentField.style.display = 'none';  // Esconder o campo de porcentagem
-    //     } else if (installmentRange.value === 'A cada 30 dias') {
-    //         fineValueField.style.display = 'block';   // Mostrar o campo de valor
-    //         finePercentField.style.display = 'none';  // Esconder o campo de porcentagem
-    //     } else {
-            
-    //     }
-    // }
-    
     // rascunho 02
     // CODIGO A PARTIR DAQ
     // Obtém os elementos principais
@@ -58,17 +31,19 @@ document.addEventListener('DOMContentLoaded', function () {
         // --------------------------------- //
         // Validações básicas
         // converter a data no formato js 
-        const convertToDate = (dateStr) => {
-            const [day, month, year] = dateStr.split('/').map(num => parseInt(num, 10));
-            return new Date(year, month - 1, day); // Mês no JavaScript é baseado em zero
-        };
-        const inputDate = dateInit.value.trim();
-        // Converter a data inicial
-        const startDate = convertToDate(inputDate);
-        // Verifica se a data foi convertida corretamente
-        if (isNaN(startDate.getTime())) {
-            console.error('Data inválida');
-            return;
+        function convert_date(){
+            const convertToDate = (dateStr) => {
+                const [day, month, year] = dateStr.split('/').map(num => parseInt(num, 10));
+                return new Date(year, month - 1, day); // Mês no JavaScript é baseado em zero
+            };
+            const inputDate = dateInit.value.trim();
+            // Converter a data inicial
+            const startDate = convertToDate(inputDate);
+            // Verifica se a data foi convertida corretamente
+            if (isNaN(startDate.getTime())) {
+                console.error('Data inválida');
+                return;
+            }
         }
         // --------------------------------- //
 

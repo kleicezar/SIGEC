@@ -281,6 +281,7 @@ def compras_item_create(request, compra_pk):
 ### PRODUCT
 
 @login_required
+@permission_required('purchase.view_product', raise_exception=True)
 def product(request):
     products = Product.objects.all()
     return render(request, 'purchase/product_list.html', {'products': products})

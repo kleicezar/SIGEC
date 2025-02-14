@@ -106,6 +106,9 @@
                                 {{form_paymentMethodAccounts.fineType}}
                             </th>
                             <th scope="col">
+                                {{form_paymentMethodAccounts.value_old.label}}
+                            </th>
+                            <th scope="col">
                                 {{form_paymentMethodAccounts.value.label}}
                             </th>
                         </tr>
@@ -121,11 +124,11 @@
                                 </div>
                             </td>
                             <td>{{form_paymentMethodAccounts.days}}</td>
-                            <td>{{form_paymentMethodAccounts.interestPercent}}
-                                {{form_paymentMethodAccounts.interestValue}}</td>
-                                <td>{{form_paymentMethodAccounts.finePercent}}
-                                    {{form_paymentMethodAccounts.fineValue}}</td>
-                                <td>{{form_paymentMethodAccounts.value}}</td>
+                            <td>{{form_paymentMethodAccounts.interest}}</td>
+                            <td>{{form_paymentMethodAccounts.fine}}</td>
+                            <td>{{form_paymentMethodAccounts.value_old}}</td>
+                            <td>{{form_paymentMethodAccounts.value}}</td>
+                                
                         </tr>
                     </tbody>
                 </table>

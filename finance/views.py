@@ -318,43 +318,117 @@ def get_AccountsReceivable(request, id_Accounts):
 def update_AccountsReceivable(request, id_Accounts):
     payment_instance = get_object_or_404(PaymentMethod_Accounts, id=id_Accounts)
     accounts_instance = get_object_or_404(Accounts, id=payment_instance.conta_id)
+    print('accounts_instance', accounts_instance)
     if request.method == "POST":  
-        payment_instance = PaymentMethodAccountsForm(request.POST, instance=payment_instance)
+        payment_form_instance = PaymentMethodAccountsForm(request.POST, instance=payment_instance)
+        accounts_form_instance = AccountsFormUpdate(
+            request.POST, 
+            instance=accounts_instance,
+            initial={
+                'numberOfInstallments': accounts_instance.numberOfInstallments,
+                'installment_Range': accounts_instance.installment_Range,
+                'totalValue': accounts_instance.totalValue,
+                'date_init': accounts_instance.date_init
+            }
+        )
+        for key, value in vars(payment_instance).items(): 
+            print(f"{key}: {value}")
+        print()
+        # for key, value in vars(accounts_instance).items():
+        #     print(f"{key}: {value}")
+        # print()
 
-        accounts_form_instance = AccountsForm(request.POST, instance=accounts_instance)
-
-        print(accounts_instance.date_init)
-
-        if payment_instance.is_valid() and accounts_form_instance.is_valid():
-            print('funciona pelo amor de Deus')
+        if payment_form_instance.is_valid() and accounts_form_instance.is_valid():
             accounts_form_instance.save()
-            payment_instance.save(commit=False)
-            if payment_instance.interestPercent == '':
-                print(payment_instance.interestPercent)
+
+            payment_instance = payment_form_instance.save(commit=False)
+
+            # Definir None para valores vazios
+            if not payment_instance.interestPercent:
                 payment_instance.interestPercent = None
-            if payment_instance.interestValue == 0: 
-                print(payment_instance.interestValue)
+            if not payment_instance.interestValue:
                 payment_instance.interestValue = None
-            if payment_instance.finePercent == '':
-                print(payment_instance.finePercent)
+            if not payment_instance.finePercent:
                 payment_instance.finePercent = None
-            if payment_instance.fineValue == 0:
-                print(payment_instance.fineValue)
+            if not payment_instance.fineValue:
                 payment_instance.fineValue = None
+
             payment_instance.save()
 
-            return redirect('AccountsReceivable')  # Redirecionar após salvar as alterações
+            return redirect('AccountsReceivable')  # Redirecionar após salvar
+        else:
+            print("Erros no payment_form_instance:", payment_form_instance.errors)
+            print()
+            print("Erros no accounts_form_instance:", accounts_form_instance.errors)
+            print()
+
+
     else:
-        # Preencher os formulários com os dados existentes
-        accounts_form_instance = AccountsForm(instance=accounts_instance)
-        payment_instance = PaymentMethodAccountsForm(instance=payment_instance)
+        accounts_form_instance = AccountsFormUpdate(instance=accounts_instance)
+        payment_form_instance = PaymentMethodAccountsForm(instance=payment_instance)
 
     context = {
         'form_Accounts': accounts_form_instance,
-        'form_paymentMethodAccounts': payment_instance,
+        'form_paymentMethodAccounts': payment_form_instance,
     }
- 
+
     return render(request, 'finance/AccountsPayformUpdate.html', context)
+    # payment_instance = get_object_or_404(PaymentMethod_Accounts, id=id_Accounts)
+    # accounts_instance = get_object_or_404(Accounts, id=payment_instance.conta_id)
+    # if request.method == "POST":  
+    #     payment_form_instance = PaymentMethodAccountsForm(request.POST, instance=payment_instance)
+
+        # accounts_form_instance = AccountsForm(
+        #     request.POST, 
+        #     instance=accounts_instance,
+        #     initial={
+        #         'numberOfInstallments': accounts_instance.numberOfInstallments,
+        #         'installment_Range': accounts_instance.installment_Range,
+        #         'totalValue': accounts_instance.totalValue,
+        #         'date_init': accounts_instance.date_init
+        #     }
+        # )
+
+    #     # accounts_form_instance.numberOfInstallments = accounts_instance.numberOfInstallments
+    #     # accounts_form_instance.installment_Range = accounts_instance.installment_Range
+    #     # accounts_form_instance.totalValue = accounts_instance.totalValue
+    #     # accounts_form_instance.date_init = accounts_instance.date_init
+
+    #     print(accounts_instance.date_init)
+    #     print('funciona pelo amor de Deus')
+    #     # print(payment_form_instance.errors)
+    #     print(accounts_form_instance.errors)
+
+    #     if payment_form_instance.is_valid() and accounts_form_instance.is_valid():
+    #         print('funciona pelo amor de Deus')
+    #         accounts_form_instance.save()
+    #         payment_form_instance.save(commit=False)
+    #         if payment_form_instance.interestPercent == '':
+    #             print(payment_form_instance.interestPercent)
+    #             payment_form_instance.interestPercent = None
+    #         if payment_form_instance.interestValue == 0: 
+    #             print(payment_form_instance.interestValue)
+    #             payment_form_instance.interestValue = None
+    #         if payment_form_instance.finePercent == '':
+    #             print(payment_form_instance.finePercent)
+    #             payment_form_instance.finePercent = None
+    #         if payment_form_instance.fineValue == 0:
+    #             print(payment_form_instance.fineValue)
+    #             payment_form_instance.fineValue = None
+    #         payment_form_instance.save()
+
+    #         return redirect('AccountsReceivable')  # Redirecionar após salvar as alterações
+    # else:
+    #     # Preencher os formulários com os dados existentes
+    #     accounts_form_instance = AccountsForm(instance=accounts_instance)
+    #     payment_form_instance = PaymentMethodAccountsForm(instance=payment_instance)
+
+    # context = {
+    #     'form_Accounts': accounts_form_instance,
+    #     'form_paymentMethodAccounts': payment_form_instance,
+    # }
+ 
+    # return render(request, 'finance/AccountsPayformUpdate.html', context)
 
 # funcionando
 @login_required
