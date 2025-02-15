@@ -40,7 +40,7 @@ def venda_list(request):
 @login_required
 def venda_create(request):
     VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=1, can_delete=True)
-    PaymentMethodVendaFormSet = inlineformset_factory(Venda, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
+    # PaymentMethodVendaFormSet = inlineformset_factory(Venda, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
     PaymentMethodAccountsFormSet = inlineformset_factory(Venda,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=1,can_delete=True)
 
     if request.method == 'POST':
@@ -48,10 +48,10 @@ def venda_create(request):
         form_Accounts = AccountsForm(request.POST)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
         venda_item_formset = VendaItemFormSet(request.POST)
-        payment_method_formset = PaymentMethodVendaFormSet(request.POST)
+        # payment_method_formset = PaymentMethodVendaFormSet(request.POST)
         # Percorrer VendaForm, manipular,
 
-        if venda_form.is_valid() and venda_item_formset.is_valid() and payment_method_formset.is_valid():
+        if venda_form.is_valid() and venda_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
             estoque_suficiente = True
             for form in venda_item_formset:
                 if form.cleaned_data:
@@ -84,28 +84,31 @@ def venda_create(request):
                             produto.current_quantity -= quantidade
                             produto.save()
                         
-                payment_method_formset.instance = venda
+                PaymentMethod_Accounts_FormSet.instance = venda
                 total_payment = 0
-                for form in payment_method_formset: 
+                for form in PaymentMethod_Accounts_FormSet: 
                     if form.cleaned_data:
                         form.acc = False
                         valor = form.cleaned_data['value']
                         total_payment+=valor
 
                 if(total_payment == venda_form.cleaned_data['total_value']):  
-                    payment_method_formset.save()
-                    for form in payment_method_formset.deleted_objects:
+                    print('opa')
+                    print(total_payment)
+                    PaymentMethod_Accounts_FormSet.save()
+                    for form in PaymentMethod_Accounts_FormSet.deleted_objects:
                         form.delete()
                         form.save()
                 else:
                     messages.warning(request, "Ação cancelada! O valor não foi salvo completamente.")
                     venda_form = VendaForm()
                     venda_item_formset = VendaItemFormSet(queryset=VendaItem.objects.none())
-                    payment_method_formset = PaymentMethodVendaFormSet(queryset=PaymentMethod_Venda.objects.none())
+                    # PaymentMethod_Accounts_FormSet = PaymentMethodVendaFormSet(queryset=PaymentMethod_Venda.objects.none())
                     context = {
+                        'form_Accounts':form_Accounts,
+                        'form_payment_account':PaymentMethod_Accounts_FormSet,
                         'venda_form': venda_form,       
                         'venda_item_formset': venda_item_formset,
-                        'payment_method_formset': payment_method_formset
                     }
                     return render(request, 'sale/venda_form.html', context)
                 return redirect('venda_list')
@@ -114,13 +117,13 @@ def venda_create(request):
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
         venda_form = VendaForm()
         venda_item_formset = VendaItemFormSet(queryset=VendaItem.objects.none())
-        payment_method_formset = PaymentMethodVendaFormSet(queryset=PaymentMethod_Accounts.objects.none())
+        # payment_method_formset = PaymentMethodVendaFormSet(queryset=PaymentMethod_Accounts.objects.none())
     context = {
         'form_Accounts':form_Accounts,
         'form_payment_account':PaymentMethod_Accounts_FormSet,
         'venda_form': venda_form,       
         'venda_item_formset': venda_item_formset,
-        'payment_method_formset': payment_method_formset
+        # 'payment_method_formset': payment_method_formset
     }
     return render(request, 'sale/venda_form.html', context)
 
@@ -131,15 +134,16 @@ def venda_update(request, pk):
 
     # Criar formsets para itens de venda e formas de pagamento
     VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=0, can_delete=True)
-    PaymentMethodVendaFormSet = inlineformset_factory(Venda, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=0, can_delete=True)
+    # PaymentMethodVendaFormSet = inlineformset_factory(Venda, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=0, can_delete=True)
 
+    PaymentMethodAccountsFormSet = inlineformset_factory(Venda, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=0, can_delete=True)
     if request.method == 'POST':
         # print('Dados do Post',request.POST)
         venda_form = VendaForm(request.POST, instance=venda)
         venda_item_formset = VendaItemFormSet(request.POST, instance=venda)
-        payment_method_formset = PaymentMethodVendaFormSet(request.POST, instance=venda)
-
-        if venda_form.is_valid() and venda_item_formset.is_valid() and payment_method_formset.is_valid():
+        # payment_method_formset = PaymentMethodVendaFormSet(request.POST, instance=venda)
+        PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST,instance=venda)
+        if venda_form.is_valid() and venda_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
             # Salvar a venda
             venda_form.save()
             # id = 1
@@ -195,10 +199,10 @@ def venda_update(request, pk):
 
 
             payments_intances = venda_item_formset.save(commit=False)
-            # payment_method_formset.save_m2m()
+            # PaymentMethod_Accounts_FormSet.save_m2m()
             pagamentos_para_deletar = []
 
-            for form in payment_method_formset.deleted_forms:
+            for form in PaymentMethod_Accounts_FormSet.deleted_forms:
                 if form.instance.pk is not None:
                     pagamentos_para_deletar.append(form.instance)
 
@@ -209,14 +213,14 @@ def venda_update(request, pk):
             for pagamento in pagamentos_para_deletar:
                 pagamento.delete()
             # venda_item_formset.save()
-            payment_method_formset.save()
+            PaymentMethod_Accounts_FormSet.save()
 
            
             # for item in deletar_itens:
             #     item.delete()
                         
 
-            # payment_method_formset.save()
+            # PaymentMethod_Accounts_FormSet.save()
 
             messages.success(request, "Venda atualizada com sucesso!")
             return redirect('venda_list')
@@ -224,22 +228,24 @@ def venda_update(request, pk):
             print('Erros no venda_form: ',venda_form.errors)
         if not venda_item_formset.is_valid():
             print('Erros no venda_item_formset',venda_item_formset.errors)
-        if not payment_method_formset.is_valid():
-            print('Erros no payment_method_formset',payment_method_formset.errors)
+        if not PaymentMethod_Accounts_FormSet.is_valid():
+            print('Erros no PaymentMethod_Accounts_FormSet',PaymentMethod_Accounts_FormSet.errors)
         else:
             messages.error(request, "Erro ao atualizar a venda. Verifique os campos.")
 
     else:
         form_Accounts = AccountsForm(instance=venda)
+        PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=venda.paymentmethod_accounts_set.all(),instance=venda)
         venda_form = VendaForm(instance=venda)
-        payment_method_formset = PaymentMethodVendaFormSet(queryset=venda.paymentmethod_accounts_set.all(),instance=venda)
+        # payment_method_formset = PaymentMethodVendaFormSet(queryset=venda.paymentmethod_accounts_set.all(),instance=venda)
         venda_item_formset = VendaItemFormSet(queryset=venda.vendaitem_set.all(),instance=venda)
 
     context = {
         'form_Accounts': form_Accounts,
+        'form_payment_account':PaymentMethod_Accounts_FormSet,
         'venda_form': venda_form,
         'venda_item_formset': venda_item_formset,
-        'form_payment_account': payment_method_formset,
+        # 'form_payment_account': payment_method_formset,
     }
 
     return render(request, 'sale/venda_formUpdate.html', context)

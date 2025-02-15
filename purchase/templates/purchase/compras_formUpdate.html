@@ -34,13 +34,13 @@
         {% bootstrap_messages %}
         {% block content %}
         <div class='content'>
-            <div class='center'>
-                <h4 class="mt-5 mb-5 c-adapted">{% if venda.pk %}Editar{% else %}Criar{% endif %} Compra</h4>
+            <div class='container-fluid justify-content-center align-items-center'>
+                <h4 class="mt-5 mb-5 c-adapted">{% if compra.pk %}Editar{% else %}Criar{% endif %} Compra</h4>
                 <form method="post">
                     {% csrf_token %}
                 
                     <!-- Formulário de Venda -->
-                    <h6>Dados da Venda</h6>
+                    <h6>Dados da Comrpa</h6>
                     <!-- {{ compra_form.as_p }} -->
                     {% if messages %}
                     <div>

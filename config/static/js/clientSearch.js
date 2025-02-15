@@ -74,7 +74,7 @@ itemsContainer.addEventListener("input", (event) => {
                         data.produtos.forEach((produto, index) => {
                             td.style.display = "block";
                             const productButton = document.createElement("button");
-                            productButton.className = "btn btn-outline-secondary form-control x mb-2";
+                            productButton.className = "btn btn-secondary form-control x mb-2";
                             productButton.type = "button";
                             productButton.id = `option-product-${index}`;
                             productButton.textContent = `${produto.product_code} - ${produto.description}`;
@@ -243,7 +243,7 @@ clientSearchInput.addEventListener("input", () => {
                             clientOptionsContainer = document.getElementById("options-1");
 
                             const clientButton = document.createElement("button");
-                            clientButton.className = "btn btn-outline-secondary form-control mb-2";
+                            clientButton.className = "btn btn-secondary form-control mb-2";
                             clientButton.id = `option-${optionId}`;
                             clientButton.textContent = `${cliente.id} - ${cliente.name}`;
                             clientButton.type = "button";
@@ -262,6 +262,7 @@ clientSearchInput.addEventListener("input", () => {
                         }
                     });
                 }
+
             });
     } else {
         tdClientOptionsContainer.style.display = "none";

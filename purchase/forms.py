@@ -65,25 +65,25 @@ class CompraForm(forms.ModelForm):
         fields = ['data_da_compra', 'fornecedor', 'situacao','total_value','product_total','discount_total'] 
         widgets = {
                 'fornecedor':forms.TextInput(attrs={
-                    'class':'form-control row-5' 
+                    'class':'' 
                 }),
                 'data_da_compra':forms.DateTimeInput(attrs={
-                    'class':'form-control row-xl-2 ',
+                    'class':'form-control mb-3 mt-3 row-xl-2 ',
                     'id':"date_compra"
                 }),
                 'situacao':forms.Select(attrs={
-                    'class':'form-select row'
+                    'class':'form-select row mb-3 mt-3'
                 }),
                 'total_value':forms.TextInput(attrs={
-                    'class':'form-control row-5',
+                    'class':'form-control mb-3 mt-3 row-5',
                     'readonly':'readonly'
                 }),
                 'product_total':forms.TextInput(attrs={
-                    'class':'form-control row-5',
+                    'class':'form-control mb-3 mt-3 row-5',
                     'readonly': 'readonly',
                 }),
                 'discount_total':forms.TextInput(attrs={
-                    'class':'form-control row-5',
+                    'class':'form-control mb-3 mt-3 row-5',
                     'readonly': 'readonly',
                 }),
             }
@@ -102,16 +102,16 @@ class CompraItemForm(forms.ModelForm):
                 'class':'form-control row-2'
             }),
             'quantidade':forms.TextInput(attrs={
-                'class':'form-control row'
+                'class':'form-control mt-3 mb-3 row'
             }),
             'preco_unitario':forms.TextInput(attrs={
-                'class':'form-control row'
+                'class':'form-control mt-3 mb-3 row'
             }),
             'discount':forms.TextInput(attrs={
-                'class':'form-control row'
+                'class':'form-control mt-3 mb-3 row'
             }),
             'price_total':forms.TextInput(attrs={
-                'class':'form-control row'
+                'class':'form-control mt-3 mb-3 row'
             })
         }
 

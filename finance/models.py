@@ -82,21 +82,25 @@ class PaymentMethod_Accounts(models.Model):
     venda = models.ForeignKey(Venda,
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
         verbose_name='id_venda'
     )
     compra = models.ForeignKey(Compra,
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
         verbose_name='id_compra'
     )
     ordem_servico = models.ForeignKey(VendaService,
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
         verbose_name='id_vendaservico'
     )
     forma_pagamento = models.ForeignKey(PaymentMethod,
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
         verbose_name='Forma de Pagamento'
     )
     expirationDate = models.DateField(

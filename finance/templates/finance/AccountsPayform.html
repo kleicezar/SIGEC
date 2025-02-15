@@ -22,16 +22,26 @@
                 
                 <h4 class="mt-5 mb-5 c-adapted">Cadastro de {{Contas}} </h4>
                 <!-- dados da conta a pagar -->
-                {{ form_Accounts.pessoa_id.label}}
-                {{ form_Accounts.pessoa_id}}
-    
-                {{ form_Accounts.chartOfAccounts.label}}
-                {{ form_Accounts.chartOfAccounts}}
-    
-                {{ form_Accounts.documentNumber.label}}
-                {{ form_Accounts.documentNumber}}
-    
-                {{ form_Accounts.date_account.label}}
+
+                <div class="row">
+                    <div class="col">
+                        {{ form_Accounts.pessoa_id.label}}
+                        {{ form_Accounts.pessoa_id}}
+                    </div>
+
+                    <div class="col">
+                        {{ form_Accounts.chartOfAccounts.label}}
+                        {{ form_Accounts.chartOfAccounts}}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        {{ form_Accounts.documentNumber.label}}
+                        {{ form_Accounts.documentNumber}}
+                    </div>
+                    <div class="col">
+                        {{ form_Accounts.date_account.label}}
                 <td>
                     <div class="input-group date" data-provide="datepicker" id="payment_method">
                         {{ form_Accounts.date_account}}
@@ -41,6 +51,15 @@
                         </div>
                     </div>
                 </td>
+                    </div>
+                </div>
+              
+    
+               
+    
+                
+    
+                
     
                 <div class="form-row">
                     <table class="table" id="paymentMethod_account">

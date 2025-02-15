@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let table = null;
     installments.addEventListener('click', () => {
         console.log("Tá clicado meu amigo")
+        let tbody  = formContainer.querySelector(".form-row table tbody");
         const itensPaymentMethodContainer = formContainer.querySelectorAll("item-form");
         itensPaymentMethodContainer.forEach(item=>{
             console.log('removido')

@@ -17,8 +17,8 @@ class Venda(models.Model):
 
 
     def __str__(self):
-        # return f"Venda {self.id} - {self.pessoa}"
-        ...
+        return f"Venda {self.id} - {self.pessoa}"
+    
 
            
 
@@ -35,8 +35,8 @@ class VendaItem(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        # return f"{self.product.description} - {self.quantidade} unidades"
-        ...
+        return f"{self.product.description} - {self.quantidade} unidades"
+        
     
 class PaymentMethod_Venda(models.Model):
     venda = models.ForeignKey(Venda, on_delete=models.SET_NULL, null=True, verbose_name='id_venda')

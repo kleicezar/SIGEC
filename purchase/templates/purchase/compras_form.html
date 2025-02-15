@@ -26,9 +26,9 @@
         {% bootstrap_messages %}
         {% block content %}
         <div class="content">
-            <div class="center">
+            <div class="container-fluid justify-content-center align-items-center">
                 <!-- <h4 class="mt-5 mb-5 c-adapted">{% if Compra.pk %}Editar{% else %}Criar{% endif %} Compra</h4> -->
-
+                <h4 class="c-adapted mt-5 mb-5">Criar Compra</h4>
                 <form method="post">
                     {% csrf_token %}
                 
@@ -54,7 +54,7 @@
                             <tr>
                                 <td id="form-client" class="">
                                     {{compra_form.fornecedor.as_hidden}}
-                                <input type="text" class="row form-control" id="idSearch">
+                                <input type="text" class="row form-control mb-3 mt-3" id="idSearch">
     
                                 </td>
                                 <td style="width: 200px;"> 
@@ -85,7 +85,7 @@
                     </table>
                     
                     <!-- Itens de Compra -->
-                    <h6>Itens de Compra</h6>
+                    <h6 class="mt-5 mb-3">Itens de Compra</h6>
                     <div id="itens-container">      
                         {{ compra_item_formset.management_form }}
                         {% for form in compra_item_formset %}
@@ -118,7 +118,7 @@
                                     <tbody class="itens">
                                         <tr>
                                             <td >{{form.produto.as_hidden}}
-                                                <input type="text" class="row form-control" id="idProduct-0">
+                                                <input type="text" class="row form-control mb-3 mt-3" id="idProduct-0">
                                             </td>
                                             
                                             <td>
@@ -134,7 +134,7 @@
                                                 {{form.price_total}}
                                             </td>
                                             <td>
-                                                <button  type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
+                                                <button  type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removePayment(this)">Deletar</button>
                                                 {{ form.DELETE.as_hidden }}
                                             </td>
                                         </tr>
@@ -166,7 +166,7 @@
                                 <tbody>
                                     <tr >
                                         <td>{{ compra_item_formset.empty_form.produto.as_hidden }}
-                                            <input type="text" class="row form-control inputProduct">
+                                            <input type="text" class="row form-control inputProduct mb-3 mt-3">
                                             <div class="mt-3 field-product row">
                                     
                                             </div>
@@ -207,7 +207,7 @@
                     </template>
                     <button id="item" type="button" onclick="addItem()" class="btn btn-outline-success mb-5">Adicionar Item</button>
                 
-                    <table class="table">
+                    <table class="table mt-3">
                         <thead>
                             <tr>
                                 <th scope="col">
@@ -241,50 +241,37 @@
                     </table>
 
                     <!-- Formas de Pagamento -->
-                    <h6>Formas de Pagamento</h6>
-                    <div class="form-row">
-                        <table class="table" id="paymentMethod_account">
-                            <thead>
+                    <h6 class="mt-5 mb-3">Formas de Pagamento</h6>
 
-                                <tr>
-                                    <th scope="col">
-                                        {{form_Accounts.numberOfInstallments.label}}
-                                    </th>
-                                    <th scope="col">
-                                        {{form_Accounts.date_init.label}}
-                                    </th>
-                                    <th scope="col">
-                                        {{form_Accounts.installment_Range.label}}
-                                    </th>
-                                    <th scope="col">
-                                        {{ form_Accounts.totalValue.label}}
-                                    </th>
-                                    <th scope="col">
-                                        
-                                    </th>
-                                </tr>
-                            </thead>
-        
-                            <tbody>
-                                <tr>
-                                    <td>{{form_Accounts.numberOfInstallments}}</td>
-                                    <td>
-                                        <div class="input-group date" data-provide="datepicker" id="date_init">
-                                            {{ form_Accounts.date_init }}
-                                            <div class="input-group-addon">
-                                                <span class="glyphicon glyphicon-th"></span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>{{form_Accounts.installment_Range}}</td>
-                                    <td>{{ form_Accounts.totalValue}}</td>
-                                    <td>
-                                        <button id="generate" type="button">GERAR</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div id="paymentMethod_account" class="row">
+                        <div class="col">
+                            <label for="">{{form_Accounts.numberOfInstallments.label}}</label>
+                            {{form_Accounts.numberOfInstallments}}
+                        </div>
+                        <div class="col" style="width: 200px;">
+                            <label for="">{{form_Accounts.date_init.label}}</label>
+                            <div class="input-group date" data-provide="datepicker" id="date_init">
+                                {{ form_Accounts.date_init }}
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-th"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col" style="margin-left: 30px;">
+                            <label for="">{{form_Accounts.installment_Range.label}}</label>
+                            {{form_Accounts.installment_Range}}
+                        </div>
+                        <div class="col">
+                            <label for="">{{ form_Accounts.totalValue.label}}</label>
+                            {{ form_Accounts.totalValue}}
+                        </div>
+                        <div class="row">
+                            <button id="generate" type="button" class="btn btn-warning mb-3 mt-3">Gerar</button>
+
+                        </div>
                     </div>
+
                     <div id="payment-method-container">
                         {{ form_payment_account.management_form }}
                         <div style="display: none;">
@@ -343,7 +330,7 @@
 
                     <div class="row">
                         <div class="col mt-5 text-end">
-                            <button  type="submit" class="btn bg-adapted">SALVAR VENDA</button>
+                            <button  type="submit" class="btn bg-adapted">Salvar Compra</button>
                         </div>
                     </div>
                 </form>

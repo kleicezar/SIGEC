@@ -34,8 +34,8 @@
         {% bootstrap_messages %}
         {% block content %}
         <div class='content'>
-            <div class='row justify-content-center m-5'>
-                <h4 class="c-adapted">{% if venda.pk %}Editar{% else %}Criar{% endif %} Venda</h4>
+            <div class='container-fluid justify-content-center align-items-center'>
+                <h4 class="c-adapted mt-5 mb-5">{% if venda.pk %}Editar{% else %}Criar{% endif %} Venda</h4>
                 <form method="post">
                     {% csrf_token %}
                 
@@ -51,52 +51,56 @@
                       {% endfor %}
                     </div>
                     {% endif %}
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">
-                                    Pessoa
-                                </th>
-                                <th scope="col">
-                                    Data da Venda
-                                </th>
-                                <th scope="col">
-                                    Situação
-                                </th>
-                            </tr>
-                        </thead>
 
-                        <tbody>
-                            <tr>
-                                <td id="form-client" class="">
-                                    {{venda_form.pessoa.as_hidden}}
-                                <input type="text" class="row form-control mb-3 mt-3" id="idSearch">
-                                <div id="clients" class="mt-3 c row">
-                                    
-                                </div>
-                                </td>
-                                <td style="width: 200px;">
-                                    <div class="input-group date " data-provide="datepicker">
-                                        {{venda_form.data_da_venda}}
-                                        <div class="input-group-addon">
-                                            <span class="glyphicon glyphicon-th"></span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>{{venda_form.situacao}}</td>
-                                <!-- <td>{{venda_form.is_active}}</td> -->
-                            </tr>
-                            <tr>
-                                <td class="z-2 position-absolute suggest">
-                                    <div id="options-1"  class="row form-control z-1 ">
-                                        <p id="title-client"class="text-center ">ID - CLIENTE</p>
+                    <!-- <div class="form-margin row"> -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">
+                                        Pessoa
+                                    </th>
+                                    <th scope="col">
+                                        Data da Venda
+                                    </th>
+                                    <th scope="col">
+                                        Situação
+                                    </th>
+                                </tr>
+                            </thead>
+    
+                            <tbody>
+                                <tr>
+                                    <td id="form-client" class="">
+                                        {{venda_form.pessoa.as_hidden}}
+                                    <input type="text" class="row form-control mb-3 mt-3" id="idSearch">
+                                    <div id="clients" class="mt-3 c row">
                                         
-
                                     </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    </td>
+                                    <td style="width: 200px;">
+                                        <div class="input-group date " data-provide="datepicker">
+                                            {{venda_form.data_da_venda}}
+                                            <div class="input-group-addon">
+                                                <span class="glyphicon glyphicon-th"></span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style="margin-left: 30px;">{{venda_form.situacao}}</td>
+                                    <!-- <td>{{venda_form.is_active}}</td> -->
+                                </tr>
+                                <tr>
+                                    <td class="z-2 position-absolute suggest">
+                                        <div id="options-1"  class="row form-control z-1 ">
+                                            <p id="title-client"class="text-center ">ID - CLIENTE</p>
+                                            
+    
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    <!-- </div> -->
+                  
                     
                     <!-- Itens de Venda -->
                     <h6 class="mt-5 mb-3 ">Itens de Venda</h6>
@@ -272,7 +276,34 @@
 
                     <!-- Formas de Pagamento -->
                     <h6 class="mt-5 mb-3">Formas de Pagamento</h6>
-                    <div class="form-row">
+                    <div id="paymentMethod_account" class="row">
+                        <div class="col">
+                            <label for="">{{form_Accounts.numberOfInstallments.label}}</label>
+                            {{form_Accounts.numberOfInstallments}}
+                        </div>
+                        <div class="col" style="width: 200px;">
+                            <label for="">{{form_Accounts.date_init.label}}</label>
+                            <div class="input-group date" data-provide="datepicker" id="date_init">
+                                {{ form_Accounts.date_init }}
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-th"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col" style="margin-left: 30px;">
+                            <label for="">{{form_Accounts.installment_Range.label}}</label>
+                            {{form_Accounts.installment_Range}}
+                        </div>
+                        <div class="col">
+                            <label for="">{{ form_Accounts.totalValue.label}}</label>
+                            {{ form_Accounts.totalValue}}
+                        </div>
+                        <div class="row">
+                            <button id="generate" type="button" class="btn btn-warning mb-3 mt-3 ">Gerar</button>
+                        </div>
+                    </div>
+                    <!-- <div class="form-row">
                         <table class="table mb-5" id="paymentMethod_account">
                             <thead>
 
@@ -289,9 +320,7 @@
                                     <th scope="col">
                                         {{ form_Accounts.totalValue.label}}
                                     </th>
-                                    <th scope="col">
-                                        
-                                    </th>
+
                                 </tr>
                             </thead>
         
@@ -309,16 +338,15 @@
                                     <td>{{form_Accounts.installment_Range}}</td>
                                     <td>{{ form_Accounts.totalValue}}</td>
                                     <td>
-                                        <!-- <button id="generate" type="button">GERAR</button> -->
                                         <button id="generate" type="button" class="btn btn-warning mb-3 mt-3">Gerar</button>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
+                    </div> -->
                     <div id="payment-method-container">
                         {{ form_payment_account.management_form }}
-                        <div style="display:none;">
+                        <!-- <div style="display:none;"> -->
                             {% for form in form_payment_account %}
                             <div class="form-row">
                                 <table class="table">
@@ -350,7 +378,7 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td>
+                                            <td >
                                                 {{form.days}}
                                             </td>
                                             <td>
@@ -365,10 +393,11 @@
                                     </tbody>
                                   </table>
                                   
-                            </div>
+                            <!-- </div> -->
                         {% endfor %}
                         </div>     
                     </div>
+
                     <template id="empty-payment-method-form">
                         <div class="form-row" id="del">
                             <!-- Clona o formulário vazio de payment_method_formset -->
@@ -381,7 +410,7 @@
             
                                 <tbody> 
                                     <tr>
-                                        <td class="field_type_payment">{{form_payment_account.empty_form.forma_pagamento }}</td>
+                                        <td class="field_type_payment ">{{form_payment_account.empty_form.forma_pagamento }}</td>
                                         <td style="width: 200px;">
                                             <div class="input-group date" data-provide="datepicker">
                                                 {{form_payment_account.empty_form.expirationDate}}
@@ -390,7 +419,7 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>{{form_payment_account.empty_form.days}}</td>
+                                        <td style="margin-left: 30px;">{{form_payment_account.empty_form.days}}</td>
                                         <td>{{form_payment_account.empty_form.value}}</td>
                                     </tr>
                                 </tbody>
@@ -399,7 +428,7 @@
                     </template>
                     <!-- <button type="button" onclick="addPaymentMethod()" class="btn btn-outline-success mb-5">Adicionar Forma de Pagamento</button> -->
                     
-
+                    <h6 class="mt-5 mb-3">Observações</h6>
                     <div class="row mt-5">
 
                         <div class="col">
