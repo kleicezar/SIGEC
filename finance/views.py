@@ -225,11 +225,15 @@ def AccountsReceivable_Create(request):
     if request.method == "POST":
         form_Accounts = AccountsForm(request.POST)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
+        print()
+        print(request.POST)
+        print()
 
         if form_Accounts.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
             account = form_Accounts.save()
+
             total_value = account.totalValue
-            for form in PaymentMethod_Accounts_FormSet:
+            for form in PaymentMethod_Accounts_FormSet: 
                 if form.cleaned_data:
                     parcela = form.cleaned_data['value']
                     verify += parcela
@@ -243,6 +247,9 @@ def AccountsReceivable_Create(request):
                 return redirect('AccountsReceivable')
             else:
                 form.add_error('value', f'O valor do somatorio das parcelas ({parcela}) é inferior ao Valor Total ({total_value}).')
+        else:
+            print("Erros no form_Accounts:", form_Accounts.errors)
+            print("Erros no PaymentMethod_Accounts_FormSet:", PaymentMethod_Accounts_FormSet.errors)
     else: 
         form_Accounts = AccountsForm()
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())

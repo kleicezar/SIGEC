@@ -44,7 +44,7 @@ $(document).ready(function() {
     });
 });
 $(document).ready(function() {
-    const dateStr = document.getElementById('id_date_init')
+    // const dateStr = document.getElementById('id_date_init')
     $('#date_account').datepicker({
         format: 'dd/mm/yyyy', // Formato de data
         autoclose: true,     // Fecha o calendário automaticamente após a seleção
@@ -52,7 +52,7 @@ $(document).ready(function() {
         startDate: '+0d',
         language: 'pt-BR'
     });
-    convert_date(dateStr.value)
+    // convert_date(dateStr.value)
     
 });
 

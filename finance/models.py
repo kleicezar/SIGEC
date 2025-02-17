@@ -110,6 +110,7 @@ class PaymentMethod_Accounts(models.Model):
         decimal_places=2,   
         max_digits=8,
         verbose_name='Valor da Conta:',
+        default = 0
     )
     value = models.DecimalField(decimal_places=2,
         max_digits=8,
@@ -123,7 +124,7 @@ class PaymentMethod_Accounts(models.Model):
         null=True,
         blank=True
     )
-    interest = models.DecimalField(         #FIXME juros
+    interest = models.DecimalField(
         decimal_places=2, 
         max_digits=8, 
         verbose_name='juros',
@@ -138,7 +139,7 @@ class PaymentMethod_Accounts(models.Model):
         null=True,
         blank=True
     )
-    fine = models.DecimalField(             #FIXME multa
+    fine = models.DecimalField(
         decimal_places=2, 
         max_digits=8, 
         verbose_name='Multa R$',

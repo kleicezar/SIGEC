@@ -43,7 +43,12 @@ class BaseAccountsForm(forms.ModelForm):
         }
 
 class AccountsForm(BaseAccountsForm):
-    
+    installment_Range = forms.ChoiceField(
+        choices=Accounts.INSTALLMENT_RANGE_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control row','id': 'installment_Range'}),
+        label="Intervalo de Parcelas"
+    )
+
     class Meta(BaseAccountsForm.Meta):
         fields = [
             'pessoa_id', 
@@ -58,11 +63,24 @@ class AccountsForm(BaseAccountsForm):
             'date_init',
         ]
         widgets={
+            'pessoa_id': forms.Select(attrs={ 
+                'class': 'form-select row'
+            }),
+            'chartOfAccounts': forms.Select(attrs={
+                'class': 'form-control row'
+            }),
+            'documentNumber': forms.NumberInput(attrs={
+                'class': 'form-control row',
+                'min': 0
+            }),
+            'date_account': forms.TextInput(attrs={
+                'class': 'form-control row mask-date'
+            }),
             'numberOfInstallments': forms.NumberInput(attrs={
                 'class': 'form-control row',
                 'min': 0
             }),
-            'installment_Range': forms.NumberInput(attrs={
+            'installment_Range': forms.Select(attrs={
                 'class': 'form-control row',
                 'min': 0
             }),

@@ -33,19 +33,17 @@ document.addEventListener('DOMContentLoaded', function () {
         // --------------------------------- //
         // Validações básicas
         // converter a data no formato js 
-        function convert_date(){
-            const convertToDate = (dateStr) => {
-                const [day, month, year] = dateStr.split('/').map(num => parseInt(num, 10));
-                return new Date(year, month - 1, day); // Mês no JavaScript é baseado em zero
-            };
-            const inputDate = dateInit.value.trim();
-            // Converter a data inicial
-            const startDate = convertToDate(inputDate);
-            // Verifica se a data foi convertida corretamente
-            if (isNaN(startDate.getTime())) {
-                console.error('Data inválida');
-                return;
-            }
+        const convertToDate = (dateStr) => {
+            const [day, month, year] = dateStr.split('/').map(num => parseInt(num, 10));
+            return new Date(year, month - 1, day); // Mês no JavaScript é baseado em zero
+        };
+        const inputDate = dateInit.value.trim();
+        // Converter a data inicial
+        const startDate = convertToDate(inputDate);
+        // Verifica se a data foi convertida corretamente
+        if (isNaN(startDate.getTime())) {
+            console.error('Data inválida');
+            return;
         }
         // --------------------------------- //
 
@@ -155,3 +153,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         return array_valor_parcelas
     }
+
+const formCountElem = document.getElementById("id_paymentmethod_accounts_set-TOTAL_FORMS");//TOTAL FORMS
+
+const generate = document.getElementById('generate')
+generate.addEventListener('click', ()=> {
+    console.log(formCountElem.value)
+})

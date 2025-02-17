@@ -9,8 +9,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let ValueOLD = document.getElementById('id_value_old');     // html valor bruto
     const defalt = ValueOLD.value                               // valor bruto
 
-    data = document.getElementById('id_date_account').value
-    dataa = document.getElementById('id_expirationDate').value
+    dataa = document.getElementById('id_date_account').value
+    data = document.getElementById('id_expirationDate').value
+    console.log(data)
     
     const date = document.getElementById("id_date_account"); // data da conta
     
