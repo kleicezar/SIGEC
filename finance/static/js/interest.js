@@ -80,12 +80,11 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
         let initial_step =1;
-        console.log('cheguei auqi')
         // console.log(numberOfInstallments)
         //apaga tudo de UPDATE(PAGAMENTOS)
         // ao clicar em gerar novamente, ele marcará  o campo DELETE,assim pagamentos antes cadastrados serão deletados ao serem enviados.
         if(value_initial.value != 0){
-            instance_payments = value_initial.parentElement .querySelectorAll(".form-row table");
+            instance_payments = value_initial.parentElement.querySelectorAll(".form-row table");
 
             instance_payments.forEach(instance=>{
                 // console.log(instance)
@@ -101,9 +100,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 instance.style.display = "none"; 
                 initial_step = parseInt(value_initial.value);
+
                 
             })
         }
+        
         if (table != null || value_initial.value != 0) {
                 for (let index = 1; index <= formCountElem.value; index++) {
                     let div = document.getElementById('del') ;

@@ -10,7 +10,7 @@ class VendaServiceForm(forms.ModelForm):
                 'class':'form-control row-xl-5' 
             }),
             'data_da_venda':forms.DateTimeInput(attrs={
-                'class':'form-control row-xl-2 ' ,
+                'class':'form-control row-xl-2 mb-3 mt-3 ' ,
                 'id' : "date_sale",
             }),
             'observacao_pessoas':forms.Textarea(attrs={
@@ -20,18 +20,18 @@ class VendaServiceForm(forms.ModelForm):
                 'class':'form-control row'
             }),
             'situacao':forms.Select(attrs={
-                'class':'form-select row-xl-2'
+                'class':'form-select row-xl-2 mb-3 mt-3'
             }),
             'total_value':forms.TextInput(attrs={
-                'class':'form-control row-5',
+                'class':'form-control row-5 mb-3 mt-3',
                 'readonly': 'readonly',
             }),
             'service_total':forms.TextInput(attrs={
-                'class':'form-control row-5',
+                'class':'form-control row-5 mb-3 mt-3',
                 'readonly': 'readonly',
             }),
             'discount_total':forms.TextInput(attrs={
-                'class':'form-control row-5',
+                'class':'form-control row-5 mb-3 mt-3',
                 'readonly': 'readonly',
             })
         }
@@ -48,13 +48,13 @@ class VendaItemForm(forms.ModelForm):
         fields = ['service', 'preco','discount']
         widgets = {
                 'service':forms.TextInput(attrs={
-                    'class':'form-control row-2'
+                    'class':'form-control row-2 mb-3 mt-3'
                 }),
             'preco':forms.TextInput(attrs={
-                'class':'form-control row'
+                'class':'form-control row mb-3 mt-3'
             }),
             'discount':forms.TextInput(attrs={
-                'class':'form-control row'
+                'class':'form-control row mb-3 mt-3'
             })  
         }
 
