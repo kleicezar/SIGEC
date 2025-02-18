@@ -35,6 +35,7 @@
                     <!-- Formulário de Compra -->
                     <h6>Dados da Compra</h6>
                     <!-- {{ compra_form.as_p }} -->
+                      
                     <table class="table">
                         <thead>
                             <tr>
@@ -120,7 +121,7 @@
                                             <td >{{form.produto.as_hidden}}
                                                 <input type="text" class="row form-control mb-3 mt-3" id="idProduct-0">
                                             </td>
-                                            
+                                          
                                             <td>
                                                 {{form.quantidade}}    
                                             </td>
@@ -171,7 +172,6 @@
                                     
                                             </div>
                                         </td>
-                                        
                                         <td>
                                             {{compra_item_formset.empty_form.quantidade}}
                                         </td>
@@ -296,6 +296,7 @@
                                     </thead>
                                         <tbody>
                                             <tr>
+                                                {{form.acc}}
                                                 <td>{{form.forma_pagamento}}</td>
                                                 <td>
                                                     <div class="input-group date" data-provide="datepicker">
@@ -348,6 +349,7 @@
     
                     <tbody> 
                         <tr>
+                            {{form_payment_account.empty_form.acc}}
                             <td>{{ form_payment_account.empty_form.forma_pagamento }}</td>
                             <td>
                                 <div id="payment_method" class="input-group date" data-provide="datepicker">

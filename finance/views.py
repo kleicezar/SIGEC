@@ -362,3 +362,24 @@ def delete_AccountsReceivable(request, id_Accounts):
     # Recupera o accounte com o id fornecido
     account_deleta_pelo_amor_De_Deus = PaymentMethod_Accounts.objects.filter(id=id_Accounts,acc = False).delete() #filter(acc = False)
     return redirect('AccountsReceivable')
+
+
+def Credit_Update(request,id_client):
+    person = Person.objects.get(id=id_client)
+    if request.method == "POST":
+        form_creditLimit = CreditForm(request.POST,instance=person)
+        if form_creditLimit.is_valid():
+            person.creditLimit = form_creditLimit.cleaned_data["creditLimit"]
+            print('upeas') 
+            print(person.creditLimit)
+            person.save()
+            return redirect('AccountsReceivable')
+        else:
+            print("Erro no formulário de Limite de Crédito",form_creditLimit.errors)
+    else:
+        form_creditLimit = CreditForm(instance=person)
+
+        context = {
+            'form_creditLimit':form_creditLimit
+        }
+    return render(request,'finance/Creditform.html',context)

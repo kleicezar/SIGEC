@@ -129,3 +129,13 @@ class AccountsModelForm(forms.ModelForm):
         fields = "__all__"
 
 
+class CreditForm(forms.ModelForm):
+    class Meta:
+        model = Person
+        fields = ["creditLimit"]
+        widgets = {
+            'creditLimit':forms.NumberInput(attrs={
+                'class':'form-control row'
+            })
+        }
+        

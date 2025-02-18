@@ -61,7 +61,9 @@ def compras_create(request):
             # print(payment_method_formset)
             for form in PaymentMethod_Accounts_FormSet:
                 if form.cleaned_data:
-                    form.acc = True
+                    # form.acc = True
+                    print('opa neia')
+                    print(form.cleaned_data.get("acc"))
                     if form.cleaned_data.get("DELETE", False):
                         payments_to_delete.append(form.instance)
                     else:
@@ -72,6 +74,7 @@ def compras_create(request):
             # Verificar se os pagamentos somam corretamente antes de salvar
             if total_payment == compra.total_value:
                 for form in valid_payments:
+                    form.instance.acc = True
                     form.instance.compra = compra  # Garante que a compra está associada
                     form.save()
 

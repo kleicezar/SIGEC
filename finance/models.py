@@ -77,6 +77,7 @@ class PaymentMethod_Accounts(models.Model):
         Accounts,
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
         verbose_name='id_Accounts'
     )
     venda = models.ForeignKey(Venda,
