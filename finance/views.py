@@ -383,3 +383,34 @@ def Credit_Update(request,id_client):
             'form_creditLimit':form_creditLimit
         }
     return render(request,'finance/Creditform.html',context)
+
+def client_list(request):
+    client_accounts = PaymentMethod_Accounts.objects.filter(acc=False)
+    context = {
+        'client_accounts' : client_accounts
+    }
+    return render(request,'finance/ClientAccounts.html',context)
+
+
+
+def CreditedClients_list(request):
+    persons = Person.objects.all()
+    print(persons)
+    return render(request,"finance/CreditedClients.html",{'persons':persons})
+
+
+def counts_list(request,id_counts):
+    venda = Venda.objects.filter(pessoa=id_counts)
+    
+    account = Accounts.objects.filter(pessoa_id=id_counts)
+    # workService = VendaService.objects.filter(id=id)
+    accounts = PaymentMethod_Accounts.objects.filter(
+        (Q(venda__in = venda) | Q (conta__in = account)) 
+        & Q(activeCredit = True)
+        )
+    print('PAGAMENTOS')
+    print(accounts)
+    return render(request,'finance/ClientAccounts.html',{
+        'accounts':accounts
+    })
+# CreditedClients.html

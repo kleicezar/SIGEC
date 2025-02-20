@@ -3,6 +3,7 @@ from Registry.models import Person
 
 class PaymentMethod(models.Model):
     name_paymentMethod = models.CharField('Nome da Forma de Pagamento', max_length=50)
+    creditPermission = models.BooleanField('creditPermission',default=False)
     is_Active = models.BooleanField('ativo',default=True)
 
     def __str__(self):

@@ -42,16 +42,20 @@ def venda_create(request):
     VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=1, can_delete=True)
     # PaymentMethodVendaFormSet = inlineformset_factory(Venda, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
     PaymentMethodAccountsFormSet = inlineformset_factory(Venda,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=1,can_delete=True)
-
+    print('f')
     if request.method == 'POST':
+        print("fkfk")
         venda_form = VendaForm(request.POST)
         form_Accounts = AccountsForm(request.POST)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
         venda_item_formset = VendaItemFormSet(request.POST)
         # payment_method_formset = PaymentMethodVendaFormSet(request.POST)
         # Percorrer VendaForm, manipular,
-
+        print("ff")
+        print(request.POST)
         if venda_form.is_valid() and venda_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
+            
+            print('f')
             estoque_suficiente = True
             for form in venda_item_formset:
                 if form.cleaned_data:
@@ -83,18 +87,47 @@ def venda_create(request):
                             
                             produto.current_quantity -= quantidade
                             produto.save()
-                        
+                print('chegeuie')    
                 PaymentMethod_Accounts_FormSet.instance = venda
                 total_payment = 0
+                total_payment_with_credit = 0
                 for form in PaymentMethod_Accounts_FormSet: 
                     if form.cleaned_data:
                         form.acc = False
                         valor = form.cleaned_data['value']
                         total_payment+=valor
+                        name_payment = form.cleaned_data["forma_pagamento"]
+                        paymentWithCredit = PaymentMethod.objects.filter(
+                           name_paymentMethod=name_payment,creditPermission=True
+                        )
+                        print('olha o pagamento')
+                        print(paymentWithCredit)
 
-                if(total_payment == venda_form.cleaned_data['total_value']):  
-                    print('opa')
-                    print(total_payment)
+                        if paymentWithCredit.exists():
+                            print('fd')
+                            total_payment_with_credit+=valor
+                            form.instance.activeCredit = True
+
+                pessoa = venda_form.cleaned_data["pessoa"]
+
+                creditLimit = pessoa.creditLimit
+                creditLimitAtual = creditLimit
+                creditLimitAtual -= total_payment_with_credit
+
+                # id_pessoa = Person.objects.filter(
+                #     Q(id_FisicPerson_fk__name__icontains = pessoa) | 
+                #     Q(id_ForeignPerson_fk__name_foreigner__icontains = pessoa) | 
+                #     Q(id_LegalPerson_fk__fantasyName__icontains = pessoa)
+                # ).values('id').first()
+
+                # id_pessoa = id_pessoa["id"]
+                # print(id_pessoa)
+                # creditLimit = Person.objects.filter(id=id_pessoa).values("creditLimit")
+
+                if(total_payment == venda_form.cleaned_data['total_value']) and ( (creditLimitAtual == creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual>=0) ):  
+                    pessoa.creditLimit = creditLimitAtual
+                    pessoa.save()
+
                     PaymentMethod_Accounts_FormSet.save()
                     for form in PaymentMethod_Accounts_FormSet.deleted_objects:
                         form.delete()
@@ -112,6 +145,12 @@ def venda_create(request):
                     }
                     return render(request, 'sale/venda_form.html', context)
                 return redirect('venda_list')
+        if not venda_form.is_valid():
+            print('Venda form',venda_form.errors)
+        if not venda_item_formset.is_valid():
+            print("Venda item formset",venda_form.errors)
+        if not PaymentMethod_Accounts_FormSet.is_valid():
+            print('Pagamentos erros',PaymentMethod_Accounts_FormSet.errors)
     else:
         form_Accounts = AccountsForm()
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())

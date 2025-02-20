@@ -38,7 +38,7 @@ class ChartOfAccountsModelForm(forms.ModelForm):
 class PaymentMethodModelForm(forms.ModelForm):
     class Meta:
         model = PaymentMethod
-        fields = ['name_paymentMethod']
+        fields = ['name_paymentMethod','creditPermission']
 
     def __init__(self, *args, **kwargs):
         super(PaymentMethodModelForm, self).__init__(*args, **kwargs)

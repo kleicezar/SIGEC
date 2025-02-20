@@ -17,6 +17,9 @@ urlpatterns = [
     path('acctrec/del/<int:id_Accounts>/', delete_AccountsReceivable, name='delete_AccountsReceivable'),
     path('acctrec/get/<int:id_Accounts>/', get_AccountsReceivable, name='get_AccountsReceivable'),
 
-    path('credit/upt/<int:id_client>/',Credit_Update,name='update_creditLimit')
+    path('credit/upt/<int:id_client>/',Credit_Update,name='update_creditLimit'),
+
+    path('creditedClients/',CreditedClients_list,name='CreditedClients'),
+    path('counts_list/<int:id_counts>/',counts_list,name='counts_list')
 
 ]

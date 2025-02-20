@@ -17,18 +17,8 @@
         {% block content %}
         <div class='content'>
             <div class="container">
-                {% if ContasP %}
-                <a href="{% url 'Accounts_Create' %}">
-                    <button class="btn btn-success">Cadastrar</button>
-                </a>
-                {% endif %}
-                {% if ContasR %}
-                <a href="{% url 'AccountsReceivable_Create' %}">
-                    <button class="btn btn-success">Cadastrar</button>
-                </a>
-                {% endif %}
                 <div class="form-group">
-                    <form method="GET" action="{% url 'AccountsPayable' %}">
+                    <form method="GET">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col">
@@ -58,9 +48,9 @@
                     </tr>
                 </thead>
                 <tbody id="results">
-                {% for account in accounts.object_list %}
+                {% for account in accounts %}
                 <tr>       
-                    <td>{{ account.id }}</td>
+                    <td>{{account.id}}</td>
                     {% if account.conta.pessoa_id.id_FisicPerson_fk %}
                         <td>{{ account.conta.pessoa_id.id_FisicPerson_fk.name }}</td>
                     {% elif account.conta.pessoa_id.id_LegalPerson_fk %}
@@ -72,36 +62,7 @@
                     {% endif %}
                     <td>{{ account.expirationDate|date:"d/m/Y" }}</td>
                     <td>{{ account.value }}</td>
-                    <td>
-                        {% if ContasP %}
-                        <form action="{% url 'get_Accounts' id_Accounts=account.id %}" method="GET" style="display:inline-block;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn" style="background-color: #117027;color: white;">Visualizar</button>
-                        </form>
-                        <form action="{% url 'update_Accounts' id_Accounts=account.id %}" method="GET" style="display:inline-block;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn" style="background-color: #117027;color: white;">Editar</button>
-                        </form>
-                        <form action="{% url 'delete_Accounts' id_Accounts=account.id %}" method="POST" style="display:inline-block;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
-                        </form>
-                        {% endif %}
-                        {% if ContasR %}
-                        <form action="{% url 'get_AccountsReceivable' id_Accounts=account.id %}" method="GET" style="display:inline-block;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn" style="background-color: #117027;color: white;">Visualizar</button>
-                        </form>
-                        <form action="{% url 'update_AccountsReceivable' id_Accounts=account.id %}" method="GET" style="display:inline-block;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn" style="background-color: #117027;color: white;">Editar</button>
-                        </form>
-                        <form action="{% url 'delete_AccountsReceivable' id_Accounts=account.id %}" method="POST" style="display:inline-block;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
-                        </form>
-                        {% endif %}
-                    </td>
+                    <td></td>
                 </tr>
                 {% endfor %}
                 </tbody>

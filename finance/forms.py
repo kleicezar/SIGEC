@@ -83,7 +83,8 @@ class PaymentMethodAccountsForm(forms.ModelForm):
             'fineValue',
             'interestType',
             'fineType',
-            'acc'
+            'acc',
+            'activeCredit'
         ]
         widgets = { 
             'forma_pagamento': forms.Select(attrs={ 
@@ -116,7 +117,8 @@ class PaymentMethodAccountsForm(forms.ModelForm):
                 'class': 'form-control row',
                 'min': 0
             }),
-            'acc':forms.HiddenInput()
+            'acc':forms.HiddenInput(),
+            'activeCredit':forms.HiddenInput()
         }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
