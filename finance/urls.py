@@ -20,6 +20,6 @@ urlpatterns = [
     path('credit/upt/<int:id_client>/',Credit_Update,name='update_creditLimit'),
 
     path('creditedClients/',CreditedClients_list,name='CreditedClients'),
-    path('counts_list/<int:id_counts>/',counts_list,name='counts_list')
+    path('accounts_list/<int:id_accounts>/',Accounts_list,name='Accounts_list')
 
 ]

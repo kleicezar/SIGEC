@@ -370,10 +370,8 @@ def Credit_Update(request,id_client):
         form_creditLimit = CreditForm(request.POST,instance=person)
         if form_creditLimit.is_valid():
             person.creditLimit = form_creditLimit.cleaned_data["creditLimit"]
-            print('upeas') 
-            print(person.creditLimit)
             person.save()
-            return redirect('AccountsReceivable')
+            return redirect('CreditedClients')
         else:
             print("Erro no formulário de Limite de Crédito",form_creditLimit.errors)
     else:
@@ -384,32 +382,22 @@ def Credit_Update(request,id_client):
         }
     return render(request,'finance/Creditform.html',context)
 
-def client_list(request):
-    client_accounts = PaymentMethod_Accounts.objects.filter(acc=False)
-    context = {
-        'client_accounts' : client_accounts
-    }
-    return render(request,'finance/ClientAccounts.html',context)
-
-
 
 def CreditedClients_list(request):
     persons = Person.objects.all()
-    print(persons)
     return render(request,"finance/CreditedClients.html",{'persons':persons})
 
 
-def counts_list(request,id_counts):
-    venda = Venda.objects.filter(pessoa=id_counts)
+def Accounts_list(request,id_accounts):
+    venda = Venda.objects.filter(pessoa=id_accounts)
+    conta = Accounts.objects.filter(pessoa_id=id_accounts)
+    ordem_servico = VendaService.objects.filter(pessoa=id_accounts)
     
-    account = Accounts.objects.filter(pessoa_id=id_counts)
-    # workService = VendaService.objects.filter(id=id)
     accounts = PaymentMethod_Accounts.objects.filter(
-        (Q(venda__in = venda) | Q (conta__in = account)) 
-        & Q(activeCredit = True)
+        ( Q(venda__in = venda) | Q (conta__in = conta) | Q(ordem_servico__in = ordem_servico) ) 
+        & Q(activeCredit = True) 
         )
-    print('PAGAMENTOS')
-    print(accounts)
+    
     return render(request,'finance/ClientAccounts.html',{
         'accounts':accounts
     })

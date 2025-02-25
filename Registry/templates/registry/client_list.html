@@ -74,7 +74,7 @@
                         </form>
                         <form action="{% url 'update_client' id_client=client.id %}" method="GET" style="display:inline-block;">
                             {% csrf_token %}
-                            <button type="submit" class="btn" style="background-color: #117027;color: white;">Editar</button>
+                            <button type="submit" class="btn" style="background-color:#130561;color: white ;">Editar</button>
                         </form>
                         <form action="{% url 'delete_client' id_client=client.id %}" method="POST" style="display:inline-block;">
                             {% csrf_token %}
