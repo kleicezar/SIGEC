@@ -269,7 +269,7 @@ def compras_delete(request, pk):
     for item in compra_items:
         produto = item.produto
         # Incrementa a quantidade de produto no estoque com a quantidade do item de compra
-        produto.current_quantity += item.quantidade
+        produto.current_quantity -= item.quantidade
         produto.save()
     
     # Deleta os itens de compra e a compra em si
