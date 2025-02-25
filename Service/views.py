@@ -87,6 +87,7 @@ def workerService_create(request):
             total_payment = 0
             payments_to_delete = []
             valid_payments = []
+            total_payment_with_credit = 0
             for form in PaymentMethod_Accounts_FormSet:
                 # form.instance = service
                 if form.cleaned_data:
@@ -98,11 +99,26 @@ def workerService_create(request):
                         total_payment+=valor
                         valid_payments.append(form)
 
-            if(total_payment==service.total_value):
+                        name_payment = form.cleaned_data["forma_pagamento"]
+                        paymentWithCredit = PaymentMethod.objects.filter(
+                            name_paymentMethod=name_payment,creditPermission=True
+                        )
+                        if paymentWithCredit.exists():
+                            print('entrei')
+                            total_payment_with_credit+=valor
+                            form.instance.activeCredit=True
+
+            pessoa = service_form.cleaned_data["pessoa"]
+
+            creditLimit = pessoa.creditLimit
+            creditLimitAtual = creditLimit
+            creditLimitAtual -= total_payment_with_credit
+            if(total_payment==service.total_value) and ( (creditLimitAtual == creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual>=0) ):
+                pessoa.creditLimit = creditLimitAtual
+                pessoa.save()
                 for form in valid_payments:
                     form.instance.ordem_servico = service
                     form.save()
-                    print('✅ Pagamentos foram salvos!')
 
                     # 🔍 Tente recarregar um objeto do banco para testar
                 for payment in payments_to_delete:
@@ -248,6 +264,13 @@ def workService(request):
 
 def deleteWorkService(request,pk):
         workService = get_object_or_404(VendaService, pk=pk)
+        pessoa = workService.pessoa
+        value_payments = PaymentMethod_Accounts.objects.filter(ordem_servico=workService.id,activeCredit=True)
+
+        for value_payment in value_payments:
+            pessoa.creditLimit+=value_payment.value
+        pessoa.save()
+
         if request.method == "POST":
             workService.delete()
             messages.success(request, "Serviço deletada com sucesso.")
