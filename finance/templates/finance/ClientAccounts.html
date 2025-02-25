@@ -51,18 +51,52 @@
                 {% for account in accounts %}
                 <tr>       
                     <td>{{account.id}}</td>
-                    {% if account.conta.pessoa_id.id_FisicPerson_fk %}
-                        <td>{{ account.conta.pessoa_id.id_FisicPerson_fk.name }}</td>
-                    {% elif account.conta.pessoa_id.id_LegalPerson_fk %}
-                        <td>{{ account.conta.pessoa_id.id_LegalPerson_fk.fantasyName }}</td>
-                    {% elif account.conta.pessoa_id.id_ForeignPerson_fk %}
-                        <td>{{ account.conta.pessoa_id.id_ForeignPerson_fk.name_foreigner }}</td>
-                    {% else  %}
-                        <td>{{ account.conta.name }}</td>
+                    {% if account.conta %}
+                        {% if account.conta.pessoa_id.id_FisicPerson_fk %}
+                            <td>{{ account.conta.pessoa_id.id_FisicPerson_fk.name }}</td>
+                        {% elif account.conta.pessoa_id.id_LegalPerson_fk %}
+                            <td>{{ account.conta.pessoa_id.id_LegalPerson_fk.fantasyName }}</td>
+                        {% elif account.conta.pessoa_id.id_ForeignPerson_fk %}
+                            <td>{{ account.conta.pessoa_id.id_ForeignPerson_fk.name_foreigner }}</td>
+                        {% else  %}
+                            <td>{{ account.conta.name }}</td>
+                        {% endif %}
                     {% endif %}
+
+                    {% if account.venda %}
+                        {% if account.venda.pessoa.id_FisicPerson_fk %}
+                            <td>{{ account.venda.pessoa.id_FisicPerson_fk.name }}</td>
+                        {% elif account.venda.pessoa.id_LegalPerson_fk %}
+                            <td>{{ account.venda.pessoa.id_LegalPerson_fk.fantasyName}}</td>
+                        {% elif account.venda.pessoa.id_ForeignPerson_fk %}
+                            <td>{{ account.venda.pessoa.id_ForeignPerson_fk.name}}</td>
+                        {% else %}
+                            <td>{{ account.venda.name }}</td>
+                        {% endif %}
+                    {% endif %}
+
+
+                    {% if account.ordem_servico %}
+                        {% if account.ordem_servico.pessoa.id_FisicPerson_fk %}
+                            <td>{{ account.ordem_servico.pessoa.id_FisicPerson_fk.name }}</td>
+                        {% elif account.ordem_servico.pessoa.id_LegalPerson_fk %}
+                                <td>{{ account.ordem_servico.pessoa.id_LegalPerson_fk.fantasyName}}</td>
+                        {% elif account.ordem_servico.pessoa.id_ForeignPerson_fk %}
+                                <td>{{ account.ordem_servico.pessoa.id_ForeignPerson_fk.name}}</td>
+                        {% else %}
+                                <td>{{ account.ordem_servico.name }}</td>
+                        {% endif %}
+                    {% endif %}
+                    
                     <td>{{ account.expirationDate|date:"d/m/Y" }}</td>
                     <td>{{ account.value }}</td>
-                    <td></td>
+                    <td>
+                        <form action="{% url 'update_AccountsReceivable' id_Accounts=account.id %}" method="GET" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: #117027;color: white;">Editar</button>
+                        </form>
+                        
+                </td>
                 </tr>
                 {% endfor %}
                 </tbody>
