@@ -15,6 +15,9 @@ from django.core.paginator import Paginator
 @login_required
 def Client_Create(request):
     if request.method == "POST":
+        # SALVA O LINK DA PAGINA ANTERIOR
+        previous_url = request.session.get('previous_page', '/')
+
         form_address = AddressForm(request.POST)
         form_fisicPerson = FisicPersonForm(request.POST)
         form_legalPerson = LegalPersonModelForm(request.POST)
@@ -38,7 +41,7 @@ def Client_Create(request):
                 person.id_FisicPerson_fk = fisicPerson
                 person.isActive = 1
                 person.save()
-                return redirect('Client')
+                return redirect(previous_url)
 
             if form_legalPerson.is_valid():
                 legalPerson = form_legalPerson.save(commit=False)
@@ -49,7 +52,7 @@ def Client_Create(request):
                 person.id_LegalPerson_fk = legalPerson
                 person.isActive = 1
                 person.save()
-                return redirect('Client')
+                return redirect(previous_url)
 
             if form_foreigner.is_valid():
                 foreigner = form_foreigner.save(commit=False)
@@ -60,11 +63,17 @@ def Client_Create(request):
                 person.id_ForeignPerson_fk = foreigner
                 person.isActive = 1
                 person.save()
-                return redirect('Client')
+                return redirect(previous_url)
             if not form_legalPerson.is_valid():
                 print("Erros: ",form_legalPerson.errors)
 
     else: 
+        if 'HTTP_REFERER' in request.META:
+            # SALVA A PAGINA ANTERIOR
+            request.session['previous_page'] = request.META['HTTP_REFERER']
+            print(request.session['previous_page'])
+        
+
         form_address = AddressForm()
         form_fisicPerson = FisicPersonForm()
         form_legalPerson = LegalPersonModelForm()

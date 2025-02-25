@@ -21,6 +21,8 @@ def paymentMethod(request):
 @login_required
 def PaymentMethodForm(request):
     if request.method == "GET":
+        if 'HTTP_REFERER' in request.META:
+            request.session['previous_page'] = request.META['HTTP_REFERER']
         paymentMethodForm = PaymentMethodModelForm()
         context = {
             'paymentMethod' : paymentMethodForm
@@ -28,10 +30,12 @@ def PaymentMethodForm(request):
         return render(request, 'config/PaymentMethodForm.html', context)
     else:
         paymentMethodForm = PaymentMethodModelForm(request.POST)
+         # SALVA O LINK DA PAGINA ANTERIOR
+        previous_url = request.session.get('previous_page','/')
         if paymentMethodForm.is_valid():
             paymentMethodForm.save()
             messages.success(request, "Forma de Pagamento cadastrado com sucesso")
-            return redirect('PaymentMethod')
+            return redirect(previous_url)
     context = {
         'paymentMethod' : paymentMethodForm
     }
