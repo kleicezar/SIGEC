@@ -10,6 +10,7 @@
         <meta name="csrf-token" content="{{ csrf_token }}">
 
         <link rel="stylesheet" href="{% static 'css/Table.css' %}">
+        
         {% endblock  %}
         <title>Formulário</title>
     </head>
@@ -17,6 +18,9 @@
         {% block content %}
         <div class='content'>
             <div class="container">
+                <a href="{% url 'Client_Create' %}">
+                    <button class="btn btn-success">Cadastrar Cliente</button>
+                </a>
                 <div class="form-group">
                     <form method="GET" >
                         {% csrf_token %}
@@ -61,13 +65,13 @@
                     {% endif %}
                     <td>{{client.creditLimit}}</td>
                     <td>
-                        <form action="{% url 'counts_list' id_counts=client.pk %}" method="GET" style="display:inline-block;">
+                        <form action="{% url 'Accounts_list' id_accounts=client.pk %}" method="GET" style="display:inline-block;">
                             <!-- {% csrf_token %} -->
                             <button type="submit" class="btn" style="background-color: #117027;color: white;">Visualizar Contas</button>
                         </form>
                         <form action="{% url 'update_creditLimit' id_client=client.pk %}" method="GET" style="display:inline-block;">
                             <!-- {% csrf_token %} -->
-                            <button type="submit" class="btn" style="background-color: #117027;color: white;">Editar Crédito</button>
+                            <button type="submit" class="btn" style="background-color:#130561;color: white ;">Editar Crédito</button>
                         </form>
                         
                     </td>
