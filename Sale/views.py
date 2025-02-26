@@ -131,12 +131,12 @@ def venda_create(request):
 
                 if total_payment != venda_form.cleaned_data['total_value']:
                     messages.warning(request, "Ação cancelada! O valor não foi salvo completamente.")
-                    return render(request, 'sale/venda_form.html', context)
+                    # return render(request, 'sale/venda_form.html', context)
                 
                 if ((creditLimitAtual != creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual<0)):
-                    messages.warning(request, "Ação cancelada! Erro no Limite de Crédito")
+                    messages.warning(request, "Ação cancelada! O valor acumulado dos pagamentos é menor que o limite de Crédito!")
                     
-                    # return render(request, 'sale/venda_form.html', context)
+                # return render(request, 'sale/venda_form.html', context)
                 
             
         if not venda_form.is_valid():
@@ -149,6 +149,8 @@ def venda_create(request):
             print("Erro no PaymentMethod_Accounts_FormSet: ",PaymentMethod_Accounts_FormSet.errors)
 
     else:
+        messages.warning(request, "Ação cancelada! O valor não foi salvo completamente.")
+        messages.warning(request, "Ação cancelada! O valor acumulado dos pagamentos é menor que o limite de Crédito!")
         form_Accounts = AccountsForm()
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
         venda_form = VendaForm()

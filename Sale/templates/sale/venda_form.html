@@ -43,13 +43,23 @@
                     <h6 class="mt-5 mb-3">Dados da Venda</h6>
                     <!-- {{ venda_form.as_p }} -->
                     {% if messages %}
-                    <div>
-                      {% for message in messages %}
-                        <div class="alert {{ message.tags }}">
-                          {{ message }}
-                        </div>
-                      {% endfor %}
-                    </div>
+                        {% for message in messages %}
+                            <div class="modal"> 
+                                <header class="mHeader">
+                                    <p>Falha ao salvar Venda</p>
+                                </header>
+                            
+                                <div class="alert {{ message.tags }} mBody">
+                                    <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur, illum atque. Doloremque, dolor ipsum labore numquam quaerat doloribus, incidunt provident suscipit maiores dicta animi, itaque at reiciendis exercitationem assumenda odit?</p> -->
+                                {{ message }}
+
+                                </div>
+                        
+                            <footer>
+                                <button id="mBtn" class="mButton" type="button" onclick="closeModal(this)">Fechar</button>
+                            </footer>
+                            </div>
+                        {% endfor %}
                     {% endif %}
 
                     <!-- <div class="form-margin row"> -->
@@ -461,7 +471,8 @@
         <script src="{% static 'js/addItem.js' %}" defer></script>
         <script src="{% static 'js/clientSearch.js' %}"></script>  <!-- pesquisa clientes -->
         <script src="{% static 'js/venda_item.js' %}"></script> <!-- pesquisa produtos em vendas-->
-        <script src="{% static 'js/date.js' %   }"></script>
+        <script src="{% static 'js/date.js' %}"></script>
+        <script src="{% static 'js/error.js' %}"></script>
         <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
         <script src="{% static 'js/bootstrap-datepicker.pt-BR.js' %}"></script>
         {% endblock %}     
