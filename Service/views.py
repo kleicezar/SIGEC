@@ -160,7 +160,7 @@ def workerService_update(request,pk):
     servico = get_object_or_404(VendaService, pk=pk)
     ServiceItemFormSet  = inlineformset_factory(VendaService,VendaItemService,form=VendaItemForm,extra=0,can_delete=True)
     # PaymentMethodServiceFormSet = inlineformset_factory(VendaService,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=0,can_delete=True)
-    PaymentMethodAccountsFormSet = inlineformset_factory(VendaService,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=1,can_delete=True)
+    PaymentMethodAccountsFormSet = inlineformset_factory(VendaService,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=0,can_delete=True)
     if request.method == 'POST':
 
         service_form = VendaServiceForm(request.POST, instance=servico)
