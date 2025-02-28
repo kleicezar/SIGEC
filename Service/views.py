@@ -104,7 +104,6 @@ def workerService_create(request):
                             name_paymentMethod=name_payment,creditPermission=True
                         )
                         if paymentWithCredit.exists():
-                            print('entrei')
                             total_payment_with_credit+=valor
                             form.instance.activeCredit=True
 
@@ -120,7 +119,6 @@ def workerService_create(request):
                     form.instance.ordem_servico = service
                     form.save()
 
-                    # 🔍 Tente recarregar um objeto do banco para testar
                 for payment in payments_to_delete:
                     payment.delete()
 
@@ -136,7 +134,7 @@ def workerService_create(request):
         elif not PaymentMethod_Accounts_FormSet.is_valid():
             print("Erro no VendaPagamentoService",PaymentMethod_Accounts_FormSet.errors)
 
-        return  redirect('service_list')
+        return  redirect('OrderService')
     
     else:
         form_Accounts = AccountsForm()
@@ -168,8 +166,6 @@ def workerService_update(request,pk):
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST, instance=servico)
         # payment_method_formset = PaymentMethodServiceFormSet(request.POST)
         if(service_form.is_valid() and service_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid()):
-            ...
-
             service_form.save()
 
             service_item_instances = service_item_formset.save(commit=False)
@@ -190,19 +186,61 @@ def workerService_update(request,pk):
             payments_instances = service_item_formset.save(commit=False)
             pagamentos_paga_deletar = []
 
-            for form in PaymentMethod_Accounts_FormSet.deleted_forms:
-                if form.instance.pk is not None:
-                    pagamentos_paga_deletar.append(form.instance)
+            # for form in PaymentMethod_Accounts_FormSet.deleted_forms:
+            #     if form.instance.pk is not None:
+            #         pagamentos_paga_deletar.append(form.instance)
 
-            for instance in payments_instances:
-                instance.save()
+            # for instance in payments_instances:
+            #     instance.save()
 
-            for pagamento in pagamentos_paga_deletar:
-                pagamento.delete()
-            PaymentMethod_Accounts_FormSet.save()
+            # for pagamento in pagamentos_paga_deletar:
+            #     pagamento.delete()
 
-            messages.success(request,"Venda de Servico atualizada com sucesso!")
-            return redirect('OrderService')
+            pessoa = service_form.cleaned_data["pessoa"]
+            value_payments = PaymentMethod_Accounts.objects.filter(ordem_servico = servico.id,activeCredit = True)
+
+            for value_payment in value_payments:
+                pessoa.creditLimit += value_payment.value
+            pessoa.save()
+
+            total_payment = 0
+            total_payment_with_credit = 0
+
+            for form in PaymentMethod_Accounts_FormSet:
+                name_payment = form.cleaned_data["forma_pagamento"]
+                paymentWithCredit = PaymentMethod.objects.filter(
+                    name_paymentMethod = name_payment,creditPermission=True
+                )
+                if form.cleaned_data:
+                    valor = form.cleaned_data['value']
+                    if not form.cleaned_data['DELETE']:
+                        if paymentWithCredit.exists():
+                            total_payment_with_credit+= form.cleaned_data["value"]
+                        total_payment+=valor
+
+            creditLimit = pessoa.creditLimit
+            creditLimitAtual = creditLimit
+            creditLimitAtual-= total_payment_with_credit
+            payments_instances = service_item_formset.save(commit=False)
+
+            if (total_payment == service_form.cleaned_data["total_value"]) and ( (creditLimitAtual == creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual >= 0)):
+                pessoa.creditLimit = creditLimitAtual
+                pessoa.save()
+                pagamentos_paga_deletar = []
+
+                for form in PaymentMethod_Accounts_FormSet.deleted_forms:
+                    if form.instance.pk is not None:
+                        pagamentos_paga_deletar.append(form.instance)
+                
+                for instance in payments_instances:
+                    instance.save()
+                
+                for pagamento in pagamentos_paga_deletar:
+                    pagamento.delete()
+                PaymentMethod_Accounts_FormSet.save()
+
+            
+                return redirect('OrderService')
             # print('formulários válidos')
             # venda = service_form.save()
             # for form in service_item_formset:
@@ -233,8 +271,10 @@ def workerService_update(request,pk):
 
         elif not service_form.is_valid():
             print("Erro  no ServiceForm",service_form.errors)
+
         elif not service_item_formset.is_valid():
             print("Erro no VendaServiceItem",service_item_formset.errors)
+            
         elif not PaymentMethod_Accounts_FormSet.is_valid():
             print("Erro no VendaPagamentoService",PaymentMethod_Accounts_FormSet.errors)
         return  redirect('serviceForm')
@@ -264,18 +304,17 @@ def workService(request):
 
 def deleteWorkService(request,pk):
         workService = get_object_or_404(VendaService, pk=pk)
-        pessoa = workService.pessoa
-        value_payments = PaymentMethod_Accounts.objects.filter(ordem_servico=workService.id,activeCredit=True)
-
-        for value_payment in value_payments:
-            pessoa.creditLimit+=value_payment.value
-        pessoa.save()
 
         if request.method == "POST":
+            pessoa = workService.pessoa
+            value_payments = PaymentMethod_Accounts.objects.filter(ordem_servico=workService.id,activeCredit=True)
+            for value_payment in value_payments:
+                pessoa.creditLimit+=value_payment.value
+            pessoa.save()
             workService.delete()
             messages.success(request, "Serviço deletada com sucesso.")
             return redirect('OrderService')
-        print('opa')
+            
         context ={
             'workService':workService
         }
