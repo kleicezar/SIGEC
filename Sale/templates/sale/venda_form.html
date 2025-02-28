@@ -358,54 +358,145 @@
                         {{ form_payment_account.management_form }}
                         <!-- <div style="display:none;"> -->
                             {% for form in form_payment_account %}
-                            <div class="form-row">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">
-                                                {{form.forma_pagamento.label}}
-                                            </th>
-                                            <th scope="col">
-                                                {{form.expirationDate.label}}
-                                            </th>
-                                            <th scope="col">
-                                                {{ form.days.label}}
-                                            </th>
-                                            <th scope="col">
-                                                {{form.value.label}}
-                                            </th>
-                                        </tr>
-                                    </thead>
+                                <div class="form-row ">
+                                    {% if forloop.first %}
+                                        <table id="block-first-instance" class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">
+                                                        {{form.forma_pagamento.label}}
+                                                    </th>
+                                                    <th scope="col">
+                                                        {{form.expirationDate.label}}
+                                                    </th>
+                                                    <th scope="col">
+                                                        {{ form.days.label}}
+                                                    </th>
+                                                    <th scope="col">
+                                                        {{form.value.label}}
+                                                    </th>
+                                                </tr>
+                                            </thead>
 
-                                    <tbody>
-                                        <tr>
-                                            <td class="field_type_payment">{{form.forma_pagamento}}</td>
-                                            <td>
-                                                <div class="input-group date" data-provide="datepicker">
-                                                    {{form.expirationDate}}
-                                                    <div class="input-group-addon">
-                                                        <span class="glyphicon glyphicon-th"></span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                {{form.days}}
-                                            </td>
-                                            <td>
-                                                {{form.value}}
-                                            </td>
-                                            
-                                            <!-- <td> -->
-                                                <!-- <label for="">Deletar</label> -->
-                                                <!-- <button type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
-                                                {{ form.DELETE.as_hidden }} -->
-                                        </tr>
-                                    </tbody>
-                                  </table>
-                                  
-                            <!-- </div> -->
-                        {% endfor %}
-                        </div>     
+                                            <tbody>
+                                                <tr>
+                                                    <td class="field_type_payment">{{form.forma_pagamento}}</td>
+                                                    <td>
+                                                        <div class="input-group date" data-provide="datepicker">
+                                                            {{form.expirationDate}}
+                                                            <div class="input-group-addon">
+                                                                <span class="glyphicon glyphicon-th"></span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        {{form.days}}
+                                                    </td>
+                                                    <td>
+                                                        {{form.value}}
+                                                    </td>
+                                                    
+                                                    <!-- <td> -->
+                                                        <!-- <label for="">Deletar</label> -->
+                                                        <!-- <button type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
+                                                        {{ form.DELETE.as_hidden }} -->
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    {% elif forloop.counter == 2 %}
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">
+                                                        {{form.forma_pagamento.label}}
+                                                    </th>
+                                                    <th scope="col">
+                                                        {{form.expirationDate.label}}
+                                                    </th>
+                                                    <th scope="col">
+                                                        {{ form.days.label}}
+                                                    </th>
+                                                    <th scope="col">
+                                                        {{form.value.label}}
+                                                    </th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr>
+                                                    <td class="field_type_payment">{{form.forma_pagamento}}</td>
+                                                    <td>
+                                                        <div class="input-group date" data-provide="datepicker">
+                                                            {{form.expirationDate}}
+                                                            <div class="input-group-addon">
+                                                                <span class="glyphicon glyphicon-th"></span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        {{form.days}}
+                                                    </td>
+                                                    <td>
+                                                        {{form.value}}
+                                                    </td>
+                                                    
+                                                    <!-- <td> -->
+                                                        <!-- <label for="">Deletar</label> -->
+                                                        <!-- <button type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
+                                                        {{ form.DELETE.as_hidden }} -->
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    {% else %}
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">
+                                                        {{form.forma_pagamento.label}}
+                                                    </th>
+                                                    <th scope="col">
+                                                        {{form.expirationDate.label}}
+                                                    </th>
+                                                    <th scope="col">
+                                                        {{ form.days.label}}
+                                                    </th>
+                                                    <th scope="col">
+                                                        {{form.value.label}}
+                                                    </th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr>
+                                                    <td class="field_type_payment">{{form.forma_pagamento}}</td>
+                                                    <td>
+                                                        <div class="input-group date" data-provide="datepicker">
+                                                            {{form.expirationDate}}
+                                                            <div class="input-group-addon">
+                                                                <span class="glyphicon glyphicon-th"></span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        {{form.days}}
+                                                    </td>
+                                                    <td>
+                                                        {{form.value}}
+                                                    </td>
+                                                    
+                                                    <!-- <td> -->
+                                                        <!-- <label for="">Deletar</label> -->
+                                                        <!-- <button type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
+                                                        {{ form.DELETE.as_hidden }} -->
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    {% endif %}
+                                <!-- </div> -->
+                                </div> 
+                            {% endfor %}    
+                                
+           
                     </div>
 
                     <template id="empty-payment-method-form">

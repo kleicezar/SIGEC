@@ -38,11 +38,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const formCountElem = document.getElementById("id_paymentmethod_accounts_set-TOTAL_FORMS");//TOTAL FORMS
     const installments = document.getElementById('generate')//gerador de parcelas
     const templatenone = document.getElementById('id_paymentmethod_accounts_set-0-DELETE')//gerador de parcelas
-
+    const firstInstancePayment = document.getElementById("block-first-instance");
     let part = 0
     let table = null;
     installments.addEventListener('click', () => {
-        console.log("Tá clicado meu amigo")
+        // firstInstancePayment.style.display="none";
+
         let tbody  = formContainer.querySelector(".form-row table tbody");
         const itensPaymentMethodContainer = formContainer.querySelectorAll("item-form");
         itensPaymentMethodContainer.forEach(item=>{
@@ -135,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 input.name = input.name.replace("__prefix__", formCountElem.value);
                 input.id = input.id.replace("__prefix__", formCountElem.value);
                 // Preenche os valores iniciais nos campos do formulário
-
+                
                 // CALCULO DE DADAS DE VENCIMENTO
                 if (input.name.includes("-expirationDate")) {
                     // Calcula a data da parcela

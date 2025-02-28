@@ -84,22 +84,9 @@ function addItem() {
         formset.appendChild(newForm);
         
     }
-    
-
-
-  
-
-
 
     // Cria ids para identificação da area em que sera requisitado os produtos pelo filtro do campo product
    
-
-
-
-    
-    // btnDeletar.addEventListener('click',()=>{
-    //     formset.removeChild(newForm)
-    // })
 }
 
 function clone(formCountElem,template){
@@ -135,23 +122,19 @@ function removeItem(button){
 
     //SE TIVER SÓ UM ITEM, AO INVÉS DE APAGAR, OS CAMPOS IRÃO SER SOMENTE LIMPOS
     if(deleteButton.id.includes("0") && formCount == 1){
-
         let deleteButtons = parent_button_5.querySelectorAll('input[id*="0"]');
         deleteButtons.forEach(deleteButton=>{
             deleteButton.value = "";
         })
     }
-    
     else if(deleteButton.id.includes("0")){
         formCount-=1;
         TOTAL_FORMS.value = formCount;
         updateId(deleteButton,itensForms);
         parent_button_6.removeChild(parent_button_5);
-        console.log('=========')
+
         const next_tr = parent_button_6.parentElement.querySelector("table thead tr");
         next_tr.style.display = "table-row";
-        console.log(next_tr)
-        
     }
     else{
         
@@ -174,14 +157,12 @@ function updateId(deleteButton, itensForms) {
     let allInputs = itensForms.querySelectorAll("input");
     let allVs = itensForms.querySelectorAll(".v");
 
-    let numberUpInput = number;
     // Atualiza IDs dos inputs
     allInputs.forEach(input => {
         let inputMatch = input.id.match(/\d+/); // Captura número do input
         if (!inputMatch) return; // Evita erro se o ID não tiver número
 
         let inputNumber = parseInt(inputMatch[0]); // Converte para número
-        console.log(inputNumber);
         // ASSIM, OS IDS SAO TROCADOS SÓ SE FOREM MAIORES QUE O DELETADO;
         if (inputNumber - 1 >= number) {
     
@@ -190,12 +171,12 @@ function updateId(deleteButton, itensForms) {
             let novoName = input.name.replace(inputMatch[0],inputNumber)
             let novoId = input.id.replace(inputMatch[0], inputNumber);
             input.value = onInput;
-            console.log(`Atualizando input:
-                ID: ${input.id} → ${novoId},
-                NOME: ${input.id} → ${novoName} `);
+            // console.log(`Atualizando input:
+            //     ID: ${input.id} → ${novoId},
+            //     NOME: ${input.id} → ${novoName} `);
             input.id = novoId; // Atribui novo ID     
             input.name = novoName
-            console.log(input)
+            // console.log(input)
         }
     });
 
@@ -210,11 +191,9 @@ function updateId(deleteButton, itensForms) {
 
         if (vNumber - 1 > number) {
             vNumber-=1; //
-            console.log('entrei');
-            console.log(v.id)
             let novoId = v.id.replace(vMatch[0], vNumber);
-            console.log(`Atualizando 
-                ID: ${v.id} → ${novoId}`);
+            // console.log(`Atualizando 
+            //     ID: ${v.id} → ${novoId}`);
             v.id = novoId;  
         }
     });
@@ -222,11 +201,48 @@ function updateId(deleteButton, itensForms) {
 
 
 function removeItemUpdate(button){
-    let parent_button_3 = button.parentElement.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]')
-    parent_button_3.value = 'on'
+    const itens_container = document.getElementById("itens-container");
+    const TOTAL_FORMS = document.getElementById("id_vendaitem_set-TOTAL_FORMS") || document.getElementById("id_compraitem_set-TOTAL_FORMS") || document.getElementById("id_vendaitemservice_set-TOTAL_FORMS");
+    let formCount = TOTAL_FORMS.value;
+    let itensForms = itens_container;
+    let parent_button_3 =  button.parentElement.parentElement.parentElement.parentElement;
     let  parent_button_4 =  button.parentElement.parentElement.parentElement.parentElement.parentElement;
-    parent_button_4.style.display ="none"
-    console.log(parent_button_3);
+    
+
+    let parent_button_5 = parent_button_4.parentElement;
+    // console.log(parent_button_5)
+    // parent_button_4.style.display ="none";
+    // console.log(parent_button_3);
+
+    let deleteButton = button.parentElement.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]')
+    // deleteButton.value = 'on'
+
+    if(deleteButton.id.includes("0") && formCount == 1){
+
+        let deleteButtons = parent_button_4.querySelectorAll('input[id*="0"]');
+        deleteButtons.forEach(deleteButton=>{
+            deleteButton.value = "";
+        })
+    }
+    else if(deleteButton.id.includes("0")){
+        formCount-=1;
+        TOTAL_FORMS.value = formCount;
+        updateId(deleteButton,itensForms);
+
+        parent_button_4.removeChild(parent_button_3)
+        const next_tr = parent_button_4.parentElement.querySelector(".item-form table thead tr");
+
+        next_tr.style.display = "table-row";
+    }
+    else{
+        updateId(deleteButton,itensForms);
+        deleteButton.value="on";
+        console.log(formCount)
+        formCount-=1;
+        TOTAL_FORMS.value = formCount;
+        parent_button_4.removeChild(parent_button_3)
+    }
+   
 }
 
 function addPaymentMethod() {

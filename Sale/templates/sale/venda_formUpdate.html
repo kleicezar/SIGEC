@@ -103,12 +103,14 @@
                     
                     <!-- Itens de Venda -->
                     <h6 class="mt-5 mb-3">Itens de Venda</h6>
-                    <div id="itens-container">
+                    <div id="itens-container" class="itens-container-update" style="">
                         {{ venda_item_formset.management_form }}
-                        <table class="th">
+                        <!-- <table class="table-update" style=" width: 100%;">
                             <thead>
                                 <tr>
-                                    <th scope="col">Produto</th>
+                                    <th scope="col">
+                                        Produto
+                                    </th>
                                     <th scope="col">Quantidade</th>
                                     <th scope="col">Preço Unitário</th>
                                     <th scope="col">Desconto(%)</th>
@@ -117,27 +119,91 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr></tr>
+                                <tr>
+                                    
+                                </tr>
                             </tbody>
-                        </table>
+                        </table> -->
                         
                         
                             {% for form in venda_item_formset %}
                             <div class="item-form">
                                 
                                 <table class="table">
+                                    {% if forloop.first %}
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Produto</th>
+                                                <th scope="col">Quantidade</th>
+                                                <th scope="col">Preço Unitário</th>
+                                                <th scope="col">Desconto(%)</th>
+                                                <th scope="col">Valor Total</th>
+                                                <th scope="col">Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>                            
+                                            <tr>
+                                                <td>
+                                                    <input type="hidden" name="{{ form.prefix }}-id" value="{{ form.instance.id }}">
+                                                    {{form.product.as_hidden}}
+                                                    <input type="text" class="row form-control mb-3 mt-3" id="idProduct-0">
+                                                    <div id="products-0" class="mt-3 field-product row">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <!-- Campo Quantidade -->
+                                                    {{ form.quantidade }}
+                                                </td>
+                                                <td>
+                                                    <!-- Campo Preço Unitário -->
+                                                    {{ form.preco_unitario }}
+                                                </td>
+                                                <td>
+                                                    <!-- Campo Desconto -->
+                                                    {{ form.discount }}
+                                                </td>
+                                                <td>
+                                                    <!-- Campo Valor Total (readonly) -->
+                                                    {{ form.price_total }}
+                                                </td>
+                                                <td>
+                                                    <!-- Checkbox para exclusão -->
+                                                    <button type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removeItemUpdate(this)" >Deletar</button>
+                                                    {{form.DELETE.as_hidden}}
+                                                </td>
+                                            </tr>
+                                            <tr class="tre">
+                                                <td class="z-2 position-absolute suggest" style="display: none;">
+                                                    <div id="options_products-{{ forloop.counter0 }}" class="row form-control z-1 v">
+                                                        <p class="text-center title-product">CODIGO - DESC</p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    {% else %}
                                     <thead>
-                                        <!-- <tr>
-                                            <th scope="col">Produto</th>
-                                            <th scope="col">Quantidade</th>
-                                            <th scope="col">Preço Unitário</th>
-                                            <th scope="col">Desconto(%)</th>
-                                            <th scope="col">Valor Total</th>
-                                            <th scope="col">Ações</th>
-                                        </tr> -->
+                                        <tr style="display: none;">
+                                            <th scope="col">
+                                                Produto
+                                            </th>
+                                            <th scope="col">
+                                                Quantidade
+                                            </th>
+                                            <th scope="col">
+                                                Preço Unitário
+                                            </th>
+                                            <th scope="col">
+                                                Desconto(%)
+                                            </th>
+                                            <th scope="col">
+                                                Valor Total
+                                            </th>
+                                            <th scope="col">
+                                                Ações
+                                            </th>
+                                        </tr>
                                     </thead>
-                                    <tbody>
-                                        
+                                    <tbody>                            
                                         <tr>
                                             <td>
                                                 <input type="hidden" name="{{ form.prefix }}-id" value="{{ form.instance.id }}">
@@ -176,6 +242,7 @@
                                             </td>
                                         </tr>
                                     </tbody>
+                                    {% endif %}
                                 </table>
                             </div>
                         {% endfor %}
@@ -246,7 +313,25 @@
                             <!-- {{ venda_item_formset.empty_form.as_p }} -->
                             <table class="table">
                                 <thead>
-                                    <tr>
+                                    <tr style="display: none;">
+                                        <th scope="col">
+                                            Produto
+                                        </th>
+                                        <th scope="col">
+                                            Quantidade
+                                        </th>
+                                        <th scope="col">
+                                            Preço Unitário
+                                        </th>
+                                        <th scope="col">
+                                            Desconto(%)
+                                        </th>
+                                        <th scope="col">
+                                            Valor Total
+                                        </th>
+                                        <th scope="col">
+                                            Ações
+                                        </th>
                                     </tr>
                                 </thead>
 

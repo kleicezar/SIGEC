@@ -136,7 +136,7 @@ def workerService_create(request):
         elif not PaymentMethod_Accounts_FormSet.is_valid():
             print("Erro no VendaPagamentoService",PaymentMethod_Accounts_FormSet.errors)
 
-        return  redirect('serviceForm')
+        return  redirect('service_list')
     
     else:
         form_Accounts = AccountsForm()
@@ -163,9 +163,9 @@ def workerService_update(request,pk):
     PaymentMethodAccountsFormSet = inlineformset_factory(VendaService,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=1,can_delete=True)
     if request.method == 'POST':
 
-        service_form = VendaServiceForm(request.POST)
-        service_item_formset = ServiceItemFormSet(request.POST)
-        PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
+        service_form = VendaServiceForm(request.POST, instance=servico)
+        service_item_formset = ServiceItemFormSet(request.POST, instance=servico)
+        PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST, instance=servico)
         # payment_method_formset = PaymentMethodServiceFormSet(request.POST)
         if(service_form.is_valid() and service_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid()):
             ...
@@ -242,14 +242,14 @@ def workerService_update(request,pk):
     else:
         form_Accounts = AccountsForm(instance=servico)
         service_form = VendaServiceForm(instance=servico)
-        service_item_formset = ServiceItemFormSet(instance=servico)
-        # payment_method_formset = PaymentMethodServiceFormSet(instance=servico)
+        service_item_formset = ServiceItemFormSet(queryset = servico.vendaitemservice_set.all(),instance=servico)
+        payment_method_formset = PaymentMethodAccountsFormSet(queryset=servico.paymentmethod_accounts_set.all(),instance=servico)
 
         context = {
             'form_Accounts':form_Accounts,
             'service_form':service_form,
             'service_item_formset':service_item_formset,
-            'form_payment_account':PaymentMethod_Accounts_FormSet,
+            'form_payment_account':payment_method_formset,
             # 'form_payment_account':payment_method_formset
         }
 

@@ -149,8 +149,8 @@ def venda_create(request):
             print("Erro no PaymentMethod_Accounts_FormSet: ",PaymentMethod_Accounts_FormSet.errors)
 
     else:
-        messages.warning(request, "Ação cancelada! O valor não foi salvo completamente.")
-        messages.warning(request, "Ação cancelada! O valor acumulado dos pagamentos é menor que o limite de Crédito!")
+        # messages.warning(request, "Ação cancelada! O valor não foi salvo completamente.")
+        # messages.warning(request, "Ação cancelada! O valor acumulado dos pagamentos é menor que o limite de Crédito!")
         form_Accounts = AccountsForm()
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
         venda_form = VendaForm()
@@ -175,16 +175,12 @@ def venda_update(request, pk):
 
     PaymentMethodAccountsFormSet = inlineformset_factory(Venda, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=0, can_delete=True)
     if request.method == 'POST':
-        # print('Dados do Post',request.POST)
         venda_form = VendaForm(request.POST, instance=venda)
         venda_item_formset = VendaItemFormSet(request.POST, instance=venda)
-        # payment_method_formset = PaymentMethodVendaFormSet(request.POST, instance=venda)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST,instance=venda)
         if venda_form.is_valid() and venda_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
             # Salvar a venda
             venda_form.save()
-            # id = 1
-            # VendaItem.objects.get(pk=id)
             venda_item_instances = venda_item_formset.save(commit=False) 
             venda_item_formset.save_m2m()  
 
@@ -197,10 +193,8 @@ def venda_update(request, pk):
                     
                     item_id = form.instance.id
                     try:
-                        # if not form.cleaned_data
                         venda_item_quantidade = VendaItem.objects.get(id=item_id).quantidade
                         if not delete:
-                            # if form.cleaned_data['quantidade'] > venda_item_quantidade:
                             # SALVA A QUANTIDADE ATUAL DE PRODUTOS - VENDAITENS QUE JA EXISTIAM
                             produto.current_quantity =  produto.current_quantity + venda_item_quantidade - form.cleaned_data['quantidade'] 
                             produto.save()
@@ -236,51 +230,48 @@ def venda_update(request, pk):
                 pessoa.creditLimit+= value_payment.value
 
             pessoa.save()
-            name_payment = form.cleaned_data["forma_pagamento"]
+            total_payment = 0
+            total_payment_with_credit = 0
             for form in PaymentMethod_Accounts_FormSet:
+                name_payment = form.cleaned_data["forma_pagamento"]
                 paymentWithCredit = PaymentMethod.objects.filter(
                     name_paymentMethod = name_payment,creditPermission=True
                 )
                 
                 if form.cleaned_data:
-                    if not form.cleaned_data["DELETE"] and paymentWithCredit.exists():
-                        pessoa.creditLimit -= form.cleaned_data["value"]
-            pessoa.save()
+                    valor = form.cleaned_data['value']
+                    if not form.cleaned_data["DELETE"] :
+                        if paymentWithCredit.exists():
+                            total_payment_with_credit +=form.cleaned_data["value"]
+                        total_payment += valor
 
+
+            creditLimit = pessoa.creditLimit
+            creditLimitAtual = creditLimit
+            creditLimitAtual -= total_payment_with_credit
             payments_intances = venda_item_formset.save(commit=False)
+
+            if (total_payment == venda_form.cleaned_data['total_value']) and( (creditLimitAtual == creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual>=0) ):
             # PaymentMethod_Accounts_FormSet.save_m2m()
-            pagamentos_para_deletar = []
+                pessoa.creditLimit = creditLimitAtual
+                pessoa.save()
+                pagamentos_para_deletar = []
 
-            for form in PaymentMethod_Accounts_FormSet.deleted_forms:
-                if form.instance.pk is not None:
-                    pagamentos_para_deletar.append(form.instance)
+                for form in PaymentMethod_Accounts_FormSet.deleted_forms:
+                    if form.instance.pk is not None:
+                        pagamentos_para_deletar.append(form.instance)
 
 
-            for instance in payments_intances:
-                instance.save()
+                for instance in payments_intances:
+                    instance.save()
 
-            for pagamento in pagamentos_para_deletar:
-                pagamento.delete()
-            # venda_item_formset.save()
-            # PaymentMethod_Accounts_FormSet.save()
-        
-            # if form.instance.pk is None:
-            #     pessoa = venda_form.cleaned_data["pessoa"]
-            #     pessoa
-
+                for pagamento in pagamentos_para_deletar:
+                    pagamento.delete()
+                            
+                PaymentMethod_Accounts_FormSet.save()
                 
-            # else:
-            #     print('o')
-
-        
-        # for item in deletar_itens:
-        #     item.delete()
-                        
-
-            PaymentMethod_Accounts_FormSet.save()
-
-            messages.success(request, "Venda atualizada com sucesso!")
-            return redirect('venda_list')
+                # messages.success(request, "Venda atualizada com sucesso!")
+                return redirect('venda_list')
         if not venda_form.is_valid():
             print('Erros no venda_form: ',venda_form.errors)
         if not venda_item_formset.is_valid():
@@ -298,12 +289,12 @@ def venda_update(request, pk):
         venda_item_formset = VendaItemFormSet(queryset=venda.vendaitem_set.all(),instance=venda)
 
     context = {
-        'form_Accounts': form_Accounts,
-        'form_payment_account':PaymentMethod_Accounts_FormSet,
-        'venda_form': venda_form,
-        'venda_item_formset': venda_item_formset,
-        # 'form_payment_account': payment_method_formset,
-    }
+            'form_Accounts': form_Accounts,
+            'form_payment_account':PaymentMethod_Accounts_FormSet,
+            'venda_form': venda_form,
+            'venda_item_formset': venda_item_formset,
+            # 'form_payment_account': payment_method_formset,
+        }
 
     return render(request, 'sale/venda_formUpdate.html', context)
 
