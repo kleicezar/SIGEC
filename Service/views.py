@@ -1,4 +1,5 @@
 
+from datetime import datetime, timedelta
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.forms import inlineformset_factory
@@ -284,6 +285,19 @@ def workerService_update(request,pk):
         service_form = VendaServiceForm(instance=servico)
         service_item_formset = ServiceItemFormSet(queryset = servico.vendaitemservice_set.all(),instance=servico)
         payment_method_formset = PaymentMethodAccountsFormSet(queryset=servico.paymentmethod_accounts_set.all(),instance=servico)
+        
+        count_payment = 0
+       
+        for i,form in enumerate(payment_method_formset):
+            if i == 0:
+                data_obj = form.initial["expirationDate"]  
+                data_modificada = data_obj - timedelta(days=int(form.initial["days"])) 
+                data_modificada = datetime.strptime(str(data_modificada), "%Y-%m-%d").strftime("%d/%m/%Y") 
+
+            count_payment+=1
+        form_Accounts.initial["date_init"] = data_modificada
+        form_Accounts.initial["totalValue"] = service_form.initial['total_value']
+        form_Accounts.initial["numberOfInstallments"] = count_payment
 
         context = {
             'form_Accounts':form_Accounts,
@@ -314,7 +328,7 @@ def deleteWorkService(request,pk):
             workService.delete()
             messages.success(request, "Serviço deletada com sucesso.")
             return redirect('OrderService')
-            
+
         context ={
             'workService':workService
         }

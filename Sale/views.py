@@ -4,7 +4,7 @@ from django.forms import inlineformset_factory
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-
+from datetime import datetime, timedelta
 from finance.forms import AccountsForm, PaymentMethodAccountsForm
 from finance.models import PaymentMethod_Accounts
 from .forms import *
@@ -287,6 +287,21 @@ def venda_update(request, pk):
         venda_form = VendaForm(instance=venda)
         # payment_method_formset = PaymentMethodVendaFormSet(queryset=venda.paymentmethod_accounts_set.all(),instance=venda)
         venda_item_formset = VendaItemFormSet(queryset=venda.vendaitem_set.all(),instance=venda)
+        # print(PaymentMethod_Accounts_FormSet["value"])
+        
+        count_payment = 0
+       
+        for i,form in enumerate(PaymentMethod_Accounts_FormSet):
+            if i == 0:
+                data_obj = form.initial["expirationDate"]  
+                data_modificada = data_obj - timedelta(days=int(form.initial["days"])) 
+                data_modificada = datetime.strptime(str(data_modificada), "%Y-%m-%d").strftime("%d/%m/%Y") 
+
+            count_payment+=1
+        form_Accounts.initial["date_init"] = data_modificada
+        form_Accounts.initial["totalValue"] = venda_form.initial['total_value']
+        form_Accounts.initial["numberOfInstallments"] = count_payment
+     
 
     context = {
             'form_Accounts': form_Accounts,

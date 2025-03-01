@@ -1,4 +1,5 @@
 
+from datetime import datetime, timedelta
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.forms import inlineformset_factory
@@ -245,7 +246,18 @@ def compras_update(request, pk):
             # print(form) 
             
          #Testar no 4
+        count_payment = 0
+       
+        for i,form in enumerate(PaymentMethod_Accounts_FormSet):
+            if i == 0:
+                data_obj = form.initial["expirationDate"]  
+                data_modificada = data_obj - timedelta(days=int(form.initial["days"])) 
+                data_modificada = datetime.strptime(str(data_modificada), "%Y-%m-%d").strftime("%d/%m/%Y") 
 
+            count_payment+=1
+        form_Accounts.initial["date_init"] = data_modificada
+        form_Accounts.initial["totalValue"] = compra_form.initial['total_value']
+        form_Accounts.initial["numberOfInstallments"] = count_payment
 
         # payment_method_formset = PaymentMethodCompraFormSet(queryset=PaymentMethod_Accounts)
 
