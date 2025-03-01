@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     
     //escondendo campos de template base e opção de remoção
-    // templatenone.value = 1  // escondendo o primeiro formulario
     header.style = 'display:none;'
     
 
@@ -19,8 +18,6 @@ document.addEventListener('DOMContentLoaded', function () {
         let installmentRange = document.getElementById('id_numberOfInstallments')//numero de parcela
         let dateInitsemvalor = document.getElementById("id_date_init"); // Data de início das faturas
         let table = document.getElementById('installment') // tabela das parcelas
-        // console.log('linha 25. \ntotal forms é: ' + TOTAL_FORMS.value)
-        // console.log('linha 26. \ntotal de parcelas é: ' + installmentRange.value)
         
         if (installmentRange.value <= 0) {
             return 0
@@ -34,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
         
         header.style.removeProperty('display')
 
-        // console.log('Total de parcelas: ' + TOTAL_FORMS.value) // mostrar a tag inteira
         
         const convertToDate = (dateStr) => { //#FIXME inportante
             const [day, month, year] = dateStr.split('/').map(num => parseInt(num, 10));
@@ -52,7 +48,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const totalValue = parseFloat(document.getElementById("id_totalValue").value); // Valor de cada parcela
         const numberOfInstallments = parseInt(document.getElementById("id_numberOfInstallments").value); // Número de parcelas
 
-        // console.log('ate o momento foi clicado o botao de gerar as parcelas: FUNÇÃO NOVA')
         fragmento = document.createDocumentFragment()
         const valueOfinstallments = compair(numberOfInstallments, totalValue);
         const template = document.getElementById('empty-payment-method-form')
@@ -67,16 +62,11 @@ document.addEventListener('DOMContentLoaded', function () {
             let row_value = document.createElement('td')                // coluna     
             let row_DELETE = document.createElement('td')                // coluna     
             let clone = template.content.cloneNode(true);               // Clonando o template 
-            // console.log(template.outerHTML)
-            // let row = template.querySelector("#row-form");
-            // console.log('index:', index)
+
             clone.querySelectorAll("input, select").forEach(async (input) => { // interando sobre o formulario
                 input.name = input.name.replace("0", index  );
                 input.id = input.id.replace("0", index  );
-                // console.log('id de campo:', index)
-                
-                // Preenche os valores iniciais nos campos do formulário
-              
+
                 if (input.tagName === "SELECT") {
                     row_payment_Method.appendChild(input)
                     parcela.appendChild(row_payment_Method)
@@ -106,16 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         parcela.appendChild(row_days)
                             
                 }
-                // else if(input.name.includes("-DELETE")){
-                //     // del = document.createElement('input')
-                //     input.type = 'checkbox'
-                //     // del.type = 'checkbox'
-                //     // input.style = 'display:none;'
-                //     row_DELETE.appendChild(input)
-                //     parcela.appendChild(row_DELETE)
-                // }
-                // Adiciona o formulário ao contêiner
-                await formContainer.appendChild(parcela);
+                  await formContainer.appendChild(parcela);
             })
         }    
         TOTAL_FORMS.value = Number(installmentRange.value)
