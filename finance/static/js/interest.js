@@ -1,30 +1,60 @@
 // Usando jQuery para facilitar o controle da visibilidade
-value_initial = document.getElementById("id_paymentmethod_accounts_set-INITIAL_FORMS");
+
+const numberOfInstallments = parseInt(document.getElementById("id_numberOfInstallments").value); // Número de parcelas
+const dateInit = document.getElementById("id_date_init"); // Data de início das faturas
 document.addEventListener('DOMContentLoaded', function () {
-    
+    const value_initial = document.getElementById("id_paymentmethod_accounts_set-INITIAL_FORMS");
+    const formCountElem = document.getElementById("id_paymentmethod_accounts_set-TOTAL_FORMS");//TOTAL FORMS
+    const installmentRange = document.getElementById('installment_Range')
+    const dateInitsemvalor = document.getElementById("id_date_init"); // Data de início das faturas
+    const templatenone = document.getElementById('id_paymentmethod_accounts_set-0-DELETE')
+    const formContainer = document.getElementById("payment-method-container");
+    // (isNaN(numberOfInstallments) || isNaN(installment_Range)  || isNaN(startDate) || isNaN(totalValue)
     // rascunho 02
     // CODIGO A PARTIR DAQ
     // Obtém os elementos principais
-    const installmentRange = document.getElementById('installment_Range')
-    const formContainer = document.getElementById("payment-method-container");
-    const dateInitsemvalor = document.getElementById("id_date_init"); // Data de início das faturas
-    const formCountElem = document.getElementById("id_paymentmethod_accounts_set-TOTAL_FORMS");//TOTAL FORMS
-    const installments = document.getElementById('generate')//gerador de parcelas
-    const templatenone = document.getElementById('id_paymentmethod_accounts_set-0-DELETE')//gerador de parcelas
+    
+    console.log('value initial: ' + value_initial.value)
+    console.log('total forms: ' + formCountElem.value)
 
-    let part = 0
+    let part = 2
+    // let part = 0
     let table = null;
+    const installments = document.getElementById('generate')//gerador de parcelas
     installments.addEventListener('click', () => {
-        console.log("Tá clicado meu amigo")
-        const itensPaymentMethodContainer = formContainer.querySelectorAll("item-form");
-        itensPaymentMethodContainer.forEach(item=>{
-            console.log('removido')
-        formContainer.removeChild(item)
-        })
-        const numberOfInstallments = parseInt(document.getElementById("id_numberOfInstallments").value); // Número de parcelas
-        const dateInit = document.getElementById("id_date_init"); // Data de início das faturas
+        console.log('ate o momento foi clicado o botao de gerar as parcelas')
+        table = document.getElementById('acc')
+        for (let index = 0; index < part; index++) {           
+            let template = document.getElementById('empty-payment-method-form');
+            let clone = template.content.cloneNode(true);
+            formContainer.appendChild(clone);
+        }
+    })
+    installments.addEventListener('click', () => {
+        // const itensPaymentMethodContainer = formContainer.querySelectorAll("item-form");
+        const formContainer = document.getElementById("payment-method-container");
+
+        const itensPaymentMethodContainer = formContainer.querySelectorAll("div.form-row");
         const installment_Range = parseInt(document.getElementById("installment_Range").value); // Intervalo entre faturas (em dias)
         const totalValue = parseFloat(document.getElementById("id_totalValue").value); // Valor de cada parcela
+        const numberOfInstallments = parseInt(document.getElementById("id_numberOfInstallments").value); // Número de parcelas
+    
+
+        // console.log("Tá clicado meu amigo")
+        // console.log(itensPaymentMethodContainer)
+        // console.log(itensPaymentMethodContainer.length)
+        // console.log(typeof itensPaymentMethodContainer)
+        // itensPaymentMethodContainer.forEach(item=>{
+        //     console.log('removido')
+        //     // formContainer.removeChild(item)
+        //     // let parent_button_3 = button.parentElement.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]')
+        //     // parent_button_3.value = 'on'
+        // })
+        // console.log(typeof(numberOfInstallments))
+
+        // console.log(numberOfInstallments)
+        formCountElem.value = numberOfInstallments
+        // console.log(formCountElem.value)
         // no caso, value_initial serve para o formulario de update, para nao apagar os pagamentos já cadastrados que vem para
         // edição
         if (templatenone && value_initial==0) {
@@ -33,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // --------------------------------- //
         // Validações básicas
         // converter a data no formato js 
-        const convertToDate = (dateStr) => {
+        const convertToDate = (dateStr) => { //#FIXME inportante
             const [day, month, year] = dateStr.split('/').map(num => parseInt(num, 10));
             return new Date(year, month - 1, day); // Mês no JavaScript é baseado em zero
         };
@@ -52,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
         let initial_step =1;
-        console.log('cheguei auqi')
+        // console.log('cheguei auqi')
         // console.log(numberOfInstallments)
         //apaga tudo de UPDATE(PAGAMENTOS)
         // ao clicar em gerar novamente, ele marcará  o campo DELETE,assim pagamentos antes cadastrados serão deletados ao serem enviados.
@@ -66,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 delete_payment = instance.querySelector('.form-row table tr td input[type="hidden"][name$="DELETE"]');
                 if (delete_payment) {
                     delete_payment.value = "on";
-                    console.log("Valor alterado para:", delete_payment.value);
+                    // console.log("Valor alterado para:", delete_payment.value);
                 } else {
                     console.error("Input hidden para DELETE não encontrado!");
                 }
@@ -97,45 +127,86 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.error("Template de formulário vazio (empty-payment-method-form) não encontrado!");
                 return;
             }
-            
-            const newForm = emptyFormTemplate.content.cloneNode(true);
-            // Atualiza os campos do formulário clonado
-            console.log('formulários')
-            console.log(newForm)
-            newForm.querySelectorAll("input, select").forEach(async (input) => {
-                input.name = input.name.replace("__prefix__", formCountElem.value);
-                input.id = input.id.replace("__prefix__", formCountElem.value);
-                // Preenche os valores iniciais nos campos do formulário
+        let template = document.getElementById('empty-payment-method-form');
+        let clone = template.content.cloneNode(true);
+        let row = template.querySelector("#row-form");
 
-                // CALCULO DE DADAS DE VENCIMENTO
-                if (input.name.includes("-expirationDate")) {
-                    // Calcula a data da parcela
-                    days = (parseInt(installmentRange.value,10))
-                    new_date = startDate.setDate(startDate.getDate() + days);
-                    final_date = new Date(new_date)
-                    input.value = `${final_date.getDate().toString().padStart(2, '0')}/${(final_date.getMonth() + 1).toString().padStart(2, '0')}/${final_date.getFullYear()} `  
-                    // console.log(input.value)
-                    // CALCULO DE VALOR
-                }else if (input.name.includes("-value")) {
-                    // Define o valor da parcela
-                    input.value = valueOfinstallments[index_value];
-                    //CALCULO DE DIAS
-                    }else if (input.name.includes("-days")) {
-                        // Define os dias entre as parcelas
-                        input.value = installment_Range*(index-value_initial.value);
-                     
-                    }
-                    // Adiciona o formulário ao contêiner
-                    await formContainer.appendChild(newForm);
-                })
-                index_value+=1;
-                formCountElem.value = Number(formCountElem.value) + 1
-            }
-        table = 'null';
-        part = formCountElem
-        
+        clone.querySelectorAll("input, select").forEach(async (input) => {
+            input.name = input.name.replace("__prefix__", formCountElem.value);
+            input.id = input.id.replace("__prefix__", formCountElem.value);
+            // Preenche os valores iniciais nos campos do formulário
+
+            // CALCULO DE DADAS DE VENCIMENTO
+            if (input.name.includes("-expirationDate")) {
+                // Calcula a data da parcela
+                days = (parseInt(installmentRange.value,10))
+                new_date = startDate.setDate(startDate.getDate() + days);
+                final_date = new Date(new_date)
+                input.value = `${final_date.getDate().toString().padStart(2, '0')}/${(final_date.getMonth() + 1).toString().padStart(2, '0')}/${final_date.getFullYear()} `  
+                // console.log(input.value)
+                // CALCULO DE VALOR
+            }else if (input.name.includes("-value")) {
+                // Define o valor da parcela
+                input.value = valueOfinstallments[index_value];
+                //CALCULO DE DIAS
+                }else if (input.name.includes("-days")) {
+                    // Define os dias entre as parcelas
+                    input.value = installment_Range*(index-value_initial.value);
+                    
+                }
+                // Adiciona o formulário ao contêiner
+                await formContainer.appendChild(clone);
+            })
+            index_value+=1;
+            formCountElem.value = Number(formCountElem.value) + 1
+        }
     })
 })
+// for (let index = parseInt(value_initial.value) + 1 ; index < parseInt(value_initial.value) + numberOfInstallments + 1 ; index++) {
+//     if (!emptyFormTemplate) {
+//         console.error("Template de formulário vazio (empty-payment-method-form) não encontrado!");
+//         return;
+//     }
+    
+//     const newForm = emptyFormTemplate.content.cloneNode(true);
+    // Atualiza os campos do formulário clonado
+
+//         newForm.querySelectorAll("input, select").forEach(async (input) => {
+//             input.name = input.name.replace("__prefix__", formCountElem.value);
+//             input.id = input.id.replace("__prefix__", formCountElem.value);
+//             // Preenche os valores iniciais nos campos do formulário
+
+//             // CALCULO DE DADAS DE VENCIMENTO
+//             if (input.name.includes("-expirationDate")) {
+//                 // Calcula a data da parcela
+//                 days = (parseInt(installmentRange.value,10))
+//                 new_date = startDate.setDate(startDate.getDate() + days);
+//                 final_date = new Date(new_date)
+//                 input.value = `${final_date.getDate().toString().padStart(2, '0')}/${(final_date.getMonth() + 1).toString().padStart(2, '0')}/${final_date.getFullYear()} `  
+//                 // console.log(input.value)
+//                 // CALCULO DE VALOR
+//             }else if (input.name.includes("-value")) {
+//                 // Define o valor da parcela
+//                 input.value = valueOfinstallments[index_value];
+//                 //CALCULO DE DIAS
+//                 }else if (input.name.includes("-days")) {
+//                     // Define os dias entre as parcelas
+//                     input.value = installment_Range*(index-value_initial.value);
+             
+//                 }
+//                 // Adiciona o formulário ao contêiner
+//                 await formContainer.appendChild(newForm);
+//             })
+//             index_value+=1;
+//             formCountElem.value = Number(formCountElem.value) + 1
+//         }
+//     table = 'null';
+//     part = formCountElem
+
+// })
+// console.log(numberOfInstallments)
+// formCountElem.value = numberOfInstallments
+// console.log(formCountElem.value)
 
     function compair(numero_parcelas, valor_total){
         const array_valor_parcelas = [];
@@ -152,11 +223,33 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
         return array_valor_parcelas
+        // const generate = document.getElementById('generate')
+        // generate.addEventListener('click', ()=> {
+        //     const numberOfInstallments = parseInt(document.getElementById("id_numberOfInstallments").value); // Número de parcelas
+        //     console.log(typeof(numberOfInstallments))
+        //     console.log(numberOfInstallments)
+        //     formCountElem.value = numberOfInstallments
+        //     console.log(formCountElem.value)
+        // })
+    
+        // document.addEventListener('DOMContentLoaded', function () {
+    
+        //     let part = 2
+        //     // let part = 0
+        //     let table = null;
+        //     const installments = document.getElementById('generate')//gerador de parcelas
+        //     installments.addEventListener('click', () => {
+        //         console.log('ate o momento foi clicado o botao de gerar as parcelas: FUNÇÃO NOVA')
+        //         for (let index = 0; index < part; index++) {           
+        //             parcela = document.createElement('tr')
+        //             row = document.createElement('td')
+        //             forma_pagamento = document.createElement('input')
+        //             expirationDate = document.createElement('input')
+        //             days = document.createElement('input')
+        //             value = document.createElement('input')
+                    
+                    
+        //         }
+        //     })
+        // })
     }
-
-const formCountElem = document.getElementById("id_paymentmethod_accounts_set-TOTAL_FORMS");//TOTAL FORMS
-
-const generate = document.getElementById('generate')
-generate.addEventListener('click', ()=> {
-    console.log(formCountElem.value)
-})

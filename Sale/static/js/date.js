@@ -56,6 +56,8 @@ $(document).ready(function() {
     
 });
 
+
+
 function convert_date(dateStr){
     const input = document.getElementById('id_date_init')
     const convertToDate = (dateStr) => {

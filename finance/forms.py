@@ -169,3 +169,26 @@ class PaymentMethodAccountsForm(forms.ModelForm):
         super().__init__(*args, **kwargs) 
         self.fields['interestType'].required = False
         self.fields['fineType'].required = False
+        self.fields['value_old'].required = False
+        self.fields['value_old'].widget = forms.HiddenInput()
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # Atualize 'value_old' com o valor de 'value' antes de salvar
+        value = cleaned_data.get('value')
+        if value is not None:
+            cleaned_data['value_old'] = value
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+
+        # Se for uma edição (e não uma criação), garanta que 'value_old' seja preenchido com o valor de 'value'
+        if instance.pk:  # Se for um objeto já salvo (edição)
+            instance.value_old = instance.value
+
+        if commit:
+            instance.save()
+        return instance

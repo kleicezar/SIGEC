@@ -115,7 +115,7 @@ class PaymentMethod_Accounts(models.Model):
     value = models.DecimalField(decimal_places=2,
         max_digits=8,
         verbose_name='Valor Pago:'
-    )
+    )  
     interestType = models.CharField(
         max_length=10, 
         choices=INTEREST_CHOICES,

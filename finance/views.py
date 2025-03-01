@@ -9,6 +9,7 @@ from .models import *
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
 from django.core.paginator import Paginator
+import pdb
 
 ### CONTAS A PAGAR
 
@@ -221,35 +222,74 @@ def delete_Accounts(request, id_Accounts):
 def AccountsReceivable_Create(request):
     verify = 0
     installments = []
-    PaymentMethodAccountsFormSet = inlineformset_factory(Accounts, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
+    # PaymentMethodAccountsFormSet = inlineformset_factory(Accounts, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
+    PaymentMethodAccountsFormSet = inlineformset_factory(
+        Accounts,
+        PaymentMethod_Accounts,
+        form=PaymentMethodAccountsForm,
+        extra=1, 
+        can_delete=True,
+        
+    )
     if request.method == "POST":
+
+        print(request.POST) 
+
         form_Accounts = AccountsForm(request.POST)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
         print()
-        print(request.POST)
+        print(f'\n\n\nformulario da conta a receber {form_Accounts.is_valid()}')
+        print(f'formulario de parcelas {PaymentMethod_Accounts_FormSet.is_valid()}\n\n\n')
         print()
 
         if form_Accounts.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
-            account = form_Accounts.save()
 
+            # FIXME adicionar valor antigo e fazer comparação entre antigo, novo e gerar a parcela de desconto 
+            # 
+            # 
+            # 
+            # pdb.set_trace()
+
+            account = form_Accounts.save()
             total_value = account.totalValue
+
+            print(f'\n\nQuantidade de formulários no FormSet: {len(PaymentMethod_Accounts_FormSet)}\n\n')
+
             for form in PaymentMethod_Accounts_FormSet: 
+                print('\npassou pelo if is_valid()\n')
+                print(f'formulario unitario: {form}')
                 if form.cleaned_data:
+                    print('\npassou pelo if cleaned_data()\n')
+
                     parcela = form.cleaned_data['value']
                     verify += parcela
                     form_cleaned = form.save(commit=False)
                     installments.append(form_cleaned)
-            if float(verify) == float(total_value):
-                for installment in installments:
-                    installment.conta = account
-                    installment.acc = False
-                    installment.save()
-                return redirect('AccountsReceivable')
-            else:
-                form.add_error('value', f'O valor do somatorio das parcelas ({parcela}) é inferior ao Valor Total ({total_value}).')
+                if float(verify) == float(total_value):
+                    for installment in installments:
+                        installment.conta = account
+                        installment.acc = False
+                        installment.save()
+                    return redirect('AccountsReceivable')
+                else:
+                    print('\npassou pelo else verify()\n')
+
+                    form.add_error('value', f'O valor do somatorio das parcelas ({parcela}) é inferior ao Valor Total ({total_value}).')
         else:
-            print("Erros no form_Accounts:", form_Accounts.errors)
-            print("Erros no PaymentMethod_Accounts_FormSet:", PaymentMethod_Accounts_FormSet.errors)
+            # print("Erros no form_Accounts:", form_Accounts.errors)
+            # print("Erros no PaymentMethod_Accounts_FormSet:", PaymentMethod_Accounts_FormSet.errors)
+            # Aqui, o formset não é válido, vamos imprimir os erros para diagnóstico
+            for form in PaymentMethod_Accounts_FormSet:
+                print(f"Erros no formulário {form.instance}: {form.errors}")
+            print()
+            # Opcional: Você pode exibir os erros de cada campo individualmente
+            for form in PaymentMethod_Accounts_FormSet:
+                for field in form:
+                    if field.errors:
+                        print(f"Erro no campo {field.name}\t: {field.errors}")
+            
+            # Retorna para o template com os erros
+            return render(request, 'finance/AccountsPayform.html', {'form_payment_account': PaymentMethod_Accounts_FormSet})
     else: 
         form_Accounts = AccountsForm()
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
@@ -259,6 +299,7 @@ def AccountsReceivable_Create(request):
         'form_payment_account': PaymentMethod_Accounts_FormSet,
         'Contas' : 'Contas a Receber'
     }
+
     return render(request, 'finance/AccountsPayform.html', context)
 
 # funcionando
