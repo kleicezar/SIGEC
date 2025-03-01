@@ -245,10 +245,6 @@ def AccountsReceivable_Create(request):
         if form_Accounts.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
 
             # FIXME adicionar valor antigo e fazer comparação entre antigo, novo e gerar a parcela de desconto 
-            # 
-            # 
-            # 
-            # pdb.set_trace()
 
             account = form_Accounts.save()
             total_value = account.totalValue
