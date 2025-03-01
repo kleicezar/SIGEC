@@ -14,6 +14,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.http import HttpResponse
+
 @login_required
 def service(request):
     context = {
@@ -22,20 +23,24 @@ def service(request):
     return render(request,'service_list.html',context)
     # return HttpResponse("Olá, esta é a minha nova app Django!")
 
-
 def service_create(request):
-    if(request.method == 'GET'):
-         service_form = ServiceForm()
-         context = {
-             'service':service_form
-         }
-         return render(request,'service_form.html',context)
-    else:
-       service_form = ServiceForm(request.POST)
-       if service_form.is_valid():
-            service_form.save()
+    if request.method == 'POST':
+        service_form = ServiceForm(request.POST)
+        print(f'\n\n\n{request.POST}')
+        print(f'\n\n\n{service_form.is_valid()}')
+        if service_form.is_valid():
+            service_form.save() 
             messages.success(request, "Tipo de Serviço cadastrado com sucesso")
             return redirect('service_list')
+        else: 
+            return render(request, 'service_form.html', {'form': service_form})
+    else:
+        service_form = ServiceForm()
+        context = {
+            'service':service_form
+        }
+        return render(request,'service_form.html',context)
+    
        
 def service_update(request,pk):
     servico = get_object_or_404(Service,pk=pk)
