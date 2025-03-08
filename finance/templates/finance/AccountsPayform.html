@@ -4,11 +4,23 @@
 
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom-styles.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="content">
     <div class="center col">
+        <a href="
+        {% if tipo_conta == "Pagar" %}        
+            {% url 'AccountsPayable' %}
+        {% elif tipo_conta == "Receber" %}
+            {% url 'AccountsReceivable' %}
+        {% else %}
+            /
+        {% endif %}
+        ">
+            <button class="btn btn-voltar">Voltar</button>
+        </a>    
         <form method="POST">
             {% csrf_token %}
 

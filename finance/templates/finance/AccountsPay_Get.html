@@ -9,6 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         {% block css %}
             <link rel="stylesheet" href="{% static 'css/Table.css' %}">
+            <link rel="stylesheet" href="{% static 'css/custom-styles.css' %}">
 
         {% endblock %}
         <title>Formulário</title>
@@ -20,6 +21,9 @@
             {% block content %}
             <div class='content'>
                 <div id="messageContainer"></div>  <!-- Contêiner para a mensagem -->
+                <a href="{% url 'AccountsPayable' %}">
+                    <button class="btn btn-voltar">Voltar</button>
+                </a> 
                 <table>
                     <tbody id="results">
                         <tr>

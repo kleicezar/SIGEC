@@ -35,15 +35,15 @@ input.addEventListener("input", () => {
                     <td>${cliente.WorkPhone || "N/A"}</td>
                     <td>${cliente.PersonalPhone || "N/A"}</td>
                     <td> 
-                        <form action="/prsn/get/${cliente.id}/" method="GET" style="display:inline-block;">
+                        <form action="/pessoa/buscar/${cliente.id}/" method="GET" style="display:inline-block;">
                             <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
                             <button type="submit" class="btn" style="background-color: #117027;color: white;">Visualizar</button>
                         </form>
-                        <form action="/prsn/upt/${cliente.id}/" method="GET" style="display:inline-block;">
+                        <form action="/pessoa/atualizar/${cliente.id}/" method="GET" style="display:inline-block;">
                             <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
                             <button type="submit" class="btn" style="background-color: #117027;color: white;">Editar</button>
                         </form>
-                        <form action="/prsn/del/${cliente.id}/" method="POST" style="display:inline-block;">
+                        <form action="/pessoa/deletar/${cliente.id}/" method="POST" style="display:inline-block;">
                             <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
                             <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
                         </form>
