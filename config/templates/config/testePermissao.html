@@ -1,0 +1,36 @@
+{% extends 'login/menu.html' %}
+{% load custom_filters %}
+{% load bootstrap4 %}
+{% load static %}
+
+{% block content %}
+
+<div class='content'>
+
+<h2>Lista de Permissões</h2>
+<ul>
+    {% for permissao in permissoes %}
+        <li>
+            {{ permissao.codename }} - {{ permissao.name }}
+            {% if request.user|has_perm:permissao.full_codename %}
+                ✅ (Você tem esta permissão)
+            {% else %}
+                ❌ (Você NÃO tem esta permissão)
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+
+{% if request.user|has_perm:"auth.view_user" %}
+<h1>
+    Você tem permissão para VER usuários
+</h1>
+{% else %}
+<h1>
+    Você NÃO tem permissão para VER usuários
+</h1>
+{% endif %}
+
+</div>
+
+{% endblock %}

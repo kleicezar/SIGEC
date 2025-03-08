@@ -24,9 +24,10 @@ urlpatterns = [
     path('Stn/buscar_situacao/',buscar_situacao,name='buscar_situacao'),
 
 
-
     path('chartAcc/',chartOfAccounts,name='ChartofAccounts'),
     path('chartAccForm/',ChartOfAccountsForm,name='ChartOfAccountsForm'),
     path('chartAcc/upt/<int:id_chartOfAccounts>/',updateChartOfAccounts,name='updateChartOfAccounts'),
-    path('chartAcc/dlt/<int:id_chartOfAccounts>/',deleteChartOfAccounts,name='deleteChartOfAccounts')
+    path('chartAcc/dlt/<int:id_chartOfAccounts>/',deleteChartOfAccounts,name='deleteChartOfAccounts'),
+    
+    path('teste_permissao/', teste_permissao, name='teste_permissao'),
     ]
