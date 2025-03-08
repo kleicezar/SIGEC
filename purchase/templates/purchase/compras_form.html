@@ -9,6 +9,7 @@
     {% block css %}
         <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
         <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/custom-styles.css' %}">
     {% endblock %}
     <title>{% if compra.pk %}Editar{% else %}Criar{% endif %} Compra</title>
     {% bootstrap_css %}
@@ -28,7 +29,9 @@
         <div class="content">
             <div class="center">
                 <!-- <h4 class="mt-5 mb-5 c-adapted">{% if Compra.pk %}Editar{% else %}Criar{% endif %} Compra</h4> -->
-
+                <a href="{% url 'compras_list' %}">
+                    <button class="btn btn-voltar mb-4">Voltar</button>
+                </a>    
                 <form method="post">
                     {% csrf_token %}
                 

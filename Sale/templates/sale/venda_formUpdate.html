@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% block css %}
         <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
+        <link rel="stylesheet" href="{% static 'css/custom-styles.css' %}">
         <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.min.css' %}">
         <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.min.css' %}">
     {% endblock %}
@@ -35,6 +36,9 @@
         {% block content %}
         <div class='content'>
             <div class='center'>
+                <a href="{% url 'venda_list' %}">
+                    <button class="btn btn-voltar mb-4">Voltar</button>
+                </a>    
                 <h4 class="mt-5 mb-5 c-adapted">{% if venda.pk %}Editar{% else %}Criar{% endif %} Venda</h4>
                 <form method="post">
                     {% csrf_token %}

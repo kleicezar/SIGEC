@@ -53,8 +53,8 @@ def Accounts_Create(request):
     context = {
         'form_Accounts': form_Accounts,
         'form_payment_account': PaymentMethod_Accounts_FormSet,
-        'Contas' : 'Contas a Pagar'
-
+        'Contas' : 'Contas a Pagar',
+        'tipo_conta': 'Pagar'
     }
     return render(request, 'finance/AccountsPayform.html', context)
 
@@ -285,7 +285,11 @@ def AccountsReceivable_Create(request):
                         print(f"Erro no campo {field.name}\t: {field.errors}")
             
             # Retorna para o template com os erros
-            return render(request, 'finance/AccountsPayform.html', {'form_payment_account': PaymentMethod_Accounts_FormSet})
+            context = {
+                'form_payment_account': PaymentMethod_Accounts_FormSet, 
+                'tipo_conta': 'Receber'
+            }
+            return render(request, 'finance/AccountsPayform.html', context)
     else: 
         form_Accounts = AccountsForm()
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
@@ -293,7 +297,8 @@ def AccountsReceivable_Create(request):
     context = {
         'form_Accounts': form_Accounts,
         'form_payment_account': PaymentMethod_Accounts_FormSet,
-        'Contas' : 'Contas a Receber'
+        'Contas' : 'Contas a Receber',
+        'tipo_conta': 'Receber'
     }
 
     return render(request, 'finance/AccountsPayform.html', context)
@@ -414,65 +419,10 @@ def update_AccountsReceivable(request, id_Accounts):
     context = {
         'form_Accounts': accounts_form_instance,
         'form_paymentMethodAccounts': payment_form_instance,
+        'tipo_conta': 'Receber'
     }
 
     return render(request, 'finance/AccountsPayformUpdate.html', context)
-    # payment_instance = get_object_or_404(PaymentMethod_Accounts, id=id_Accounts)
-    # accounts_instance = get_object_or_404(Accounts, id=payment_instance.conta_id)
-    # if request.method == "POST":  
-    #     payment_form_instance = PaymentMethodAccountsForm(request.POST, instance=payment_instance)
-
-        # accounts_form_instance = AccountsForm(
-        #     request.POST, 
-        #     instance=accounts_instance,
-        #     initial={
-        #         'numberOfInstallments': accounts_instance.numberOfInstallments,
-        #         'installment_Range': accounts_instance.installment_Range,
-        #         'totalValue': accounts_instance.totalValue,
-        #         'date_init': accounts_instance.date_init
-        #     }
-        # )
-
-    #     # accounts_form_instance.numberOfInstallments = accounts_instance.numberOfInstallments
-    #     # accounts_form_instance.installment_Range = accounts_instance.installment_Range
-    #     # accounts_form_instance.totalValue = accounts_instance.totalValue
-    #     # accounts_form_instance.date_init = accounts_instance.date_init
-
-    #     print(accounts_instance.date_init)
-    #     print('funciona pelo amor de Deus')
-    #     # print(payment_form_instance.errors)
-    #     print(accounts_form_instance.errors)
-
-    #     if payment_form_instance.is_valid() and accounts_form_instance.is_valid():
-    #         print('funciona pelo amor de Deus')
-    #         accounts_form_instance.save()
-    #         payment_form_instance.save(commit=False)
-    #         if payment_form_instance.interestPercent == '':
-    #             print(payment_form_instance.interestPercent)
-    #             payment_form_instance.interestPercent = None
-    #         if payment_form_instance.interestValue == 0: 
-    #             print(payment_form_instance.interestValue)
-    #             payment_form_instance.interestValue = None
-    #         if payment_form_instance.finePercent == '':
-    #             print(payment_form_instance.finePercent)
-    #             payment_form_instance.finePercent = None
-    #         if payment_form_instance.fineValue == 0:
-    #             print(payment_form_instance.fineValue)
-    #             payment_form_instance.fineValue = None
-    #         payment_form_instance.save()
-
-    #         return redirect('AccountsReceivable')  # Redirecionar após salvar as alterações
-    # else:
-    #     # Preencher os formulários com os dados existentes
-    #     accounts_form_instance = AccountsForm(instance=accounts_instance)
-    #     payment_form_instance = PaymentMethodAccountsForm(instance=payment_instance)
-
-    # context = {
-    #     'form_Accounts': accounts_form_instance,
-    #     'form_paymentMethodAccounts': payment_form_instance,
-    # }
- 
-    # return render(request, 'finance/AccountsPayformUpdate.html', context)
 
 # funcionando
 @login_required

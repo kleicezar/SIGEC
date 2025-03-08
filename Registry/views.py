@@ -83,6 +83,7 @@ def Client_Create(request):
 @login_required
 def client_list(request):
     # Obtenha o termo de pesquisa da requisição
+    print("Amigo estou aqui")
     search_query = request.GET.get('query', '')
 
     # Filtrar os clientes com base no termo de pesquisa
