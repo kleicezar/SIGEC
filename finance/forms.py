@@ -105,10 +105,7 @@ class AccountsFormUpdate(BaseAccountsForm):
     class Meta(BaseAccountsForm.Meta):
         exclude = ['numberOfInstallments','installment_Range','totalValue','date_init']
     
-
-
-class PaymentMethodAccountsForm(forms.ModelForm):
-    # Definindo os campos manualmente
+class BasePaymentMethodAccountsForm(forms.ModelForm):
     interestType = forms.ChoiceField(
         choices=PaymentMethod_Accounts.INTEREST_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control row','id': 'interest_type'}),
@@ -133,7 +130,6 @@ class PaymentMethodAccountsForm(forms.ModelForm):
             'interestType',
             'fineType',
             'acc'
-
         ]
         widgets = { 
             'forma_pagamento': forms.Select(attrs={ 
@@ -165,12 +161,15 @@ class PaymentMethodAccountsForm(forms.ModelForm):
             'acc':forms.HiddenInput()
         }
 
+class PaymentMethodAccountsForm(BasePaymentMethodAccountsForm):
+    # class Meta(BasePaymentMethodAccountsForm.Meta):
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs) 
         self.fields['interestType'].required = False
         self.fields['fineType'].required = False
         self.fields['value_old'].required = False
-        self.fields['value_old'].widget = forms.HiddenInput()
+        self.fields['value_old'].widget = forms.HiddenInput() 
 
     def clean(self):
         cleaned_data = super().clean()
@@ -192,3 +191,15 @@ class PaymentMethodAccountsForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+    
+class PaymentMethodAccountsFormUpdate(BasePaymentMethodAccountsForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs) 
+        self.fields['interestType'].required = False
+        self.fields['fineType'].required = False
+        self.fields['value_old'].required = False
+    # class Meta(PaymentMethodAccountsForm.Meta):
+    #     pass
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['value_old'].widget  

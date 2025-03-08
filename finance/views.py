@@ -18,38 +18,73 @@ import pdb
 def Accounts_Create(request):
     verify = 0
     installments = []
-    PaymentMethodAccountsFormSet = inlineformset_factory(Accounts, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
+    # PaymentMethodAccountsFormSet = inlineformset_factory(Accounts, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
+    PaymentMethodAccountsFormSet = inlineformset_factory(
+        Accounts,
+        PaymentMethod_Accounts,
+        form=PaymentMethodAccountsForm,
+        extra=1, 
+        can_delete=True,
+        
+    )
     if request.method == "POST":
+
+        print(request.POST) 
+
         form_Accounts = AccountsForm(request.POST)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
-        print(f'deu certo ate aqui "primeiro IF"')
+        print()
+        print(f'\n\n\nformulario da conta a receber {form_Accounts.is_valid()}')
+        print(f'formulario de parcelas {PaymentMethod_Accounts_FormSet.is_valid()}\n\n\n')
+        print()
 
         if form_Accounts.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
-            account = form_Accounts.save()
-            print(f'deu certo ate aqui "segundo IF"')
 
+            # FIXME adicionar valor antigo e fazer comparação entre antigo, novo e gerar a parcela de desconto 
+
+            account = form_Accounts.save()
             total_value = account.totalValue
-            for form in PaymentMethod_Accounts_FormSet:
+
+            print(f'\n\nQuantidade de formulários no FormSet: {len(PaymentMethod_Accounts_FormSet)}\n\n')
+
+            for form in PaymentMethod_Accounts_FormSet: 
+                print('\npassou pelo if is_valid()\n')
+                print(f'formulario unitario: {form}')
                 if form.cleaned_data:
-                    print(f'deu certo ate aqui "terceiro IF"')
+                    print('\npassou pelo if cleaned_data()\n')
+
                     parcela = form.cleaned_data['value']
                     verify += parcela
                     form_cleaned = form.save(commit=False)
                     installments.append(form_cleaned)
-           
-            if float(verify) == float(total_value):
-                for installment in installments:
-                    print(f'deu certo ate aqui "vai salvar"')
-                    installment.conta = account
-                    installment.acc = True
-                    installment.save()
-                return redirect('AccountsPayable')
-            else:
-                form.add_error('value', f'O valor do somatorio das parcelas ({parcela}) é inferior ao Valor Total ({total_value}).')
+                if float(verify) == float(total_value):
+                    for installment in installments:
+                        installment.conta = account
+                        installment.acc = True
+                        installment.save()
+                    return redirect('AccountsPayable')
+                else:
+                    print('\npassou pelo else verify()\n')
+
+                    form.add_error('value', f'O valor do somatorio das parcelas ({parcela}) é inferior ao Valor Total ({total_value}).')
+        else:
+            # print("Erros no form_Accounts:", form_Accounts.errors)
+            # print("Erros no PaymentMethod_Accounts_FormSet:", PaymentMethod_Accounts_FormSet.errors)
+            # Aqui, o formset não é válido, vamos imprimir os erros para diagnóstico
+            for form in PaymentMethod_Accounts_FormSet:
+                print(f"Erros no formulário {form.instance}: {form.errors}")
+            print()
+            # Opcional: Você pode exibir os erros de cada campo individualmente
+            for form in PaymentMethod_Accounts_FormSet:
+                for field in form:
+                    if field.errors:
+                        print(f"Erro no campo {field.name}\t: {field.errors}")
+            
+            # Retorna para o template com os erros
+            return render(request, 'finance/AccountsPayform.html', {'form_payment_account': PaymentMethod_Accounts_FormSet})
     else: 
         form_Accounts = AccountsForm()
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
-        
     context = {
         'form_Accounts': form_Accounts,
         'form_payment_account': PaymentMethod_Accounts_FormSet,
@@ -84,7 +119,7 @@ def Accounts_list(request):
     page = paginator.get_page(page_number)
 
     return render(request, 'finance/AccountsPay_list.html', {
-        'form_accounts': page,
+        'accounts': page,
         'query': search_query,  # Envie o termo de pesquisa para o template
         'ContasP' : 'Contas a Pagar'
     })
@@ -217,7 +252,6 @@ def delete_Accounts(request, id_Accounts):
 
 ### CONTAS A RECEBER
 
-# funcionando
 @login_required
 def AccountsReceivable_Create(request):
     verify = 0
@@ -258,6 +292,7 @@ def AccountsReceivable_Create(request):
                     print('\npassou pelo if cleaned_data()\n')
 
                     parcela = form.cleaned_data['value']
+                    form.cleaned_data['value_old'] = parcela
                     verify += parcela
                     form_cleaned = form.save(commit=False)
                     installments.append(form_cleaned)
@@ -298,7 +333,6 @@ def AccountsReceivable_Create(request):
 
     return render(request, 'finance/AccountsPayform.html', context)
 
-# funcionando
 @login_required
 def AccountsReceivable_list(request):
     # Obtenha o termo de pesquisa da requisição
@@ -349,10 +383,8 @@ def get_AccountsReceivable(request, id_Accounts):
     'forma_pagamento':paymentMethod_Accounts.forma_pagamento,
     'expirationDate':paymentMethod_Accounts.expirationDate,
     'value':paymentMethod_Accounts.value,
-    'interestPercent':paymentMethod_Accounts.interestPercent,
-    'interestValue':paymentMethod_Accounts.interestValue,
-    'finePercent':paymentMethod_Accounts.finePercent,
-    'fineValue':paymentMethod_Accounts.fineValue,
+    'interest':paymentMethod_Accounts.interest,
+    'fine':paymentMethod_Accounts.fine,
     }
     
         
@@ -388,14 +420,11 @@ def update_AccountsReceivable(request, id_Accounts):
             payment_instance = payment_form_instance.save(commit=False)
 
             # Definir None para valores vazios
-            if not payment_instance.interestPercent:
-                payment_instance.interestPercent = None
-            if not payment_instance.interestValue:
-                payment_instance.interestValue = None
-            if not payment_instance.finePercent:
-                payment_instance.finePercent = None
-            if not payment_instance.fineValue:
-                payment_instance.fineValue = None
+            if not payment_instance.interest:
+                payment_instance.interest = None
+            if not payment_instance.fine:
+                payment_instance.fine = None
+
 
             payment_instance.save()
 
@@ -409,7 +438,7 @@ def update_AccountsReceivable(request, id_Accounts):
 
     else:
         accounts_form_instance = AccountsFormUpdate(instance=accounts_instance)
-        payment_form_instance = PaymentMethodAccountsForm(instance=payment_instance)
+        payment_form_instance = PaymentMethodAccountsFormUpdate(instance=payment_instance)
 
     context = {
         'form_Accounts': accounts_form_instance,
@@ -475,6 +504,7 @@ def update_AccountsReceivable(request, id_Accounts):
     # return render(request, 'finance/AccountsPayformUpdate.html', context)
 
 # funcionando
+
 @login_required
 def delete_AccountsReceivable(request, id_Accounts):
     # Recupera o accounte com o id fornecido

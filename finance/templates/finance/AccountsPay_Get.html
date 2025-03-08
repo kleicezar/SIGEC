@@ -78,32 +78,28 @@
                             <td>{{ client.systemWatching }}</td>
                         </tr>
                         {% endif %}
-                        {% if client.interestPercent != none %}
+                        {% if client.interest != none %}
                         <tr>
                             <td>Porcentagem de Juros</td>
-                            <td>{{ client.interestPercent }}</td>
+                            <td>{{ client.interest }}</td>
                         </tr>
                         {% endif %}
-                        {% if client.interestValue != none %}
-                        <tr>
-                            <td>Valor de Juros</td>
-                            <td>{{ client.interestValue }}</td>
-                        </tr>
-                        {% endif %}
-                        {% if client.finePercent != none %}
+                        
+                        {% if client.fine != none %}
                         <tr>
                             <td>Porcentagem de Multa</td>
-                            <td>{{ client.finePercent }}</td>
-                        </tr>
-                        {% endif %}
-                        {% if client.fineValue != none %}
-                        <tr>
-                            <td>Valor de Multa</td>
-                            <td>{{ client.fineValue }}</td>
+                            <td>{{ client.fine }}</td>
                         </tr>
                         {% endif %}
                     </tbody>
                 </table>
+                <div class="col text-start">
+                    
+                    <form action="{% url 'AccountsReceivable' %}" method="GET" style="display:inline-block;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn" style="background-color: #113a70;color: white;">Voltar</button>
+                    </form>
+                </div>
             </div> 
         </div>
         {% endblock %}
