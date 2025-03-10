@@ -181,16 +181,6 @@ class PaymentMethodAccountsForm(BasePaymentMethodAccountsForm):
 
         return cleaned_data
 
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-
-        # Se for uma edição (e não uma criação), garanta que 'value_old' seja preenchido com o valor de 'value'
-        if instance.pk:  # Se for um objeto já salvo (edição)
-            instance.value_old = instance.value
-
-        if commit:
-            instance.save()
-        return instance
     
 class PaymentMethodAccountsFormUpdate(BasePaymentMethodAccountsForm):
     def __init__(self, *args, **kwargs):
@@ -198,8 +188,3 @@ class PaymentMethodAccountsFormUpdate(BasePaymentMethodAccountsForm):
         self.fields['interestType'].required = False
         self.fields['fineType'].required = False
         self.fields['value_old'].required = False
-    # class Meta(PaymentMethodAccountsForm.Meta):
-    #     pass
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     self.fields['value_old'].widget  

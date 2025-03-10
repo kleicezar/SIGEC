@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let TotalValue = document.getElementById('id_value');       // html de valor pago
     let value_edit = TotalValue.value;                          // valor pago
     let ValueOLD = document.getElementById('id_value_old');     // html valor bruto
-    const defalt = ValueOLD.value                               // valor bruto
+    //const defalt = ValueOLD.value                               // valor bruto
 
     dataa = document.getElementById('id_date_account').value
     data = document.getElementById('id_expirationDate').value
@@ -19,18 +19,13 @@ document.addEventListener('DOMContentLoaded', function () {
         const [year, month, day ] = dateStr.split('-').map(num => parseInt(num, 10));
         return new Date(year, month - 1, day); // Mês no JavaScript começa do 0
     };
-
     // Pega o valor do input e remove espaços extras
     const inputDate = date.value.trim();
-
     // Converte a data inicial para um objeto Date
     const startDate = convertToDate(inputDate);
-
-    // Verifica se a conversão foi bem-sucedida
-    if (isNaN(startDate.getTime())) {
+    if (isNaN(startDate.getTime())) {// Verifica se a conversão foi bem-sucedida
         console.error('Data inválida');
-    } else {
-    // Cria uma nova data para evitar modificar startDate
+    } else {// Cria uma nova data para evitar modificar startDate
     const final_date = new Date(startDate);
 
     // Formata a data no formato "DD/MM/YYYY"
@@ -41,25 +36,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
     interest.addEventListener('change', function(){
         const format = format_value(interest.value)
-        interest.value = format
-        const edit = compair_interest_fine(defalt)
+        if (format === 'NaN'){
+            interest.value = '0.00'
+        }else interest.value = format
+        const edit = compair_interest_fine(ValueOLD.value)
         TotalValue.value = edit
     })
     fine.addEventListener('change', function(){
         const format = format_value(fine.value)
-        fine.value = format
-        const edit = compair_interest_fine(defalt)
+        if (format === 'NaN'){
+            fine.value = '0.00'
+        }else fine.value = format
+        const edit = compair_interest_fine(ValueOLD.value)
         TotalValue.value = edit
     })
 
     interestType.addEventListener('change',function() {
         if (interestType.value === 'percent') {
             interest.value = '0.00'
-            const edit = compair_interest_fine(defalt)
+            const edit = compair_interest_fine(ValueOLD.value)
             TotalValue.value = edit
         } else {
             interest.value = '0.00'
-            const edit = compair_interest_fine(defalt)
+            const edit = compair_interest_fine(ValueOLD.value)
             TotalValue.value = edit
         } 
     })
@@ -67,16 +66,17 @@ document.addEventListener('DOMContentLoaded', function () {
     fineType.addEventListener('change',function() {
         if (fineType.value === 'percent') {
             fine.value = '0.00'
-            const edit = compair_interest_fine(defalt)
+            const edit = compair_interest_fine(ValueOLD.value)
             TotalValue.value = edit
         } else {
             fine.value = '0.00'
-            const edit = compair_interest_fine(defalt)
+            const edit = compair_interest_fine(ValueOLD.value)
             TotalValue.value = edit
         } 
     })
 
     function format_value(value){
+
         return parseFloat(value).toFixed(2)
     }
 
