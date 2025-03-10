@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-  
+
     const header = document.getElementById('installment')
 
     const formContainer = document.getElementById("payment-method-container");
@@ -26,7 +26,9 @@ document.addEventListener('DOMContentLoaded', function () {
         click = click + 1
         console.log('quantidade de cliques ate agora: ' + click)
         if (click > 1){
-            clean(TOTAL_FORMS.value)
+            if (isNaN(installmentRange) || isNaN(days_installment_Range)  || isNaN(startDate) || isNaN(totalValue)) {
+                clean(TOTAL_FORMS.value)
+            }
         }
         
         header.style.removeProperty('display')
@@ -44,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Data inválida');
             return;
         }
+
         
         const totalValue = parseFloat(document.getElementById("id_totalValue").value); // Valor de cada parcela
         const numberOfInstallments = parseInt(document.getElementById("id_numberOfInstallments").value); // Número de parcelas
@@ -119,13 +122,22 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         return array_valor_parcelas
     }
+    function valida(){
+        if (isNaN(numberOfInstallments) || isNaN(installment_Range)  || isNaN(startDate) || isNaN(totalValue)) { 
+            alert("Por favor, preencha todos os campos corretamente. BY: kleitin");
+            return;
+        }
+    }
     function clean(total_forms){
         for (let index = 0; index < total_forms; index++) {
             const del = document.getElementById(`${index+1}`)
-            console.log('variavel del igual a: ' + del.id)
-            if(del.id >= 1){
-                del.remove()
+            if (del != null) {
+                console.log('variavel del igual a: ' + del.id)
+                if(del.id >= 1){
+                    del.remove()
+                }
             }
         }
     }
-})
+    }
+)
