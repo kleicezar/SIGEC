@@ -9,6 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         {% block css %}
             <link rel="stylesheet" href="{% static 'css/Table.css' %}">
+            <link rel="stylesheet" href="{% static 'css/custom-styles.css' %}">
 
         {% endblock %}
         <title>Formulário</title>
@@ -20,10 +21,13 @@
             {% block content %}
             <div class='content'>
                 <div id="messageContainer"></div>  <!-- Contêiner para a mensagem -->
+                <a href="{% url 'AccountsPayable' %}">
+                    <button class="btn btn-voltar">Voltar</button>
+                </a> 
                 <table>
                     <tbody id="results">
                         <tr>
-                            <td>Codigo do Cliente</td>
+                            <td>Nome do Cliente</td>
                             <td>{{ client.pessoa_id }}</td>
                         </tr>
                         <tr>
@@ -64,7 +68,7 @@
                         </tr>
                         <tr>
                             <td>Valor da Parcela</td>
-                            <td>{{ client.value }}</td>
+                            <td>{{ client.value_old }}</td>
                         </tr>
                         {% if client.peopleWatching != '' %}
                         <tr>
@@ -78,28 +82,23 @@
                             <td>{{ client.systemWatching }}</td>
                         </tr>
                         {% endif %}
-                        {% if client.interestPercent != none %}
+                        {% if client.interest != none %}
                         <tr>
                             <td>Porcentagem de Juros</td>
-                            <td>{{ client.interestPercent }}</td>
+                            <td>{{ client.interest }}</td>
                         </tr>
                         {% endif %}
-                        {% if client.interestValue != none %}
-                        <tr>
-                            <td>Valor de Juros</td>
-                            <td>{{ client.interestValue }}</td>
-                        </tr>
-                        {% endif %}
-                        {% if client.finePercent != none %}
+                        
+                        {% if client.fine != none %}
                         <tr>
                             <td>Porcentagem de Multa</td>
-                            <td>{{ client.finePercent }}</td>
+                            <td>{{ client.fine }}</td>
                         </tr>
                         {% endif %}
-                        {% if client.fineValue != none %}
+                        {% if client.value_old != client.value %}
                         <tr>
-                            <td>Valor de Multa</td>
-                            <td>{{ client.fineValue }}</td>
+                            <td>Valor da Parcela com encargos</td>
+                            <td>{{ client.value }}</td>
                         </tr>
                         {% endif %}
                     </tbody>

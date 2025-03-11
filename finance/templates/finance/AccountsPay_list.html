@@ -107,7 +107,22 @@
                 </tbody>
             </table>
             <div id="paginationContainer">
-            
+                {% if ContasR %}
+                    {% if accounts.has_previous %}
+                    <a href="{% url 'AccountsReceivable' %}?page={{ accounts.previous_page_number }}&query={{ query }}">Anterior</a>
+                    {% endif %}
+                    {% if accounts.has_next %}
+                    <a href="{% url 'AccountsReceivable' %}?page={{ accounts.next_page_number }}&query={{ query  }}">Proximo</a>
+                    {% endif %}
+                {% endif %}
+                {% if ContasP %}
+                    {% if accounts.has_previous %}
+                    <a href="{% url 'AccountsPayable' %}?page={{ accounts.previous_page_number }}&query={{ query }}">Anterior</a>
+                    {% endif %}
+                    {% if accounts.has_next %}
+                    <a href="{% url 'AccountsPayable' %}?page={{ accounts.next_page_number }}&query={{ query  }}">Proximo</a>
+                    {% endif %}
+                {% endif %}
             </div>
         </div> 
         {% endblock %}

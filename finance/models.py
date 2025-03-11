@@ -42,7 +42,7 @@ class Accounts(models.Model):
         blank=True
     )
 
-    date_init = models.DateTimeField( #### FIXME: TIRA ESSE TIME DAQ
+    date_init = models.DateField( 
         verbose_name="Data de Inicio"
         )
     
@@ -108,32 +108,31 @@ class PaymentMethod_Accounts(models.Model):
         max_length=50,
         verbose_name='Data de Vencimento'
     )
-    days = models.IntegerField(
+    days = models.IntegerField(             #dias entre as parcelas
         verbose_name='Dias'
-    ) #dias entre as parcelas
+    ) 
+    value_old = models.DecimalField(        #valor original sem alterações
+        decimal_places=2,   
+        max_digits=8,
+        verbose_name='Valor da Conta:',
+        default = 0
+    )
     value = models.DecimalField(decimal_places=2,
         max_digits=8,
         verbose_name='Valor Pago:'
-    )
+    )  
     interestType = models.CharField(
-        max_length=10,
+        max_length=10, 
         choices=INTEREST_CHOICES,
         verbose_name="Tipo de Juros",
         default='value',
         null=True,
         blank=True
     )
-    interestPercent = models.DecimalField(
+    interest = models.DecimalField(
         decimal_places=2, 
         max_digits=8, 
-        verbose_name='Juros (%)',
-        null=True,
-        blank=True
-    )
-    interestValue = models.DecimalField(
-        decimal_places=2, 
-        max_digits=8, 
-        verbose_name='juros R$',
+        verbose_name='juros',
         null=True,
         blank=True
     )
@@ -145,17 +144,10 @@ class PaymentMethod_Accounts(models.Model):
         null=True,
         blank=True
     )
-    finePercent = models.DecimalField(
+    fine = models.DecimalField(
         decimal_places=2, 
         max_digits=8, 
-        verbose_name='multa (%)',
-        null=True,
-        blank=True
-    )
-    fineValue = models.DecimalField(
-        decimal_places=2, 
-        max_digits=8, 
-        verbose_name='multa R$',
+        verbose_name='Multa R$',
         null=True,
         blank=True
     )

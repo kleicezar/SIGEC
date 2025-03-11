@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'login',
     'bootstrap4',
     'stdimage',
-    'Service'
+    'Service',
 ]
 
 MIDDLEWARE = [
@@ -64,7 +64,7 @@ ROOT_URLCONF = 'sigec.urls'
 TEMPLATES= [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Aqui deve estar o diretório onde seus templates HTML estão
+        'DIRS': [BASE_DIR / 'templates',BASE_DIR / 'partials'],  # Aqui deve estar o diretório onde seus templates HTML estão
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -133,9 +133,9 @@ DATETIME_INPUT_FORMATS = ['%d/%m/%Y %H:%M:%S']
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-# STATICFILES_DIRS = (
-#     BASE_DIR / 'static',  # local static files directory
-# )
+STATICFILES_DIRS = (
+    BASE_DIR / 'static',  # local static files directory
+)
 STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
 
 # Default primary key field type

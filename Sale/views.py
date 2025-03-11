@@ -37,6 +37,7 @@ def venda_list(request):
         'vendas': page,
         'query':search_query
         })
+
 @login_required
 def venda_create(request):
     VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=1, can_delete=True)
@@ -355,7 +356,7 @@ def venda_item_create(request, venda_pk):
         form = VendaItemForm()
     return render(request, 'sale/venda_item_form.html', {'form': form, 'venda': venda})
 
-
+@login_required
 def client_search(request):
     """Busca clientes dinamicamente e retorna JSON."""
     query = request.GET.get('query', '') 
@@ -381,6 +382,7 @@ def client_search(request):
     ]
     return JsonResponse({'clientes': clients})
 
+@login_required
 def get_product_id(request):
     query = request.GET.get('query','')
     resultados = Product.objects.filter(
@@ -391,6 +393,8 @@ def get_product_id(request):
  
    
     return JsonResponse({'produto':resultados_json})
+
+@login_required
 def product_search(request):
     query = request.GET.get('query','')
     resultados = Product.objects.filter(
@@ -455,3 +459,33 @@ def buscar_vendas(request):
     }
 
     return JsonResponse(response_data)
+
+def printSale(request, venda_pk=1):
+    venda_list = Venda.objects.get(id=venda_pk)
+    venda_item = VendaItem.objects.filter(venda=venda_list.id)
+    # print(vars(venda_list))
+    print(vars(venda_item))
+    context = {
+        'venda': venda_list,
+        'venda_item': venda_item,
+    }
+    return render(request, 'sale/sale.html', context)
+
+    # # Carregar a venda existente
+    # venda = get_object_or_404(Venda, pk=venda_pk)
+
+    # # Criar formsets para itens de venda e formas de pagamento
+    # VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=0, can_delete=True)
+    # PaymentMethodVendaFormSet = inlineformset_factory(Venda, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=0, can_delete=True)
+
+    # form_Accounts = AccountsForm(instance=venda)
+    # venda_form = VendaForm(instance=venda)
+    # payment_method_formset = PaymentMethodVendaFormSet(queryset=venda.paymentmethod_accounts_set.all(),instance=venda)
+    # venda_item_formset = VendaItemFormSet(queryset=venda.vendaitem_set.all(),instance=venda)
+
+    # context = {
+    #     'form_Accounts': form_Accounts,
+    #     'venda_form': venda_form,
+    #     'venda_item_formset': venda_item_formset,
+    #     'form_payment_account': payment_method_formset,
+    # }

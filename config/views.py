@@ -9,6 +9,7 @@ from .models import *
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.http import JsonResponse
+from django.contrib.auth.models import Permission
 
 ### PAYMENT METHOD
 @login_required
@@ -337,3 +338,21 @@ def buscar_forma_pagamento(request):
     }
     return JsonResponse(response_data)
    
+   
+@login_required
+def teste_permissao(request):
+    permissoes = Permission.objects.all()
+
+    permissoes_formatadas = []
+    for permissao in permissoes:
+        full_codename = f"{permissao.content_type.app_label}.{permissao.codename}"
+        tem_permissao = request.user.has_perm(full_codename)  # Verifica na view
+
+        permissoes_formatadas.append({
+            "nome": permissao.name,
+            "codename": permissao.codename,
+            "full_codename": full_codename,
+            "tem_permissao": tem_permissao  # Passamos True/False para o template
+        })
+
+    return render(request, 'config/testePermissao.html', {"permissoes": permissoes_formatadas})

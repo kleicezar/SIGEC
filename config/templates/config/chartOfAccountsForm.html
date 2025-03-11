@@ -8,6 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         {% block css %}
             <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
+            <link rel="stylesheet" href="{% static 'css/custom-styles.css' %}">
         {% endblock %}
         <title>Formulário</title>
         {% bootstrap_css %}
@@ -18,6 +19,9 @@
             {% block content %}
             <div class='content'>
                 <div class='center col'>
+                    <a href="{% url 'ChartofAccounts' %}">
+                        <button class="btn btn-voltar">Voltar</button>''
+                    </a> 
                     <form action="." method='post' autocomplete='off' class="row">
                         {% csrf_token %}
                         <div class="container">

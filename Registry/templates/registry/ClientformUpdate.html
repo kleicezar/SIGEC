@@ -1,6 +1,11 @@
 {% extends 'login/menu.html' %}
 {% load bootstrap4 %}
 {% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/custom-styles.css' %}">
+{% endblock %}
+
 {% block content %}
 <!-- <script>
     function configureForm(form, isActive) {
@@ -57,9 +62,12 @@
 </script> -->
 <body data-selected-form="{{ selected_form }}">
     <div class="content">
+        <a href="{% url 'Client' %}">
+            <button class="btn btn-voltar">Voltar</button>
+        </a>       
         <form method="POST">
             {% csrf_token %}
-            
+             
             <h4 class="mt-5 mb-5 c-adapted">Atualização de Cliente</h4>
 
             <!-- Formulário 1: Pessoa Física -->

@@ -1,216 +1,61 @@
 {% extends 'login/menu.html' %}
 {% load bootstrap4 %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% block css %}
+
+{% block css %}
     <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
-    {% endblock %}
-    <title>Formulário</title>
-    {% bootstrap_css %}
-</head>
-<body>
-    {% block content %}
-    <div class="content">
-        <div class="center col">
-            <div class="row justify-content-center"></div>
-            <form method="POST">
-                {% csrf_token %}
-                
-                <h4 class="mt-5 mb-5 c-adapted">Cadastro de {{Contas}} </h4>
-                <!-- dados da conta a pagar -->
+    <link rel="stylesheet" href="{% static 'css/custom-styles.css' %}">
+{% endblock %}
 
-                <div class="row">
-                    <div class="col">
-                        {{ form_Accounts.pessoa_id.label}}
-                        {{ form_Accounts.pessoa_id}}
-                    </div>
+{% block content %}
+<div class="content">
+    <div class="center col">
+        <a href="
+        {% if tipo_conta == "Pagar" %}        
+            {% url 'AccountsPayable' %}
+        {% elif tipo_conta == "Receber" %}
+            {% url 'AccountsReceivable' %}
+        {% else %}
+            /
+        {% endif %}
+        ">
+            <button class="btn btn-voltar">Voltar</button>
+        </a>    
+        <form method="POST">
+            {% csrf_token %}
 
-                    <div class="col">
-                        {{ form_Accounts.chartOfAccounts.label}}
-                        {{ form_Accounts.chartOfAccounts}}
-                    </div>
-                </div>
+            <h4 class="mt-5 mb-5 c-adapted">Cadastro de {{Contas}} </h4>
 
-                <div class="row">
-                    <div class="col">
-                        {{ form_Accounts.documentNumber.label}}
-                        {{ form_Accounts.documentNumber}}
-                    </div>
-                    <div class="col">
-                        {{ form_Accounts.date_account.label}}
-                <td>
-                    <div class="input-group date" data-provide="datepicker" id="payment_method">
-                        {{ form_Accounts.date_account}}
-    
-                        <div class="input-group-addon">
-                            <span class="glyphicon glyphicon-th"></span>
-                        </div>
-                    </div>
-                </td>
-                    </div>
-                </div>
-              
-    
-               
-    
-                
-    
-                
-    
-                <div class="form-row">
-                    <table class="table" id="paymentMethod_account">
-                        <thead>
-                            <tr>
-                                <th scope="col">
-                                    {{form_Accounts.numberOfInstallments.label}}
-                                </th>
-                                <th scope="col">
-                                    {{form_Accounts.date_init.label}}
-                                </th>
-                                <th scope="col">
-                                    {{form_Accounts.installment_Range.label}}
-                                </th>
-                                <th scope="col">
-                                    {{ form_Accounts.totalValue.label}}
-                                </th>
-                                <th scope="col">
-                                    
-                                </th>
-                            </tr>
-                        </thead>
-    
-                        <tbody>
-                            <tr>
-                                <td>{{form_Accounts.numberOfInstallments}}</td>
-                                <td>
-                                    <div class="input-group date" data-provide="datepicker" id="date_init">
-                                        {{ form_Accounts.date_init }}
-                                        <div class="input-group-addon">
-                                            <span class="glyphicon glyphicon-th"></span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>{{form_Accounts.installment_Range}}</td>
-                                <td>{{ form_Accounts.totalValue}}</td>
-                                <td>
-                                    <button id="generate" type="button">GERAR</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                            
-                <div id="payment-method-container">
-                    {{ form_payment_account.management_form }}
-                    <div style="display: none;">
-                    {% for form in form_payment_account %}
-                        <div class="form-row">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">
-                                            {{form.forma_pagamento.label}}
-                                        </th>
-                                        <th scope="col">
-                                            {{form.expirationDate.label}}
-                                        </th>
-                                        <th scope="col">
-                                            {{ form.days.label}}
-                                        </th>
-                                        <th scope="col">
-                                            {{form.value.label}}
-                                        </th>
-                                    </tr>
-                                </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>{{form.forma_pagamento}}</td>
-                                            <td>
-                                                <div class="input-group date" data-provide="datepicker">
-                                                    {{form.expirationDate}}
-                                                    <div class="input-group-addon">
-                                                        <span class="glyphicon glyphicon-th"></span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>{{form.days}}</td>
-                                            <td>{{form.value}}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                
-                            </div>
-                            {% endfor %}
-                    </div>
-                </div>
-    
-            <div class="row">
-    
-                <div class="col">
-                    <label for="">{{form_Accounts.peopleWatching.label}}</label>
-                    {{form_Accounts.peopleWatching}}
-                </div>
-    
-                <div class="col">
-                    <label for="">{{form_Accounts.systemWatching.label}}</label>
-                    {{form_Accounts.systemWatching}}
+            {{ form_Accounts.pessoa_id.label }}
+            {{ form_Accounts.pessoa_id }}
+
+            {{ form_Accounts.chartOfAccounts.label }}
+            {{ form_Accounts.chartOfAccounts }}
+
+            {{ form_Accounts.documentNumber.label }}
+            {{ form_Accounts.documentNumber }}
+
+            {{ form_Accounts.date_account.label }}
+            <div class="input-group date" data-provide="datepicker" id="payment_method">
+                {{ form_Accounts.date_account }}
+                <div class="input-group-addon">
+                    <span class="glyphicon glyphicon-th"></span>
                 </div>
             </div>
-    
-                <br><br>
-                <div class="row">
-                    <div class="col text-end">
-                        <button type="submit"  class="btn bg-adapted">Enviar</button>
-                    </div>
-                    
+            
+            {% include 'parcela.html' %}
+
+            <br><br>
+            <div class="row">
+                <div class="col text-end">
+                    <button type="submit" class="btn bg-adapted">Enviar</button>
                 </div>
-                
-            </form>
-        </div>
-      
+            </div>
+        </form>
     </div>
+</div>
 
-    <template id="empty-payment-method-form">
-        <div class="form-row" id='del' >
-            <table class="table" id='table'>
-                <thead>
-                    <tr>
-                    </tr>
-                </thead>
 
-                <tbody> 
-                    <tr>
-                        <td>{{ form_payment_account.empty_form.forma_pagamento }}</td>
-                        <td>
-                            <div id="payment_method" class="input-group date" data-provide="datepicker">
-                                {{form_payment_account.empty_form.expirationDate}}
-                                <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-th"></span>
-                                </div>
-                            </div>
-                        </td>
-                        <td>{{ form_payment_account.empty_form.days }}</td>
-                        <td>{{form_payment_account.empty_form.value}}</td>
-                    </tr>
-                </tbody>
-              </table>
-        </div>
-    </template>
+<script src="{% static 'js/additem.js' %}"></script>
 
-    <script src="{% static 'js/jquery-3.7.1.js' %}"></script>
-    <script src="{% static 'js/jquery.mask.min.js' %}"></script>
-    <script src="{% static 'js/mask.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/interest.js' %}"></script>
-    <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap-datepicker.pt-BR.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/date.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/additem.js' %}"></script>     
-
-    {% endblock %}
-</body>
-</html>
+{% endblock %}

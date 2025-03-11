@@ -145,7 +145,7 @@ class ServiceForm(forms.ModelForm):
             'name_Service':forms.TextInput(attrs={
                 'class':'form-control row'
             }),
-            'value_Service':forms.TextInput(attrs={
+            'value_Service':forms.NumberInput(attrs={
                 'class':'form-control row'
             })
         }   

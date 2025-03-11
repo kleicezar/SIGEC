@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprovante de Venda</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            width: 100mm;
+            margin: 0;
+            padding: 0;
+        }
+        .cupom {
+            text-align: center;
+            padding: 5px;
+            border-top: 1px dashed black;
+            border-bottom: 1px dashed black;
+        }
+        .linha {
+            border-top: 1px dashed black;
+            margin: 5px 0;
+        }
+        .produto {
+            display: flex;
+            justify-content: space-between;
+        }
+        .total {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .footer {
+            margin-top: 10px;
+            font-size: 10px;
+        }
+        .registry {
+            text-align: left;  /* Garante alinhamento à esquerda */
+            display: block;  /* Mantém os spans organizados */
+        }
+
+    </style>
+</head>
+<body>
+    <div class="cupom">
+        <br>
+            <div class="titulo">Nilson Cezar LTDA</div>
+            <div class="titulo">ELETRO CEZAR</div>
+            <div>CNPJ: 05.110.568-0001/89</div>
+            <div>{{ venda.pessoa_id.nome }}</div>
+            <div class="linha"></div>
+            <div>
+                <div class="produto">
+                    <span>Data: {{ venda.data_da_venda|date:"d/m/Y H:i:s" }}</span>
+                    <span>Usuario: {{ usuario }}</span>  <!-- #FIXME criar consulta de usuario -->
+                </div>
+            </div>
+            <div class="linha"></div>
+            PEDIDO: {{venda.id}}
+            <div class="linha"></div>
+            <div>
+                {% if venda.pessoa.id_FisicPerson_fk %}
+                <div class="registry">
+                    <span>Cliente: {{ venda.pessoa.id_FisicPerson_fk.name }}</span>
+                    <br>
+                    <span>CPF: {{ venda.pessoa.id_FisicPerson_fk.cpf }}</span>
+                    <br>
+                    <span>Endereço: {{ venda.pessoa.id_FisicPerson_fk.id_address_fk }}</span>
+                </div>
+                {% elif venda.pessoa.id_LegalPerson_fk %}
+                <div class="registry">
+                    <span>Cliente: {{ venda.pessoa.id_LegalPerson_fk.fantasyName }}</span>
+                    <br>
+                    <span>CNPJ: {{ venda.pessoa.id_LegalPerson_fk.cnpj }}</span>
+                    <br>
+                    <span>Endereço: {{ venda.pessoa.id_LegalPerson_fk.id_address_fk }}</span>
+                </div>
+                {% elif venda.pessoa.id_ForeignPerson_fk %}
+                <div class="registry">
+                    <span>Cliente: {{ venda.pessoa.id_ForeignPerson_fk.name_foreigner }}</span>
+                    <br>
+                    <span>Documento estrangeiro: {{ venda.pessoa.id_ForeignPerson_fk.num_foreigner }}</span>
+                    <br>
+                    <span>Endereço: {{ venda.pessoa.id_ForeignPerson_fk.id_address_fk }}</span>
+                </div>
+                {% endif %}
+            </div>
+            <div class="linha"></div>
+                DOCUMENTO NÃO FISCAL
+            <div class="linha"></div>
+
+            <div class="produto">
+                <span>Descrição</span> 
+                <span>Preço Unitário</span>
+            </div>
+            {% for item in venda_item %}
+                <div class="produto">
+                    <span>{{ item.product.description }}</span> 
+                    <span>R$ {{ item.preco_unitario }}</span>
+                </div>
+            {% endfor %}
+
+            <div class="linha"></div>
+            <div class="produto">
+                <span>ACRESCIMO</span> <span>R$ {{ venda.total }}</span>
+            </div>
+            <div class="produto">
+                <span>DESCONTO</span> <span>R$ {{ venda.total }}</span>
+            </div>
+            <div class="produto total">
+                <span>TOTAL</span> <span>R$ {{ venda.total }}</span>
+            </div>
+            <div class="produto">
+                <span>VALOR PAGO</span> <span>R$ {{ venda.total }}</span>
+            </div>
+            <div class="produto">
+                <span>FORMA PGTO</span> <span>R$ {{ venda.total }}</span>
+            </div>
+            <div class="produto">
+                <span>TROCO</span> <span>R$ {{ venda.total }}</span>
+            </div>
+            <div class="linha"></div>
+            <div class="footer">ESTOU CIENTE DO DEBITO ACIMA</div>
+            <div class="linha"></div>
+            <div class="footer">Obrigado pela preferência!</div>
+    </div>
+</body>
+</html>

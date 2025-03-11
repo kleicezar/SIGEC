@@ -3,7 +3,7 @@ from Registry.models import *
 from config.models import Situation, PaymentMethod
 # Create your models here.
 class Service(models.Model):
-    name_Service = models.CharField('Nome do Serviço',max_length=50)
+    name_Service = models.CharField('Nome do Serviço',max_length=500)
     is_Active = models.BooleanField('ativo',default=True)
     value_Service = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor do Serviço", blank=True, null=True)
     def __str__(self):

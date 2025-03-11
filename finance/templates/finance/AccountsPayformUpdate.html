@@ -18,7 +18,7 @@
         <form method="POST">
             {% csrf_token %}
             
-            <h4 class="mt-5 mb-5 c-adapted">Cadastro de {{Contas}} </h4>
+            <h4 class="mt-5 mb-5 c-adapted">Cadastro de {{tipo_conta}} </h4>
             <!-- dados da conta a pagar -->
             {{ form_Accounts.pessoa_id.label}}
             {{ form_Accounts.pessoa_id}}
@@ -37,51 +37,7 @@
                         <span class="glyphicon glyphicon-th"></span>
                     </div>
                 </div>
-            </td>
-
-            <!-- <div class="form-row">
-                <table class="table" id="paymentMethod_account">
-                    <thead>
-                        <tr>
-                            <th scope="col">
-                                {{form_Accounts.numberOfInstallments.label}}
-                            </th>
-                            <th scope="col">
-                                {{form_Accounts.date_init.label}}
-                            </th>
-                            <th scope="col">
-                                {{form_Accounts.installment_Range.label}}
-                            </th>
-                            <th scope="col">
-                                {{ form_Accounts.totalValue.label}}
-                            </th>
-                            <th scope="col">
-                                
-                            </th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr>
-                            <td>{{form_Accounts.numberOfInstallments}}</td>
-                            <td>
-                                <div class="input-group date" data-provide="datepicker" id="date_init">
-                                    {{ form_Accounts.date_init }}
-                                    <div class="input-group-addon">
-                                        <span class="glyphicon glyphicon-th"></span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>{{form_Accounts.installment_Range}}</td>
-                            <td>{{ form_Accounts.totalValue}}</td>
-                            <td>
-                                <button id="generate" type="button">GERAR</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div> -->
-            
+            </td>           
                         
             <div id="payment-method-container">
             <div class="form-row">
@@ -106,6 +62,9 @@
                                 {{form_paymentMethodAccounts.fineType}}
                             </th>
                             <th scope="col">
+                                {{form_paymentMethodAccounts.value_old.label}}
+                            </th>
+                            <th scope="col">
                                 {{form_paymentMethodAccounts.value.label}}
                             </th>
                         </tr>
@@ -121,11 +80,11 @@
                                 </div>
                             </td>
                             <td>{{form_paymentMethodAccounts.days}}</td>
-                            <td>{{form_paymentMethodAccounts.interestPercent}}
-                                {{form_paymentMethodAccounts.interestValue}}</td>
-                                <td>{{form_paymentMethodAccounts.finePercent}}
-                                    {{form_paymentMethodAccounts.fineValue}}</td>
-                                <td>{{form_paymentMethodAccounts.value}}</td>
+                            <td>{{form_paymentMethodAccounts.interest}}</td>
+                            <td>{{form_paymentMethodAccounts.fine}}</td>
+                            <td>{{form_paymentMethodAccounts.value_old}}</td>
+                            <td>{{form_paymentMethodAccounts.value}}</td>
+                                
                         </tr>
                     </tbody>
                 </table>
@@ -194,6 +153,7 @@
     <script src="{% static 'js/mask.js' %}"></script>
     <!-- <script type="text/javascript" src="{% static 'js/interest.js' %}"></script> -->
     <script type="text/javascript" src="{% static 'js/interest_fine.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'js/installments.js' %}"></script> -->
     <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
     <script src="{% static 'js/bootstrap-datepicker.pt-BR.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/date.js' %}"></script>
