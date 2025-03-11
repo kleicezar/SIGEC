@@ -68,13 +68,36 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <div id="paginationContainer">
-                {% if vendas.has_previous %}
-                <a href="{% url 'venda_list' %}?page={{ vendas.previous_page_number }}&query={{ query }}">Anterior</a>
-                {% endif %}
-                {% if vendas.has_next %}
-                <a href="{% url 'venda_list' %}?page={{ vendas.next_page_number }}&query={{ query  }}">Proximo</a>
-                {% endif %}
+            <div id="paginationContainer" class="container">
+                <div class="row">
+                    {% if vendas.has_previous %}
+                    <a href="{% url 'venda_list' %}?page={{ vendas.previous_page_number }}&query={{ query }}" class="col ">
+                    <button type="button" class="btn" style="border: 2px solid #0b0433;color: #0b0433;">
+                        Anterior
+                    </button>
+                    </a>
+                    {% else %}
+                    <a class="col">
+                        <button type="button" class="btn" style="border: 2px solid #0b0433;color: #0b0433;" disabled>
+                            Anterior
+                        </button>
+                    </a>
+                    {% endif %}
+                    {% if vendas.has_next %}
+                    <a href="{% url 'venda_list' %}?page={{ vendas.next_page_number }}&query={{ query  }}" class="col ">
+                        <button type="button" class="btn" style="border: 2px solid #0b0433;color: #0b0433;">
+                            Próximo
+                        </button>
+                    </a>
+                    {% else %}
+                    <a class="col">
+                        <button type="button" class="btn" style="border: 2px solid #0b0433;color: #0b0433;" disabled>
+                            Próximo
+                        </button>
+                    </a>
+                    {% endif %}
+                </div>
+                
             </div>
         </div> 
         {% endblock %}
