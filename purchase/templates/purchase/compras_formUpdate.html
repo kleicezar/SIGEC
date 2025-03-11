@@ -36,6 +36,9 @@
         {% block content %}
         <div class='content'>
             <div class='container-fluid justify-content-center align-items-center'>
+                <a href="{% url 'compras_list' %}">
+                    <button class="btn btn-voltar mb-4">Voltar</button>
+                </a>
                 <h4 class="mt-5 mb-5 c-adapted">{% if compra.pk %}Editar{% else %}Criar{% endif %} Compra</h4>
                 <form method="post">
                     {% csrf_token %}

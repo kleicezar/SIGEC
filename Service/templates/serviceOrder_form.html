@@ -36,6 +36,9 @@
         {% block content %}
         <div class='content'>
             <div class='container-fluid justify-content-center align-items-center'>
+                <a href="{% url 'OrderService' %}">
+                    <button class="btn btn-voltar">Voltar</button>
+                </a> 
                 <!-- <h4 class="mt-5 mb-5 c-adapted">{% if venda.pk %}Editar{% else %}Criar{% endif %} Venda</h4> -->
                 <h4 class="mt-5 mb-5 c-adapted">Criar Ordem de Serviço</h4>
                 <form method="post">

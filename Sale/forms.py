@@ -106,3 +106,4 @@ class PaymentMethodVendaForm(forms.ModelForm):
             })
         }
 
+

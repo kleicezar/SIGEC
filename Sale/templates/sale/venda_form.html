@@ -36,6 +36,9 @@
         {% block content %}
         <div class='content'>
             <div class='container-fluid justify-content-center align-items-center'>
+                <a href="{% url 'venda_list' %}">
+                    <button class="btn btn-voltar mb-4">Voltar</button>
+                </a>    
                 <h4 class="c-adapted mt-5 mb-5">{% if venda.pk %}Editar{% else %}Criar{% endif %} Venda</h4>
                 <form method="post">
                     {% csrf_token %}
@@ -289,248 +292,7 @@
 
                     <!-- Formas de Pagamento -->
                     <h6 class="mt-5 mb-3">Formas de Pagamento</h6>
-                    <div id="paymentMethod_account" class="row">
-                        <div class="col">
-                            <label for="">{{form_Accounts.numberOfInstallments.label}}</label>
-                            {{form_Accounts.numberOfInstallments}}
-                        </div>
-                        <div class="col" style="width: 200px;">
-                            <label for="">{{form_Accounts.date_init.label}}</label>
-                            <div class="input-group date" data-provide="datepicker" id="date_init">
-                                {{ form_Accounts.date_init }}
-                                <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-th"></span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col" style="margin-left: 30px;">
-                            <label for="">{{form_Accounts.installment_Range.label}}</label>
-                            {{form_Accounts.installment_Range}}
-                        </div>
-                        <div class="col">
-                            <label for="">{{ form_Accounts.totalValue.label}}</label>
-                            {{ form_Accounts.totalValue}}
-                        </div>
-                        <div class="row">
-                            <button id="generate" type="button" class="btn btn-warning mb-3 mt-3 ">Gerar</button>
-                        </div>
-                    </div>
-                    <!-- <div class="form-row">
-                        <table class="table mb-5" id="paymentMethod_account">
-                            <thead>
-
-                                <tr>
-                                    <th scope="col">
-                                        {{form_Accounts.numberOfInstallments.label}}
-                                    </th>
-                                    <th scope="col">
-                                        {{form_Accounts.date_init.label}}
-                                    </th>
-                                    <th scope="col">
-                                        {{form_Accounts.installment_Range.label}}
-                                    </th>
-                                    <th scope="col">
-                                        {{ form_Accounts.totalValue.label}}
-                                    </th>
-
-                                </tr>
-                            </thead>
-        
-                            <tbody>
-                                <tr>
-                                    <td>{{form_Accounts.numberOfInstallments}}</td>
-                                    <td>
-                                        <div class="input-group date" data-provide="datepicker" id="date_init">
-                                            {{ form_Accounts.date_init }}
-                                            <div class="input-group-addon">
-                                                <span class="glyphicon glyphicon-th"></span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>{{form_Accounts.installment_Range}}</td>
-                                    <td>{{ form_Accounts.totalValue}}</td>
-                                    <td>
-                                        <button id="generate" type="button" class="btn btn-warning mb-3 mt-3">Gerar</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div> -->
-                    <div id="payment-method-container">
-                        {{ form_payment_account.management_form }}
-                        <!-- <div style="display:none;"> -->
-                            {% for form in form_payment_account %}
-                                <div class="form-row ">
-                                    {% if forloop.first %}
-                                        <table id="block-first-instance" class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col">
-                                                        {{form.forma_pagamento.label}}
-                                                    </th>
-                                                    <th scope="col">
-                                                        {{form.expirationDate.label}}
-                                                    </th>
-                                                    <th scope="col">
-                                                        {{ form.days.label}}
-                                                    </th>
-                                                    <th scope="col">
-                                                        {{form.value.label}}
-                                                    </th>
-                                                </tr>
-                                            </thead>
-
-                                            <tbody>
-                                                <tr>
-                                                    <td class="field_type_payment">{{form.forma_pagamento}}</td>
-                                                    <td>
-                                                        <div class="input-group date" data-provide="datepicker">
-                                                            {{form.expirationDate}}
-                                                            <div class="input-group-addon">
-                                                                <span class="glyphicon glyphicon-th"></span>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        {{form.days}}
-                                                    </td>
-                                                    <td>
-                                                        {{form.value}}
-                                                    </td>
-                                                    
-                                                    <!-- <td> -->
-                                                        <!-- <label for="">Deletar</label> -->
-                                                        <!-- <button type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
-                                                        {{ form.DELETE.as_hidden }} -->
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    {% elif forloop.counter == 2 %}
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col">
-                                                        {{form.forma_pagamento.label}}
-                                                    </th>
-                                                    <th scope="col">
-                                                        {{form.expirationDate.label}}
-                                                    </th>
-                                                    <th scope="col">
-                                                        {{ form.days.label}}
-                                                    </th>
-                                                    <th scope="col">
-                                                        {{form.value.label}}
-                                                    </th>
-                                                </tr>
-                                            </thead>
-
-                                            <tbody>
-                                                <tr>
-                                                    <td class="field_type_payment">{{form.forma_pagamento}}</td>
-                                                    <td>
-                                                        <div class="input-group date" data-provide="datepicker">
-                                                            {{form.expirationDate}}
-                                                            <div class="input-group-addon">
-                                                                <span class="glyphicon glyphicon-th"></span>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        {{form.days}}
-                                                    </td>
-                                                    <td>
-                                                        {{form.value}}
-                                                    </td>
-                                                    
-                                                    <!-- <td> -->
-                                                        <!-- <label for="">Deletar</label> -->
-                                                        <!-- <button type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
-                                                        {{ form.DELETE.as_hidden }} -->
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    {% else %}
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col">
-                                                        {{form.forma_pagamento.label}}
-                                                    </th>
-                                                    <th scope="col">
-                                                        {{form.expirationDate.label}}
-                                                    </th>
-                                                    <th scope="col">
-                                                        {{ form.days.label}}
-                                                    </th>
-                                                    <th scope="col">
-                                                        {{form.value.label}}
-                                                    </th>
-                                                </tr>
-                                            </thead>
-
-                                            <tbody>
-                                                <tr>
-                                                    <td class="field_type_payment">{{form.forma_pagamento}}</td>
-                                                    <td>
-                                                        <div class="input-group date" data-provide="datepicker">
-                                                            {{form.expirationDate}}
-                                                            <div class="input-group-addon">
-                                                                <span class="glyphicon glyphicon-th"></span>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        {{form.days}}
-                                                    </td>
-                                                    <td>
-                                                        {{form.value}}
-                                                    </td>
-                                                    
-                                                    <!-- <td> -->
-                                                        <!-- <label for="">Deletar</label> -->
-                                                        <!-- <button type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
-                                                        {{ form.DELETE.as_hidden }} -->
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    {% endif %}
-                                <!-- </div> -->
-                                </div> 
-                            {% endfor %}    
-                                
-           
-                    </div>
-
-                    <template id="empty-payment-method-form">
-                        <div class="form-row" id="del">
-                            <!-- Clona o formulário vazio de payment_method_formset -->
-                            <!-- {{ payment_method_formset.empty_form.as_p }} -->
-                            <table class="table" id="table">
-                                <thead>
-                                    <tr>
-                                        
-                                    </tr>
-                                </thead>
-            
-                                <tbody> 
-                                    <tr>
-                                        <td class="field_type_payment ">{{form_payment_account.empty_form.forma_pagamento }}</td>
-                                        <td style="width: 200px;">
-                                            <div class="input-group date" data-provide="datepicker">
-                                                {{form_payment_account.empty_form.expirationDate}}
-                                                <div class="input-group-addon">
-                                                    <span class="glyphicon glyphicon-th"></span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td style="margin-left: 30px;">{{form_payment_account.empty_form.days}}</td>
-                                        <td>{{form_payment_account.empty_form.value}}</td>
-                                    </tr>
-                                </tbody>
-                              </table>
-                        </div>
-                    </template>
+                   {% include 'parcela.html' %}
                     <!-- <button type="button" onclick="addPaymentMethod()" class="btn btn-outline-success mb-5">Adicionar Forma de Pagamento</button> -->
                     
                     <h6 class="mt-5 mb-3">Observações</h6>
@@ -558,16 +320,16 @@
         </div>
         
         
-        <script type="text/javascript" src="{% static 'js/jquery-3.7.1.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/jquery.mask.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/mask.js' %}"></script> -
+        <!-- <script type="text/javascript" src="{% static 'js/jquery-3.7.1.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery.mask.min.js' %}"></script> -->
+        <!-- <script type="text/javascript" src="{% static 'js/mask.js' %}"></script> - -->
         <script src="{% static 'js/addItem.js' %}" defer></script>
         <script src="{% static 'js/clientSearch.js' %}"></script>  <!-- pesquisa clientes -->
         <script src="{% static 'js/venda_item.js' %}"></script> <!-- pesquisa produtos em vendas-->
-        <script src="{% static 'js/date.js' %}"></script>
+        <!-- <script src="{% static 'js/date.js' %}"></script> -->
         <script src="{% static 'js/error.js' %}"></script>
-        <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
-        <script src="{% static 'js/bootstrap-datepicker.pt-BR.js' %}"></script>
+        <!-- <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap-datepicker.pt-BR.js' %}"></script> -->
         {% endblock %}     
     </main>
 </body>

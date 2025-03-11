@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-    const header = document.getElementById('installment')
+    const header = document.getElementById('installment');
 
     const formContainer = document.getElementById("payment-method-container");
 
@@ -19,6 +19,9 @@ document.addEventListener('DOMContentLoaded', function () {
         let dateInitsemvalor = document.getElementById("id_date_init"); // Data de início das faturas
         let table = document.getElementById('installment') // tabela das parcelas
         
+        console.log(dateInitsemvalor.value)
+        console.log("0")
+        console.log(installmentRange.value)
         if (installmentRange.value <= 0) {
             return 0
         }

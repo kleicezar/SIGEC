@@ -36,6 +36,9 @@
         {% block content %}
         <div class='content'>
             <div class="container-fluid justify-content-center align-items-center">
+                <a href="{% url 'venda_list' %}">
+                    <button class="btn btn-voltar mb-4">Voltar</button>
+                </a>    
                 <h4 class="c-adapted mt-5 mb-5">Editar Venda</h4>
                 <form method="post">
                     {% csrf_token %}
