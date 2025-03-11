@@ -1,15 +1,14 @@
 // TOTAL VALOR DE FORMULARIO DE ITENS;
-const totalValueField = document.getElementById("id_total_value");
+const totalValueField = document.getElementById("id_total_value_service");
 const totalProductsField = document.getElementById("id_service_total");
-const discountTotalField = document.getElementById("id_discount_total");
-const itemsContainer = document.getElementById("itens-container");
+const discountTotalField = document.getElementById("id_discount_total_service");
+const itemsContainerService = document.getElementById("itens-container-service");
 // let serviceOptionsContainer = document.getElementById("options_services-0");
 // let serviceOptionsCell = serviceOptionsContainer.parentElement;
-// serviceOptionsCell.style.display = "none";  
+// serviceOptionsCellstyle.display = "none";  
 const serviceInfoParagraph = document.createElement("p");
 
 document.querySelectorAll(".suggest").forEach(el => el.style.display = "none");
-console.log('oura')
 // Listener para garantir que apenas uma sugestão apareça de cada vez
 document.addEventListener("focusin", (event) => {
     if (event.target.tagName === "INPUT") {
@@ -18,40 +17,45 @@ document.addEventListener("focusin", (event) => {
 });
 
 // Atualiza o total do desconto, valor total e total de produtos ao clicar no botão de deletar
-itemsContainer.addEventListener("click", (event) => {
+itemsContainerService.addEventListener("click", (event) => {
     if (event.target.tagName === 'BUTTON') {
-        const itemForms = itemsContainer.querySelectorAll(".item-form");
+        const itemForms = itemsContainerService.querySelectorAll(".item-form");
         updateTotal(itemForms);
     }
 });
 
-itemsContainer.addEventListener("input", (event) => {
+itemsContainerService.addEventListener("input", (event) => {
     if (event.target.tagName === 'INPUT') {
-
-        const itemForms = itemsContainer.querySelectorAll(".item-form");
+        const itemForms = itemsContainerService.querySelectorAll(".item-form");
         const modifiedInput = event.target;
         const itemForm = modifiedInput.closest(".item-form");
         const itemFormInputs = itemForm.querySelectorAll("input");
-
+        let productInput,discountInput,unitPriceInput,searchProductInput;
+        // let servico_price;
         // Monitorando o campo ID_PRODUCT
-        if (modifiedInput.id.startsWith("idService")) {
-            let tbody = modifiedInput.parentElement.parentElement.parentElement;
-            let td = tbody.querySelector(".tre").querySelector("td");
-            let productsContainer = td.querySelector("div");
-            let productValueInput;
-            let searchProductInput;
-            let priceUnitValueInput;
+        // if (modifiedInput.id.startsWith("idService")) {
+        
+           
 
             itemFormInputs.forEach((input) => {
                 const fieldType = input.id;
                 if (fieldType.endsWith('service')) {
-                    productValueInput = input;
+                    productInput = input;
+                } else if (fieldType.endsWith("discount")){
+                    discountInput = input;
+                    console.log(discountInput.value)
+                } else if (fieldType.endsWith('preco')) {
+                    unitPriceInput = input;
                 } else if (fieldType.startsWith("idService")) {
                     searchProductInput = input;
-                } else if (fieldType.endsWith('preco')) {
-                    priceUnitValueInput = input;
-                }
+                } 
+                
             });
+
+        if (modifiedInput.id.startsWith("idService")){
+            let tbody = modifiedInput.parentElement.parentElement.parentElement;
+            let td = tbody.querySelector(".tre").querySelector("td");
+            let productsContainer = td.querySelector("div");
 
             if (modifiedInput.value.length >= 1) {
                 let optionsIndex = 0;
@@ -83,12 +87,12 @@ itemsContainer.addEventListener("input", (event) => {
 
                                 let titleService = td.querySelector('.title-service');
                                 titleService.insertAdjacentElement('afterend', serviceButton);
-
                                 const button = td.querySelector(".x");
                                 button.addEventListener("click", () => {
-                                    productValueInput.value = servico.id;
+                                    productInput.value = servico.id;
                                     searchProductInput.value = button.textContent;
-                                    priceUnitValueInput.value = servico.price;
+                                    unitPriceInput.value = servico.price;
+                                    servico_price = servico.price;
                                     td.style.display = "none";
                                 });
 
@@ -99,19 +103,33 @@ itemsContainer.addEventListener("input", (event) => {
             } else {
                 td.style.display = "none";
             }
+
+
+           
         }
 
+        if (discountInput && unitPriceInput){
+            if(discountInput.value != 0){
+                unitPriceInput.value = servico_price - (servico_price*((discountInput.value)/100));
+                
+                // unitPriceInput.value = 12;
+            } 
+            else {
+                servico_price = 0;
+                unitPriceInput.value = servico_price - (servico_price*((discountInput.value)/100));
+            }
+        }
+        
         updateTotal(itemForms);
     }
 });
 
 const serviceInputs = document.querySelectorAll('input[type="hidden"][name$="-service"]')
 serviceInputs.forEach(serviceInput=>{
-    console.log('fdddddddd')
     const parentElement = serviceInput.parentElement;
     const textInput = parentElement.querySelector('input[type="text"]');
 
-    if(serviceInput.value!=''){
+    if(serviceInput.value != ''){
         console.log('Fetching service data');
         const query = serviceInput.value;
         console.log(query);
@@ -124,38 +142,47 @@ serviceInputs.forEach(serviceInput=>{
             }
         })
         .then(data=>{
-            console.log(data)
             textInput.value = `${data.servico[0].id} - ${data.servico[0].name_Service}`;
-            console.log('ofdasfdas')
         });
 
     }
     
 })
 function updateTotal(itemForms, numServices = 0, totalPrice = 0, totalValue = 0) {
-    let total = 0;
-    let price = 0;
-    itemForms.forEach(itemForm => {
-        const style = window.getComputedStyle(itemForm);
-        let quantity = 0;
-        let inputs = itemForm.querySelectorAll("input");
+    let totalSemDesconto = 0;
+    let totalComDesconto = 0;
+    // let totalProdutos = 0;
 
-        if (style.display !== 'none') {
-            inputs.forEach(input => {
-                if (input.id.endsWith("quantidade")) {
-                    totalValue += price * Number(quantity);
-                } else if (input.id.endsWith("preco")) {
-                    price = input.value;
-                    totalValue += Number(price);
+    itemForms.forEach(itemForm=>{
+        if(window.getComputedStyle(itemForm).display != 'none'){
+            const inputs = itemForm.querySelectorAll("input");
+
+            let quantidade = 0, precoUnitario = 0, desconto = 0, totalItem = 0;
+
+            inputs.forEach(input=>{
+                if(input.id.endsWith("discount")){
+                    desconto = Number(input.value) || 0;
                 }
-            });
-            total += 1;
-        }
-    });
+                else if(input.id.endsWith("preco")){
+                    precoUnitario = Number(input.value) || 0;               
+                }
 
-    discountTotalField.value = 11;
-    totalProductsField.value = 20;
-    totalValueField.value = totalValue;
+                let subtotalSemDesconto = precoUnitario*quantidade;
+                let subtotalComDesconto = subtotalSemDesconto*(1-desconto/100);
+            
+                totalSemDesconto += subtotalSemDesconto;
+                totalComDesconto += subtotalComDesconto
+            })
+        }
+    })
+
+    let percentualDesconto = totalSemDesconto > 0
+    ? ((1 - totalComDesconto / totalSemDesconto)*100).toFixed(2)
+    : 0;
+
+    discountTotalField.value = percentualDesconto;
+    // totalProductsField.value = totalComDesconto.toFixed(2);
+    totalValueField.value = totalComDesconto.toFixed(2);
 }
 
 const productInputFields = document.querySelectorAll('input[type="hidden"][name$="-product"]');

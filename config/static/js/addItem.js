@@ -27,6 +27,7 @@
 //     formset.appendChild(newForm);
 // }
 const emptyFormTemplate = document.getElementById('empty-form-template');
+const emptyServiceTemplate = document.getElementById("empty-service-template");
 const emptyPaymentMethodTemplate = document.getElementById('empty-payment-method-form');
 // const TOTAL_FORMS = document.getElementById("id_compraitem_set-TOTAL_FORMS")
 const itensIndex  = [0];
@@ -72,8 +73,29 @@ function addItem() {
         
     }
 
+    // if(formCountService){
+    //     const [formCount,newForm] = clone(formCountService,emptyServiceTemplate);
+    //     formCountService.value = parseInt(formCount) + 1;
+    //     input_product = newForm.querySelector(".inputService");
+    //     input_product.id = `idService-${formCount}`;
+
+    //     field_list_products = newForm.querySelector(".v");
+    //     field_list_products.parentElement.style.display = "none";
+    //     field_list_products.id = `options_services-${formCount}`;
+    //     formset.appendChild(newForm);
+        
+    // }
+
+    // Cria ids para identificação da area em que sera requisitado os produtos pelo filtro do campo product
+   
+}
+
+function addItemService(){
+    const formset = document.getElementById('itens-container-service');
+    const formCountService = document.getElementById("id_vendaitemservice_set-TOTAL_FORMS");
+
     if(formCountService){
-        const [formCount,newForm] = clone(formCountService,emptyFormTemplate);
+        const [formCount,newForm] = clone(formCountService,emptyServiceTemplate);
         formCountService.value = parseInt(formCount) + 1;
         input_product = newForm.querySelector(".inputService");
         input_product.id = `idService-${formCount}`;
@@ -82,11 +104,7 @@ function addItem() {
         field_list_products.parentElement.style.display = "none";
         field_list_products.id = `options_services-${formCount}`;
         formset.appendChild(newForm);
-        
     }
-
-    // Cria ids para identificação da area em que sera requisitado os produtos pelo filtro do campo product
-   
 }
 
 function clone(formCountElem,template){
@@ -142,7 +160,6 @@ function removeItem(button){
         deleteButton.value = "on";
         formCount-=1;
         TOTAL_FORMS.value = formCount;
-
         parent_button_6.removeChild(parent_button_5);
     }
     

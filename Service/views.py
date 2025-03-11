@@ -67,7 +67,8 @@ def delete_service(request,pk):
     return render(request,'service_list',context)
 
 def workerService_create(request):
-    ServiceItemFormSet  = inlineformset_factory(VendaService,VendaItemService,form=VendaItemForm,extra=1,can_delete=True)
+    ServiceItemFormSet  = inlineformset_factory(VendaService,VendaItemService,form=VendaItemServiceForm,extra=1,can_delete=True)
+    VendaItemFormSet = inlineformset_factory(VendaService, VendaItem, form=VendaItemForm, extra=1, can_delete=True)
     # PaymentMethodServiceFormSet = inlineformset_factory(VendaService,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=1,can_delete=True)
     PaymentMethodAccountsFormSet = inlineformset_factory(VendaService,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=1,can_delete=True)
 
@@ -76,9 +77,10 @@ def workerService_create(request):
         form_Accounts = AccountsForm(request.POST)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
         service_item_formset = ServiceItemFormSet(request.POST)
+        venda_item_formset = VendaItemFormSet(request.POST)
         # payment_method_formset = PaymentMethodServiceFormSet(request.POST)
 
-        if(service_form.is_valid() and service_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid()):
+        if(service_form.is_valid() and venda_item_formset.is_valid() and service_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid()):
             print('formulários válidos')
             service = service_form.save()
             service_item_formset.instance = service
@@ -142,6 +144,7 @@ def workerService_create(request):
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
         service_form = VendaServiceForm()
         service_item_formset = ServiceItemFormSet(queryset=VendaItemService.objects.none())
+        venda_item_formset = VendaItemFormSet(queryset=VendaItem.objects.none())
         # payment_method_formset = PaymentMethodServiceFormSet(queryset=PaymentMethod_VendaService.objects.none())
 
         context = {
@@ -149,6 +152,7 @@ def workerService_create(request):
             'form_payment_account':PaymentMethod_Accounts_FormSet,
             'service_form':service_form,
             'service_item_formset':service_item_formset,
+            'venda_item_formset':venda_item_formset
             # 'payment_method_formset':payment_method_formset
         }
 

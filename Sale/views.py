@@ -59,6 +59,7 @@ def venda_create(request):
                     quantidade = form.cleaned_data['quantidade']
                     if produto.current_quantity < quantidade:
                         estoque_suficiente = False
+                        messages.warning(request,"Quantidade atual de produtos é menor que a solicitada!",extra_tags='sale_page')
                         form.add_error('quantidade', f'Não há estoque suficiente para o produto {produto.description}. Estoque disponível: {produto.current_quantity}.')
 
             if estoque_suficiente:
@@ -130,11 +131,11 @@ def venda_create(request):
                     return redirect('venda_list')
 
                 if total_payment != venda_form.cleaned_data['total_value']:
-                    messages.warning(request, "Ação cancelada! O valor não foi salvo completamente.")
+                    messages.warning(request, "Ação cancelada! O valor não foi salvo completamente.",extra_tags='sale_page')
                     # return render(request, 'sale/venda_form.html', context)
                 
                 if ((creditLimitAtual != creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual<0)):
-                    messages.warning(request, "Ação cancelada! O valor acumulado dos pagamentos é menor que o limite de Crédito!")
+                    messages.warning(request, "Ação cancelada! O valor acumulado dos pagamentos é menor que o limite de Crédito!",extra_tags='sale_page')
                     
                 # return render(request, 'sale/venda_form.html', context)
                 
@@ -151,6 +152,8 @@ def venda_create(request):
     else:
         # messages.warning(request, "Ação cancelada! O valor não foi salvo completamente.")
         # messages.warning(request, "Ação cancelada! O valor acumulado dos pagamentos é menor que o limite de Crédito!")
+        messages.warning(request,'Opa',extra_tags='sale_page')
+        messages.warning(request,'fadfasdf',extra_tags='oi')
         form_Accounts = AccountsForm()
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
         venda_form = VendaForm()

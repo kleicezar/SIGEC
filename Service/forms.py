@@ -1,10 +1,12 @@
 from django import forms
+
+from purchase.models import Product
 from .models import *
 
 class VendaServiceForm(forms.ModelForm):
     class Meta:
         model = VendaService
-        fields = ['data_da_venda', 'pessoa', 'situacao', 'is_active','observacao_pessoas', 'observacao_sistema', 'total_value', 'service_total', 'discount_total']
+        fields = ['data_da_venda', 'pessoa', 'situacao', 'is_active','observacao_pessoas', 'observacao_sistema', 'total_value','product_total','discount_total','service_total','discount_total_service','total_value_service']
         widgets = {
             'pessoa':forms.TextInput(attrs={
                 'class':'form-control row-xl-5' 
@@ -26,13 +28,25 @@ class VendaServiceForm(forms.ModelForm):
                 'class':'form-control row-5 mb-3 mt-3',
                 'readonly': 'readonly',
             }),
-            'service_total':forms.TextInput(attrs={
+            'product_total':forms.TextInput(attrs={
                 'class':'form-control row-5 mb-3 mt-3',
                 'readonly': 'readonly',
             }),
             'discount_total':forms.TextInput(attrs={
                 'class':'form-control row-5 mb-3 mt-3',
                 'readonly': 'readonly',
+            }),
+            'service_total':forms.TextInput(attrs={
+                'class':'form-control row-5 mb-3 mt-3',
+                'readonly':'readonly'
+            }),
+            'discount_total_service':forms.TextInput(attrs={
+                'class':'form-control row-5 mb-3 mt-3',
+                'readonly':'readonly'
+            }),
+            'total_value_service':forms.TextInput(attrs={
+                'class':'form-control row-5 mb-3 mt-3',
+                'readonly':'readonly'
             })
         }
 
@@ -42,7 +56,7 @@ class VendaServiceForm(forms.ModelForm):
             self.fields['data_da_venda'].initial = self.instance.data_da_venda
             self.fields['data_da_venda'].widget.attrs['readonly'] = True
 
-class VendaItemForm(forms.ModelForm):
+class VendaItemServiceForm(forms.ModelForm):
     class Meta:
         model = VendaItemService
         fields = ['service', 'preco','discount']
@@ -71,7 +85,40 @@ class VendaItemForm(forms.ModelForm):
     #         cleaned_data['total'] = preco_unitario * quantidade
     #     return cleaned_data
     
+class VendaItemForm(forms.ModelForm):
+    class Meta:
+        model = VendaItem
+        fields = ['product', 'quantidade', 'preco_unitario','discount','price_total']
+        widgets = {
+            'product':forms.TextInput(attrs={
+                'class':'form-control row-2  '
+            }),
+            'quantidade':forms.TextInput(attrs={
+                'class':'form-control row mt-3 mb-3'
+            }),
+            'preco_unitario':forms.TextInput(attrs={
+                'class':'form-control row mt-3 mb-3'
+            }),
+            'discount':forms.TextInput(attrs={
+                'class':'form-control row mt-3 mb-3'
+            }),
+            'price_total':forms.TextInput(attrs={
+                'class':'form-control row mt-3 mb-3'
+            })
+        }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['product'].queryset = Product.objects.all()
+        self.fields['price_total'].widget.attrs['readonly'] = True
+
+    def clean(self):
+        cleaned_data = super().clean()
+        preco_unitario = cleaned_data.get('preco_unitario')
+        quantidade = cleaned_data.get('quantidade')
+        if preco_unitario and quantidade:
+            cleaned_data['total'] = preco_unitario * quantidade
+        return cleaned_data
 
 class PaymentMethodVendaForm(forms.ModelForm):
     class Meta:

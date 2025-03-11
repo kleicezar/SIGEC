@@ -92,10 +92,179 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <h6 class="mt-5 mb-3 ">Itens de Venda</h6>
+                    <div id="itens-container">      
+                        {{ venda_item_formset.management_form }}
+                        {% for form in venda_item_formset %}
+                            <div class="item-form">
+                                <!-- {{ form.as_p }} -->
+                                  <table class="table ">
+                                    <thead >
+                                        <tr>
+                                            <th scope="col">
+                                                Produto
+                                            </th>
+                                            <th scope="col">
+                                                Quantidade
+                                            </th>
+                                            <th scope="col">
+                                                Preço Unitário
+                                            </th>
+                                            <th scope="col">
+                                                Desconto(%)
+                                            </th>
+                                            <th scope="col">
+                                                Valor Total
+                                            </th>
+                                            <th scope="col">
+                                                Ações
+                                            </th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody class="itens">
+                                        <tr>
+                                            <td >{{form.product.as_hidden}}
+                                                <input type="text" class="row form-control mb-3 mt-3" id="idProduct-0">
+                                                <div id="products-0" class="mt-3 field-product row">
+                                                </div>
+                                            </td>
+                                            
+                                            <td>
+                                                {{form.quantidade}}    
+                                            </td>
+                                            <td>
+                                                {{form.preco_unitario}}
+                                            </td>
+                                            <td>
+                                                {{form.discount}}
+                                            </td>
+                                            <td>
+                                                {{form.price_total}}
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removeItem(this)" >Deletar</button>
+                                                {{form.DELETE.as_hidden}}
+                                            </td>
+                                        </tr>
+                                        <tr class="tre">
+                                            <td class="z-2 position-absolute suggest">
+                                                <div id="options_products-0" class="row form-control z-1 field-product v">
+                                                    <p class="text-center  title-product">CODIGO - DESC</p>
+
+            
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                  </table>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <template id="empty-form-template">
+                        <div class="item-form">
+                            <!-- {{ venda_item_formset.empty_form.as_p }} -->
+                            <table class="table">
+                                <thead>
+                                    <tr style="display: none;">
+                                        <th scope="col">
+                                            Produto
+                                        </th>
+                                        <th scope="col">
+                                            Quantidade
+                                        </th>
+                                        <th scope="col">
+                                            Preço Unitário
+                                        </th>
+                                        <th scope="col">
+                                            Desconto(%)
+                                        </th>
+                                        <th scope="col">
+                                            Valor Total
+                                        </th>
+                                        <th scope="col">
+                                            Ações
+                                        </th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr >
+                                        <td>{{ venda_item_formset.empty_form.product.as_hidden }}
+                                            <input type="text" class="row form-control inputProduct mb-3 mt-3">
+                                            <div class="mt-3 field-product row">
+                                    
+                                            </div>
+                                        </td>
+                                        
+                                        <td>
+                                            {{venda_item_formset.empty_form.quantidade}}
+                                        </td>
+                                
+                                        <td>
+                                            {{venda_item_formset.empty_form.preco_unitario}}
+                                        </td>
+
+                                        <td>
+                                            {{venda_item_formset.empty_form.discount}}
+                                        <td>
+                                            {{venda_item_formset.empty_form.price_total}}
+                                        <td>
+                                            <button type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removeItem(this)">Deletar</button>
+                                            {{venda_item_formset.empty_form.DELETE.as_hidden}}</td>
+                                    </tr>
+                                    <tr class="tre">
+                                        <td class="z-2 position-absolute suggest ">
+                                            <div id="" class="row form-control z-1 v">
+                                                <p class="text-center title-product">CODIGO - DESC</p>
+
+        
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                              </table>
+                        </div>
+                    </template>
                     
+                     <button id="item" type="button" onclick="addItem()" class="btn btn-outline-success mb-5 z-2">Adicionar Item</button>
+
+                    <table class="table mt-3">
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    Total de Produtos
+                                </th>
+                                <th scope="col">
+                                    Valor de Desconto
+                                </th>
+                                <th scope="col">
+                                    Valor Total
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <!-- <input type="text" id="id_all_total_products" readonly> -->
+                                    {{service_form.product_total}}
+                                </td>
+                                <td>
+                                    <!-- <input type="text" id="id_all_total_discount" readonly> -->
+                                    {{service_form.discount_total}}
+                                </td>
+                                <td>
+                                    <!-- <input type="text" id="id_all_total_value"readonly> -->
+                                    {{service_form.total_value}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <!-- Itens de Venda -->
                     <h6 class="mt-5 mb-3">Itens de Venda</h6>
-                    <div id="itens-container">      
+                    <div id="itens-container-service">      
                         {{ service_item_formset.management_form }}
                         {% for form in service_item_formset %}
                             <div class="item-form">
@@ -154,7 +323,7 @@
                             </div>
                         {% endfor %}
                     </div>
-                    <template id="empty-form-template">
+                    <template id="empty-service-template">
                         <div class="item-form">
                             <!-- {{ service_item_formset.empty_form.as_p }} -->
                             <table class="table">
@@ -197,14 +366,14 @@
                               </table>
                         </div>
                     </template>
-                    <button id="item" type="button" onclick="addItem()" class="btn btn-outline-success mb-5 z-2">Adicionar Item</button>
+
+                   
+                    <button id="item" type="button" onclick="addItemService()" class="btn btn-outline-success mb-5 z-2">Adicionar Item</button>
                 
+                  
                     <table class="table mt-3">
                         <thead>
                             <tr>
-                                <th scope="col">
-                                    Total de Produtos
-                                </th>
                                 <th scope="col">
                                     Valor de Desconto
                                 </th>
@@ -216,22 +385,18 @@
 
                         <tbody>
                             <tr>
-                                <td>
-                                    <!-- <input type="text" id="id_all_total_products" readonly> -->
-                                    {{service_form.service_total}}
-                                </td>
+                            
                                 <td>
                                     <!-- <input type="text" id="id_all_total_discount" readonly> -->
-                                    {{service_form.discount_total}}
+                                    {{service_form.discount_total_service}}
                                 </td>
                                 <td>
                                     <!-- <input type="text" id="id_all_total_value"readonly> -->
-                                    {{service_form.total_value}}
+                                    {{service_form.total_value_service}}
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-
                 
 
                     <!-- Formas de Pagamento -->
@@ -377,7 +542,7 @@
         <script type="text/javascript" src="{% static 'js/jquery.mask.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/mask.js' %}"></script> -
         <script type="text/javascript" src="{% static 'js/interest.js' %}"></script>
-
+        <script src="{% static 'js/clientSearch.js' %}"></script> 
         <script src="{% static 'js/addItem.js' %}" defer></script>
         <script src="{% static 'js/order.js' %}"></script>  <!-- pesquisa clientes -->
         <script src="{% static 'js/venda_item.js' %}"></script> <!-- pesquisa produtos em vendas-->

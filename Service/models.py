@@ -8,6 +8,7 @@ class Service(models.Model):
     value_Service = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor do Serviço", blank=True, null=True)
     def __str__(self):
         return self.name_Service
+    
 class VendaService(models.Model):
     pessoa = models.ForeignKey(Person,on_delete=models.CASCADE,verbose_name="Pessoa",related_name="vendaService")
     data_da_venda = models.DateTimeField(verbose_name="Data da Venda" )
@@ -16,14 +17,26 @@ class VendaService(models.Model):
     situacao = models.ForeignKey(Situation,on_delete=models.CASCADE,verbose_name="Situação",related_name="vendaService",blank=True,null=True)
     is_active = models.BooleanField(default=True, verbose_name='Está Ativo') 
     total_value = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Total", blank=True, null=True)
-    service_total = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Total de Produtos")
-    discount_total = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Total de Descontos")
+    product_total = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Total de Produtos")
+    discount_total = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Total de Descontos de Produtos")
+
+    service_total = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Total de Servicos")
+    discount_total_service = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Total de Descontos")
+    total_value_service = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Total", blank=True, null=True)
 
 class VendaItemService(models.Model):
     venda = models.ForeignKey(VendaService, on_delete=models.CASCADE, verbose_name="vendaService")
-    service = models.ForeignKey(Service, on_delete=models.CASCADE, verbose_name="Produto")
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, verbose_name="Servico")
     preco = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Preço Unitário")
     discount = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Desconto(%)")
+
+class VendaItem(models.Model):
+    venda = models.ForeignKey(VendaService,on_delete=models.CASCADE, verbose_name="vendaProduct")
+    product = models.ForeignKey(Service,on_delete=models.CASCADE,verbose_name="Produto")
+    quantidade = models.PositiveIntegerField(verbose_name="Quantidade do Produto")
+    preco_unitario = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Preço Unitário")
+    discount = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Desconto(%)")
+    price_total = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Valor Total")
 
 class PaymentMethod_VendaService(models.Model):
     venda = models.ForeignKey(VendaService,on_delete=models.SET_NULL,null=True,verbose_name='id_vendaService')

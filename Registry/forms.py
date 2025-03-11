@@ -11,7 +11,7 @@ class AddressForm(forms.ModelForm):
                 'placeholder':'Rua dos Operários'
             }),
             'number':forms.NumberInput(attrs={
-                'class':'form-control ',
+                'class':'form-control w-number ',
                 'placeholder':'0'
             }),
             'cep':forms.TextInput(attrs={

@@ -35,8 +35,8 @@ itemsContainer.addEventListener("input", (event) => {
         const modifiedInput = event.target;
         const itemForm = modifiedInput.closest(".item-form");
         const inputs = itemForm.querySelectorAll("input");
-        let productInput, quantityInput, discountInput, totalPriceInput, unitPriceInput, searchProductInput;
 
+        let productInput, quantityInput, discountInput, totalPriceInput, unitPriceInput, searchProductInput;
         inputs.forEach(input => {
             const fieldType = input.id;
             if (fieldType.endsWith('product') || fieldType.endsWith('produto') || fieldType.endsWith('service')) {
@@ -106,7 +106,6 @@ itemsContainer.addEventListener("input", (event) => {
     }
 });
 totalValue = document.getElementById("id_totalValue");
-console.log(totalValue)
 function updateTotals(itemForms) {
     let totalSemDesconto = 0;
     let totalComDesconto = 0;
@@ -137,6 +136,7 @@ function updateTotals(itemForms) {
             totalProdutos += quantidade;
         }
         totalValue.value = totalComDesconto.toFixed(2);
+        console.log("testando")
         console.log(totalValue)
     });
 

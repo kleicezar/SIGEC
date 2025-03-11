@@ -44,6 +44,7 @@
                     <!-- {{ venda_form.as_p }} -->
                     {% if messages %}
                         {% for message in messages %}
+                            {% if "sale_page" in message.tags %}
                             <div class="modal"> 
                                 <header class="mHeader">
                                     <p>Falha ao salvar Venda</p>
@@ -55,10 +56,11 @@
 
                                 </div>
                         
-                            <footer>
-                                <button id="mBtn" class="mButton" type="button" onclick="closeModal(this)">Fechar</button>
-                            </footer>
+                                <footer>
+                                    <button id="mBtn" class="mButton" type="button" onclick="closeModal(this)">Fechar</button>
+                                </footer>
                             </div>
+                            {% endif %}
                         {% endfor %}
                     {% endif %}
 
