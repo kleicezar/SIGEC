@@ -109,26 +109,6 @@
                     <h6 class="mt-5 mb-3">Itens de Venda</h6>
                     <div id="itens-container" class="itens-container-update" style="">
                         {{ venda_item_formset.management_form }}
-                        <!-- <table class="table-update" style=" width: 100%;">
-                            <thead>
-                                <tr>
-                                    <th scope="col">
-                                        Produto
-                                    </th>
-                                    <th scope="col">Quantidade</th>
-                                    <th scope="col">Preço Unitário</th>
-                                    <th scope="col">Desconto(%)</th>
-                                    <th scope="col">Valor Total</th>
-                                    <th scope="col">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    
-                                </tr>
-                            </tbody>
-                        </table> -->
-                        
                         
                             {% for form in venda_item_formset %}
                             <div class="item-form">
@@ -142,6 +122,7 @@
                                                 <th scope="col">Preço Unitário</th>
                                                 <th scope="col">Desconto(%)</th>
                                                 <th scope="col">Valor Total</th>
+                                                <th scope="col">Status</th>
                                                 <th scope="col">Ações</th>
                                             </tr>
                                         </thead>
@@ -169,6 +150,9 @@
                                                 <td>
                                                     <!-- Campo Valor Total (readonly) -->
                                                     {{ form.price_total }}
+                                                </td>
+                                                <td>
+                                                    {{ form.status }}
                                                 </td>
                                                 <td>
                                                     <!-- Checkbox para exclusão -->
@@ -203,6 +187,9 @@
                                                 Valor Total
                                             </th>
                                             <th scope="col">
+                                                Status
+                                            </th>
+                                            <th scope="col">
                                                 Ações
                                             </th>
                                         </tr>
@@ -231,6 +218,9 @@
                                             <td>
                                                 <!-- Campo Valor Total (readonly) -->
                                                 {{ form.price_total }}
+                                            </td>
+                                            <td>
+                                                {{ form.status }}
                                             </td>
                                             <td>
                                                 <!-- Checkbox para exclusão -->
@@ -334,6 +324,9 @@
                                             Valor Total
                                         </th>
                                         <th scope="col">
+                                            Status
+                                        </th>
+                                        <th scope="col">
                                             Ações
                                         </th>
                                     </tr>
@@ -358,11 +351,17 @@
 
                                         <td>
                                             {{venda_item_formset.empty_form.discount}}
+                                        </td>
                                         <td>
                                             {{venda_item_formset.empty_form.price_total}}
+                                        </td>
+                                        <td>
+                                            {{venda_item_formset.empty_form.status}}
+                                        </td>
                                         <td>
                                             <button type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removeItem(this)">Deletar</button>
-                                            {{venda_item_formset.empty_form.DELETE.as_hidden}}</td>
+                                            {{venda_item_formset.empty_form.DELETE.as_hidden}}
+                                        </td>
                                     </tr>
                                     <tr class="tre">
                                         <td class="z-2 position-absolute suggest ">

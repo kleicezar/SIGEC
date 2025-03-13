@@ -1,6 +1,7 @@
 from django.db import models
 from Registry.models import *
 from config.models import Situation, PaymentMethod
+from purchase.models import Product
 # Create your models here.
 class Service(models.Model):
     name_Service = models.CharField('Nome do Serviço',max_length=500)
@@ -32,12 +33,13 @@ class VendaItemService(models.Model):
 
 class VendaItem(models.Model):
     venda = models.ForeignKey(VendaService,on_delete=models.CASCADE, verbose_name="vendaProduct")
-    product = models.ForeignKey(Service,on_delete=models.CASCADE,verbose_name="Produto")
+    product = models.ForeignKey(Product,on_delete=models.CASCADE,verbose_name="VendaServiceProduto",related_name='VendaServiceProduto')
     quantidade = models.PositiveIntegerField(verbose_name="Quantidade do Produto")
     preco_unitario = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Preço Unitário")
     discount = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Desconto(%)")
     price_total = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Valor Total")
-
+    status = models.CharField(max_length=50,default='Pendente')
+    
 class PaymentMethod_VendaService(models.Model):
     venda = models.ForeignKey(VendaService,on_delete=models.SET_NULL,null=True,verbose_name='id_vendaService')
     forma_pagamento = models.ForeignKey(PaymentMethod,on_delete=models.SET_NULL, null=True, verbose_name='id_forma_de_pagamento')

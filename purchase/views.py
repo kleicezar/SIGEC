@@ -6,6 +6,10 @@ from django.forms import inlineformset_factory
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import authenticate, login, logout
+
+from Sale.models import Venda, VendaItem
+
+from Service.models import VendaItem as VendaItemWS
 from .forms import *
 from .models import *
 from django.db.models import Q
@@ -17,6 +21,41 @@ from finance.forms import PaymentMethodAccountsForm, AccountsForm
 
 ### PURCHASE
 
+@login_required
+def productsWithStatus_list(request):
+    vendasItens = VendaItem.objects.all()
+    workOrders = VendaItemWS.objects.all()
+    status_options = ["Pendente", "Entregue"]
+
+    all_products_with_status = [
+        {'idVenda': vendaItem.venda.id,'idProduto':vendaItem.product.id,'idVendaItem':vendaItem.id,'descricao': vendaItem.product.description, 'quantidade': vendaItem.quantidade, 'status': vendaItem.status} for vendaItem in vendasItens
+    ] + [
+        {'idVenda': workOrder.venda.id, 'idProduto':workOrder.product.id,'idVendaItem':workOrder.id,'descricao': workOrder.product.description, 'quantidade': workOrder.quantidade,'status':workOrder.status} for workOrder in workOrders
+    ]
+
+    return render(request, 'purchase/manageDeliveries_list.html', {
+        'all_products_with_status': all_products_with_status,
+        "status_options": status_options
+
+    })
+
+@login_required
+def update_product_quantity(request,pk):
+    if request.method == "POST":
+        id_venda = request.POST.get("id_venda")
+
+        vendaitem = get_object_or_404(VendaItem,pk=id_venda)
+        vendaitem.status = "Entregue"
+        vendaitem.save()
+        product = get_object_or_404(Product,pk=pk)
+        product.current_quantity-= vendaitem.quantidade
+
+        if product.current_quantity >= vendaitem.quantidade:
+            product.save()
+        else:
+            print("QUANTIDADE DE PRODUTOS MENOR QUE A SOLICITADA")
+        
+    return redirect('manageProductDelivery')
 @login_required
 def compras_list(request):
     compras = Compra.objects.all()

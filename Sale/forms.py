@@ -42,32 +42,35 @@ class VendaForm(forms.ModelForm):
             self.fields['data_da_venda'].initial = self.instance.data_da_venda
             self.fields['data_da_venda'].widget.attrs['readonly'] = True
 
+
 class VendaItemForm(forms.ModelForm):
+    
+    STATUS_CHOICES = [
+        ('NE', 'Pendente'),
+        ('E','ENTREGUE')
+    ]
+
+    status = forms.ChoiceField(
+        choices=STATUS_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control mt-3 row-5 mb-3', 'disabled': True}),
+        initial='NE',
+        required=False  
+    )
+
     class Meta:
         model = VendaItem
-        fields = ['product', 'quantidade', 'preco_unitario','discount','price_total']
+        fields = ['product', 'quantidade', 'preco_unitario', 'discount', 'price_total', 'status']
         widgets = {
-            'product':forms.TextInput(attrs={
-                'class':'form-control row-2  '
-            }),
-            'quantidade':forms.TextInput(attrs={
-                'class':'form-control row mt-3 mb-3'
-            }),
-            'preco_unitario':forms.TextInput(attrs={
-                'class':'form-control row mt-3 mb-3'
-            }),
-            'discount':forms.TextInput(attrs={
-                'class':'form-control row mt-3 mb-3'
-            }),
-            'price_total':forms.TextInput(attrs={
-                'class':'form-control row mt-3 mb-3'
-            })
+            'product': forms.TextInput(attrs={'class': 'form-control row-2'}),
+            'quantidade': forms.TextInput(attrs={'class': 'form-control row mt-3 mb-3'}),
+            'preco_unitario': forms.TextInput(attrs={'class': 'form-control row mt-3 mb-3'}),
+            'discount': forms.TextInput(attrs={'class': 'form-control row mt-3 mb-3'}),
+            'price_total': forms.TextInput(attrs={'class': 'form-control row mt-3 mb-3', 'readonly': True}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['product'].queryset = Product.objects.all()
-        self.fields['price_total'].widget.attrs['readonly'] = True
 
     def clean(self):
         cleaned_data = super().clean()

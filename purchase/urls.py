@@ -14,4 +14,7 @@ urlpatterns = [
     path('compras/delete/<int:pk>/', compras_delete, name='compras_delete'),
     path('compras/<int:compras_pk>/item/create/', compras_item_create, name='compras_item_create'),
     path('get_product_id/',get_product_id,name='buscar_idprodutos'),
+
+    path('mng/manage_product_delivery',productsWithStatus_list,name='manageProductDelivery'),
+    path('update_product_quantity/<int:pk>',update_product_quantity,name="update_product_quantity")
 ]

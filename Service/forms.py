@@ -4,6 +4,8 @@ from purchase.models import Product
 from .models import *
 
 class VendaServiceForm(forms.ModelForm):
+
+    
     class Meta:
         model = VendaService
         fields = ['data_da_venda', 'pessoa', 'situacao', 'is_active','observacao_pessoas', 'observacao_sistema', 'total_value','product_total','discount_total','service_total','discount_total_service','total_value_service']
@@ -57,13 +59,14 @@ class VendaServiceForm(forms.ModelForm):
             self.fields['data_da_venda'].widget.attrs['readonly'] = True
 
 class VendaItemServiceForm(forms.ModelForm):
+    
     class Meta:
         model = VendaItemService
         fields = ['service', 'preco','discount']
         widgets = {
-                'service':forms.TextInput(attrs={
-                    'class':'form-control row-2 mb-3 mt-3'
-                }),
+            'service':forms.TextInput(attrs={
+                'class':'form-control row-2 mb-3 mt-3'
+            }),
             'preco':forms.TextInput(attrs={
                 'class':'form-control row mb-3 mt-3'
             }),
@@ -86,9 +89,20 @@ class VendaItemServiceForm(forms.ModelForm):
     #     return cleaned_data
     
 class VendaItemForm(forms.ModelForm):
+    STATUS_CHOICES = [
+        ('NE', 'Pendente'),
+        ('E','ENTREGUE')
+    ]
+
+    status = forms.ChoiceField(
+        choices=STATUS_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control mt-3 row-5 mb-3', 'disabled': True}),
+        initial='NE',
+        required=False
+    )
     class Meta:
         model = VendaItem
-        fields = ['product', 'quantidade', 'preco_unitario','discount','price_total']
+        fields = ['product', 'quantidade', 'preco_unitario','discount','price_total','status']
         widgets = {
             'product':forms.TextInput(attrs={
                 'class':'form-control row-2  '

@@ -1,6 +1,7 @@
 // TOTAL VALOR DE FORMULARIO DE ITENS;
 const totalValueField = document.getElementById("id_total_value_service");
 const totalProductsField = document.getElementById("id_service_total");
+totalProductsField.value = 5;
 const discountTotalField = document.getElementById("id_discount_total_service");
 const itemsContainerService = document.getElementById("itens-container-service");
 // let serviceOptionsContainer = document.getElementById("options_services-0");

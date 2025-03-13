@@ -1,0 +1,71 @@
+{% extends 'login/menu.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>  
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block css %}
+        <link rel="stylesheet" href="{% static 'css/Table.css' %}">
+        {% endblock  %}
+        <title>Formulário</title>
+    </head>
+    <body>
+        {% block content %}
+        <div class='content'>
+            <div class="container">
+                <div class="form-group">
+                    <form method="GET" action="{% url 'Client' %}">
+                        {% csrf_token %}
+                        <div>
+                            {{ form.as_p }}
+                            <!-- <button type="submit">Pesquisar</button> -->
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Descrição</th>
+                        <th>Quantidade</th>
+                        <th style="display: none;">IDPRODUTO</th>
+                        <th>Status</th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in all_products_with_status %}
+                    <tr>
+                        <td>{{ product.idVenda }}</td>
+                        <td>{{ product.descricao }}</td>
+                        <td>{{ product.quantidade }}</td>
+                        <td style="display: none;" id="idProduct">{{product.idProduto}}</td>
+                        <td>
+                            <form action="{% url 'update_product_quantity' pk=product.idProduto %}" method="POST" class="delete-form">
+
+                                {% csrf_token %}
+                                <input type="hidden" name="id_venda" value="{{ product.id }}">
+                                <select class="status-select" data-venda-id="{{ product.idVendaItem }}">
+                                    {% for status in status_options %}
+                                        <option value="{{ status }}" {% if status == product.status %}selected{% endif %}>{{ status }}</option>
+                                    {% endfor %}
+                                </select>
+                                  
+                            </form>
+                            
+                        </td>
+                        
+                       
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div> 
+        <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+        <script  src="{% static 'js/statusProducts.js' %}"></script>
+        {% endblock %}
+        
+    </body>
+</html>

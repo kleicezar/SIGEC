@@ -48,6 +48,9 @@ function addItem() {
         // field_product.id = `products-${formCount}`;
         input_product.id = `idProduct-${formCount}`
 
+        const statusNewForm = newForm.querySelector("select");
+        statusNewForm.value = "NE";
+
         field_list_products = newForm.querySelector(".v");
         field_list_products.parentElement.style.display = "none";
         field_list_products.id = `options_products-${formCount}`;
@@ -68,6 +71,7 @@ function addItem() {
 
         field_list_products = newForm.querySelector(".v");
         field_list_products.parentElement.style.display = "none";
+       
         field_list_products.id = `options_products-${formCount}`;
         formset.appendChild(newForm)
         
@@ -103,6 +107,7 @@ function addItemService(){
         field_list_products = newForm.querySelector(".v");
         field_list_products.parentElement.style.display = "none";
         field_list_products.id = `options_services-${formCount}`;
+
         formset.appendChild(newForm);
     }
 }
@@ -171,7 +176,7 @@ function updateId(deleteButton, itensForms) {
     if (!match) return; // Se não encontrar número no ID do botão, sai da função
 
     let number = parseInt(match[1]); // Número extraído do ID
-    let allInputs = itensForms.querySelectorAll("input");
+    let allInputs = itensForms.querySelectorAll("input,select");
     let allVs = itensForms.querySelectorAll(".v");
 
     // Atualiza IDs dos inputs

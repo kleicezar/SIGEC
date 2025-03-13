@@ -124,7 +124,6 @@
                         {{ venda_item_formset.management_form }}
                         {% for form in venda_item_formset %}
                             <div class="item-form">
-                                <!-- {{ form.as_p }} -->
                                   <table class="table ">
                                     <thead >
                                         <tr>
@@ -143,6 +142,7 @@
                                             <th scope="col">
                                                 Valor Total
                                             </th>
+                                            <th>Status</th>
                                             <th scope="col">
                                                 Ações
                                             </th>
@@ -168,6 +168,9 @@
                                             </td>
                                             <td>
                                                 {{form.price_total}}
+                                            </td>
+                                            <td>
+                                                {{form.status}}
                                             </td>
                                             <td>
                                                 <button type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removeItem(this)" >Deletar</button>
@@ -210,6 +213,9 @@
                                             Valor Total
                                         </th>
                                         <th scope="col">
+                                            Status
+                                        </th>
+                                        <th scope="col">
                                             Ações
                                         </th>
                                     </tr>
@@ -234,11 +240,18 @@
 
                                         <td>
                                             {{venda_item_formset.empty_form.discount}}
+                                        </td>
                                         <td>
                                             {{venda_item_formset.empty_form.price_total}}
+                                        </td>
+
+                                        <td>
+                                            {{venda_item_formset.empty_form.status}}
+                                        </td>
                                         <td>
                                             <button type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removeItem(this)">Deletar</button>
-                                            {{venda_item_formset.empty_form.DELETE.as_hidden}}</td>
+                                            {{venda_item_formset.empty_form.DELETE.as_hidden}}
+                                        </td>
                                     </tr>
                                     <tr class="tre">
                                         <td class="z-2 position-absolute suggest ">

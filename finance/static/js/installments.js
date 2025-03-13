@@ -13,14 +13,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const installments = document.getElementById('generate')//gerador de parcelas
     installments.addEventListener('click', () => {
         let value_initial = document.getElementById("id_paymentmethod_accounts_set-INITIAL_FORMS");
+        let payment_method_container_update = document.getElementById("payment-method-container-update");
         let TOTAL_FORMS = document.getElementById("id_paymentmethod_accounts_set-TOTAL_FORMS");//TOTAL FORMS
         let days_installment_Range = document.getElementById('installment_Range')// intervalo em dias entre parcelas
         let installmentRange = document.getElementById('id_numberOfInstallments')//numero de parcela
         let dateInitsemvalor = document.getElementById("id_date_init"); // Data de início das faturas
         let table = document.getElementById('installment') // tabela das parcelas
         
+        if (payment_method_container_update){
+            payment_method_container_update.style.display = "none";
+        }
+
         console.log(dateInitsemvalor.value)
         console.log("0")
+        console.log(value_initial)
         console.log(installmentRange.value)
         if (installmentRange.value <= 0) {
             return 0
