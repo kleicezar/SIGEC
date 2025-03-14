@@ -136,8 +136,6 @@ function updateTotals(itemForms) {
             totalProdutos += quantidade;
         }
         totalValue.value = totalComDesconto.toFixed(2);
-        console.log("testando")
-        console.log(totalValue)
     });
 
     let percentualDesconto = totalSemDesconto > 0

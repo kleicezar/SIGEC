@@ -1,7 +1,7 @@
 // TOTAL VALOR DE FORMULARIO DE ITENS;
 const totalValueField = document.getElementById("id_total_value_service");
-const totalProductsField = document.getElementById("id_service_total");
-totalProductsField.value = 5;
+const totalServicesField = document.getElementById("id_service_total");
+// totalServicesField.value = 5;
 const discountTotalField = document.getElementById("id_discount_total_service");
 const itemsContainerService = document.getElementById("itens-container-service");
 // let serviceOptionsContainer = document.getElementById("options_services-0");
@@ -149,10 +149,10 @@ serviceInputs.forEach(serviceInput=>{
     }
     
 })
-function updateTotal(itemForms, numServices = 0, totalPrice = 0, totalValue = 0) {
+function updateTotal(itemForms) {
     let totalSemDesconto = 0;
     let totalComDesconto = 0;
-    // let totalProdutos = 0;
+    let totalServicos = 0;
 
     itemForms.forEach(itemForm=>{
         if(window.getComputedStyle(itemForm).display != 'none'){
@@ -161,20 +161,26 @@ function updateTotal(itemForms, numServices = 0, totalPrice = 0, totalValue = 0)
             let quantidade = 0, precoUnitario = 0, desconto = 0, totalItem = 0;
 
             inputs.forEach(input=>{
+
                 if(input.id.endsWith("discount")){
                     desconto = Number(input.value) || 0;
                 }
                 else if(input.id.endsWith("preco")){
                     precoUnitario = Number(input.value) || 0;               
                 }
-
-                let subtotalSemDesconto = precoUnitario*quantidade;
-                let subtotalComDesconto = subtotalSemDesconto*(1-desconto/100);
-            
-                totalSemDesconto += subtotalSemDesconto;
-                totalComDesconto += subtotalComDesconto
+                
             })
+           
+       
+            let subtotalComDesconto = precoUnitario;
+            let subtotalSemDesconto = precoUnitario + precoUnitario*(desconto/100);
+            console.log('------')
+            console.log(subtotalSemDesconto);
+
+            totalSemDesconto += subtotalSemDesconto;
+            totalComDesconto += subtotalComDesconto
         }
+        totalServicos+=1;
     })
 
     let percentualDesconto = totalSemDesconto > 0
@@ -182,7 +188,7 @@ function updateTotal(itemForms, numServices = 0, totalPrice = 0, totalValue = 0)
     : 0;
 
     discountTotalField.value = percentualDesconto;
-    // totalProductsField.value = totalComDesconto.toFixed(2);
+    totalServicesField.value = totalServicos;
     totalValueField.value = totalComDesconto.toFixed(2);
 }
 

@@ -72,28 +72,28 @@
                 <div class="row">
                     {% if vendas.has_previous %}
                     <a href="{% url 'venda_list' %}?page={{ vendas.previous_page_number }}&query={{ query }}" class="col ">
-                    <button type="button" class="btn" style="border: 2px solid #0b0433;color: #0b0433;">
-                        Anterior
-                    </button>
+                    <!-- <button type="button" class="btn" style="border: 2px solid #0b0433;color: #0b0433;"> -->
+                        <span aria-hidden="true" style="font-size: 32px;">&laquo;</span>
+                    <!-- </button> -->
                     </a>
                     {% else %}
                     <a class="col">
-                        <button type="button" class="btn" style="border: 2px solid #0b0433;color: #0b0433;" disabled>
-                            Anterior
-                        </button>
+                        <!-- <button type="button" class="btn" style="border: 2px solid #0b0433;color: #0b0433;" disabled> -->
+                            <span aria-hidden="true" aria-disabled="true" style="font-size: 32px;color: gray; pointer-events: none">&laquo;</span>
+                        <!-- </button> -->
                     </a>
                     {% endif %}
                     {% if vendas.has_next %}
                     <a href="{% url 'venda_list' %}?page={{ vendas.next_page_number }}&query={{ query  }}" class="col ">
-                        <button type="button" class="btn" style="border: 2px solid #0b0433;color: #0b0433;">
-                            Próximo
-                        </button>
+                        <!-- <button type="button" class="btn" style="border: 2px solid #0b0433;color: #0b0433;"> -->
+                            <span aria-hidden="true" style="font-size: 32px;">&raquo;</span>
+                        <!-- </button> -->
                     </a>
                     {% else %}
                     <a class="col">
-                        <button type="button" class="btn" style="border: 2px solid #0b0433;color: #0b0433;" disabled>
-                            Próximo
-                        </button>
+                        <!-- <button type="button" class="btn" style="border: 2px solid #0b0433;color: #0b0433;" disabled> -->
+                            <span aria-hidden="true" aria-disabled="true" style="font-size: 32px;color: gray; pointer-events: none">&raquo;</span>
+                        <!-- </button> -->
                     </a>
                     {% endif %}
                 </div>
