@@ -4,14 +4,41 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const formContainer = document.getElementById("payment-method-container");
 
-    
+    const paymentValueInitial = document.getElementById("id_paymentmethod_accounts_set-TOTAL_FORMS");
+    let dadosAnteriores = false;
+    if (paymentValueInitial == 0){
+        header.style = 'display:none;'
+    }
+    else{
+        dadosAnteriores = true;
+    }
     //escondendo campos de template base e opção de remoção
-    header.style = 'display:none;'
+    // header.style = 'display:none;'
     
+   let ids_payments = []
+      
 
     let click = 0 // variavel para verificar quantidade de cliques
     const installments = document.getElementById('generate')//gerador de parcelas
     installments.addEventListener('click', () => {
+        if (dadosAnteriores){
+            
+            const elements = document.querySelectorAll('[name^="paymentmethod_accounts_set-"][name$="-id"]');
+            elements.forEach(element => {
+                console.log(element);  // Exibe o elemento no console
+                console.log(element.value);
+                // Exibe o valor do input, se for um campo de formulário
+                ids_payments.push(Number(element.value));
+                console.log('000')
+                console.log(ids_payments)
+            });
+
+            while (formContainer.firstChild) {
+                formContainer.removeChild(formContainer.firstChild);
+            }
+            dadosAnteriores = false;
+        }
+
         let value_initial = document.getElementById("id_paymentmethod_accounts_set-INITIAL_FORMS");
         let payment_method_container_update = document.getElementById("payment-method-container-update");
         let TOTAL_FORMS = document.getElementById("id_paymentmethod_accounts_set-TOTAL_FORMS");//TOTAL FORMS
@@ -64,17 +91,20 @@ document.addEventListener('DOMContentLoaded', function () {
         const valueOfinstallments = compair(numberOfInstallments, totalValue);
         const template = document.getElementById('empty-payment-method-form')
         
-        
+        cont=0;
         for (let index = 0; index < installmentRange.value; index++) {      
             let parcela = document.createElement('tr')                  // linha
             parcela.id = index + 1
             let row_payment_Method = document.createElement('td')       // coluna
             let row_expirationDate = document.createElement('td')       // coluna
             let row_days = document.createElement('td')                 // coluna
-            let row_value = document.createElement('td')                // coluna     
+            let row_value = document.createElement('td')      
+            let row_id = document.createElement("td");          // coluna     
             let row_DELETE = document.createElement('td')                // coluna     
             let clone = template.content.cloneNode(true);               // Clonando o template 
-
+            
+            
+            let counter = 0;
             clone.querySelectorAll("input, select").forEach(async (input) => { // interando sobre o formulario
                 input.name = input.name.replace("0", index  );
                 input.id = input.id.replace("0", index  );
@@ -101,12 +131,26 @@ document.addEventListener('DOMContentLoaded', function () {
                     //CALCULO DE DIAS
                 }else if (input.name.includes("-days")) {
                         // Define os dias entre as parcelas
-                        input.value = days_installment_Range.value*(index + 1 -value_initial.value);
+                        input.value = days_installment_Range.value*(index + 1 -counter);
+                        counter+=1;
                         // console.log(typeof(days_installment_Range))
                         // console.log(days_installment_Range.value*(index + 1 -value_initial.value))
                         row_days.appendChild(input)
                         parcela.appendChild(row_days)
                             
+                }
+                else if (input.name.includes("-id")){
+                    row_id.appendChild(input);
+                    parcela.appendChild(row_id);
+                    
+                    if (ids_payments.includes(Number(input.value)+ index)){
+                        input.value = Number(input.value) + index ;
+                    }
+                    else{
+                        input.value = "";
+                    }
+                    
+                    
                 }
                   await formContainer.appendChild(parcela);
             })

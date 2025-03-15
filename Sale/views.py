@@ -165,10 +165,9 @@ def venda_update(request, pk):
     VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=0, can_delete=True)
     PaymentMethodAccountsFormSet = inlineformset_factory(Venda, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=0, can_delete=True)
 
-    venda_item = VendaItem.objects.filter(venda=venda)
-    ids_existentes = set(venda_item.values_list('id',flat=True))
     
-    print(ids_existentes)
+    
+
     # form_Accounts = None
     if request.method == 'POST':
         print(request.POST)
@@ -176,15 +175,44 @@ def venda_update(request, pk):
         venda_item_formset = VendaItemFormSet(request.POST, instance=venda)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST,instance=venda)
         
-        ids_enviados = set(int(value) for key, value in request.POST.items() 
-        if key.startswith("vendaitem_set-") and key.endswith("-id") and value.isdigit())
-        ids_para_excluir = ids_existentes - ids_enviados
-        print('ids enviados')
-        print(ids_enviados)
-        print('ids para excluir')
-        print(ids_para_excluir)
-        VendaItem.objects.filter(id__in=ids_para_excluir).delete()
+        
 
+
+        # APAGANDO ITENS QUE NAO FORAM SUBMETIDOS NO FORMS (FORAM DELETADOS VISUALMENTE) - VENDA ITENS
+        venda_item = VendaItem.objects.filter(venda=venda)
+        ids_existentes_venda_itens = set(venda_item.values_list('id',flat=True))
+
+        ids_enviados_venda_itens = set(
+            int(value) for key, value in request.POST.items() 
+            if key.startswith("vendaitem_set-") and key.endswith("-id") and value.isdigit()
+            )
+        ids_para_excluir_venda_itens = ids_existentes_venda_itens - ids_enviados_venda_itens
+        print('ids enviados')
+        print(ids_enviados_venda_itens)
+        print('ids para excluir')
+        print(ids_para_excluir_venda_itens)
+        VendaItem.objects.filter(id__in=ids_para_excluir_venda_itens).delete()
+
+
+        # APAGANDO PAGAMENTOS QUE NAO FORAM SUBMETIDOS NO FORMS (FORAM DELETADOS VISUALMENTE) -  PAYMENTS
+        payments = PaymentMethod_Accounts.objects.filter(venda=venda)
+        ids_existentes_pagamentos = set(payments.values_list('id',flat=True))
+
+        ids_enviados_pagamentos = set(
+            int(value) for key,value in request.POST.items()
+            if key.startswith("paymentmethod_accounts_set-0") and key.endswith("-id") and value.isdigit()
+        )
+        ids_para_excluir_pagamentos = ids_existentes_pagamentos - ids_enviados_pagamentos
+        print("Pagamentos para excluir")
+        print(ids_para_excluir_pagamentos)
+        print('pagamentos ENVIADOS')
+        print(ids_enviados_pagamentos)
+        print('IDS EXISTENTES')
+        print(ids_existentes_pagamentos)
+        PaymentMethod_Accounts.objects.filter(id__in=ids_para_excluir_pagamentos).delete()
+        x = PaymentMethod_Accounts.objects.filter(venda=venda)
+        print("0")
+        print(x)
         if venda_form.is_valid() and venda_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
             # Salvar a venda
             venda_form.save()
