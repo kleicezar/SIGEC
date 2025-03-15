@@ -164,13 +164,26 @@ def venda_update(request, pk):
     # Criar formsets para itens de venda e formas de pagamento
     VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=0, can_delete=True)
     PaymentMethodAccountsFormSet = inlineformset_factory(Venda, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=0, can_delete=True)
+
+    venda_item = VendaItem.objects.filter(venda=venda)
+    ids_existentes = set(venda_item.values_list('id',flat=True))
     
+    print(ids_existentes)
     # form_Accounts = None
     if request.method == 'POST':
         print(request.POST)
         venda_form = VendaForm(request.POST, instance=venda)
         venda_item_formset = VendaItemFormSet(request.POST, instance=venda)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST,instance=venda)
+        
+        ids_enviados = set(int(value) for key, value in request.POST.items() 
+        if key.startswith("vendaitem_set-") and key.endswith("-id") and value.isdigit())
+        ids_para_excluir = ids_existentes - ids_enviados
+        print('ids enviados')
+        print(ids_enviados)
+        print('ids para excluir')
+        print(ids_para_excluir)
+        VendaItem.objects.filter(id__in=ids_para_excluir).delete()
 
         if venda_form.is_valid() and venda_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
             # Salvar a venda

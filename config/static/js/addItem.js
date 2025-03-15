@@ -181,25 +181,52 @@ function updateId(deleteButton, itensForms) {
 
     // Atualiza IDs dos inputs
     allInputs.forEach(input => {
-        let inputMatch = input.id.match(/\d+/); // Captura número do input
-        if (!inputMatch) return; // Evita erro se o ID não tiver número
-
-        let inputNumber = parseInt(inputMatch[0]); // Converte para número
-        // ASSIM, OS IDS SAO TROCADOS SÓ SE FOREM MAIORES QUE O DELETADO;
-        if (inputNumber - 1 >= number) {
-    
-            inputNumber = inputNumber - 1;
-            let onInput  = input.value;
-            let novoName = input.name.replace(inputMatch[0],inputNumber)
-            let novoId = input.id.replace(inputMatch[0], inputNumber);
-            input.value = onInput;
-            // console.log(`Atualizando input:
-            //     ID: ${input.id} → ${novoId},
-            //     NOME: ${input.id} → ${novoName} `);
-            input.id = novoId; // Atribui novo ID     
-            input.name = novoName
-            // console.log(input)
+        if (input.id.endsWith("-id")){
+            if (input.value == ""){
+                input.value = -1;
+            }
         }
+            let inputMatch = input.id.match(/\d+/); // Captura número do input
+            if (!inputMatch) return; // Evita erro se o ID não tiver número
+
+            let inputNumber = parseInt(inputMatch[0]); // Converte para número
+            // ASSIM, OS IDS SAO TROCADOS SÓ SE FOREM MAIORES QUE O DELETADO;
+            if (inputNumber - 1 >= number) {
+        
+                inputNumber = inputNumber - 1;
+                let onInput  = input.value;
+
+                let novoName = input.name.replace(inputMatch[0],inputNumber);
+                let novoId = input.id.replace(inputMatch[0], inputNumber);
+                
+                if (input.name.endsWith("-id")){
+                    oldInputValue = document.querySelector(`input[name="${novoName}"]`).value;
+                    input.value = oldInputValue;
+                    input.id = novoId; // Atribui novo ID     
+                    input.name = novoName
+                   
+                }
+                else{
+                    input.value = onInput;
+                    input.id = novoId; // Atribui novo ID     
+                    input.name = novoName
+                }
+                
+                // let oldValue = oldInput.value;
+
+                // console.log(old)
+               
+                // if (input.name.endsWith("-id")){
+                //     console.log("INPUT COM ID:")
+                //     console.log(input)
+                //     input.value = oldValue;
+                // }
+                // else{
+                
+                // console.log(input)
+            }
+    // }
+        
     });
 
     let numberUpVs = number;
@@ -251,7 +278,7 @@ function removeItemUpdate(button){
         TOTAL_FORMS.value = formCount;
         updateId(deleteButton,itensForms);
 
-        parent_button_4.removeChild(parent_button_3)
+        parent_button_4.removeChild(parent_button_3);
         const next_tr = parent_button_4.parentElement.querySelector(".item-form table thead tr");
 
         next_tr.style.display = "table-row";
@@ -262,7 +289,7 @@ function removeItemUpdate(button){
         console.log(formCount)
         formCount-=1;
         TOTAL_FORMS.value = formCount;
-        parent_button_4.removeChild(parent_button_3)
+        parent_button_4.removeChild(parent_button_3);
     }
    
 }

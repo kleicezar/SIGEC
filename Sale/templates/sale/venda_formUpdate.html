@@ -334,7 +334,9 @@
 
                                 <tbody>
                                     <tr >
-                                        <td>{{ venda_item_formset.empty_form.product.as_hidden }}
+                                        <td>
+                                            {{ venda_item_formset.empty_form.id.as_hidden}}
+                                            {{ venda_item_formset.empty_form.product.as_hidden }}
                                             <input type="text" class="row form-control inputProduct mb-3 mt-3">
                                             <div class="mt-3 field-product row">
                                     
