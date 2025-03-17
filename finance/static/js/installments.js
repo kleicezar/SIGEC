@@ -4,41 +4,36 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const formContainer = document.getElementById("payment-method-container");
 
-    const paymentValueInitial = document.getElementById("id_paymentmethod_accounts_set-TOTAL_FORMS");
+
     let dadosAnteriores = false;
-    if (paymentValueInitial == 0){
-        header.style = 'display:none;'
-    }
-    else{
-        dadosAnteriores = true;
-    }
+
+    header.style = 'display:none;'
+    let id_payments = []
     //escondendo campos de template base e opção de remoção
     // header.style = 'display:none;'
-    
-   let ids_payments = []
-      
+    const old_payment_method_form = document.getElementById("old-payment-method-form");
+    if(old_payment_method_form){
+        dadosAnteriores = true;
+    }
 
     let click = 0 // variavel para verificar quantidade de cliques
     const installments = document.getElementById('generate')//gerador de parcelas
     installments.addEventListener('click', () => {
         if (dadosAnteriores){
-            
-            const elements = document.querySelectorAll('[name^="paymentmethod_accounts_set-"][name$="-id"]');
-            elements.forEach(element => {
-                console.log(element);  // Exibe o elemento no console
-                console.log(element.value);
-                // Exibe o valor do input, se for um campo de formulário
-                ids_payments.push(Number(element.value));
-                console.log('000')
-                console.log(ids_payments)
+            const elements = old_payment_method_form.querySelectorAll('[name^="paymentmethod_accounts_set"][name$="-id"]');
+            const delete_elements = old_payment_method_form.querySelectorAll('[name^="paymentmethod_accounts_set"][name$="-DELETE"]')
+            elements.forEach(element=>{
+                id_payments.push(Number(element.value));
             });
-
-            while (formContainer.firstChild) {
-                formContainer.removeChild(formContainer.firstChild);
-            }
-            dadosAnteriores = false;
+            delete_elements.forEach(element=>{
+                element.value="on";
+            })
+            old_payment_method_form.innerHTML=""
         }
 
+
+
+       
         let value_initial = document.getElementById("id_paymentmethod_accounts_set-INITIAL_FORMS");
         let payment_method_container_update = document.getElementById("payment-method-container-update");
         let TOTAL_FORMS = document.getElementById("id_paymentmethod_accounts_set-TOTAL_FORMS");//TOTAL FORMS
@@ -47,14 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let dateInitsemvalor = document.getElementById("id_date_init"); // Data de início das faturas
         let table = document.getElementById('installment') // tabela das parcelas
         
-        if (payment_method_container_update){
-            payment_method_container_update.style.display = "none";
-        }
-
-        console.log(dateInitsemvalor.value)
-        console.log("0")
-        console.log(value_initial)
-        console.log(installmentRange.value)
+      
         if (installmentRange.value <= 0) {
             return 0
         }
@@ -90,9 +78,11 @@ document.addEventListener('DOMContentLoaded', function () {
         fragmento = document.createDocumentFragment()
         const valueOfinstallments = compair(numberOfInstallments, totalValue);
         const template = document.getElementById('empty-payment-method-form')
-        
+        console.log("ooo")
+        console.log(template)
         cont=0;
-        for (let index = 0; index < installmentRange.value; index++) {      
+        for (let index = 0; index < installmentRange.value; index++) { 
+            console.log("entrie")     
             let parcela = document.createElement('tr')                  // linha
             parcela.id = index + 1
             let row_payment_Method = document.createElement('td')       // coluna
@@ -105,10 +95,12 @@ document.addEventListener('DOMContentLoaded', function () {
             
             
             let counter = 0;
+            console.log("p")
+            console.log(clone)
             clone.querySelectorAll("input, select").forEach(async (input) => { // interando sobre o formulario
                 input.name = input.name.replace("0", index  );
                 input.id = input.id.replace("0", index  );
-
+                console.log("entrei5")
                 if (input.tagName === "SELECT") {
                     row_payment_Method.appendChild(input)
                     parcela.appendChild(row_payment_Method)
@@ -139,20 +131,19 @@ document.addEventListener('DOMContentLoaded', function () {
                         parcela.appendChild(row_days)
                             
                 }
-                else if (input.name.includes("-id")){
+                else if(input.name.includes("-id")){
+                    // input.value = id_payments[0];
                     row_id.appendChild(input);
-                    parcela.appendChild(row_id);
-                    
-                    if (ids_payments.includes(Number(input.value)+ index)){
-                        input.value = Number(input.value) + index ;
+                    parcela.appendChild(row_id)
+                    if(id_payments.includes(Number(input.value)+index)){
+                        input.value = Number(input.value)+index;
                     }
                     else{
-                        input.value = "";
+                        input.value="";
                     }
-                    
-                    
                 }
-                  await formContainer.appendChild(parcela);
+               
+                await formContainer.appendChild(parcela);
             })
         }    
         TOTAL_FORMS.value = Number(installmentRange.value)

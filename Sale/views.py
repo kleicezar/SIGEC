@@ -163,10 +163,7 @@ def venda_update(request, pk):
     venda = get_object_or_404(Venda, pk=pk)
     # Criar formsets para itens de venda e formas de pagamento
     VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=0, can_delete=True)
-    PaymentMethodAccountsFormSet = inlineformset_factory(Venda, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=0, can_delete=True)
-
-    
-    
+    PaymentMethodAccountsFormSet = inlineformset_factory(Venda, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
 
     # form_Accounts = None
     if request.method == 'POST':
@@ -193,26 +190,27 @@ def venda_update(request, pk):
         print(ids_para_excluir_venda_itens)
         VendaItem.objects.filter(id__in=ids_para_excluir_venda_itens).delete()
 
-
         # APAGANDO PAGAMENTOS QUE NAO FORAM SUBMETIDOS NO FORMS (FORAM DELETADOS VISUALMENTE) -  PAYMENTS
-        payments = PaymentMethod_Accounts.objects.filter(venda=venda)
-        ids_existentes_pagamentos = set(payments.values_list('id',flat=True))
+     
 
-        ids_enviados_pagamentos = set(
-            int(value) for key,value in request.POST.items()
-            if key.startswith("paymentmethod_accounts_set-0") and key.endswith("-id") and value.isdigit()
-        )
-        ids_para_excluir_pagamentos = ids_existentes_pagamentos - ids_enviados_pagamentos
-        print("Pagamentos para excluir")
-        print(ids_para_excluir_pagamentos)
-        print('pagamentos ENVIADOS')
-        print(ids_enviados_pagamentos)
-        print('IDS EXISTENTES')
-        print(ids_existentes_pagamentos)
-        PaymentMethod_Accounts.objects.filter(id__in=ids_para_excluir_pagamentos).delete()
-        x = PaymentMethod_Accounts.objects.filter(venda=venda)
-        print("0")
-        print(x)
+        # ids_existentes_pagamentos = set(payments.values_list('id',flat=True))
+
+        # ids_enviados_pagamentos = set(
+        #     int(value) for key,value in request.POST.items()
+        #     if key.startswith("paymentmethod_accounts_set-0") and key.endswith("-id") and value.isdigit()
+        # )
+        # ids_para_excluir_pagamentos = ids_existentes_pagamentos - ids_enviados_pagamentos
+        # print("Pagamentos para excluir")
+        # print(ids_para_excluir_pagamentos)
+        # print('pagamentos ENVIADOS')
+        # print(ids_enviados_pagamentos)
+        # print('IDS EXISTENTES')
+        # print(ids_existentes_pagamentos)
+        PaymentMethod_Accounts.objects.filter(venda=venda).delete()
+        # PaymentMethod_Accounts.objects.filter(id__in=ids_para_excluir_pagamentos).delete()
+        # x = PaymentMethod_Accounts.objects.filter(venda=venda)
+        # print("0")
+        # print(x)
         if venda_form.is_valid() and venda_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
             # Salvar a venda
             venda_form.save()
@@ -321,13 +319,14 @@ def venda_update(request, pk):
     else:
         
         form_Accounts = AccountsForm(instance=venda)
-        PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=venda.paymentmethod_accounts_set.all(),instance=venda)
+        Older_PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=venda.paymentmethod_accounts_set.all(),instance=venda)
+        PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
         venda_form = VendaForm(instance=venda)
         venda_item_formset = VendaItemFormSet(queryset=venda.vendaitem_set.all(),instance=venda)
         
         count_payment = 0
        
-        for i,form in enumerate(PaymentMethod_Accounts_FormSet):
+        for i,form in enumerate(Older_PaymentMethod_Accounts_FormSet):
             if i == 0:
                 data_obj = form.initial["expirationDate"]  
                 data_modificada = data_obj - timedelta(days=int(form.initial["days"])) 
@@ -336,7 +335,7 @@ def venda_update(request, pk):
             count_payment+=1
         form_Accounts.initial["date_init"] = data_modificada
         form_Accounts.initial["totalValue"] = venda_form.initial['total_value']
-        form_Accounts.initial["numberOfInstallments"] = count_payment
+        form_Accounts.initial["numberOfInstallments"] = count_payment - 1
      
 
     context = {
@@ -344,6 +343,7 @@ def venda_update(request, pk):
             'form_payment_account':PaymentMethod_Accounts_FormSet,
             'venda_form': venda_form,
             'venda_item_formset': venda_item_formset,
+            'older_form_payment_account':Older_PaymentMethod_Accounts_FormSet
             # 'form_payment_account': payment_method_formset,
     }
 
