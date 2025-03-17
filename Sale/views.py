@@ -206,7 +206,7 @@ def venda_update(request, pk):
         # print(ids_enviados_pagamentos)
         # print('IDS EXISTENTES')
         # print(ids_existentes_pagamentos)
-        PaymentMethod_Accounts.objects.filter(venda=venda).delete()
+        # PaymentMethod_Accounts.objects.filter(venda=venda).delete()
         # PaymentMethod_Accounts.objects.filter(id__in=ids_para_excluir_pagamentos).delete()
         # x = PaymentMethod_Accounts.objects.filter(venda=venda)
         # print("0")

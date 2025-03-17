@@ -457,3 +457,7 @@ def Accounts_list(request,id_accounts):
         'accounts':accounts
     })
 # CreditedClients.html
+
+def deletePayment_Accounts(request,id):
+    PaymentMethod_Accounts.objects.filter(id=id).delete()
+    return JsonResponse({"message": "Pagamento deletado com sucesso!"}, status=200)

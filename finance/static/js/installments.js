@@ -19,15 +19,31 @@ document.addEventListener('DOMContentLoaded', function () {
     let click = 0 // variavel para verificar quantidade de cliques
     const installments = document.getElementById('generate')//gerador de parcelas
     installments.addEventListener('click', () => {
+        // Ao clicar em gerar e haver pagamentos presentes no banco, eles serao apagados
         if (dadosAnteriores){
             const elements = old_payment_method_form.querySelectorAll('[name^="paymentmethod_accounts_set"][name$="-id"]');
             const delete_elements = old_payment_method_form.querySelectorAll('[name^="paymentmethod_accounts_set"][name$="-DELETE"]')
             elements.forEach(element=>{
-                id_payments.push(Number(element.value));
+                fetch(`/delete_payments/${Number(element.value)}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': getCSRFToken() 
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Pagamento deletado com sucesso!');
+                        // Atualizar a UI ou remover o item da lista
+                    } else {
+                        alert('Erro ao deletar pagamento.');
+                    }
+                })
+                .catch(error => console.error('Erro:', error));
             });
             delete_elements.forEach(element=>{
                 element.value="on";
             })
+
             old_payment_method_form.innerHTML=""
         }
 
@@ -95,12 +111,11 @@ document.addEventListener('DOMContentLoaded', function () {
             
             
             let counter = 0;
-            console.log("p")
-            console.log(clone)
             clone.querySelectorAll("input, select").forEach(async (input) => { // interando sobre o formulario
                 input.name = input.name.replace("0", index  );
                 input.id = input.id.replace("0", index  );
-                console.log("entrei5")
+               
+
                 if (input.tagName === "SELECT") {
                     row_payment_Method.appendChild(input)
                     parcela.appendChild(row_payment_Method)
@@ -135,12 +150,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     // input.value = id_payments[0];
                     row_id.appendChild(input);
                     parcela.appendChild(row_id)
-                    if(id_payments.includes(Number(input.value)+index)){
-                        input.value = Number(input.value)+index;
-                    }
-                    else{
-                        input.value="";
-                    }
                 }
                
                 await formContainer.appendChild(parcela);
@@ -185,3 +194,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     }
 )
+function getCSRFToken() {
+    let cookieValue = null;
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.startsWith('csrftoken=')) {
+            cookieValue = cookie.substring('csrftoken='.length, cookie.length);
+            break;
+        }
+    }
+    return cookieValue;
+}
