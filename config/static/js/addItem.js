@@ -251,7 +251,11 @@ function updateId(deleteButton, itensForms) {
 
 function removeItemUpdate(button){
     const itens_container = document.getElementById("itens-container");
-    const TOTAL_FORMS = document.getElementById("id_vendaitem_set-TOTAL_FORMS") || document.getElementById("id_compraitem_set-TOTAL_FORMS") || document.getElementById("id_vendaitemservice_set-TOTAL_FORMS");
+    let containerItems = button.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
+    const TOTAL_FORMS = containerItems.querySelector("#id_vendaitem_set-TOTAL_FORMS") ||
+                    containerItems.querySelector("#id_compraitem_set-TOTAL_FORMS") ||
+                    containerItems.querySelector("#id_vendaitemservice_set-TOTAL_FORMS");
+
     let formCount = TOTAL_FORMS.value;
     let itensForms = itens_container;
     let parent_button_3 =  button.parentElement.parentElement.parentElement.parentElement;

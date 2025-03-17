@@ -178,7 +178,7 @@ def venda_update(request, pk):
         # APAGANDO ITENS QUE NAO FORAM SUBMETIDOS NO FORMS (FORAM DELETADOS VISUALMENTE) - VENDA ITENS
         venda_item = VendaItem.objects.filter(venda=venda)
         ids_existentes_venda_itens = set(venda_item.values_list('id',flat=True))
-
+        # vendaitemservice_set-0-service
         ids_enviados_venda_itens = set(
             int(value) for key, value in request.POST.items() 
             if key.startswith("vendaitem_set-") and key.endswith("-id") and value.isdigit()

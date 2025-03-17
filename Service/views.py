@@ -139,6 +139,7 @@ def workerService_create(request):
             creditLimitAtual = creditLimit
             creditLimitAtual -= total_payment_with_credit
             if(total_payment==service.total_value + service.total_value_service) and ( (creditLimitAtual == creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual>=0) ):
+                print("entreiii")
                 pessoa.creditLimit = creditLimitAtual
                 pessoa.save()
                 for form in valid_payments:
@@ -190,16 +191,41 @@ def workerService_update(request,pk):
     ServiceItemFormSet  = inlineformset_factory(VendaService,VendaItemService,form=VendaItemServiceForm,extra=0,can_delete=True)
     VendaItemFormSet = inlineformset_factory(VendaService, VendaItem, form=VendaItemForm, extra=0, can_delete=True)
 
-    PaymentMethodAccountsFormSet = inlineformset_factory(VendaService,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=0,can_delete=True)
-    if request.method == 'POST':
+    PaymentMethodAccountsFormSet = inlineformset_factory(VendaService,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=1,can_delete=True)
 
+    if request.method == 'POST':
+        
         service_form = VendaServiceForm(request.POST, instance=servico)
         service_item_formset = ServiceItemFormSet(request.POST, instance=servico)
         venda_item_formset = VendaItemFormSet(request.POST,instance=servico)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST, instance=servico)
         # payment_method_formset = PaymentMethodServiceFormSet(request.POST)
+
+        venda_item = VendaItem.objects.filter(venda=servico)
+        ids_existentes_venda_itens = set(venda_item.values_list('id',flat=True))
+        ids_enviados_venda_itens = set(
+            int(value) for key, value in request.POST.items() 
+            if key.startswith("vendaitem_set-") and key.endswith("-id") and value.isdigit()
+            )
+        ids_para_excluir_venda_itens = ids_existentes_venda_itens - ids_enviados_venda_itens
+        print('ids enviados')
+        print(ids_enviados_venda_itens)
+        print('ids para excluir')
+        print(ids_para_excluir_venda_itens)
+        VendaItem.objects.filter(id__in=ids_para_excluir_venda_itens).delete()
+        
+
+        venda_service_item = VendaItemService.objects.filter(venda=servico)
+        ids_existentes_venda_service_itens = set(venda_service_item.values_list('id',flat=True))
+        ids_enviados_vendas_service_itens = set(
+             int(value) for key, value in request.POST.items() 
+            if key.startswith("vendaitemservice_set-") and key.endswith("-id") and value.isdigit()
+        )
+        ids_para_excluir_venda_service_itens = ids_existentes_venda_service_itens - ids_enviados_vendas_service_itens
+        VendaItemService.objects.filter(id__in=ids_para_excluir_venda_service_itens).delete()
+
         if(service_form.is_valid() and venda_item_formset.is_valid() and service_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid()):
-            service_form.save()
+            service = service_form.save()
 
             service_item_instances = service_item_formset.save(commit=False)
             service_item_formset.save_m2m()
@@ -261,7 +287,10 @@ def workerService_update(request,pk):
             creditLimitAtual-= total_payment_with_credit
             payments_instances = service_item_formset.save(commit=False)
 
-            if (total_payment == service_form.cleaned_data["total_value"]) and ( (creditLimitAtual == creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual >= 0)):
+            print('valor total:')
+            print(service.total_value)
+            print(service.total_value_service)
+            if (total_payment == service.total_value + service.total_value_service) and ( (creditLimitAtual == creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual >= 0)):
                 pessoa.creditLimit = creditLimitAtual
                 pessoa.save()
                 pagamentos_paga_deletar = []
@@ -296,32 +325,34 @@ def workerService_update(request,pk):
         form_Accounts = AccountsForm(instance=servico)
         service_form = VendaServiceForm(instance=servico)
         service_item_formset = ServiceItemFormSet(queryset = servico.vendaitemservice_set.all(),instance=servico)
-        payment_method_formset = PaymentMethodAccountsFormSet(queryset=servico.paymentmethod_accounts_set.all(),instance=servico)
+        payment_method_formset = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
         venda_item_formset = VendaItemFormSet(queryset=servico.vendaitem_set.all(),instance=servico)
-        
+        older_payment_method_formset =  PaymentMethodAccountsFormSet(queryset=servico.paymentmethod_accounts_set.all(),instance=servico)
         count_payment = 0
        
-        for i,form in enumerate(payment_method_formset):
+        for i,form in enumerate(older_payment_method_formset):
             if i == 0:
+                ...
                 data_obj = form.initial["expirationDate"]  
                 data_modificada = data_obj - timedelta(days=int(form.initial["days"])) 
                 data_modificada = datetime.strptime(str(data_modificada), "%Y-%m-%d").strftime("%d/%m/%Y") 
 
             count_payment+=1
         form_Accounts.initial["date_init"] = data_modificada
-        form_Accounts.initial["totalValue"] = service_form.initial['total_value']
-        form_Accounts.initial["numberOfInstallments"] = count_payment
+        form_Accounts.initial["totalValue"] = service_form.initial['total_value'] + service_form.initial['total_value_service']
+        form_Accounts.initial["numberOfInstallments"] = count_payment - 1
 
-        context = {
+    context = {
             'form_Accounts':form_Accounts,
             'service_form':service_form,
             'service_item_formset':service_item_formset,
             'form_payment_account':payment_method_formset,
-            'venda_item_formset':venda_item_formset
+            'venda_item_formset':venda_item_formset,
+            'older_form_payment_account':older_payment_method_formset
             # 'form_payment_account':payment_method_formset
         }
 
-        return render(request,'serviceOrderUpdate.html',context) 
+    return render(request,'serviceOrderUpdate.html',context) 
 
 def workService(request):
     context = {
