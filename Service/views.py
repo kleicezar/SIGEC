@@ -86,28 +86,13 @@ def workerService_create(request):
         # payment_method_formset = PaymentMethodServiceFormSet(request.POST)
 
         if(service_form.is_valid() and venda_item_formset.is_valid() and service_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid()):
-            print('formulários válidos')
-            service = service_form.save()
+            service = service_form.save(commit=False)
 
-            for form in venda_item_formset:
-                if form.cleaned_data:
-                    produto = form.cleaned_data['product']
-                    quantidade = form.cleaned_data['quantidade']
-                    preco_unitario = form.cleaned_data['preco_unitario']
-                    discount = form.cleaned_data['discount']
-                    price_total = form.cleaned_data['price_total']
-                    if not form.cleaned_data.get("DELETE"):
-                        VendaItem.objects.create(
-                            venda=service,
-                            product=produto,
-                            quantidade=quantidade,
-                            preco_unitario=preco_unitario,
-                            discount = discount,
-                            price_total = price_total
-                        )
-                    
+            venda_item_formset.instance = service
+            venda_item_formset.save(commit=False)
+
             service_item_formset.instance = service
-            service_item_formset.save()
+            service_item_formset.save(commit=False)
 
             PaymentMethod_Accounts_FormSet.instance = service
             total_payment = 0
@@ -138,10 +123,15 @@ def workerService_create(request):
             creditLimit = pessoa.creditLimit
             creditLimitAtual = creditLimit
             creditLimitAtual -= total_payment_with_credit
+
             if(total_payment==service.total_value + service.total_value_service) and ( (creditLimitAtual == creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual>=0) ):
-                print("entreiii")
                 pessoa.creditLimit = creditLimitAtual
                 pessoa.save()
+
+                service_form.save()
+                venda_item_formset.save()
+                service_item_formset.save()
+
                 for form in valid_payments:
                     form.instance.ordem_servico = service
                     form.save()
@@ -199,7 +189,6 @@ def workerService_update(request,pk):
         service_item_formset = ServiceItemFormSet(request.POST, instance=servico)
         venda_item_formset = VendaItemFormSet(request.POST,instance=servico)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST, instance=servico)
-        # payment_method_formset = PaymentMethodServiceFormSet(request.POST)
 
         venda_item = VendaItem.objects.filter(venda=servico)
         ids_existentes_venda_itens = set(venda_item.values_list('id',flat=True))
@@ -208,10 +197,6 @@ def workerService_update(request,pk):
             if key.startswith("vendaitem_set-") and key.endswith("-id") and value.isdigit()
             )
         ids_para_excluir_venda_itens = ids_existentes_venda_itens - ids_enviados_venda_itens
-        print('ids enviados')
-        print(ids_enviados_venda_itens)
-        print('ids para excluir')
-        print(ids_para_excluir_venda_itens)
         VendaItem.objects.filter(id__in=ids_para_excluir_venda_itens).delete()
         
 
@@ -224,41 +209,31 @@ def workerService_update(request,pk):
         ids_para_excluir_venda_service_itens = ids_existentes_venda_service_itens - ids_enviados_vendas_service_itens
         VendaItemService.objects.filter(id__in=ids_para_excluir_venda_service_itens).delete()
 
+
         if(service_form.is_valid() and venda_item_formset.is_valid() and service_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid()):
-            service = service_form.save()
+            service = service_form.save(commit=False)
 
             service_item_instances = service_item_formset.save(commit=False)
             service_item_formset.save_m2m()
-            
             itens_de_servico_para_deletar = []
-            
             for form in service_item_formset.deleted_forms:
                 if form.instance.pk is not None:
                     itens_de_servico_para_deletar.append(form.instance)
-
-            for instance in service_item_instances:
-                instance.save()
-
-            for item in itens_de_servico_para_deletar:
-                item.delete()
 
 
             venda_item_instances = venda_item_formset.save(commit=False) 
             venda_item_formset.save_m2m() 
             itens_para_deletar = [] 
-
             for form in venda_item_formset.deleted_forms:
                 if form.instance.pk is not None:  
                     itens_para_deletar.append(form.instance)
             
-            for instance in venda_item_instances:
-                instance.save() 
-
-            for item in itens_para_deletar:
-                item.delete()
-
-            payments_instances = service_item_formset.save(commit=False)
+            payments_instances = PaymentMethod_Accounts_FormSet.save(commit=False)
             pagamentos_paga_deletar = []
+
+            for form in PaymentMethod_Accounts_FormSet.deleted_forms:
+                if form.instance.pk is not None:
+                    pagamentos_paga_deletar.append(form.instance)
 
             pessoa = service_form.cleaned_data["pessoa"]
             value_payments = PaymentMethod_Accounts.objects.filter(ordem_servico = servico.id,activeCredit = True)
@@ -285,26 +260,31 @@ def workerService_update(request,pk):
             creditLimit = pessoa.creditLimit
             creditLimitAtual = creditLimit
             creditLimitAtual-= total_payment_with_credit
-            payments_instances = service_item_formset.save(commit=False)
 
-            print('valor total:')
-            print(service.total_value)
-            print(service.total_value_service)
             if (total_payment == service.total_value + service.total_value_service) and ( (creditLimitAtual == creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual >= 0)):
                 pessoa.creditLimit = creditLimitAtual
                 pessoa.save()
-                pagamentos_paga_deletar = []
 
-                for form in PaymentMethod_Accounts_FormSet.deleted_forms:
-                    if form.instance.pk is not None:
-                        pagamentos_paga_deletar.append(form.instance)
+                service.save()
+
+                for instance in venda_item_instances:
+                    instance.save() 
+
+                for item in itens_para_deletar:
+                    item.delete()
                 
+                
+                for instance in service_item_instances:
+                    instance.save()
+
+                for item in itens_de_servico_para_deletar:
+                    item.delete()
+
                 for instance in payments_instances:
                     instance.save()
                 
                 for pagamento in pagamentos_paga_deletar:
                     pagamento.delete()
-                PaymentMethod_Accounts_FormSet.save()
 
                 return redirect('OrderService')
     
