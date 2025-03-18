@@ -30,7 +30,7 @@
                         <th>ID</th>
                         <th>Descrição</th>
                         <th>Quantidade</th>
-                        <th style="display: none;">IDPRODUTO</th>
+                        <th >IDPRODUTO</th>
                         <th>Status</th>
                        
                     </tr>
@@ -41,12 +41,12 @@
                         <td>{{ product.idVenda }}</td>
                         <td>{{ product.descricao }}</td>
                         <td>{{ product.quantidade }}</td>
-                        <td style="display: none;" id="idProduct">{{product.idProduto}}</td>
+                        <td id="idProduct">{{product.idProduto}}</td>
                         <td>
                             <form action="{% url 'update_product_quantity' pk=product.idProduto %}" method="POST" class="delete-form">
 
                                 {% csrf_token %}
-                                <input type="hidden" name="id_venda" value="{{ product.id }}">
+                                <input type="hidden" name="id_venda" value="{{ product.idVendaItem }}">
                                 <select class="status-select" data-venda-id="{{ product.idVendaItem }}">
                                     {% for status in status_options %}
                                         <option value="{{ status }}" {% if status == product.status %}selected{% endif %}>{{ status }}</option>

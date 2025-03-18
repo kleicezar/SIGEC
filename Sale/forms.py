@@ -46,14 +46,13 @@ class VendaForm(forms.ModelForm):
 class VendaItemForm(forms.ModelForm):
     
     STATUS_CHOICES = [
-        ('NE', 'Pendente'),
-        ('E','ENTREGUE')
+        ('Pendente', 'Pendente'),
+        ('Entregue','Entregue')
     ]
 
     status = forms.ChoiceField(
         choices=STATUS_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control mt-3 row-5 mb-3', 'disabled': True}),
-        initial='NE',
         required=False  
     )
 

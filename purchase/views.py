@@ -43,7 +43,8 @@ def productsWithStatus_list(request):
 def update_product_quantity(request,pk):
     if request.method == "POST":
         id_venda = request.POST.get("id_venda")
-
+        print('venda id')
+        print(id_venda)
         vendaitem = get_object_or_404(VendaItem,pk=id_venda)
         vendaitem.status = "Entregue"
         vendaitem.save()
