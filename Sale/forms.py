@@ -53,6 +53,7 @@ class VendaItemForm(forms.ModelForm):
     status = forms.ChoiceField(
         choices=STATUS_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control mt-3 row-5 mb-3', 'disabled': True}),
+        # initial='Pendente',
         required=False  
     )
 

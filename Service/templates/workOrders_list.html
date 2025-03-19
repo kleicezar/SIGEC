@@ -14,7 +14,7 @@
         {% block content %}
         <div class='content'>
             <div class="container">
-                <a href="{% url 'orderServiceForm' %}">
+                <a href="{% url 'workOrdersForm' %}">
                     <button class="btn btn-success">Cadastrar</button>
                 </a>
                 <div class="form-group">
@@ -34,18 +34,18 @@
                     </tr>
                 </thead>
                 <tbody>  
-                {% for workService in workServices %}
+                {% for workOrder in workOrders %}
                 <tr>
-                    <td>{{ workService.id }}</td>
-                    <td>{{ workService.pessoa }}</td>
-                    <td>{{ workService.data_da_venda }}</td>
-                    <td>{{ workService.situacao}}</td>
-                    <td>{{ workService.is_Active|yesno:"Sim,Não" }}</td>
+                    <td>{{ workOrder.id }}</td>
+                    <td>{{ workOrder.pessoa }}</td>
+                    <td>{{ workOrder.data_da_venda }}</td>
+                    <td>{{ workOrder.situacao}}</td>
+                    <td>{{ workOrder.is_Active|yesno:"Sim,Não" }}</td>
                     <td>
-                        <a href="{% url 'orderServiceUpdate' pk=workService.id %}">
+                        <a href="{% url 'workOrdersUpdate' pk=workOrder.id %}">
                             <button class="btn" style="background-color: #117027;color: white;">Editar</button>
                         </a>
-                        <form action="{% url 'deleteWorkService' pk=workService.id %}" method="POST" style="display:inline-block;">
+                        <form action="{% url 'workOrdersDelete' pk=workOrder.id %}" method="POST" style="display:inline-block;">
                             {% csrf_token %}
                             <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
                         </form>

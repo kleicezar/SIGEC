@@ -305,8 +305,7 @@
 
                     <!-- Formas de Pagamento -->
                     <h6 class="mt-5 mb-3">Formas de Pagamento</h6>
-                   {% include 'parcela.html' %}
-                    <!-- <button type="button" onclick="addPaymentMethod()" class="btn btn-outline-success mb-5">Adicionar Forma de Pagamento</button> -->
+                    {% include 'parcela.html' %}
                     
                     <h6 class="mt-5 mb-3">Observações</h6>
                     <div class="row ">
@@ -332,17 +331,10 @@
             </div>
         </div>
         
-        
-        <!-- <script type="text/javascript" src="{% static 'js/jquery-3.7.1.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/jquery.mask.min.js' %}"></script> -->
-        <!-- <script type="text/javascript" src="{% static 'js/mask.js' %}"></script> - -->
         <script src="{% static 'js/addItem.js' %}" defer></script>
         <script src="{% static 'js/clientSearch.js' %}"></script>  <!-- pesquisa clientes -->
         <script src="{% static 'js/venda_item.js' %}"></script> <!-- pesquisa produtos em vendas-->
-        <!-- <script src="{% static 'js/date.js' %}"></script> -->
         <script src="{% static 'js/error.js' %}"></script>
-        <!-- <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
-        <script src="{% static 'js/bootstrap-datepicker.pt-BR.js' %}"></script> -->
         {% endblock %}     
     </main>
 </body>

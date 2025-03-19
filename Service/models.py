@@ -1,14 +1,9 @@
 from django.db import models
 from Registry.models import *
-from config.models import Situation, PaymentMethod
+from config.models import Service, Situation, PaymentMethod
 from purchase.models import Product
 # Create your models here.
-class Service(models.Model):
-    name_Service = models.CharField('Nome do Serviço',max_length=500)
-    is_Active = models.BooleanField('ativo',default=True)
-    value_Service = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor do Serviço", blank=True, null=True)
-    def __str__(self):
-        return self.name_Service
+
     
 class VendaService(models.Model):
     pessoa = models.ForeignKey(Person,on_delete=models.CASCADE,verbose_name="Pessoa",related_name="vendaService")

@@ -151,15 +151,3 @@ class PaymentMethodVendaForm(forms.ModelForm):
             })
         }
 
-class ServiceForm(forms.ModelForm):
-    class Meta:
-        model = Service
-        fields = ['name_Service','value_Service']
-        widgets = {
-            'name_Service':forms.TextInput(attrs={
-                'class':'form-control row'
-            }),
-            'value_Service':forms.NumberInput(attrs={
-                'class':'form-control row'
-            })
-        }   

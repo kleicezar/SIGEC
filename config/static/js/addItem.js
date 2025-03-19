@@ -49,7 +49,7 @@ function addItem() {
         input_product.id = `idProduct-${formCount}`
 
         const statusNewForm = newForm.querySelector("select");
-        statusNewForm.value = "NE";
+        statusNewForm.value = "Pendente";
 
         field_list_products = newForm.querySelector(".v");
         field_list_products.parentElement.style.display = "none";

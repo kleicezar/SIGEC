@@ -16,62 +16,8 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 from django.http import HttpResponse
 
-@login_required
-def service(request):
-    context = {
-        'Services':Service.objects.all()
-    }
-    return render(request,'service_list.html',context)
-    # return HttpResponse("Olá, esta é a minha nova app Django!")
 
-def service_create(request):
-    if request.method == 'POST':
-        service_form = ServiceForm(request.POST)
-        print(f'\n\n\n{request.POST}')
-        print(f'\n\n\n{service_form.is_valid()}')
-        if service_form.is_valid():
-            service_form.save() 
-            messages.success(request, "Tipo de Serviço cadastrado com sucesso")
-            return redirect('service_list')
-        else: 
-            return render(request, 'service_form.html', {'form': service_form})
-    else:
-        service_form = ServiceForm()
-        context = {
-            'service':service_form
-        }
-        return render(request,'service_form.html',context)
-    
-       
-def service_update(request,pk):
-    servico = get_object_or_404(Service,pk=pk)
-    if request.method == "POST":
-        service_form = ServiceForm(request.POST,instance=servico)
-        if service_form.is_valid():
-            service_form.save()
-            messages.success(request, "Tipo de Serviço atualizado com sucesso")
-            return redirect('orderServiceForm')
-
-        print(service_form.errors)
-    else:
-        service_form = ServiceForm(instance=servico)
-        context = {
-            'service':service_form,
-        }
-        return render(request,'service_form.html',context)
-
-def delete_service(request,pk):
-    servico = get_object_or_404(Service, pk=pk)
-    if request.method == "POST":
-        servico.delete()
-        messages.success(request, "Serviço deletada com sucesso.")
-        return redirect('service_list')
-    context ={
-        'service':servico
-    }
-    return render(request,'service_list',context)
-
-def workerService_create(request):
+def workOrders_create(request):
     ServiceItemFormSet  = inlineformset_factory(VendaService,VendaItemService,form=VendaItemServiceForm,extra=1,can_delete=True)
     VendaItemFormSet = inlineformset_factory(VendaService, VendaItem, form=VendaItemForm, extra=1, can_delete=True)
     # PaymentMethodServiceFormSet = inlineformset_factory(VendaService,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=1,can_delete=True)
@@ -83,7 +29,6 @@ def workerService_create(request):
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
         service_item_formset = ServiceItemFormSet(request.POST)
         venda_item_formset = VendaItemFormSet(request.POST)
-        # payment_method_formset = PaymentMethodServiceFormSet(request.POST)
 
         if(service_form.is_valid() and venda_item_formset.is_valid() and service_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid()):
             service = service_form.save(commit=False)
@@ -173,9 +118,9 @@ def workerService_create(request):
             # 'payment_method_formset':payment_method_formset
         }
 
-        return render(request,'serviceOrder_form.html',context)
+        return render(request,'workOrders_form.html',context)
 
-def workerService_update(request,pk):
+def workOrders_update(request,pk):
 
     servico = get_object_or_404(VendaService, pk=pk)
     ServiceItemFormSet  = inlineformset_factory(VendaService,VendaItemService,form=VendaItemServiceForm,extra=0,can_delete=True)
@@ -300,7 +245,7 @@ def workerService_update(request,pk):
         if not PaymentMethod_Accounts_FormSet.is_valid():
             print("Erro no VendaPagamentoService",PaymentMethod_Accounts_FormSet.errors)
         
-        return redirect('OrderService')
+        return redirect('workOrders_list')
     else:
         form_Accounts = AccountsForm(instance=servico)
         service_form = VendaServiceForm(instance=servico)
@@ -332,16 +277,15 @@ def workerService_update(request,pk):
             # 'form_payment_account':payment_method_formset
         }
 
-    return render(request,'serviceOrderUpdate.html',context) 
+    return render(request,'workOrdersUpdate.html',context) 
 
-def workService(request):
+def workOrder(request):
     context = {
-        
-        'workServices':VendaService.objects.all()
+        'workOrders':VendaService.objects.all()
     }
-    return render(request,'serviceOrder.html',context)
+    return render(request,'workOrders_list.html',context)
 
-def deleteWorkService(request,pk):
+def workOrders_delete(request,pk):
         workService = get_object_or_404(VendaService, pk=pk)
 
         if request.method == "POST":

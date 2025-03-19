@@ -29,5 +29,10 @@ urlpatterns = [
     path('chartAcc/upt/<int:id_chartOfAccounts>/',updateChartOfAccounts,name='updateChartOfAccounts'),
     path('chartAcc/dlt/<int:id_chartOfAccounts>/',deleteChartOfAccounts,name='deleteChartOfAccounts'),
     
+    path('service/', service, name='Service'),
+    path('service/create/',ServiceForm,name='serviceForm'),
+    path('service/delete/<int:pk>/',deleteService,name='deleteService'),
+    path('service/update/<int:pk>/',updateService,name='updateService'),
+
     path('teste_permissao/', teste_permissao, name='teste_permissao'),
     ]

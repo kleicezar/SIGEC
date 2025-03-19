@@ -269,6 +269,62 @@ def deleteChartOfAccounts(request, id_chartOfAccounts):
     return render(request, 'config/ChartOfAccounts.html', context)
 
 @login_required
+def service(request):
+    print('----------------')
+    context = {
+        'Services':Service.objects.all()
+    }
+    return render(request,'config/Service.html',context)
+    # return HttpResponse("Olá, esta é a minha nova app Django!")
+
+def ServiceForm(request):
+    if request.method == 'POST':
+        service_form = ServiceModelForm(request.POST)
+        print(f'\n\n\n{request.POST}')
+        print(f'\n\n\n{service_form.is_valid()}')
+        if service_form.is_valid():
+            service_form.save() 
+            messages.success(request, "Tipo de Serviço cadastrado com sucesso")
+            return redirect('Service')
+        else: 
+            return render(request, 'config/serviceForm.html', {'form': service_form})
+    else:
+        service_form = ServiceModelForm()
+        context = {
+            'service':service_form
+        }
+        return render(request,'config/serviceForm.html',context)
+    
+       
+def updateService(request,pk):
+    servico = get_object_or_404(Service,pk=pk)
+    if request.method == "POST":
+        service_form = ServiceModelForm(request.POST,instance=servico)
+        if service_form.is_valid():
+            service_form.save()
+            messages.success(request, "Tipo de Serviço atualizado com sucesso")
+            # return redirect('orderServiceForm')
+            return redirect('Service')
+
+        print(service_form.errors)
+    else:
+        service_form = ServiceModelForm(instance=servico)
+        context = {
+            'service':service_form,
+        }
+        return render(request,'config/serviceForm.html',context)
+
+def deleteService(request,pk):
+    servico = get_object_or_404(Service, pk=pk)
+    if request.method == "POST":
+        servico.delete()
+        messages.success(request, "Serviço deletada com sucesso.")
+        return redirect('config/Service')
+    context ={
+        'service':servico
+    }
+    return render(request,'config/Service',context)
+@login_required
 def buscar_situacao(request):
     query = request.GET.get('query','').strip()
     page_num = request.GET.get('page,1')
