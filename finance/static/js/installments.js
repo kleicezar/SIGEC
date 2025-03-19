@@ -23,28 +23,28 @@ document.addEventListener('DOMContentLoaded', function () {
         if (dadosAnteriores){
             const elements = old_payment_method_form.querySelectorAll('[name^="paymentmethod_accounts_set"][name$="-id"]');
             const delete_elements = old_payment_method_form.querySelectorAll('[name^="paymentmethod_accounts_set"][name$="-DELETE"]')
-            elements.forEach(element=>{
-                fetch(`/delete_payments/${Number(element.value)}/`, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRFToken': getCSRFToken() 
-                    }
-                })
-                .then(response => {
-                    if (response.ok) {
-                        alert('Pagamento deletado com sucesso!');
-                        // Atualizar a UI ou remover o item da lista
-                    } else {
-                        alert('Erro ao deletar pagamento.');
-                    }
-                })
-                .catch(error => console.error('Erro:', error));
-            });
+            // elements.forEach(element=>{
+            //     fetch(`/delete_payments/${Number(element.value)}/`, {
+            //         method: 'DELETE',
+            //         headers: {
+            //             'X-CSRFToken': getCSRFToken() 
+            //         }
+            //     })
+            //     .then(response => {
+            //         if (response.ok) {
+            //             alert('Pagamento deletado com sucesso!');
+            //             // Atualizar a UI ou remover o item da lista
+            //         } else {
+            //             alert('Erro ao deletar pagamento.');
+            //         }
+            //     })
+            //     .catch(error => console.error('Erro:', error));
+            // });
             delete_elements.forEach(element=>{
-                element.value="on";
+                // element.value="on";
             })
 
-            old_payment_method_form.innerHTML=""
+            old_payment_method_form.style.display="none";
         }
 
 
