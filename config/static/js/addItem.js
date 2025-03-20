@@ -36,7 +36,25 @@ function addItem() {
     const formCountSale = document.getElementById('id_vendaitem_set-TOTAL_FORMS');
 
     // const formCountElem = document.getElementById('id_vendaitem_set-TOTAL_FORMS');
-    const formCountService = document.getElementById("id_vendaitemservice_set-TOTAL_FORMS");
+    const formCountService = document.getElementById("id_vendaitemproductservice_set-TOTAL_FORMS");
+
+
+    if(formCountService){
+        const [formCount,newForm] = clone(formCountService,emptyFormTemplate);
+        formCountService.value = parseInt(formCount) + 1;
+        input_product = newForm.querySelector(".inputProduct");;
+        input_product.id = `idProduct-${formCount}`;
+
+
+        const statusNewForm = newForm.querySelector("select");
+        statusNewForm.value = 'Pendente';
+        field_list_products = newForm.querySelector(".v");
+        field_list_products.parentElement.style.display = "none";
+        field_list_products.id = `options_products-${formCount}`;
+
+        formset.appendChild(newForm);
+        
+    }
     const formCountCompra = document.getElementById("id_compraitem_set-TOTAL_FORMS");
     if(formCountSale){
         const [formCount,newForm] = clone(formCountSale,emptyFormTemplate);
@@ -77,18 +95,7 @@ function addItem() {
         
     }
 
-    // if(formCountService){
-    //     const [formCount,newForm] = clone(formCountService,emptyServiceTemplate);
-    //     formCountService.value = parseInt(formCount) + 1;
-    //     input_product = newForm.querySelector(".inputService");
-    //     input_product.id = `idService-${formCount}`;
-
-    //     field_list_products = newForm.querySelector(".v");
-    //     field_list_products.parentElement.style.display = "none";
-    //     field_list_products.id = `options_services-${formCount}`;
-    //     formset.appendChild(newForm);
-        
-    // }
+    
 
     // Cria ids para identificação da area em que sera requisitado os produtos pelo filtro do campo product
    
@@ -104,10 +111,13 @@ function addItemService(){
         input_product = newForm.querySelector(".inputService");
         input_product.id = `idService-${formCount}`;
 
+        // const statusNewForm = newForm.querySelector("select");
+        // statusNewForm.value = "Pendente";
+
         field_list_products = newForm.querySelector(".v");
         field_list_products.parentElement.style.display = "none";
         field_list_products.id = `options_services-${formCount}`;
-
+        
         formset.appendChild(newForm);
     }
 }
@@ -134,7 +144,7 @@ function clone(formCountElem,template){
 
 function removeItem(button){
     const itens_container = document.getElementById("itens-container");
-    const TOTAL_FORMS = document.getElementById("id_vendaitem_set-TOTAL_FORMS") || document.getElementById("id_compraitem_set-TOTAL_FORMS") || document.getElementById("id_vendaitemservice_set-TOTAL_FORMS");
+    const TOTAL_FORMS = document.getElementById("id_vendaitem_set-TOTAL_FORMS") || document.getElementById("id_compraitem_set-TOTAL_FORMS") || document.getElementById("id_vendaitemservice_set-TOTAL_FORMS") || document.getElementById("id_vendaitemproductservice_set-TOTAL_FORMS");
     let formCount = TOTAL_FORMS.value;
     // let total_forms =  TOTAL_FORMS.value;
     let parent_button_4 = button.parentElement.parentElement.parentElement;
@@ -254,7 +264,8 @@ function removeItemUpdate(button){
     let containerItems = button.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
     const TOTAL_FORMS = containerItems.querySelector("#id_vendaitem_set-TOTAL_FORMS") ||
                     containerItems.querySelector("#id_compraitem_set-TOTAL_FORMS") ||
-                    containerItems.querySelector("#id_vendaitemservice_set-TOTAL_FORMS");
+                    containerItems.querySelector("#id_vendaitemservice_set-TOTAL_FORMS") ||
+                    containerItems.querySelector("#id_vendaitemproductservice_set-TOTAL_FORMS");
 
     let formCount = TOTAL_FORMS.value;
     let itensForms = itens_container;

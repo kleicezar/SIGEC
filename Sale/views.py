@@ -144,7 +144,7 @@ def venda_update(request, pk):
         venda_form = VendaForm(request.POST, instance=venda)
         venda_item_formset = VendaItemFormSet(request.POST, instance=venda)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST,instance=venda,prefix="paymentmethod_accounts_set")
-        Older_PaymentMethod_Accounts_FormSet = Older_PaymentMethod_Accounts_FormSet(request.POST,instance=venda,prefix="older_paymentmethod_set")
+        Older_PaymentMethod_Accounts_FormSet = Older_PaymentMethod_Accounts_FormSet(request.POST,instance=venda,prefix="older_paymentmethod_accounts_set")
         
         # # APAGANDO ITENS QUE NAO FORAM SUBMETIDOS NO FORMS (FORAM DELETADOS VISUALMENTE) - VENDA ITENS
         venda_item = VendaItem.objects.filter(venda=venda)
@@ -272,7 +272,7 @@ def venda_update(request, pk):
     else:
         
         form_Accounts = AccountsForm(instance=venda)
-        Older_PaymentMethod_Accounts_FormSet = Older_PaymentMethod_Accounts_FormSet(queryset=venda.paymentmethod_accounts_set.all(),instance=venda,prefix='older_paymentmethod_set')
+        Older_PaymentMethod_Accounts_FormSet = Older_PaymentMethod_Accounts_FormSet(queryset=venda.paymentmethod_accounts_set.all(),instance=venda,prefix='older_paymentmethod_accounts_set')
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
         venda_form = VendaForm(instance=venda)
         venda_item_formset = VendaItemFormSet(queryset=venda.vendaitem_set.all(),instance=venda)
