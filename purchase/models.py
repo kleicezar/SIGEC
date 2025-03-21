@@ -42,6 +42,7 @@ class CompraItem(models.Model):
     preco_unitario = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Preço Unitário")
     discount = models.DecimalField(max_digits=5, decimal_places=2) # porcentagem aplicada no produto
     price_total = models.DecimalField(max_digits=10, decimal_places=2) # valor total do produto
+    status = models.CharField(max_length=50,default='Pendente')
 
     # Calcula o total automaticamente ao salvar a instância
     def save(self, *args, **kwargs):

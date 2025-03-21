@@ -36,24 +36,42 @@
         {% block content %}
         <div class='content'>
             <div class='container-fluid justify-content-center align-items-center'>
-                <a href="{% url 'workOrders_list' %}">
-                    <button class="btn btn-voltar">Voltar</button>
-                </a> 
-                <h4 class="mt-5 mb-5 c-adapted">Editar Ordem de Serviço</h4>
+                <div class="col d-flex mb-5 gap-4 mt-5">
+                    <a href="{% url 'workOrders_list' %}">
+                        <button class="btn btn-voltar">   
+                            <i class="fas fa-arrow-left"></i> 
+                        </button>
+                    </a> 
+                    <h4 class="c-adapted">Editar Ordem</h4>
+                </div>
+          
                 <form method="post">
                     {% csrf_token %}
                 
                     <!-- Formulário de Venda -->
                     <h6 class="mt-5 mb-3">Dados do Serviço</h6>
                     <!-- {{ service_form.as_p }} -->
+                    
                     {% if messages %}
-                    <div>
-                      {% for message in messages %}
-                        <div class="alert {{ message.tags }}">
-                          {{ message }}
-                        </div>
-                      {% endfor %}
-                    </div>
+                        {% for message in messages %}
+                            {% if "workupdate_page" in message.tags %}
+                            <div class="modal"> 
+                                <header class="mHeader">
+                                    <p>Falha ao salvar Ordem</p>
+                                </header>
+                            
+                                <div class="alert {{ message.tags }} mBody">
+                                    <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur, illum atque. Doloremque, dolor ipsum labore numquam quaerat doloribus, incidunt provident suscipit maiores dicta animi, itaque at reiciendis exercitationem assumenda odit?</p> -->
+                                {{ message }}
+
+                                </div>
+                        
+                                <footer>
+                                    <button id="mBtn" class="mButton" type="button" onclick="closeModal(this)">Fechar</button>
+                                </footer>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
                     {% endif %}
                     <table class="table">
                         <thead>

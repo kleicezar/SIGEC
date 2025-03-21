@@ -94,6 +94,18 @@ class CompraForm(forms.ModelForm):
             self.fields['data_da_compra'].widget.attrs['readonly'] = True
 
 class CompraItemForm(forms.ModelForm):
+    STATUS_CHOICES = [
+        ('Pendente', 'Pendente'),
+        ('Entregue','Entregue')
+    ]
+
+    status = forms.ChoiceField(
+        choices=STATUS_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control mt-3 row-5 mb-3', 'disabled': True}),
+        # initial='Pendente',
+        required=False  
+    )
+
     class Meta:
         model = CompraItem
         fields = ['produto', 'quantidade', 'preco_unitario','discount','price_total']

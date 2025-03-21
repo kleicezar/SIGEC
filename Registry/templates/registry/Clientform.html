@@ -16,13 +16,19 @@
 <body>
     {% block content %}
     <div class="content">
-        <a href="{% url 'Client' %}">
-            <button class="btn btn-voltar">Voltar</button>
-        </a>        
+        
         <form method="POST">
             {% csrf_token %}
-            
-            <h4 class="mt-5 mb-5 c-adapted">Cadastro de Cliente</h4>
+            <div class="col d-flex mb-5 gap-4 mt-5 ">
+                <a href="{% url 'Client' %}">
+                    <button class="btn btn-voltar" type="button">
+                        <i class="fas fa-arrow-left"></i> 
+                    </button>
+                </a>   
+                
+                <h4 class="c-adapted">Cadastro de Cliente</h4>
+            </div>
+         
             <h6>
                 Informações Pessoais
             </h6>

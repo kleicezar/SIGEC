@@ -36,19 +36,24 @@
         {% block content %}
         <div class='content'>
             <div class='container-fluid justify-content-center align-items-center'>
-                <a href="{% url 'venda_list' %}">
-                    <button class="btn btn-voltar mb-4">Voltar</button>
-                </a>    
-                <h4 class="c-adapted mt-5 mb-5">{% if venda.pk %}Editar{% else %}Criar{% endif %} Venda</h4>
+               
+                
                 <form method="post">
                     {% csrf_token %}
-                
+                    <div class="col d-flex mb-5 gap-4 mt-5">
+                        <a href="{% url 'venda_list' %}">
+                            <button type="button" class="btn btn-voltar">
+                                <i class="fas fa-arrow-left"></i> 
+                            </button>
+                        </a>    
+                        <h4 class="c-adapted">{% if venda.pk %}Editar{% else %}Criar{% endif %} Venda</h4>
+                    </div>
                     <!-- Formulário de Venda -->
                     <h6 class="mt-5 mb-3">Dados da Venda</h6>
                     <!-- {{ venda_form.as_p }} -->
                     {% if messages %}
                         {% for message in messages %}
-                            {% if "sale_page" in message.tags %}
+                            {% if "salecreate_page" in message.tags %}
                             <div class="modal"> 
                                 <header class="mHeader">
                                     <p>Falha ao salvar Venda</p>

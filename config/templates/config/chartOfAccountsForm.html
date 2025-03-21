@@ -19,11 +19,15 @@
             {% block content %}
             <div class='content'>
                 <div class='center col'>
-                    <a href="{% url 'ChartofAccounts' %}">
-                        <button class="btn btn-voltar">Voltar</button>''
-                    </a> 
                     <form action="." method='post' autocomplete='off' class="row">
                         {% csrf_token %}
+                        <div class="col d-flex gap-4">
+                            <a href="{% url 'ChartofAccounts' %}">
+                                <button type="button" class="btn btn-voltar">
+                                    <i class="fas fa-arrow-left"></i> 
+                                </button>
+                            </a> 
+                        </div>
                         <div class="container">
                             <div class="row justify-content-center">
                                 <div class="col-lg-4 col-md-6 col-sm-8 col-10">

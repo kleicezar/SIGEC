@@ -7,6 +7,9 @@
     display: flex; /* Ativa o Flexbox */
     
 }
+.w-p{
+    width: 6.5em;
+}
 .input-generate{
     height: 30px;
     font-size: 12px;

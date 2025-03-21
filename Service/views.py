@@ -77,9 +77,14 @@ def workOrders_create(request):
                 for form in PaymentMethod_Accounts_FormSet.deleted_objects:
                     form.delete()
                     form.save()
+            if total_payment != service.total_value:
+                messages.warning(request,"Ação cancelada! O valor acumalado dos pagamentos é menor do que o valor acumulado dos prudutos.",extra_tags='workcreate_page')
+
+            if ((creditLimitAtual != creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual<0)):
+                messages.warning(request,"Ação Cancelada! O valor acumulado dos pagamentos é menor que o limite de crédito. ",extra_tags='workcreate_page')
 
         if not service_form.is_valid():
-            print("Erro  no ServiceForm",service_form.errors)
+            print("Erro no ServiceForm",service_form.errors)
 
         if not venda_item_formset.is_valid():
             print("Erro na VendaItem",venda_item_formset.errors)
@@ -99,7 +104,7 @@ def workOrders_create(request):
         service_item_formset = ServiceItemFormSet(queryset=VendaItemService.objects.none())
         venda_item_formset = VendaItemFormSet(queryset=VendaItem.objects.none())
         # payment_method_formset = PaymentMethodServiceFormSet(queryset=PaymentMethod_VendaService.objects.none())
-
+        messages.warning(request,'Opa',extra_tags='workcreate_page')
         context = {
             'form_Accounts':form_Accounts,
             'form_payment_account':PaymentMethod_Accounts_FormSet,
@@ -259,7 +264,12 @@ def workOrders_update(request,pk):
                         Older_PaymentMethod_Accounts_FormSet.save()                            
 
                 return redirect('workOrders_list')
-    
+            
+            if total_payment != service.total_value:
+                messages.warning(request,"Ação cancelada! O valor acumalado dos pagamentos é menor do que o valor acumulado dos prudutos.",extra_tags='workupdate_page')
+            
+            if ((creditLimitAtual != creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual<0)):
+                messages.warning(request,"Ação Cancelada! O valor acumulado dos pagamentos é menor que o limite de crédito. ",extra_tags='workupdate_page')
         if not service_form.is_valid():
             print("Erro no ServiceForm",service_form.errors)
 

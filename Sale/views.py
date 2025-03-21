@@ -96,10 +96,10 @@ def venda_create(request):
                 return redirect('venda_list')
 
             if total_payment != venda_form.cleaned_data['total_value']:
-                messages.warning(request, "Ação cancelada! O valor não foi salvo completamente.",extra_tags='sale_page')
+                messages.warning(request, "Ação cancelada! O valor não foi salvo completamente.",extra_tags='salecreate_page')
                 
             if ((creditLimitAtual != creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual<0)):
-                messages.warning(request, "Ação cancelada! O valor acumulado dos pagamentos é menor que o limite de Crédito!",extra_tags='sale_page')
+                messages.warning(request, "Ação cancelada! O valor acumulado dos pagamentos é menor que o limite de Crédito!",extra_tags='salecreate_page')
                 
            
             
@@ -115,7 +115,7 @@ def venda_create(request):
     else:
         # messages.warning(request, "Ação cancelada! O valor não foi salvo completamente.")
         # messages.warning(request, "Ação cancelada! O valor acumulado dos pagamentos é menor que o limite de Crédito!")
-        messages.warning(request,'Opa',extra_tags='sale_page')
+        messages.warning(request,'Opa',extra_tags='salecreate_page')
         messages.warning(request,'fadfasdf',extra_tags='oi')
         form_Accounts = AccountsForm()
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
@@ -256,6 +256,12 @@ def venda_update(request, pk):
                 # messages.success(request, "Venda atualizada com sucesso!")
                 return redirect('venda_list')
             
+            if total_payment != venda_form.cleaned_data['total_value']:
+                messages.warning(request,"Ação cancelada! O valor acumalado dos pagamentos é menor do que o valor acumulado dos prudutos.",extra_tags='vendaupdate_page')
+            
+            if ((creditLimitAtual != creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual<0)):
+                messages.warning(request,"Ação Cancelada! O valor acumulado dos pagamentos é menor que o limite de crédito. ",extra_tags='vendaupdate_page')
+
         if not venda_form.is_valid():
             print('Erros no venda_form: ',venda_form.errors)
 
