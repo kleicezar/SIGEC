@@ -77,10 +77,10 @@ def compras_create(request):
         if compra_form.is_valid() and compra_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
             
             compra = compra_form.save(commit=False)
-            compra.save()  
+            # compra.save()  
             
             compra_item_formset.instance = compra
-            compra_item_formset.save() 
+            compra_item_formset.save(commit=False) 
 
             print(f"Total de formulários processados: {compra_item_formset.total_form_count()}")
             # compra_item_formset.save()
@@ -102,26 +102,31 @@ def compras_create(request):
             # print(payment_method_formset)
             for form in PaymentMethod_Accounts_FormSet:
                 if form.cleaned_data:
-                    # form.acc = True
-                    print('opa neia')
-                    print(form.cleaned_data.get("acc"))
-                    if form.cleaned_data.get("DELETE", False):
-                        payments_to_delete.append(form.instance)
-                    else:
-                        valor = form.cleaned_data['value']
-                        total_payment += valor
-                        valid_payments.append(form)
+                    form.acc = True
+                    valor = form.cleaned_data['value']
+                    total_payment+=valor
+
+                    # print(form.cleaned_data.get("acc"))
+                    # if form.cleaned_data.get("DELETE", False):
+                    #     payments_to_delete.append(form.instance)
+                    # else:
+                    #     valor = form.cleaned_data['value']
+                    #     total_payment += valor
+                    #     valid_payments.append(form)
 
             # Verificar se os pagamentos somam corretamente antes de salvar
             if total_payment == compra.total_value:
-                for form in valid_payments:
-                    form.instance.acc = True
-                    form.instance.compra = compra  # Garante que a compra está associada
-                    form.save()
+                compra_form.save()
+                compra_item_formset.save()
+                PaymentMethod_Accounts_FormSet.save()
+                # for form in valid_payments:
+                #     form.instance.acc = True
+                #     form.instance.compra = compra  # Garante que a compra está associada
+                #     form.save()
 
-                # Remover pagamentos marcados para exclusão
-                for payment in payments_to_delete:
-                    payment.delete()
+                # # Remover pagamentos marcados para exclusão
+                # for payment in payments_to_delete:
+                #     payment.delete()
 
                 return redirect('compras_list')
             else:
