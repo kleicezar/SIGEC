@@ -84,6 +84,8 @@ function addItem() {
         console.log(formCountCompra.value)
         input_product = newForm.querySelector(".inputProduct");
 
+        const statusNewForm = newForm.querySelector("select");
+        statusNewForm.value = "Pendente";
         // field_product.id = `products-${formCount}`;
         input_product.id = `idProduct-${formCount}`
 

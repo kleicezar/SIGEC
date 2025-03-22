@@ -108,7 +108,7 @@ class CompraItemForm(forms.ModelForm):
 
     class Meta:
         model = CompraItem
-        fields = ['produto', 'quantidade', 'preco_unitario','discount','price_total']
+        fields = ['produto', 'quantidade', 'preco_unitario','discount','price_total','status']
         widgets = {
             'produto':forms.TextInput(attrs={
                 'class':'form-control row-2'
