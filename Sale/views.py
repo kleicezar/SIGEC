@@ -115,8 +115,8 @@ def venda_create(request):
     else:
         # messages.warning(request, "Ação cancelada! O valor não foi salvo completamente.")
         # messages.warning(request, "Ação cancelada! O valor acumulado dos pagamentos é menor que o limite de Crédito!")
-        messages.warning(request,'Opa',extra_tags='salecreate_page')
-        messages.warning(request,'fadfasdf',extra_tags='oi')
+        # messages.warning(request,'Opa',extra_tags='salecreate_page')
+        # messages.warning(request,'fadfasdf',extra_tags='oi')
         form_Accounts = AccountsForm()
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
         venda_form = VendaForm()

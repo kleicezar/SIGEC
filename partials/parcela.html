@@ -3,10 +3,20 @@
     .td{
         margin: 5px;
     }
+    /* th{
+
+    height: 28px;
+    padding: 4px 8px;
+    font-size: 14px;
+    text-align: center;
+    font-weight: normal;
+
+    } */
+    
 </style>
 <div class="form-row">
     <table class="table" id="paymentMethod_account">
-        <thead>
+        <thead class="">
             <tr>
                 <th>{{ form_Accounts.numberOfInstallments.label }}</th>
                 <th>{{ form_Accounts.date_init.label }}</th>
@@ -18,8 +28,8 @@
         <tbody>
             <tr>
                 <td>{{ form_Accounts.numberOfInstallments }}</td>
-                <td>
-                    <div class="input-group date" data-provide="datepicker" id="date_init">
+                <td style="padding-right: 40px">
+                    <div class="input-group date" data-provide="datepicker" id="date_init" style="max-width: 250px;">
                         {{ form_Accounts.date_init }}
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-th"></span>
@@ -28,7 +38,7 @@
                 </td>
                 <td>{{ form_Accounts.installment_Range }}</td>
                 <td>{{ form_Accounts.totalValue }}</td>
-                <td><button id="generate" type="button">GERAR</button></td>
+                <td><button id="generate" type="button" class="btn btn-warning">GERAR</button></td>
             </tr>
         </tbody>
     </table>

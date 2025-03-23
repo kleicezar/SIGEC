@@ -19,24 +19,24 @@ class BaseAccountsForm(forms.ModelForm):
         ]
         widgets = {
             'pessoa_id': forms.Select(attrs={ 
-                'class': 'form-select row'
+                'class': 'form-select '
             }),
             'chartOfAccounts': forms.Select(attrs={
-                'class': 'form-control row'
+                'class': 'form-control '
             }),
             'documentNumber': forms.NumberInput(attrs={
-                'class': 'form-control row',
+                'class': 'form-control ',
                 'min': 0
             }),
             'date_account': forms.TextInput(attrs={
-                'class': 'form-control row mask-date'
+                'class': 'form-control mask-date'
             }),
             'peopleWatching': forms.NumberInput(attrs={
-                'class': 'form-control row',
+                'class': 'form-control ',
                 'min': 0
             }),
             'systemWatching': forms.TextInput(attrs={
-                'class': 'form-control row',
+                'class': 'form-control ',
                 'min': 0
             }),
             

@@ -104,7 +104,6 @@ def workOrders_create(request):
         service_item_formset = ServiceItemFormSet(queryset=VendaItemService.objects.none())
         venda_item_formset = VendaItemFormSet(queryset=VendaItem.objects.none())
         # payment_method_formset = PaymentMethodServiceFormSet(queryset=PaymentMethod_VendaService.objects.none())
-        messages.warning(request,'Opa',extra_tags='workcreate_page')
         context = {
             'form_Accounts':form_Accounts,
             'form_payment_account':PaymentMethod_Accounts_FormSet,

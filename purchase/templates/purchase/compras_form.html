@@ -28,14 +28,17 @@
         {% block content %}
         <div class="content">
             <div class="container-fluid justify-content-center align-items-center">
-                <a href="{% url 'compras_list' %}">
-                    <button class="btn btn-voltar mb-4">Voltar</button>
-                </a>
-                <!-- <h4 class="mt-5 mb-5 c-adapted">{% if Compra.pk %}Editar{% else %}Criar{% endif %} Compra</h4> -->
-                <h4 class="c-adapted mt-5 mb-5">Criar Compra</h4>
                 <form method="post">
                     {% csrf_token %}
                 
+                    <div class="col d-flex mb-5 gap-4 mt-5">
+                        <a href="{% url 'compras_list' %}">
+                            <button type="button" class="btn btn-voltar">
+                                <i class="fas fa-arrow-left"></i> 
+                            </button>
+                        </a>    
+                       <h4 class="c-adapted">{% if Compra.pk %}Editar{% else %}Criar{% endif %} Compra</h4>
+                    </div>
                     <!-- Formulário de Compra -->
                     <h6>Dados da Compra</h6>
                     <!-- {{ compra_form.as_p }} -->
@@ -258,22 +261,11 @@
 
                    
                     {% include 'parcela.html' %}
-                    <!-- <div class="row">
-
-                        <div class="col">
-                            <label for="">{{compra_form.observacao_pessoas.label}}</label>
-                            {{compra_form.observacao_pessoas}}
-                        </div>
-
-                        <div class="col">
-                            <label for="">{{compra_form.observacao_sistema.label}}</label>
-                            {{compra_form.observacao_sistema}}
-                        </div>
-                    </div> -->
+                
 
                     <div class="row">
                         <div class="col mt-5 text-end">
-                            <button  type="submit" class="btn bg-adapted">Salvar Compra</button>
+                            <button  type="submit" class="btn bg-adapted">Enviar</button>
                         </div>
                     </div>
                 </form>
@@ -308,13 +300,7 @@
                   </table>
             </div>
         </template>
-        <!-- <script type="text/javascript" src="{% static 'js/jquery-3.7.1.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/jquery.mask.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/mask.js' %}"></script>
-        <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
-        <script src="{% static 'js/bootstrap-datepicker.pt-BR.js' %}"></script> -->
-        <!-- <script src="{% static 'js/cep_api.js' %}"></script> -->
-        <!-- <script src="{% static 'js/date.js' %}"></script> -->
+      
         <script src="{% static 'js/addItem.js' %}" defer></script>
         <script src="{% static 'js/clientSearch.js' %}"></script>  <!-- pesquisa clientes -->
         {% comment %} <script src="{% static 'js/compra_item.js' %}"></script> <!-- pesquisa produtos em compras --> {% endcomment %}
