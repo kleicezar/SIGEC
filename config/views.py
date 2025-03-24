@@ -144,6 +144,7 @@ def deletePosition(request, id_position):
 
 @login_required
 def situation(request):
+  
     context = {
         'Situations': Situation.objects.all()
     }
@@ -161,7 +162,7 @@ def SituationForm(request):
         situationForm = SituationModelForm(request.POST)
         if situationForm.is_valid():
             situationForm.save()
-            messages.success(request, "Forma de Pagamento cadastrado com sucesso")
+            messages.success(request, "Situação cadastrada com sucesso")
             return redirect('Situation')
     context = {
         'Situation' : situationForm
@@ -170,6 +171,7 @@ def SituationForm(request):
 
 @login_required
 def updateSituation(request, id_situation):
+    
     situation = get_object_or_404(Situation, id=id_situation)
     if request.method == "GET":
         situationForm = SituationModelForm(instance=situation)
@@ -183,7 +185,7 @@ def updateSituation(request, id_situation):
         situationForm = SituationModelForm(request.POST, instance=situation)
         if situationForm.is_valid():
             situationForm.save()
-            messages.success(request, "Forma de Pagamento cadastrado com sucesso")
+            messages.success(request, "Situação cadastrada com sucesso")
             return redirect('Situation')
     context = {
         'Situation' : situationForm

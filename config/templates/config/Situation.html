@@ -15,10 +15,32 @@
     <body>
         {% block content %}
         <div class='content'>
+           
             <div class="container">
                 <a href="{% url 'SituationForm' %}">
                     <button class="btn btn-success">Cadastrar</button>
                 </a>
+                {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == "success" %}
+                    <div class="modal" > 
+                        <header class="mHeader">
+                            <p>Cadastro da Situação</p>
+                        </header>
+                    
+                        <div class="alert {{ message.tags }} mBody">
+                            <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur, illum atque. Doloremque, dolor ipsum labore numquam quaerat doloribus, incidunt provident suscipit maiores dicta animi, itaque at reiciendis exercitationem assumenda odit?</p> -->
+                        {{ message }}
+
+                        </div>
+                
+                        <footer>
+                            <button id="mBtn" class="mButton" type="button" onclick="closeModal(this)">Fechar</button>
+                        </footer>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
                 <div class="form-group">
                     <form method="GET" action="{% url 'Situation' %}">
                         {% csrf_token %}
@@ -72,10 +94,13 @@
                 </tbody>
             </table>
         </div> 
+     
         {% endblock %}
 
         {% block scripts %}
-        <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+        <script src="{% static 'js/error.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/
+        script.js' %}"></script>
         <script src="{% static 'js/search_situation.js' %}"></script>
         {% endblock %}
 
