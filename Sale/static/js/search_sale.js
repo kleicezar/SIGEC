@@ -17,6 +17,7 @@ input.addEventListener("input",()=>{
         resultContainer.innerHTML="";
         messageContainer.innerHTML="";
         console.log('testando vendas');
+        console.log("ooo")
         console.log(data.vendas)
         if (data.message){
             messageContainer.innerHTML=`<p>${data.message}</p>`;
@@ -24,13 +25,21 @@ input.addEventListener("input",()=>{
 
         if (data.vendas.length > 0){
             data.vendas.forEach(venda=>{
+                let dataObj = new Date(venda.data_da_venda);
+             
+                let dataFormatada = dataObj.toLocaleDateString('pt-BR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+
                 const row = document.createElement("tr");
                 row.innerHTML = `
                     <td>${venda.id}</td>
                     <td>${venda.pessoa}</td>
-                    <td>${venda.data_da_venda}</td>
+                    <td>${dataFormatada}</td>
                     <td>${venda.situacao}</td>
-                    <td>${venda.is_active}</td>
+                    <td>${venda.is_active? 'Sim':'Não'}</td>
                     <td>
                            <a href="/venda/update/${venda.id}">
                                 <button class="btn" style="background-color: #117027;color: white;" >Editar</button>
