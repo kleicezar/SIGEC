@@ -15,7 +15,7 @@ from django.contrib.auth.models import Permission
 @login_required
 def paymentMethod(request):
     context = {
-        'PaymentMethods': PaymentMethod.objects.all()
+        'PaymentMethods': PaymentMethod.objects.filter(is_Active=True)
     }
     return render(request, 'config/PaymentMethod.html', context)
 
@@ -68,7 +68,8 @@ def updatePaymentMethod(request, id_paymentMethod):
 def deletePaymentMethod(request, id_paymentMethod):
     paymentMethod = get_object_or_404(PaymentMethod, id=id_paymentMethod)
     if request.method == "POST":
-        paymentMethod.delete()
+        paymentMethod.is_Active = False
+        paymentMethod.save()
         messages.success(request, "Situação deletada com sucesso.")
         return redirect('PaymentMethod')  # Redirecione para onde desejar
     context = {
@@ -81,7 +82,7 @@ def deletePaymentMethod(request, id_paymentMethod):
 @login_required
 def position(request):
     context = {
-        'Positions': Position.objects.all()
+        'Positions': Position.objects.filter(is_Active=True)
     }
     return render(request, 'config/Position.html', context)
 
@@ -131,7 +132,8 @@ def updatePosition(request, id_position):
 def deletePosition(request, id_position):
     position = get_object_or_404(Position, id=id_position)
     if request.method == "POST":
-        position.delete()
+        position.is_Active = False
+        position.save()
         messages.success(request, "Situação deletada com sucesso.")
         return redirect('Position')  # Redirecione para onde desejar
     context = {
@@ -146,7 +148,7 @@ def deletePosition(request, id_position):
 def situation(request):
   
     context = {
-        'Situations': Situation.objects.all()
+        'Situations': Situation.objects.filter(is_Active=True)
     }
     return render(request, 'config/Situation.html', context)
 
@@ -196,7 +198,8 @@ def updateSituation(request, id_situation):
 def deleteSituation(request, id_situation):
     situation = get_object_or_404(Situation, id=id_situation)
     if request.method == "POST":
-        situation.delete()
+        situation.is_Active = False
+        situation.save()
         messages.success(request, "Situação deletada com sucesso.")
         return redirect('Situation')  # Redirecione para onde desejar
     context = {
@@ -210,7 +213,7 @@ def deleteSituation(request, id_situation):
 @login_required
 def chartOfAccounts(request):
     context = {
-        'ChartOfAccounts': ChartOfAccounts.objects.all()
+        'ChartOfAccounts': ChartOfAccounts.objects.filter(is_Active=True)
     }
     return render(request, 'config/ChartOfAccounts.html', context)
 
@@ -261,7 +264,8 @@ def updateChartOfAccounts(request, id_chartOfAccounts):
 def deleteChartOfAccounts(request, id_chartOfAccounts):
     chartOfAccounts = get_object_or_404(ChartOfAccounts, id=id_chartOfAccounts)
     if request.method == "POST":
-        chartOfAccounts.delete()
+        chartOfAccounts.is_Active = False
+        chartOfAccounts.save()
         messages.success(request, "Situação deletada com sucesso.")
         return redirect('ChartofAccounts')  # Redirecione para onde desejar
     context = {
@@ -319,7 +323,8 @@ def updateService(request,pk):
 def deleteService(request,pk):
     servico = get_object_or_404(Service, pk=pk)
     if request.method == "POST":
-        servico.delete()
+        servico.is_Active = False
+        servico.save()
         messages.success(request, "Serviço deletada com sucesso.")
         return redirect('config/Service')
     context ={

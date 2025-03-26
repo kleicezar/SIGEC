@@ -92,22 +92,26 @@ def Client_Create(request):
 @login_required
 def client_list(request):
     # Obtenha o termo de pesquisa da requisição
-    print("Amigo estou aqui")
     search_query = request.GET.get('query', '')
 
     # Filtrar os clientes com base no termo de pesquisa
     if search_query:
         clients = Person.objects.filter(
+
         (
             Q(id__icontains=search_query) | 
             Q(id_FisicPerson_fk__name__icontains=search_query) | 
             Q(id_ForeignPerson_fk__name_foreigner__icontains=search_query) | 
-            Q(id_LegalPerson_fk__fantasyName__icontains=search_query)
-        ),
-        isActive = True
+            Q(id_LegalPerson_fk__fantasyName__icontains=search_query) 
+            
+        ) 
+        & Q(isActive = False)
+        
     ).order_by('id')
     else:
-        clients = Person.objects.all()
+        clients = Person.objects.filter(
+            isActive = True
+        )
 
     # Configure o Paginator com o queryset filtrado
     paginator = Paginator(clients, 20)  # 5 itens por página
@@ -266,7 +270,8 @@ def update_client(request, id_client):
 def delete_client(request, id_client):
     # Recupera o cliente com o id fornecido
     client = get_object_or_404(Person, id=id_client)
-    client.delete()
+    client.isActive = False
+    client.save()
     return redirect('Client')
 
 @login_required

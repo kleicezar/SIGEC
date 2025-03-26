@@ -18,12 +18,6 @@ class BaseAccountsForm(forms.ModelForm):
             
         ]
         widgets = {
-            'pessoa_id': forms.Select(attrs={ 
-                'class': 'form-select '
-            }),
-            'chartOfAccounts': forms.Select(attrs={
-                'class': 'form-control '
-            }),
             'documentNumber': forms.NumberInput(attrs={
                 'class': 'form-control ',
                 'min': 0
@@ -41,7 +35,22 @@ class BaseAccountsForm(forms.ModelForm):
             }),
             
         }
-
+    chartOfAccounts = forms.ModelChoiceField(
+        queryset=ChartOfAccounts.objects.filter(is_Active=True),
+        widget=forms.Select(
+            attrs={
+                'class':'form-control row'
+            }
+        )
+    )
+    pessoa_id = forms.ModelChoiceField(
+        queryset=Person.objects.filter(isActive=True),
+        widget=forms.Select(
+            attrs={
+                'class':'form-control row'
+            }
+        )
+    )
 class AccountsForm(BaseAccountsForm):
     installment_Range = forms.ChoiceField(
         choices=Accounts.INSTALLMENT_RANGE_CHOICES,

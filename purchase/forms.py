@@ -4,7 +4,7 @@ from .models import *
 class ProductModelForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields =  "__all__"
+        exclude=['is_active']
         widgets= {
             'description':forms.Textarea(attrs={
                 'class':'form-control  row text-area'
@@ -47,11 +47,15 @@ class ProductModelForm(forms.ModelForm):
             'minimum_quantity':forms.NumberInput(attrs={
                 'class':'form-control row'
             }),
-            'supplier':forms.Select(attrs={
-                'class':'form-select row'
-            })
-            
+            'is_active': forms.BooleanField(initial=True, required=False)
         }
+    supplier = forms.ModelChoiceField(
+        queryset=Person.objects.filter(isActive=True),
+        widget=forms.Select(
+            attrs=
+            {'class':'form-control row'}
+        )
+    )
     def __init__(self, *args, **kwargs):
         super(ProductModelForm, self).__init__(*args, **kwargs)
 

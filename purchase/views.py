@@ -401,7 +401,7 @@ def compras_item_create(request, compra_pk):
 @login_required
 @permission_required('purchase.view_product', raise_exception=True)
 def product(request):
-    products = Product.objects.all()
+    products = Product.objects.filter(is_active=True)
     return render(request, 'purchase/product_list.html', {'products': products})
 
 @login_required
@@ -433,7 +433,8 @@ def updateProduct(request, id_product):
 @login_required
 def deleteProduct(request, id_product):
     product = get_object_or_404(Product, id=id_product)
-    product.delete()
+    product.is_active = False
+    product.save()
     return redirect('Product')
 
 @login_required
