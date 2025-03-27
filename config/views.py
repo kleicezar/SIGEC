@@ -35,7 +35,7 @@ def PaymentMethodForm(request):
         previous_url = request.session.get('previous_page','/')
         if paymentMethodForm.is_valid():
             paymentMethodForm.save()
-            messages.success(request, "Forma de Pagamento cadastrado com sucesso")
+            messages.success(request, "Forma de Pagamento cadastrada com sucesso.")
             return redirect(previous_url)
     context = {
         'paymentMethod' : paymentMethodForm
@@ -57,7 +57,7 @@ def updatePaymentMethod(request, id_paymentMethod):
         paymentMethodForm = PaymentMethodModelForm(request.POST, instance=paymentMethod)
         if paymentMethodForm.is_valid():
             paymentMethodForm.save()
-            messages.success(request, "Forma de Pagamento cadastrado com sucesso")
+            messages.success(request, "Forma de Pagamento atualizada com sucesso.")
             return redirect('PaymentMethod')
     context = {
         'PaymentMethod' : paymentMethodForm
@@ -70,7 +70,7 @@ def deletePaymentMethod(request, id_paymentMethod):
     if request.method == "POST":
         paymentMethod.is_Active = False
         paymentMethod.save()
-        messages.success(request, "Situação deletada com sucesso.")
+        messages.success(request, "Forma de Pagamento deletada com sucesso.")
         return redirect('PaymentMethod')  # Redirecione para onde desejar
     context = {
         'paymentMethod': paymentMethod
@@ -99,7 +99,7 @@ def PositionForm(request):
         PositionForm = PositionModelForm(request.POST)
         if PositionForm.is_valid():
             PositionForm.save()
-            messages.success(request, "Forma de Pagamento cadastrado com sucesso")
+            messages.success(request, "Cargo cadastrado com sucesso")
             return redirect('Position')
     context = {
         'Position' : PositionForm
@@ -121,7 +121,7 @@ def updatePosition(request, id_position):
         positionForm = PositionModelForm(request.POST, instance=position)
         if positionForm.is_valid():
             positionForm.save()
-            messages.success(request, "Cargo cadastrado com sucesso")
+            messages.success(request, "Cargo atualizado com sucesso.")
             return redirect('Position')
     context = {
         'Position' : positionForm
@@ -134,7 +134,7 @@ def deletePosition(request, id_position):
     if request.method == "POST":
         position.is_Active = False
         position.save()
-        messages.success(request, "Situação deletada com sucesso.")
+        messages.success(request, "Cargo deletado com sucesso.")
         return redirect('Position')  # Redirecione para onde desejar
     context = {
         'position': position
@@ -164,7 +164,7 @@ def SituationForm(request):
         situationForm = SituationModelForm(request.POST)
         if situationForm.is_valid():
             situationForm.save()
-            messages.success(request, "Situação cadastrada com sucesso")
+            messages.success(request, "Situação cadastrada com sucesso.")
             return redirect('Situation')
     context = {
         'Situation' : situationForm
@@ -187,7 +187,7 @@ def updateSituation(request, id_situation):
         situationForm = SituationModelForm(request.POST, instance=situation)
         if situationForm.is_valid():
             situationForm.save()
-            messages.success(request, "Situação cadastrada com sucesso")
+            messages.success(request, "Situação atualizada com sucesso.")
             return redirect('Situation')
     context = {
         'Situation' : situationForm
@@ -229,7 +229,7 @@ def ChartOfAccountsForm(request):
         chartOfAccountsForm = ChartOfAccountsModelForm(request.POST)
         if chartOfAccountsForm.is_valid():
             chartOfAccountsForm.save()
-            messages.success(request, "Plano de Contas cadastrado com sucesso")
+            messages.success(request, "Plano de Contas cadastrado com sucesso.")
             return redirect('ChartofAccounts')
         else:
             print('Erros:',chartOfAccountsForm.errors)
@@ -253,7 +253,7 @@ def updateChartOfAccounts(request, id_chartOfAccounts):
         chartOfAccountsForm = ChartOfAccountsModelForm(request.POST, instance=chartOfAccounts)
         if chartOfAccountsForm.is_valid():
             chartOfAccountsForm.save()
-            messages.success(request, "Forma de Pagamento cadastrado com sucesso")
+            messages.success(request, "Plano de Contas atualizado com sucesso.")
             return redirect('ChartofAccounts')
     context = {
         'ChartOfAccounts' : chartOfAccountsForm
@@ -266,7 +266,7 @@ def deleteChartOfAccounts(request, id_chartOfAccounts):
     if request.method == "POST":
         chartOfAccounts.is_Active = False
         chartOfAccounts.save()
-        messages.success(request, "Situação deletada com sucesso.")
+        messages.success(request, "Plano de Contas deletado com sucesso.")
         return redirect('ChartofAccounts')  # Redirecione para onde desejar
     context = {
         'chartOfAccounts': chartOfAccounts
@@ -290,7 +290,7 @@ def ServiceForm(request):
         print(f'\n\n\n{service_form.is_valid()}')
         if service_form.is_valid():
             service_form.save() 
-            messages.success(request, "Tipo de Serviço cadastrado com sucesso")
+            messages.success(request, "Tipo de serviço cadastrado com sucesso.")
             return redirect('Service')
         else: 
             return render(request, 'config/serviceForm.html', {'form': service_form})
@@ -308,7 +308,7 @@ def updateService(request,pk):
         service_form = ServiceModelForm(request.POST,instance=servico)
         if service_form.is_valid():
             service_form.save()
-            messages.success(request, "Tipo de Serviço atualizado com sucesso")
+            messages.success(request, "Tipo de serviço atualizado com sucesso.")
             # return redirect('orderServiceForm')
             return redirect('Service')
 
@@ -325,7 +325,7 @@ def deleteService(request,pk):
     if request.method == "POST":
         servico.is_Active = False
         servico.save()
-        messages.success(request, "Serviço deletada com sucesso.")
+        messages.success(request, "Tipo de serviço deletado com sucesso.")
         return redirect('config/Service')
     context ={
         'service':servico

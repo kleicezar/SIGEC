@@ -15,32 +15,34 @@
     <body>
         {% block content %}
         <div class='content'>
-           
+
+            <div class="position-absolute  start-50">
+                <div class="">
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% if "sucessSituation" in message.tags %}
+                            <div style="max-height: 50px; max-width: 400px;" class="successContainer"> 
+                                <div class="alert {{ message.tags }} alert-success ">
+                                    <strong>Sucesso!</strong>
+                                    <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur, illum atque. Doloremque, dolor ipsum labore numquam quaerat doloribus, incidunt provident suscipit maiores dicta animi, itaque at reiciendis exercitationem assumenda odit?</p> -->
+                                {{ message }}
+    
+                                </div>
+                        
+                                
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            
+            
             <div class="container">
                 <a href="{% url 'SituationForm' %}">
                     <button class="btn btn-success">Cadastrar</button>
                 </a>
-                {% if messages %}
-                {% for message in messages %}
-                    {% if message.tags == "success" %}
-                    <div class="modal" > 
-                        <header class="mHeader">
-                            <p>Cadastro da Situação</p>
-                        </header>
-                    
-                        <div class="alert {{ message.tags }} mBody">
-                            <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur, illum atque. Doloremque, dolor ipsum labore numquam quaerat doloribus, incidunt provident suscipit maiores dicta animi, itaque at reiciendis exercitationem assumenda odit?</p> -->
-                        {{ message }}
-
-                        </div>
                 
-                        <footer>
-                            <button id="mBtn" class="mButton" type="button" onclick="closeModal(this)">Fechar</button>
-                        </footer>
-                    </div>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
                 <div class="form-group">
                     <form method="GET" action="{% url 'Situation' %}">
                         {% csrf_token %}
