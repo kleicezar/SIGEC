@@ -407,10 +407,13 @@ def buscar_vendas(request):
 
 
     resultados = Venda.objects.filter(
-        Q(id__istartswith=query) | 
-        Q(pessoa__id_FisicPerson_fk__name__istartswith=query) |
-        Q(pessoa__id_ForeignPerson_fk__name_foreigner__istartswith=query) |
-        Q(pessoa__id_LegalPerson_fk__fantasyName__istartswith=query)
+        (
+            Q(id__istartswith=query) | 
+            Q(pessoa__id_FisicPerson_fk__name__istartswith=query) |
+            Q(pessoa__id_ForeignPerson_fk__name_foreigner__istartswith=query) |
+            Q(pessoa__id_LegalPerson_fk__fantasyName__istartswith=query)
+        )
+        & Q(is_active = True)
     ).order_by('id')
 
     sales = [

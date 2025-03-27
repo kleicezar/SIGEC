@@ -443,9 +443,12 @@ def buscar_produtos(request):
     page_num = request.GET.get('page',1)
 
     resultados = Product.objects.filter(
-        Q(id__istartswith=query) |
-        Q(description__istartswith=query) |
-        Q(product_code__istartswith=query)
+        (
+            Q(id__istartswith=query) |
+            Q(description__istartswith=query) |
+            Q(product_code__istartswith=query)
+        )
+        & Q(is_active = True)
     ).order_by('id')
 
     products = [
