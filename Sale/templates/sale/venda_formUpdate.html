@@ -87,30 +87,24 @@
                             <tr>
                                 <td id="form-client" class="">
                                     {{venda_form.pessoa.as_hidden}}
-                                <input type="text" class="row form-control mb-3 mt-3" id="idSearch">
-                                <div id="clients" class="mt-3 c row">
-                                    
-                                </div>
-                                </td>
-                                <td style="width: 200px;">
-                                    <div class="input-group date " data-provide="datepicker">
-                                        {{venda_form.data_da_venda}}
-                                        <div class="input-group-addon">
-                                            <span class="glyphicon glyphicon-th"></span>
+                                    <div>
+                                        <input type="text" class="row form-control mb-3 mt-3 idSearch" id="idSearch" onkeyup="showSuggetions(this)">
+                                        <div id="suggestions" class="suggetions">
+                                            
                                         </div>
                                     </div>
                                 </td>
+                                <td style="width: 200px;">
+                                    <input type="datetime-local" 
+                                        name="data_da_venda" 
+                                        value="{{ venda_form.data_da_venda.value|date:'Y-m-d\TH:i' }}" 
+                                        class="form-control mb-3 mt-3 row-xl-2" 
+                                        required id="id_data_da_venda" readonly>
+                                        
+                                </td>
                                 <td>{{venda_form.situacao}}</td>
                             </tr>
-                            <tr>
-                                <td class="z-2 position-absolute suggest">
-                                    <div id="options-1"  class="row form-control z-1 ">
-                                        <p id="title-client"class="text-center ">ID - CLIENTE</p>
-                                        
-
-                                    </div>
-                                </td>
-                            </tr>
+                           
                         </tbody>
                     </table>
                     
@@ -140,8 +134,8 @@
                                                 <td>
                                                     <input type="hidden" name="{{ form.prefix }}-id" value="{{ form.instance.id }}">
                                                     {{form.product.as_hidden}}
-                                                    <input type="text" class="row form-control mb-3 mt-3" id="idProduct-0">
-                                                    <div id="products-0" class="mt-3 field-product row">
+                                                    <input type="text" class="row form-control mb-3 mt-3 idSearch" id="idProduct-0" onkeyup="showSuggetionsProducts(this)">
+                                                    <div id="products-0" class="suggetions">
                                                     </div>
                                                 </td>
                                                 <td>
@@ -167,13 +161,6 @@
                                                     <!-- Checkbox para exclusão -->
                                                     <button type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removeItemUpdate(this)" >Deletar</button>
                                                     {{form.DELETE.as_hidden}}
-                                                </td>
-                                            </tr>
-                                            <tr class="tre">
-                                                <td class="z-2 position-absolute suggest" style="display: none;">
-                                                    <div id="options_products-{{ forloop.counter0 }}" class="row form-control z-1 v">
-                                                        <p class="text-center title-product">CODIGO - DESC</p>
-                                                    </div>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -208,8 +195,8 @@
                                             <td>
                                                 <input type="hidden" name="{{ form.prefix }}-id" value="{{ form.instance.id }}">
                                                 {{form.product.as_hidden}}
-                                                <input type="text" class="row form-control mb-3 mt-3" id="idProduct-0">
-                                                <div id="products-0" class="mt-3 field-product row">
+                                                <input type="text" class="row form-control mb-3 mt-3 idSearch" id="idProduct-0" onkeyup="showSuggetionsProducts(this)">
+                                                <div id="products-0" class="suggetions">
                                                 </div>
                                             </td>
                                             <td>
@@ -235,13 +222,6 @@
                                                 <!-- Checkbox para exclusão -->
                                                 <button type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removeItemUpdate(this)" >Deletar</button>
                                                 {{form.DELETE.as_hidden}}
-                                            </td>
-                                        </tr>
-                                        <tr class="tre">
-                                            <td class="z-2 position-absolute suggest" style="display: none;">
-                                                <div id="options_products-{{ forloop.counter0 }}" class="row form-control z-1 v">
-                                                    <p class="text-center title-product">CODIGO - DESC</p>
-                                                </div>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -287,9 +267,8 @@
                                         <td>
                                             {{ venda_item_formset.empty_form.id.as_hidden}}
                                             {{ venda_item_formset.empty_form.product.as_hidden }}
-                                            <input type="text" class="row form-control inputProduct mb-3 mt-3">
-                                            <div class="mt-3 field-product row">
-                                    
+                                            <input type="text" class="row form-control mb-3 mt-3 idSearch" id="idProduct-0" onkeyup="showSuggetionsProducts(this)">
+                                            <div id="products-0" class="suggetions">
                                             </div>
                                         </td>
                                         
@@ -313,15 +292,6 @@
                                         <td>
                                             <button type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removeItem(this)">Deletar</button>
                                             {{venda_item_formset.empty_form.DELETE.as_hidden}}
-                                        </td>
-                                    </tr>
-                                    <tr class="tre">
-                                        <td class="z-2 position-absolute suggest ">
-                                            <div id="" class="row form-control z-1 v">
-                                                <p class="text-center title-product">CODIGO - DESC</p>
-
-        
-                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -397,7 +367,8 @@
         </div>
         
         <script src="{% static 'js/addItem.js' %}" defer></script>
-        <script src="{% static 'js/clientSearch.js' %}"></script>  <!-- pesquisa clientes -->
+        <script src="{% static 'js/new.js' %}"></script><!-- pesquisa clientes -->
+        <script src="{% static 'js/newUpdate.js' %}"></script>  <!-- pesquisa clientes -->
         <script src="{% static 'js/venda_item.js' %}"></script> <!-- pesquisa produtos em vendas-->
         {% endblock %}     
     </main>

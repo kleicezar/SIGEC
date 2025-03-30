@@ -38,7 +38,6 @@ function addItem() {
     // const formCountElem = document.getElementById('id_vendaitem_set-TOTAL_FORMS');
     const formCountService = document.getElementById("id_vendaitemproductservice_set-TOTAL_FORMS");
 
-
     if(formCountService){
         const [formCount,newForm] = clone(formCountService,emptyFormTemplate);
         formCountService.value = parseInt(formCount) + 1;
@@ -60,24 +59,13 @@ function addItem() {
         const [formCount,newForm] = clone(formCountSale,emptyFormTemplate);
         formCountSale.value = parseInt(formCount) + 1;
 
-        // field_product=  newForm.querySelector(".field-product ");
-        input_product = newForm.querySelector(".inputProduct");
-
-        // field_product.id = `products-${formCount}`;
-        input_product.id = `idProduct-${formCount}`
-
         const statusNewForm = newForm.querySelector("select");
         statusNewForm.value = "Pendente";
 
-        field_list_products = newForm.querySelector(".v");
-        field_list_products.parentElement.style.display = "none";
-        field_list_products.id = `options_products-${formCount}`;
 
         formset.appendChild(newForm);
     }
     if(formCountCompra){
-        // formCountCompra.value = 5
-        // const emptyFormTemplate = document.getElementById('empty-form-template');
         console.log(formCountCompra)
         const [formCount,newForm] = clone(formCountCompra,emptyFormTemplate);
         formCountCompra.value = parseInt(formCount) + 1 ;
@@ -96,9 +84,6 @@ function addItem() {
         formset.appendChild(newForm)
         
     }
-
-    
-
     // Cria ids para identificação da area em que sera requisitado os produtos pelo filtro do campo product
    
 }
@@ -110,15 +95,6 @@ function addItemService(){
     if(formCountService){
         const [formCount,newForm] = clone(formCountService,emptyServiceTemplate);
         formCountService.value = parseInt(formCount) + 1;
-        input_product = newForm.querySelector(".inputService");
-        input_product.id = `idService-${formCount}`;
-
-        // const statusNewForm = newForm.querySelector("select");
-        // statusNewForm.value = "Pendente";
-
-        field_list_products = newForm.querySelector(".v");
-        field_list_products.parentElement.style.display = "none";
-        field_list_products.id = `options_services-${formCount}`;
         
         formset.appendChild(newForm);
     }
@@ -126,8 +102,6 @@ function addItemService(){
 
 function clone(formCountElem,template){
     const formCount = parseInt(formCountElem.value);
-    // const emptyFormTemplate = document.getElementById('empty-form-template');
-    // console.log(formCount)
     if (!template) {
         console.error("Template de formulário vazio (empty-form-template) não encontrado!");
         return;
@@ -224,20 +198,7 @@ function updateId(deleteButton, itensForms) {
                     input.name = novoName
                 }
                 
-                // let oldValue = oldInput.value;
-
-                // console.log(old)
-               
-                // if (input.name.endsWith("-id")){
-                //     console.log("INPUT COM ID:")
-                //     console.log(input)
-                //     input.value = oldValue;
-                // }
-                // else{
-                
-                // console.log(input)
             }
-    // }
         
     });
 
@@ -276,9 +237,6 @@ function removeItemUpdate(button){
     
 
     let parent_button_5 = parent_button_4.parentElement;
-    // console.log(parent_button_5)
-    // parent_button_4.style.display ="none";
-    // console.log(parent_button_3);
 
     let deleteButton = button.parentElement.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]')
     // deleteButton.value = 'on'

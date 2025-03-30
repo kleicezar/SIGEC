@@ -16,9 +16,6 @@ input.addEventListener("input",()=>{
     .then(data=>{
         resultContainer.innerHTML="";
         messageContainer.innerHTML="";
-        console.log('testando vendas');
-        console.log("ooo")
-        console.log(data.vendas)
         if (data.message){
             messageContainer.innerHTML=`<p>${data.message}</p>`;
         }

@@ -344,7 +344,6 @@ def workOrders_delete(request,pk):
 def service_search(request):
    
     query = request.GET.get('query', '') 
-    print(query)
     resultados = Service.objects.filter(
         Q(id__icontains=query) |
        Q(name_Service__icontains=query)

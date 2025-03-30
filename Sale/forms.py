@@ -11,7 +11,7 @@ class VendaForm(forms.ModelForm):
             }),
             'data_da_venda':forms.DateTimeInput(attrs={
                 'class':'form-control mb-3 mt-3 row-xl-2 ' ,
-                'id' : "date_sale",
+                'type': 'datetime-local'
             }),
             'observacao_pessoas':forms.Textarea(attrs={
                 'class':'form-control mb-3 mt-3 row'
@@ -39,8 +39,9 @@ class VendaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(VendaForm, self).__init__(*args, **kwargs)
         if self.instance and self.instance.pk:
-            self.fields['data_da_venda'].initial = self.instance.data_da_venda
+            # self.fields['data_da_venda'].initial = self.instance.data_da_venda.strftime('%Y-%m-%d %H:%M')
             self.fields['data_da_venda'].widget.attrs['readonly'] = True
+        
 
 
 class VendaItemForm(forms.ModelForm):
@@ -62,10 +63,10 @@ class VendaItemForm(forms.ModelForm):
         fields = ['product', 'quantidade', 'preco_unitario', 'discount', 'price_total', 'status']
         widgets = {
             'product': forms.TextInput(attrs={'class': 'form-control row-2'}),
-            'quantidade': forms.TextInput(attrs={'class': 'form-control row mt-3 mb-3'}),
-            'preco_unitario': forms.TextInput(attrs={'class': 'form-control row mt-3 mb-3'}),
-            'discount': forms.TextInput(attrs={'class': 'form-control row mt-3 mb-3'}),
-            'price_total': forms.TextInput(attrs={'class': 'form-control row mt-3 mb-3', 'readonly': True}),
+            'quantidade': forms.TextInput(attrs={'class': 'form-control row mt-3 mb-3','oninput':'calcularPrecoProduto(this)'}),
+            'preco_unitario': forms.TextInput(attrs={'class': 'form-control row mt-3 mb-3','oninput':'calcularPrecoProduto(this)'}),
+            'discount': forms.TextInput(attrs={'class': 'form-control row mt-3 mb-3','oninput':'calcularPrecoProduto(this)'}),
+            'price_total': forms.TextInput(attrs={'class': 'form-control row mt-3 mb-3', 'readonly': True,'oninput':'calcularPrecoProduto(this)'}),
         }
 
     def __init__(self, *args, **kwargs):

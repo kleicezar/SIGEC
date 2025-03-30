@@ -4,22 +4,7 @@ const totalProductsInput = document.getElementById("id_product_total");
 const totalDiscountInput = document.getElementById("id_discount_total");
 const itemsContainer = document.getElementById("itens-container");
 
-const productOptionsContainer = document.getElementById("options_products-0");
-const productOptionsParent = productOptionsContainer.parentElement;
-productOptionsParent.style.display = "none";
-
 const productTitle = document.createElement("p");
-
-// Esconder todas as sugestões iniciais
-document.querySelectorAll(".suggest").forEach(el => el.style.display = "none");
-
-document.addEventListener("focusin", (event) => {
-    if (event.target.tagName === "INPUT") {
-        document.querySelectorAll(".suggest").forEach(el => el.style.display = "none");
-    }
-});
-
-// Atualiza totais ao clicar no botão deletar
 
 itemsContainer.addEventListener("click", (event) => {
     if (event.target.tagName === 'BUTTON') {
@@ -55,45 +40,7 @@ itemsContainer.addEventListener("input", (event) => {
         });
 
         // Monitorar o campo de produto
-        if (modifiedInput.id.startsWith("idProduct")) {
-            const tbody = modifiedInput.closest("tbody");
-            const td = tbody.querySelector(".tre td");
-            const productContainer = td.querySelector("div");
-           
-            if (modifiedInput.value.length >= 1) {
-                fetch(`/buscar_produtos/?query=${encodeURIComponent(modifiedInput.value)}`)
-                .then(response => response.json())
-                .then(data => {
-                    productContainer.innerHTML = "";
-                    productTitle.textContent = "COD - DESC";
-                    productTitle.className = "title-product text-center";
-                    productContainer.style.width = "300px";
-                    productContainer.appendChild(productTitle);
-
-                    if (data.produtos.length > 0) {
-                        data.produtos.forEach((produto, index) => {
-                            td.style.display = "block";
-                            const productButton = document.createElement("button");
-                            productButton.className = "btn btn-secondary form-control x mb-2";
-                            productButton.type = "button";
-                            productButton.id = `option-product-${index}`;
-                            productButton.textContent = `${produto.product_code} - ${produto.description}`;
-
-                            productTitle.insertAdjacentElement('afterend', productButton);
-
-                            productButton.addEventListener("click", () => {
-                                productInput.value = produto.id;
-                                searchProductInput.value = productButton.textContent;
-                                unitPriceInput.value = produto.selling_price;
-                                td.style.display = "none";
-                            });
-                        });
-                    }
-                });
-            } else {
-                td.style.display = "none";
-            }
-        }
+       
 
         if (discountInput && quantityInput && unitPriceInput) {
             if (discountInput.value != 0) {
@@ -181,91 +128,9 @@ productInputs.forEach(productInput => {
     }
 });
 
-const clientSearchInput = document.getElementById("idSearch");
 
-if (personInput.value !== "") {
-    isAutoCompleteInverted = !isAutoCompleteInverted;
-}
 
-if (isAutoCompleteInverted) {
-    const query = personInput.value;
-    // MUDAR ISSO PARA BUSCA POR ID;
-    fetch(`/buscar_pessoas/?query=${encodeURIComponent(query)}`)
-        .then(response => {
-            if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
-                return response.json();
-            } else {
-                throw new Error('Response is not JSON');
-            }
-        })
-        .then(data => {
-            data.clientes.forEach(cliente => {
-                clientSearchInput.value = `${cliente.id} - ${cliente.name}`;
-            });
-        });
-}
 
-let titleElement = document.createElement("p");
-let clientOptionsContainer = document.getElementById("options-1");
-let tdClientOptionsContainer = clientOptionsContainer.parentElement;
-tdClientOptionsContainer.style.display = "none";
-
-// FILTRO IRÁ PREENCHER O CAMPO DE PESQUISA E COLOCAR NO VALOR DE PESSOA O SEU ID
-clientSearchInput.addEventListener("input", () => {
-    tdClientOptionsContainer.style.display = "none";
-
-    if (clientSearchInput.value.length >= 1 && clientSearchInput.value.trim() !== "") {
-        let optionId = 0;
-        const query = clientSearchInput.value;
-
-        fetch(`/buscar_pessoas/?query=${encodeURIComponent(query)}`)
-            .then(response => {
-                if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
-                    return response.json();
-                } else {
-                    throw new Error('Response is not JSON');
-                }
-            })
-            .then(data => {
-                clientOptionsContainer.innerHTML = '';
-                titleElement.textContent = "ID - CLIENTE";
-                titleElement.id = "title-client";
-                titleElement.className = "text-center";
-                clientOptionsContainer.style.width = "300px";
-                clientOptionsContainer.appendChild(titleElement);
-
-                if (data.clientes.length > 0) {
-                    data.clientes.forEach(cliente => {
-                        if (data.clientes.length <= query.length) {
-                            tdClientOptionsContainer.style.display = "block";
-                            clientOptionsContainer = document.getElementById("options-1");
-
-                            const clientButton = document.createElement("button");
-                            clientButton.className = "btn btn-secondary form-control mb-2";
-                            clientButton.id = `option-${optionId}`;
-                            clientButton.textContent = `${cliente.id} - ${cliente.name}`;
-                            clientButton.type = "button";
-
-                            const titleClient = document.getElementById("title-client");
-                            titleClient.insertAdjacentElement('afterend', clientButton);
-
-                            const button = document.getElementById(clientButton.id);
-                            button.addEventListener("click", () => {
-                                clientSearchInput.value = button.textContent;
-                                personInput.value = `${cliente.id}`;
-                                tdClientOptionsContainer.style.display = "none";
-                            });
-
-                            optionId += 1;
-                        }
-                    });
-                }
-
-            });
-    } else {
-        tdClientOptionsContainer.style.display = "none";
-    }
-});
 
 // Função de monitoramento de alterações nos itens
 document.addEventListener("DOMContentLoaded", function () {

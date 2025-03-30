@@ -151,3 +151,30 @@
     width: 5.3em;
 }
 
+.suggetions {
+    position: absolute;
+    left: 0;
+    width: 100%; /* Agora a sugestão ocupa toda a largura do td */
+    border: 1px solid #ccc;
+    background: white;
+    display: none; /* Inicialmente oculta */
+    z-index: 10;
+    box-sizing: border-box; /* Mantém a borda dentro da largura */
+}
+
+.suggetions div {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.suggetions div:hover {
+    background: #f0f0f0;
+}
+
+td {
+    position: relative; /* Para que .suggetions seja posicionado corretamente dentro dele */
+}
+
+td input {
+    width: 100%;
+}

@@ -44,8 +44,6 @@
                     </a> 
                     <h4 class="c-adapted">Criar Ordem</h4>
                 </div>
-                
-                <!-- <h4 class="mt-5 mb-5 c-adapted">{% if venda.pk %}Editar{% else %}Criar{% endif %} Venda</h4> -->
   
                 <form method="post">
                     {% csrf_token %}
@@ -62,9 +60,7 @@
                                 </header>
                             
                                 <div class="alert {{ message.tags }} mBody">
-                                    <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur, illum atque. Doloremque, dolor ipsum labore numquam quaerat doloribus, incidunt provident suscipit maiores dicta animi, itaque at reiciendis exercitationem assumenda odit?</p> -->
-                                {{ message }}
-
+                                    {{ message }}
                                 </div>
                         
                                 <footer>
@@ -74,7 +70,7 @@
                             {% endif %}
                         {% endfor %}
                     {% endif %}
-                    <!-- {{ service_form.as_p }} -->
+
                     <table class="table">
                         <thead>
                             <tr>
@@ -87,9 +83,6 @@
                                 <th scope="col">
                                     Situação
                                 </th>
-                                <!-- <th>
-                                    Ativo
-                                </th> -->
                             </tr>
                         </thead>
 
@@ -97,10 +90,13 @@
                             <tr>
                                 <td id="form-client" class="">
                                     {{service_form.pessoa.as_hidden}}
-                                <input type="text" class="row form-control mb-3 mt-3" id="idSearch">
-                                <div id="clients" class="mt-3 c row">
-                                    
-                                </div>
+                                    <div>
+                                        <input type="text" class="row form-control mb-3 mt-3" id="idSearch" onkeyup="showSuggetions(this)">
+                                        <div id="suggestions" class="suggetions">
+                                            
+                                        </div>
+                                    </div>
+                                   
                                 </td>
                                 <td style="width: 200px;">
                                     <div class="input-group date " data-provide="datepicker">
@@ -111,17 +107,8 @@
                                     </div>
                                 </td>
                                 <td>{{service_form.situacao}}</td>
-                                <!-- <td>{{service_form.is_active}}</td> -->
                             </tr>
-                            <tr>
-                                <td class="z-2 position-absolute suggest">
-                                    <div id="options-1"  class="row form-control z-1 ">
-                                        <p id="title-client"class="text-center ">ID - CLIENTE</p>
-                                        
-
-                                    </div>
-                                </td>
-                            </tr>
+                            
                         </tbody>
                     </table>
 
@@ -160,9 +147,10 @@
 
                                     <tbody class="itens">
                                         <tr>
+                                           
                                             <td >{{form.product.as_hidden}}
-                                                <input type="text" class="row form-control mb-3 mt-3" id="idProduct-0">
-                                                <div id="products-0" class="mt-3 field-product row">
+                                                <input type="text" class="row form-control mb-3 mt-3" id="idProduct-0" onkeyup="showSuggetionsProducts(this)">
+                                                <div id="products-0" class="suggetions">
                                                 </div>
                                             </td>
                                             
@@ -186,15 +174,7 @@
                                                 {{form.DELETE.as_hidden}}
                                             </td>
                                         </tr>
-                                        <tr class="tre">
-                                            <td class="z-2 position-absolute suggest">
-                                                <div id="options_products-0" class="row form-control z-1 field-product v">
-                                                    <p class="text-center  title-product">CODIGO - DESC</p>
-
-            
-                                                </div>
-                                            </td>
-                                        </tr>
+                               
                                     </tbody>
                                   </table>
                             </div>
@@ -206,6 +186,7 @@
                             <table class="table">
                                 <thead>
                                     <tr style="display: none;">
+                                       
                                         <th scope="col">
                                             Produto
                                         </th>
@@ -231,10 +212,12 @@
                                 </thead>
 
                                 <tbody>
-                                    <tr >
-                                        <td>{{ venda_item_formset.empty_form.product.as_hidden }}
-                                            <input type="text" class="row form-control inputProduct mb-3 mt-3">
-                                            <div class="mt-3 field-product row">
+                                    <tr>
+                                        
+                                        <td>
+                                            {{ venda_item_formset.empty_form.product.as_hidden }}
+                                            <input type="text" class="row form-control mb-3 mt-3" onkeyup="showSuggetionsProducts(this)">
+                                            <div class="suggetions">
                                     
                                             </div>
                                         </td>
@@ -259,15 +242,6 @@
                                         <td>
                                             <button type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removeItem(this)">Deletar</button>
                                             {{venda_item_formset.empty_form.DELETE.as_hidden}}</td>
-                                    </tr>
-                                    <tr class="tre">
-                                        <td class="z-2 position-absolute suggest ">
-                                            <div id="" class="row form-control z-1 v">
-                                                <p class="text-center title-product">CODIGO - DESC</p>
-
-        
-                                            </div>
-                                        </td>
                                     </tr>
                                 </tbody>
                               </table>
@@ -319,6 +293,9 @@
                                     <thead >
                                         <tr>
                                             <th scope="col">
+                                                Técnico
+                                            </th>
+                                            <th scope="col">
                                                 Serviço
                                             </th>
     
@@ -338,9 +315,15 @@
 
                                     <tbody class="itens">
                                         <tr>
-                                            <td >{{form.service.as_hidden}}
-                                                <input type="text" class="row form-control mb-3 mt-3" id="idService-0">
-                                                <div id="services-0" class="mt-3 field-product row">
+                                            <td>
+                                                {{form.technician}}
+                                            </td>
+                                            <td>
+                                                {{form.service.as_hidden}}
+
+                                                <input type="text" class="row form-control mb-3 mt-3" id="idService-0" onkeyup="showSuggetionsServices(this)">
+                                                <div id="suggetionsServices" class="suggetions">
+
                                                 </div>
                                             </td>
                     
@@ -355,15 +338,7 @@
                                                 {{form.DELETE.as_hidden}}
                                             </td>
                                         </tr>
-                                        <tr class="tre">
-                                            <td class="z-2 position-absolute suggest">
-                                                <div id="options_services-0" class="row form-control z-1 field-service v">
-                                                    <p class="text-center  title-service">CODIGO - DESC</p>
-
-            
-                                                </div>
-                                            </td>
-                                        </tr>
+                                     
                                     </tbody>
                                   </table>
                             </div>
@@ -379,11 +354,15 @@
                                 </thead>
 
                                 <tbody>
-                                    <tr >
-                                        <td>{{ service_item_formset.empty_form.service.as_hidden}}
-                                            <input type="text" class="row form-control inputService mb-3 mt-3">
-                                            <div class="mt-3 field-product row">
-                                    
+                                    <tr>
+                                        <td>
+                                            {{service_item_formset.empty_form.technician}}
+                                        </td>
+                                        <td>
+                                            {{ service_item_formset.empty_form.service.as_hidden}}
+                                            <input type="text" class="row form-control mb-3 mt-3" id="idService-0" onkeyup="showSuggetionsServices(this)">
+                                            <div id="suggetionsServices" class="suggetions">
+
                                             </div>
                                         </td>
 
@@ -399,15 +378,7 @@
                                         </td>
                                             
                                     </tr>
-                                    <tr class="tre">
-                                        <td class="z-2 position-absolute suggest ">
-                                            <div id="" class="row form-control z-1 v">
-                                                <p class="text-center title-service">CODIGO - DESC</p>
-
-        
-                                            </div>
-                                        </td>
-                                    </tr>
+                          
                                 </tbody>
                               </table>
                         </div>
@@ -482,12 +453,12 @@
         <script type="text/javascript" src="{% static 'js/jquery.mask.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/mask.js' %}"></script> - -->
         <!-- <script type="text/javascript" src="{% static 'js/interest.js' %}"></script> -->
-        <script src="{% static 'js/clientSearch.js' %}"></script> 
+        <script src="{% static 'js/new.js' %}"></script> 
         <script src="{% static 'js/addItem.js' %}" defer></script>
-        <script src="{% static 'js/order.js' %}"></script>  <!-- pesquisa clientes -->
+        <!-- <script src="{% static 'js/order.js' %}"></script> -->
         <script src="{% static 'js/venda_item.js' %}"></script> <!-- pesquisa produtos em vendas-->
         <script src="{% static 'js/error.js' %}"></script>
-        <!-- <script src="{% static 'js/date.js' %   }"></script> -->
+        <!-- <script src="{% static 'js/clientSearch.js' %}"></script> -->
         <!-- <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
         <script src="{% static 'js/bootstrap-datepicker.pt-BR.js' %}"></script> -->
         {% endblock %}     

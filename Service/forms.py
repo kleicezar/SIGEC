@@ -8,7 +8,7 @@ class VendaServiceForm(forms.ModelForm):
     
     class Meta:
         model = VendaService
-        fields = ['data_da_venda', 'pessoa', 'situacao', 'is_active','observacao_pessoas', 'observacao_sistema', 'total_value','product_total','discount_total','service_total','discount_total_service','total_value_service']
+        fields = ['data_da_venda', 'pessoa', 'situacao', 'observacao_pessoas', 'observacao_sistema', 'total_value','product_total','discount_total','service_total','discount_total_service','total_value_service']
         widgets = {
             'pessoa':forms.TextInput(attrs={
                 'class':'form-control row-xl-5' 
@@ -62,21 +62,24 @@ class VendaItemServiceForm(forms.ModelForm):
     
     class Meta:
         model = VendaItemService
-        fields = ['service', 'preco','discount']
+        fields = ['service', 'preco','discount','technician']
         widgets = {
             'service':forms.TextInput(attrs={
                 'class':'form-control row-2 mb-3 mt-3'
             }),
             'preco':forms.TextInput(attrs={
-                'class':'form-control row mb-3 mt-3'
+                'class':'form-control row mb-3 mt-3 ',
+                'oninput': 'calcularPreco(this)'
             }),
             'discount':forms.TextInput(attrs={
-                'class':'form-control row mb-3 mt-3'
-            })  
+                'class':'form-control row mb-3 mt-3',
+                'oninput': 'calcularPreco(this)'
+            }) 
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['technician'].queryset = Person.objects.filter(isTechnician = True)
         self.fields['service'].queryset = Service.objects.all()
         self.fields['preco'].widget.attrs['readonly'] = True
 
@@ -108,16 +111,20 @@ class VendaItemForm(forms.ModelForm):
                 'class':'form-control row-2  '
             }),
             'quantidade':forms.TextInput(attrs={
-                'class':'form-control row mt-3 mb-3'
+                'class':'form-control row mt-3 mb-3',
+                'oninput':'calcularPrecoProduto(this)'
             }),
             'preco_unitario':forms.TextInput(attrs={
-                'class':'form-control row mt-3 mb-3'
+                'class':'form-control row mt-3 mb-3',
+                'oninput':'calcularPrecoProduto(this)'
             }),
             'discount':forms.TextInput(attrs={
-                'class':'form-control row mt-3 mb-3'
+                'class':'form-control row mt-3 mb-3',
+                'oninput':'calcularPrecoProduto(this)'
             }),
             'price_total':forms.TextInput(attrs={
-                'class':'form-control row mt-3 mb-3'
+                'class':'form-control row mt-3 mb-3',
+                'oninput':'calcularPrecoProduto(this)'
             })
         }
 

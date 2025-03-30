@@ -25,6 +25,7 @@ class VendaItemService(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE, verbose_name="Servico")
     preco = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Preço Unitário")
     discount = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Desconto(%)")
+    technician = models.ForeignKey(Person,on_delete = models.CASCADE, verbose_name='Técnico')
 
 class VendaItem(models.Model):
     venda = models.ForeignKey(VendaService,on_delete=models.CASCADE, verbose_name="vendaProduct")

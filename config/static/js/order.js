@@ -4,18 +4,6 @@ const totalServicesField = document.getElementById("id_service_total");
 // totalServicesField.value = 5;
 const discountTotalField = document.getElementById("id_discount_total_service");
 const itemsContainerService = document.getElementById("itens-container-service");
-// let serviceOptionsContainer = document.getElementById("options_services-0");
-// let serviceOptionsCell = serviceOptionsContainer.parentElement;
-// serviceOptionsCellstyle.display = "none";  
-const serviceInfoParagraph = document.createElement("p");
-
-document.querySelectorAll(".suggest").forEach(el => el.style.display = "none");
-// Listener para garantir que apenas uma sugestão apareça de cada vez
-document.addEventListener("focusin", (event) => {
-    if (event.target.tagName === "INPUT") {
-        document.querySelectorAll(".suggest").forEach(el => el.style.display = "none");
-    }
-});
 
 // Atualiza o total do desconto, valor total e total de produtos ao clicar no botão de deletar
 itemsContainerService.addEventListener("click", (event) => {
@@ -32,94 +20,8 @@ itemsContainerService.addEventListener("input", (event) => {
         const itemForm = modifiedInput.closest(".item-form");
         const itemFormInputs = itemForm.querySelectorAll("input");
         let productInput,discountInput,unitPriceInput,searchProductInput;
-        // let servico_price;
-        // Monitorando o campo ID_PRODUCT
-        // if (modifiedInput.id.startsWith("idService")) {
+
         
-           
-
-            itemFormInputs.forEach((input) => {
-                const fieldType = input.id;
-                if (fieldType.endsWith('service')) {
-                    productInput = input;
-                } else if (fieldType.endsWith("discount")){
-                    discountInput = input;
-                    console.log(discountInput.value)
-                } else if (fieldType.endsWith('preco')) {
-                    unitPriceInput = input;
-                } else if (fieldType.startsWith("idService")) {
-                    searchProductInput = input;
-                } 
-                
-            });
-
-        if (modifiedInput.id.startsWith("idService")){
-            let tbody = modifiedInput.parentElement.parentElement.parentElement;
-            let td = tbody.querySelector(".tre").querySelector("td");
-            let productsContainer = td.querySelector("div");
-
-            if (modifiedInput.value.length >= 1) {
-                let optionsIndex = 0;
-                const query = modifiedInput.value;
-
-                fetch(`/buscar_servicos/?query=${encodeURIComponent(query)}`)
-                    .then(response => {
-                        if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
-                            return response.json();
-                        } else {
-                            throw new Error('Resposta não é JSON');
-                        }
-                    })
-                    .then(data => {
-                        productsContainer.innerHTML = "";
-                        serviceInfoParagraph.textContent = "ID - NOME";
-                        serviceInfoParagraph.className = "title-service text-center";
-                        productsContainer.style.width = "300px";
-                        productsContainer.appendChild(serviceInfoParagraph);
-
-                        if (data.servicos.length > 0) {
-                            data.servicos.forEach(servico => {
-                                td.style.display = "block";
-                                let serviceButton = document.createElement("button");
-                                serviceButton.className = "btn btn-outline-secondary form-control x mb-2";
-                                serviceButton.type = "button";
-                                serviceButton.id = `option-service-${optionsIndex}`;
-                                serviceButton.textContent = `${servico.id} - ${servico.name_Service}`;
-
-                                let titleService = td.querySelector('.title-service');
-                                titleService.insertAdjacentElement('afterend', serviceButton);
-                                const button = td.querySelector(".x");
-                                button.addEventListener("click", () => {
-                                    productInput.value = servico.id;
-                                    searchProductInput.value = button.textContent;
-                                    unitPriceInput.value = servico.price;
-                                    servico_price = servico.price;
-                                    td.style.display = "none";
-                                });
-
-                                optionsIndex += 1;
-                            });
-                        }
-                    });
-            } else {
-                td.style.display = "none";
-            }
-
-
-           
-        }
-
-        if (discountInput && unitPriceInput){
-            if(discountInput.value != 0){
-                unitPriceInput.value = servico_price - (servico_price*((discountInput.value)/100));
-                
-                // unitPriceInput.value = 12;
-            } 
-            else {
-                servico_price = 0;
-                unitPriceInput.value = servico_price - (servico_price*((discountInput.value)/100));
-            }
-        }
         
         updateTotal(itemForms);
     }
@@ -214,83 +116,32 @@ productInputFields.forEach(inputProduct => {
     }
 });
 
-const clientInput = document.getElementById("idSearch");
-let autoCompleteInverted = false;
-const personField = document.getElementById("id_pessoa") || document.getElementById("id_fornecedor");
 
-if (personField.value !== "") {
-    autoCompleteInverted = !autoCompleteInverted;
+
+
+let productInputs = document.querySelectorAll('input[type="hidden"][name$="-product"]');
+if (productInputs.length === 0) {
+    productInputs = document.querySelectorAll('input[type="hidden"][name$="-produto"]');
 }
 
-if (autoCompleteInverted) {
-    const query = personField.value;
-    fetch(`/buscar_pessoas/?query=${encodeURIComponent(query)}`)
-        .then(response => {
-            if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
-                return response.json();
-            } else {
-                throw new Error('Resposta não é JSON');
-            }
-        })
-        .then(data => {
-            data.clientes.forEach(cliente => {
-                clientInput.value = `${cliente.id} - ${cliente.name}`;
-            });
-        });
-}
+productInputs.forEach(productInput => {
+    const parentElement = productInput.parentElement;
+    const textInput = parentElement.querySelector('input[type="text"]');
 
-let optionsContainerClient = document.getElementById("options-1");
-let clientOptionsCell = optionsContainerClient.parentElement;
-clientOptionsCell.style.display = "none";
-
-clientInput.addEventListener("input", () => {
-    clientOptionsCell.style.display = "none";
-
-    if (clientInput.value.length >= 1 && clientInput.value.trim() !== "") {
-        let optionsIndex = 0;
-        const query = clientInput.value;
-
-        fetch(`/buscar_pessoas/?query=${encodeURIComponent(query)}`)
+    if (productInput.value !== '') {
+        console.log('Fetching product data');
+        const query = productInput.value;
+        fetch(`/get_product_id/?query=${encodeURIComponent(query)}`)
             .then(response => {
                 if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
                     return response.json();
                 } else {
-                    throw new Error('Resposta não é JSON');
+                    throw new Error('Response is not JSON');
                 }
             })
             .then(data => {
-                optionsContainerClient.innerHTML = '';
-                serviceInfoParagraph.textContent = "ID - CLIENTE";
-                serviceInfoParagraph.id = "title-client";
-                serviceInfoParagraph.className = "text-center";
-                optionsContainerClient.style.width = "300px";
-                optionsContainerClient.appendChild(serviceInfoParagraph);
-
-                if (data.clientes.length > 0) {
-                    data.clientes.forEach(cliente => {
-                        if (data.clientes.length <= query.length) {
-                            clientOptionsCell.style.display = "block";
-                            let selectClientButton = document.createElement("button");
-                            selectClientButton.className = "btn btn-outline-secondary form-control mb-2";
-                            selectClientButton.id = `option-${optionsIndex}`;
-                            selectClientButton.textContent = `${cliente.id} - ${cliente.name}`;
-                            selectClientButton.type = "button";
-
-                            let titleClient = document.getElementById("title-client");
-                            titleClient.insertAdjacentElement('afterend', selectClientButton);
-
-                            selectClientButton.addEventListener("click", () => {
-                                clientInput.value = selectClientButton.textContent;
-                                personField.value = `${cliente.id}`;
-                                clientOptionsCell.style.display = "none";
-                            });
-
-                            optionsIndex += 1;
-                        }
-                    });
-                }
+                textInput.value = `${data.produto[0].product_code} - ${data.produto[0].description}`;
+               
             });
-    } else {
-        clientOptionsCell.style.display = "none";
     }
 });
