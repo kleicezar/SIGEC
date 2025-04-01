@@ -12,6 +12,7 @@ from .models import *
 from django.http import JsonResponse
 from django.db.models import Q
 from django.core.paginator import Paginator
+from django.db import transaction
 ### SALE
 
 @login_required
@@ -131,6 +132,7 @@ def venda_create(request):
     return render(request, 'sale/venda_form.html', context)
 
 @login_required
+@transaction.atomic 
 def venda_update(request, pk):
     # Carregar a venda existente
     venda = get_object_or_404(Venda, pk=pk)
@@ -138,9 +140,8 @@ def venda_update(request, pk):
     VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=0, can_delete=True)
     PaymentMethodAccountsFormSet = inlineformset_factory(Venda, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
     Older_PaymentMethod_Accounts_FormSet = inlineformset_factory(Venda, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=0, can_delete=True)
-    
-    if request.method == 'POST':
 
+    if request.method == 'POST':
         venda_form = VendaForm(request.POST, instance=venda)
         venda_item_formset = VendaItemFormSet(request.POST, instance=venda)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST,instance=venda,prefix="paymentmethod_accounts_set")
@@ -180,18 +181,34 @@ def venda_update(request, pk):
             total_payment = 0
             total_payment_with_credit = 0
             
-            for form in PaymentMethod_Accounts_FormSet:
-                name_payment = form.cleaned_data["forma_pagamento"]
-                paymentWithCredit = PaymentMethod.objects.filter(
-                    name_paymentMethod = name_payment,creditPermission=True
-                )
-                
-                if form.cleaned_data:
-                    valor = form.cleaned_data['value']
-                    if not form.cleaned_data["DELETE"] :
-                        if paymentWithCredit.exists():
-                            total_payment_with_credit +=form.cleaned_data["value"]
-                        total_payment += valor
+            onlyOldPayments = False 
+            try:
+                for form in PaymentMethod_Accounts_FormSet:
+                    name_payment = form.cleaned_data["forma_pagamento"]
+                    paymentWithCredit = PaymentMethod.objects.filter(
+                        name_paymentMethod = name_payment,creditPermission=True
+                    )
+                    
+                    if form.cleaned_data:
+                        valor = form.cleaned_data['value']
+                        if not form.cleaned_data["DELETE"] :
+                            if paymentWithCredit.exists():
+                                total_payment_with_credit +=form.cleaned_data["value"]
+                            total_payment += valor
+            except TypeError:
+                onlyOldPayments = True
+                for form in Older_PaymentMethod_Accounts_FormSet:
+                    name_payment = form.cleaned_data["forma_pagamento"]
+                    paymentWithCredit = PaymentMethod.objects.filter(
+                        name_paymentMethod = name_payment,creditPermission=True
+                    )
+                    
+                    if form.cleaned_data:
+                        valor = form.cleaned_data['value']
+                        if not form.cleaned_data["DELETE"] :
+                            if paymentWithCredit.exists():
+                                total_payment_with_credit +=form.cleaned_data["value"]
+                            total_payment += valor
 
 
             creditLimit = pessoa.creditLimit
@@ -212,7 +229,7 @@ def venda_update(request, pk):
                 for item in itens_para_deletar:
                     item.delete()
                 
-                if len(PaymentMethod_Accounts_FormSet) > 0:
+                if not onlyOldPayments :
 
                     if len(PaymentMethod_Accounts_FormSet) >= len(Older_PaymentMethod_Accounts_FormSet):
 
@@ -232,7 +249,6 @@ def venda_update(request, pk):
                         Older_PaymentMethod_Accounts_FormSet.save()
                         PaymentMethod_Accounts_FormSet.save() 
             
-
                     else:
                     # FALTA VERIFICAR ESSA
                     # atualizar os formulários existentes
@@ -252,7 +268,8 @@ def venda_update(request, pk):
                             extra_form.instance.delete()
 
                         Older_PaymentMethod_Accounts_FormSet.save()                            
-                    
+                else:
+                    Older_PaymentMethod_Accounts_FormSet.save()    
                 # messages.success(request, "Venda atualizada com sucesso!")
                 return redirect('venda_list')
             
@@ -347,10 +364,12 @@ def client_search(request):
     """Busca clientes dinamicamente e retorna JSON."""
     query = request.GET.get('query', '') 
     resultados = Person.objects.filter(
+        (
         Q(id__icontains=query) | 
         Q(id_FisicPerson_fk__name__icontains=query) | 
         Q(id_ForeignPerson_fk__name_foreigner__icontains=query) | 
         Q(id_LegalPerson_fk__fantasyName__icontains=query)
+        ) & Q(isClient = True)
     ).order_by('id')[:5]
 
     if not resultados:
@@ -384,8 +403,11 @@ def get_product_id(request):
 def product_search(request):
     query = request.GET.get('query','')
     resultados = Product.objects.filter(
+        (
         Q(product_code__icontains=query) |
         Q(description__icontains=query)
+        )
+        & Q(is_active = True)
     ).order_by('id'[:5])
 
     products = [

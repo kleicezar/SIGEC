@@ -15,7 +15,7 @@ class VendaServiceForm(forms.ModelForm):
             }),
             'data_da_venda':forms.DateTimeInput(attrs={
                 'class':'form-control row-xl-2 mb-3 mt-3 ' ,
-                'id' : "date_sale",
+                'type': 'datetime-local'
             }),
             'observacao_pessoas':forms.Textarea(attrs={
                 'class':'form-control row'

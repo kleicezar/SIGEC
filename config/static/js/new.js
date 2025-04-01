@@ -1,7 +1,7 @@
 function showSuggetions(input){
     let container_td = input.closest('td');
     let suggetionsBox = container_td.querySelector('.suggetions');
-    let id_person = container_td.querySelector('[name="pessoa"]');
+    let id_person = container_td.querySelector('[name="pessoa"]')|| container_td.querySelector('[name="fornecedor"]');
     suggetionsBox.style.display= "block";
     if(input.value.length >=1 && input.value.trim() !==""){
         const query = input.value;
@@ -16,6 +16,7 @@ function showSuggetions(input){
             .then(data => {
                 data.clientes.forEach(cliente => {
                     let newSuggest = document.createElement("div");
+                    suggetionsBox.innerHTML = ""
                     newSuggest.innerHTML = `${cliente.id} - ${cliente.name}`
                     suggetionsBox.appendChild(newSuggest);
                     newSuggest.onclick = function(){
@@ -38,7 +39,7 @@ function showSuggetionsProducts(input){
     let container_td = input.closest('td');
     let price = row.cells[2].querySelector('input');
     let suggetionsBox = container_td.querySelector('.suggetions');
-    let id_product = container_td.querySelector("[name$=product]");
+    let id_product = container_td.querySelector("[name$=product]") || container_td.querySelector("[name$=produto]");
     suggetionsBox.style.display= "block";
     if(input.value.length >=1 && input.value.trim() !==""){
         const query = input.value;
@@ -75,8 +76,9 @@ function showSuggetionsProducts(input){
 function showSuggetionsServices(input){
     let row = input.closest('tr');
     let container_td = input.closest('td');
-    let price = row.cells[2].querySelector('input');
+    let price = row.cells[3].querySelector('input');
     let suggetionsBox = container_td.querySelector('.suggetions');
+    suggetionsBox.innerHTML="";
     let id_service = container_td.querySelector("[name$=service]");
     suggetionsBox.style.display= "block";
     if(input.value.length >=1 && input.value.trim() !==""){
@@ -91,13 +93,14 @@ function showSuggetionsServices(input){
             })
             .then(data => {
                 data.servicos.forEach(servico => {
+                    console.log("--------")
+                    console.log(servico);
                     suggetionsBox.innerHTML = "";
                     let newSuggest = document.createElement("div");
                     newSuggest.innerHTML = `${servico.id} - ${servico.name_Service}`
                     suggetionsBox.appendChild(newSuggest);
                     newSuggest.onclick = function(){
                             id_service.value = servico.id;
-                            serviceInput = `${servico.id}`
                             input.value = `${servico.id} - ${servico.name_Service}`
                             price.value = servico.price;
                             preco_data = price.value;
@@ -123,11 +126,11 @@ function calcularPreco(input) {
     let row = input.closest("tr"); 
     const itemForms = itemsContainerService.querySelectorAll(".item-form");
 
-    let desconto = row.cells[1].querySelector("input").value || 0;
+    let desconto = row.cells[2].querySelector("input").value || 0;
     // let preco = row.cells[2].querySelector("input").value || 0;
 
     let precoFinal = preco_data - (preco_data*(desconto/100))
-    row.cells[2].querySelector("input").value = precoFinal.toFixed(2);
+    row.cells[3].querySelector("input").value = precoFinal.toFixed(2);
     
     atualizarTotal(itemForms);
 }

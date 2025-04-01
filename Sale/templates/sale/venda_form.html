@@ -101,11 +101,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <input type="datetime-local" 
-                                            name="data_da_venda" 
-                                            value="{{ form.data_da_venda.value|date:'Y-m-d\TH:i' }}" 
-                                            class="form-control mb-3 mt-3 row-xl-2" 
-                                            required id="id_data_da_venda">
+                                        {{venda_form.data_da_venda}}
                                     </td>
                                     <td style="margin-left: 30px;">{{venda_form.situacao}}</td>
                                     <!-- <td>{{venda_form.is_active}}</td> -->

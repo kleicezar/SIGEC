@@ -73,7 +73,7 @@ class CompraForm(forms.ModelForm):
                 }),
                 'data_da_compra':forms.DateTimeInput(attrs={
                     'class':'form-control mb-3 mt-3 row-xl-2 ',
-                    'id':"date_compra"
+                    'type': 'datetime-local'
                 }),
                 'situacao':forms.Select(attrs={
                     'class':'form-select row mb-3 mt-3'
@@ -118,16 +118,20 @@ class CompraItemForm(forms.ModelForm):
                 'class':'form-control row-2'
             }),
             'quantidade':forms.TextInput(attrs={
-                'class':'form-control mt-3 mb-3 row'
+                'class':'form-control mt-3 mb-3 row',
+                'oninput':'calcularPrecoProduto(this)'
             }),
             'preco_unitario':forms.TextInput(attrs={
-                'class':'form-control mt-3 mb-3 row'
+                'class':'form-control mt-3 mb-3 row',
+                'oninput':'calcularPrecoProduto(this)'
             }),
             'discount':forms.TextInput(attrs={
-                'class':'form-control mt-3 mb-3 row'
+                'class':'form-control mt-3 mb-3 row',
+                'oninput':'calcularPrecoProduto(this)'
             }),
             'price_total':forms.TextInput(attrs={
-                'class':'form-control mt-3 mb-3 row'
+                'class':'form-control mt-3 mb-3 row',
+                'oninput':'calcularPrecoProduto(this)'
             })
         }
 

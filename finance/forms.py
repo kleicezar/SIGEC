@@ -1,6 +1,7 @@
 from django import forms
 from .models import *
-
+from django.forms import BaseInlineFormSet
+from django.core.exceptions import ValidationError
 class BaseAccountsForm(forms.ModelForm):
     """
     Interface para formulários de contas. Define os campos usados.
@@ -170,6 +171,16 @@ class BasePaymentMethodAccountsForm(forms.ModelForm):
             }),
             'acc':forms.HiddenInput()
         }
+class PaymentMethodFormSet(BaseInlineFormSet):
+    def clean(self):
+        """Remove formulários vazios antes da validação"""
+        if any(self.errors):
+            return
+        print("oooo")
+        for form in self.forms:
+            if not form.cleaned_data:
+                self.forms.remove(form)
+                print('oiiii')
 
 class PaymentMethodAccountsForm(BasePaymentMethodAccountsForm):
     # class Meta(BasePaymentMethodAccountsForm.Meta):
@@ -188,6 +199,7 @@ class PaymentMethodAccountsForm(BasePaymentMethodAccountsForm):
         value = cleaned_data.get('value')
         if value is not None:
             cleaned_data['value_old'] = value
+
 
         return cleaned_data
 

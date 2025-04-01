@@ -106,10 +106,12 @@ class PaymentMethod_Accounts(models.Model):
     )
     expirationDate = models.DateField(
         max_length=50,
-        verbose_name='Data de Vencimento'
+        verbose_name='Data de Vencimento',
+        blank=True
     )
     days = models.IntegerField(             #dias entre as parcelas
-        verbose_name='Dias'
+        verbose_name='Dias',
+        blank=True
     ) 
     value_old = models.DecimalField(        #valor original sem alterações
         decimal_places=2,   
@@ -119,7 +121,8 @@ class PaymentMethod_Accounts(models.Model):
     )
     value = models.DecimalField(decimal_places=2,
         max_digits=8,
-        verbose_name='Valor Pago:'
+        verbose_name='Valor Pago:',
+        blank=True
     )  
     interestType = models.CharField(
         max_length=10, 

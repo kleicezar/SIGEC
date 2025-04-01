@@ -41,7 +41,7 @@ class VendaForm(forms.ModelForm):
         if self.instance and self.instance.pk:
             # self.fields['data_da_venda'].initial = self.instance.data_da_venda.strftime('%Y-%m-%d %H:%M')
             self.fields['data_da_venda'].widget.attrs['readonly'] = True
-        
+            self.fields['pessoa'].queryset = Person.objects.filter(isClient=True)
 
 
 class VendaItemForm(forms.ModelForm):

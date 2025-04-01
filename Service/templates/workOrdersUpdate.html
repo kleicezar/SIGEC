@@ -85,9 +85,6 @@
                                 <th scope="col">
                                     Situação
                                 </th>
-                                <!-- <th>
-                                    Ativo
-                                </th> -->
                             </tr>
                         </thead>
 
@@ -95,30 +92,22 @@
                             <tr>
                                 <td id="form-client" class="">
                                     {{service_form.pessoa.as_hidden}}
-                                <input type="text" class="row form-control mb-3 mt-3" id="idSearch">
-                                <div id="clients" class="mt-3 c row">
-                                    
-                                </div>
-                                </td>
-                                <td style="width: 200px;">
-                                    <div class="input-group date " data-provide="datepicker">
-                                        {{service_form.data_da_venda}}
-                                        <div class="input-group-addon">
-                                            <span class="glyphicon glyphicon-th"></span>
+                                    <div>
+                                        <input type="text" class="row form-control mb-3 mt-3 idSearch" id="idSearch" onkeyup="showSuggetions(this)">
+                                        <div id="suggestions" class="suggetions">
+                                            
                                         </div>
                                     </div>
                                 </td>
+                                <td style="width: 200px;">
+                                    <input type="datetime-local" 
+                                        name="data_da_venda" 
+                                        value="{{ service_form.data_da_venda.value|date:'Y-m-d\TH:i' }}" 
+                                        class="form-control mb-3 mt-3 row-xl-2" 
+                                        required id="id_data_da_venda" readonly>
+                                </td>
                                 <td>{{service_form.situacao}}</td>
                                 <!-- <td>{{service_form.is_active}}</td> -->
-                            </tr>
-                            <tr>
-                                <td class="z-2 position-absolute suggest">
-                                    <div id="options-1"  class="row form-control z-1 ">
-                                        <p id="title-client"class="text-center ">ID - CLIENTE</p>
-                                        
-
-                                    </div>
-                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -147,8 +136,8 @@
                                             <td>
                                                 <input type="hidden" name="{{ form.prefix }}-id" value="{{ form.instance.id }}">
                                                 {{form.product.as_hidden}}
-                                                <input type="text" class="row form-control mb-3 mt-3" id="idProduct-0">
-                                                <div id="products-0" class="mt-3 field-product row">
+                                                <input type="text" class="row form-control mb-3 mt-3 idSearch" id="idProduct-0" onkeyup="showSuggetionsProducts(this)">
+                                                <div id="products-0" class="suggetions">
                                                 </div>
                                             </td>
                                             <td>
@@ -174,13 +163,6 @@
                                                 <!-- Checkbox para exclusão -->
                                                 <button type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removeItemUpdate(this)" >Deletar</button>
                                                 {{form.DELETE.as_hidden}}
-                                            </td>
-                                        </tr>
-                                        <tr class="tre">
-                                            <td class="z-2 position-absolute suggest" style="display: none;">
-                                                <div id="options_products-{{ forloop.counter0 }}" class="row form-control z-1 v">
-                                                    <p class="text-center title-product">CODIGO - DESC</p>
-                                                </div>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -215,8 +197,8 @@
                                         <td>
                                             <input type="hidden" name="{{ form.prefix }}-id" value="{{ form.instance.id }}">
                                             {{form.product.as_hidden}}
-                                            <input type="text" class="row form-control mb-3 mt-3" id="idProduct-0">
-                                            <div id="products-0" class="mt-3 field-product row">
+                                            <input type="text" class="row form-control mb-3 mt-3 idSearch" id="idProduct-0" onkeyup="showSuggetionsProducts(this)">
+                                            <div id="products-0" class="suggetions">
                                             </div>
                                         </td>
                                         <td>
@@ -242,13 +224,6 @@
                                             <!-- Checkbox para exclusão -->
                                             <button type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removeItemUpdate(this)" >Deletar</button>
                                             {{form.DELETE.as_hidden}}
-                                        </td>
-                                    </tr>
-                                    <tr class="tre">
-                                        <td class="z-2 position-absolute suggest" style="display: none;">
-                                            <div id="options_products-{{ forloop.counter0 }}" class="row form-control z-1 v">
-                                                <p class="text-center title-product">CODIGO - DESC</p>
-                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -292,9 +267,9 @@
                                         <td>
                                             {{ venda_item_formset.empty_form.id.as_hidden }}
                                             {{ venda_item_formset.empty_form.product.as_hidden }}
-                                            <input type="text" class="row form-control inputProduct mb-3 mt-3">
-                                            <div class="mt-3 field-product row">
-                                    
+                                            <input type="text" class="row form-control inputProduct mb-3 mt-3 idSearch">
+                                            <input type="text" class="row form-control mb-3 mt-3" id="idProduct-0" onkeyup="showSuggetionsProducts(this)">
+                                            <div id="products-0" class="suggetions">
                                             </div>
                                         </td>
                                         
@@ -319,15 +294,6 @@
                                         <td>
                                             <button type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removeItem(this)">Deletar</button>
                                             {{venda_item_formset.empty_form.DELETE.as_hidden}}
-                                        </td>
-                                    </tr>
-                                    <tr class="tre">
-                                        <td class="z-2 position-absolute suggest ">
-                                            <div id="" class="row form-control z-1 v">
-                                                <p class="text-center title-product">CODIGO - DESC</p>
-
-        
-                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -380,6 +346,9 @@
                                     {% if forloop.first %}
                                     <thead>
                                         <tr>
+                                            <th scope="col">
+                                                Técnico
+                                            </th>
                                             <th scope="col">Serviço</th>
                                             <th scope="col">Desconto(%)</th>
                                             <th scope="col">Valor Total</th>
@@ -389,10 +358,14 @@
                                     <tbody>
                                         <tr>
                                             <td>
+                                                {{form.technician}}
+                                            </td>
+                                            <td>
                                                 <input type="hidden" name="{{ form.prefix }}-id" value="{{ form.instance.id }}">
                                                 {{form.service.as_hidden}}
-                                                <input type="text" class="row form-control mb-3 mt-3" id="idProduct-0">
-                                                <div id="products-0" class="mt-3 field-product row">
+                                                <input type="text" class="row form-control mb-3 mt-3 idSearch" id="idService-0" onkeyup="showSuggetionsServices(this)">
+                                                <div id="suggetionsServices" class="suggetions">
+
                                                 </div>
                                             </td>
                                             <td>
@@ -408,13 +381,6 @@
                                                 <!-- Checkbox para exclusão -->
                                                 <button type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removeItemUpdate(this)" >Deletar</button>
                                                 {{form.DELETE.as_hidden}}
-                                            </td>
-                                        </tr>
-                                        <tr class="tre">
-                                            <td class="z-2 position-absolute suggest" style="display: none;">
-                                                <div id="options_services-{{ forloop.counter0 }}" class="row form-control z-1 v">
-                                                    <p class="text-center title-product">CODIGO - DESC</p>
-                                                </div>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -432,8 +398,9 @@
                                             <td>
                                                 <input type="hidden" name="{{ form.prefix }}-id" value="{{ form.instance.id }}">
                                                 {{form.service.as_hidden}}
-                                                <input type="text" class="row form-control mb-3 mt-3" id="idProduct-0">
-                                                <div id="products-0" class="mt-3 field-product row">
+                                                <input type="text" class="row form-control mb-3 mt-3 idSearch" id="idService-0" onkeyup="showSuggetionsServices(this)">
+                                                <div id="suggetionsServices" class="suggetions">
+
                                                 </div>
                                             </td>
                                             <td>
@@ -449,13 +416,6 @@
                                                 <!-- Checkbox para exclusão -->
                                                 <button type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removeItemUpdate(this)" >Deletar</button>
                                                 {{form.DELETE.as_hidden}}
-                                            </td>
-                                        </tr>
-                                        <tr class="tre">
-                                            <td class="z-2 position-absolute suggest" style="display: none;">
-                                                <div id="options_services-{{ forloop.counter0 }}" class="row form-control z-1 v">
-                                                    <p class="text-center title-product">CODIGO - DESC</p>
-                                                </div>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -485,9 +445,9 @@
                                         <td>
                                             {{ service_item_formset.empty_form.id.as_hidden }}
                                             {{ service_item_formset.empty_form.service.as_hidden }}
-                                            <input type="text" class="row form-control inputService mt-3 mt-3">
-                                            <div class="mt-3 field-product row">
-                                    
+                                            <input type="text" class="row form-control mb-3 mt-3 idSearch" id="idService-0" onkeyup="showSuggetionsServices(this)">
+                                            <div id="suggetionsServices" class="suggetions">
+
                                             </div>
                                         </td>
                                         
@@ -503,15 +463,6 @@
                                             {{service_item_formset.empty_form.DELETE.as_hidden}}
                                         </td>
                                            
-                                    </tr>
-                                    <tr class="tre">
-                                        <td class="z-2 position-absolute suggest ">
-                                            <div id="" class="row form-control z-1 v">
-                                                <p class="text-center title-product">CODIGO - DESC</p>
-
-        
-                                            </div>
-                                        </td>
                                     </tr>
                                 </tbody>
                               </table>
@@ -583,6 +534,7 @@
        
         <!-- <script type="text/javascript" src="{% static 'js/clientSearch.js' %}"></script> -->
         <script src="{% static 'js/new.js' %}"></script>
+        <script src="{% static 'js/newUpdate.js' %}"></script>
         <script src="{% static 'js/addItem.js' %}" defer></script>
         <!-- <script src="{% static 'js/order.js' %}"></script>  pesquisa clientes -->
         <script src="{% static 'js/venda_item.js' %}"></script> <!-- pesquisa produtos em vendas-->

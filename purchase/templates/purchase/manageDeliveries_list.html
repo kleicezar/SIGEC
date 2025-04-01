@@ -27,7 +27,8 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>IdOS</th>
+                        <th>IdVenda</th>
                         <th>Descrição</th>
                         <th>Quantidade</th>
                         <th >IDPRODUTO</th>
@@ -38,6 +39,7 @@
                 <tbody>
                     {% for product in all_products_with_status %}
                     <tr>
+                        <td>{{ product.idOS }}</td>
                         <td>{{ product.idVenda }}</td>
                         <td>{{ product.descricao }}</td>
                         <td>{{ product.quantidade }}</td>

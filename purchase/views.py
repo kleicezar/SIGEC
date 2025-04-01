@@ -17,20 +17,22 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponse
 from finance.models import PaymentMethod_Accounts
 from finance.forms import PaymentMethodAccountsForm, AccountsForm
-
+from django.db import transaction
 
 ### PURCHASE
 
 @login_required
 def productsWithStatus_list(request):
-    vendasItens = VendaItem.objects.all()
+    vendasItens = VendaItem.objects.filter(
+        Q(status = 'Pendente')
+    )
     workOrders = VendaItemWS.objects.all()
     status_options = ["Pendente", "Entregue"]
 
     all_products_with_status = [
         {'idVenda': vendaItem.venda.id,'idProduto':vendaItem.product.id,'idVendaItem':vendaItem.id,'descricao': vendaItem.product.description, 'quantidade': vendaItem.quantidade, 'status': vendaItem.status} for vendaItem in vendasItens
     ] + [
-        {'idVenda': workOrder.venda.id, 'idProduto':workOrder.product.id,'idVendaItem':workOrder.id,'descricao': workOrder.product.description, 'quantidade': workOrder.quantidade,'status':workOrder.status} for workOrder in workOrders
+        {'idOS': workOrder.venda.id, 'idProduto':workOrder.product.id,'idVendaItem':workOrder.id,'descricao': workOrder.product.description, 'quantidade': workOrder.quantidade,'status':workOrder.status} for workOrder in workOrders
     ]
 
     return render(request, 'purchase/manageDeliveries_list.html', {
@@ -161,6 +163,7 @@ def compras_create(request):
     return render(request, 'purchase/compras_form.html', context)
 
 @login_required
+@transaction.atomic 
 def compras_update(request, pk):
     # Recupera a instância da Compra existente
     compra = get_object_or_404(Compra, pk=pk)
@@ -199,7 +202,7 @@ def compras_update(request, pk):
       
             produto.save()
         compraitems_excluir.delete()
-        if compra_form.is_valid() and compra_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
+        if compra_form.is_valid() and compra_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid() and Older_PaymentMethod_Accounts_FormSet.is_valid():
             # Salva a compra (atualiza os dados da compra)
             compra_form.save(commit=False)
             compra_item_instances = compra_item_formset.save(commit=False)
@@ -239,12 +242,21 @@ def compras_update(request, pk):
                 item.delete()
         
             total_payment = 0
-            for form in PaymentMethod_Accounts_FormSet:
-                if form.cleaned_data:
-                    if not form.cleaned_data.get("DELETE"):
-                        valor = form.cleaned_data['value']
-                        total_payment += valor
-                    
+            onlyOldPayments = 0
+            try:
+                for form in PaymentMethod_Accounts_FormSet:
+                    if form.cleaned_data:
+                        if not form.cleaned_data.get("DELETE"):
+                            valor = form.cleaned_data['value']
+                            total_payment += valor
+            except TypeError:
+                onlyOldPayments = True
+                for form in Older_PaymentMethod_Accounts_FormSet:
+                    if form.cleaned_data:
+                        if not form.cleaned_data['DELETE']:
+                            valor = form.cleaned_data['value']
+                            total_payment+=valor
+                        
             if total_payment == compra_form.cleaned_data['total_value']:
                 compra_form.save()
 
@@ -254,7 +266,8 @@ def compras_update(request, pk):
                 for item in itens_para_deletar:
                     item.delete()
                 
-                if len(PaymentMethod_Accounts_FormSet) > 0:
+                
+                if not onlyOldPayments:
 
                     if len(PaymentMethod_Accounts_FormSet) >= len(Older_PaymentMethod_Accounts_FormSet):
 
@@ -294,7 +307,8 @@ def compras_update(request, pk):
                             extra_form.instance.delete()
 
                         Older_PaymentMethod_Accounts_FormSet.save()                            
-
+                else:
+                    Older_PaymentMethod_Accounts_FormSet.save()
             if total_payment != compra_form.cleaned_data["total_value"]:
                 messages.warning(request, "Ação cancelada! O valor total dos pagamentos não corresponde ao total da compra.")
 

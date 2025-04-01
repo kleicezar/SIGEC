@@ -34,7 +34,6 @@ const itensIndex  = [0];
 function addItem() {
     const formset = document.getElementById('itens-container');
     const formCountSale = document.getElementById('id_vendaitem_set-TOTAL_FORMS');
-
     // const formCountElem = document.getElementById('id_vendaitem_set-TOTAL_FORMS');
     const formCountService = document.getElementById("id_vendaitemproductservice_set-TOTAL_FORMS");
 
@@ -74,13 +73,7 @@ function addItem() {
 
         const statusNewForm = newForm.querySelector("select");
         statusNewForm.value = "Pendente";
-        // field_product.id = `products-${formCount}`;
-        input_product.id = `idProduct-${formCount}`
-
-        field_list_products = newForm.querySelector(".v");
-        field_list_products.parentElement.style.display = "none";
        
-        field_list_products.id = `options_products-${formCount}`;
         formset.appendChild(newForm)
         
     }
