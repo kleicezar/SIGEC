@@ -430,6 +430,7 @@ def productForm(request):
         form = ProductModelForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request,"Produto cadastrado com sucesso.",extra_tags='successProduct')
             return redirect('Product')
         else:
             print('Erro no formulário de produto:',form.errors)
@@ -445,6 +446,7 @@ def updateProduct(request, id_product):
         form = ProductModelForm(request.POST, instance=product)
         if form.is_valid():
             form.save()
+            messages.success(request,"Produto atualizado com sucesso.",extra_tags='successProduct')
             return redirect('Product')
     else:
         form = ProductModelForm(instance=product)
@@ -456,6 +458,7 @@ def deleteProduct(request, id_product):
     product = get_object_or_404(Product, id=id_product)
     product.is_active = False
     product.save()
+    messages.success(request,"Produto deletado com sucesso.",extra_tags='successProduct')
     return redirect('Product')
 
 @login_required

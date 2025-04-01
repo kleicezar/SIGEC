@@ -97,6 +97,7 @@ def workOrders_create(request):
         if not PaymentMethod_Accounts_FormSet.is_valid():
             print("Erro no VendaPagamentoService",PaymentMethod_Accounts_FormSet.errors)
 
+        messages.success(request,"Ordem de Serviço cadastrada com sucesso.",extra_tags="successWorkOrder")
         return  redirect('workOrders_list')
     
     else:
@@ -305,6 +306,7 @@ def workOrders_update(request,pk):
         if not Older_PaymentMethod_Accounts_FormSet.is_valid():
             print("Erro no Older_PaymentMethod_Accounts_FormSet",Older_PaymentMethod_Accounts_FormSet.errors)
         
+        messages.success(request,"Ordem de Serviço atualizada com sucesso.",extra_tags="successWorkOrder")
         return redirect('workOrders_list')
     else:
         form_Accounts = AccountsForm(instance=servico)
@@ -358,7 +360,7 @@ def workOrders_delete(request,pk):
                 pessoa.creditLimit+=value_payment.value
             pessoa.save()
             workOrders.delete()
-            messages.success(request, "Serviço deletada com sucesso.")
+            messages.success(request, "Ordem de Serviço deletada com sucesso.",extra_tags="successWorkOrder")
             return redirect('workOrders_list')
 
         context ={

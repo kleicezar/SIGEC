@@ -60,6 +60,7 @@ def Accounts_Create(request):
                         installment.conta = account
                         installment.acc = True
                         installment.save()
+                    messages.success(request,"Conta criada com sucesso.",extra_tags="successAccount")
                     return redirect('AccountsPayable')
                 else:
                     print('\npassou pelo else verify()\n')
@@ -191,7 +192,7 @@ def update_Accounts(request, id_Accounts):
 
 
             payment_instance.save()
-
+            messages.success(request,"Conta atualizada com sucesso.",extra_tags="successAccount")
             return redirect('AccountsReceivable')  # Redirecionar após salvar
         else:
             print("Erros no payment_form_instance:", payment_form_instance.errors)
@@ -217,7 +218,8 @@ def update_Accounts(request, id_Accounts):
 @transaction.atomic 
 def delete_Accounts(request, id_Accounts):
     # Recupera o accounte com o id fornecido
-    account_deleta_pelo_amor_De_Deus = PaymentMethod_Accounts.objects.filter(id=id_Accounts,acc = True).delete() 
+    account_deleta_pelo_amor_De_Deus = PaymentMethod_Accounts.objects.filter(id=id_Accounts,acc = True).delete()
+    messages.success(request,"Conta deletada com sucesso.",extra_tags="successAccount") 
     return redirect('AccountsPayable')
 
 ### CONTAS A RECEBER
@@ -266,6 +268,7 @@ def AccountsReceivable_Create(request):
                         installment.conta = account
                         installment.acc = False
                         installment.save()
+                    messages.success(request,"Conta cadastrada com sucesso.",extra_tags="successAccount")
                     return redirect('AccountsReceivable')
                 else:
                     print('\npassou pelo else verify()\n')
@@ -396,7 +399,7 @@ def update_AccountsReceivable(request, id_Accounts):
 
 
             payment_instance.save()
-
+            messages.success(request,"Conta atualizada com sucesso.",extra_tags="successAccount")
             return redirect('AccountsReceivable')  # Redirecionar após salvar
         else:
             print("Erros no payment_form_instance:", payment_form_instance.errors)
@@ -423,6 +426,7 @@ def update_AccountsReceivable(request, id_Accounts):
 @transaction.atomic 
 def delete_AccountsReceivable(request, id_Accounts):
     # Recupera o accounte com o id fornecido
+    messages.success(request,"Conta deletada com sucesso.",extra_tags="successAccount")
     account_deleta_pelo_amor_De_Deus = PaymentMethod_Accounts.objects.filter(id=id_Accounts,acc = False).delete() #filter(acc = False)
     return redirect('AccountsReceivable')
 

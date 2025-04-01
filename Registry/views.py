@@ -42,6 +42,7 @@ def Client_Create(request):
                 person.id_FisicPerson_fk = fisicPerson
                 person.isActive = 1
                 person.save()
+                messages.success(request,"Cliente cadastrado com sucesso.",extra_tags="successClient")
                 return redirect(previous_url)
 
             if form_legalPerson.is_valid():
@@ -53,6 +54,7 @@ def Client_Create(request):
                 person.id_LegalPerson_fk = legalPerson
                 person.isActive = 1
                 person.save()
+                messages.success(request,"Cliente cadastrado com sucesso.",extra_tags="successClient")
                 return redirect(previous_url)
 
             if form_foreigner.is_valid():
@@ -64,6 +66,7 @@ def Client_Create(request):
                 person.id_ForeignPerson_fk = foreigner
                 person.isActive = 1
                 person.save()
+                messages.success(request,"Cliente cadastrado com sucesso.",extra_tags="successClient")
                 return redirect(previous_url)
             if not form_legalPerson.is_valid():
                 print("Erros: ",form_legalPerson.errors)
@@ -249,7 +252,7 @@ def update_client(request, id_client):
                 person = form_Person.save(commit=False)
                 person.id_ForeignPerson_fk = foreigner
                 person.save()
-
+            messages.success(request,"Cliente atualizado com sucesso.",extra_tags="successClient")
             return redirect('Client')  # Redirecionar após salvar as alterações
     else:
         # Preencher os formulários com os dados existentes
@@ -279,6 +282,7 @@ def delete_client(request, id_client):
     client = get_object_or_404(Person, id=id_client)
     client.isActive = False
     client.save()
+    messages.success(request,"Cliente deletado com sucesso.",extra_tags="successClient")
     return redirect('Client')
 
 @login_required
