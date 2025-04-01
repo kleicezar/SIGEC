@@ -9,10 +9,11 @@ from .models import *
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
 from django.core.paginator import Paginator
-
+from django.db import transaction
 ### CLIENT
 
 @login_required
+@transaction.atomic
 def Client_Create(request):
     if request.method == "POST":
         # SALVA O LINK DA PAGINA ANTERIOR
@@ -176,6 +177,7 @@ def buscar_clientes(request):
     return JsonResponse(response_data)
 
 @login_required
+@transaction.atomic
 def update_client(request, id_client):
     # Buscar o cliente e os dados relacionados
     selected_form = 'a'
@@ -271,6 +273,7 @@ def update_client(request, id_client):
     return render(request, 'registry/ClientformUpdate.html', context)
 
 @login_required
+@transaction.atomic
 def delete_client(request, id_client):
     # Recupera o cliente com o id fornecido
     client = get_object_or_404(Person, id=id_client)

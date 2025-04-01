@@ -17,6 +17,8 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.db import transaction
 
+@login_required
+@transaction.atomic 
 def workOrders_create(request):
     ServiceItemFormSet  = inlineformset_factory(VendaService,VendaItemService,form=VendaItemServiceForm,extra=1,can_delete=True)
     VendaItemFormSet = inlineformset_factory(VendaService, VendaItem, form=VendaItemForm, extra=1, can_delete=True)
@@ -104,17 +106,18 @@ def workOrders_create(request):
         service_item_formset = ServiceItemFormSet(queryset=VendaItemService.objects.none())
         venda_item_formset = VendaItemFormSet(queryset=VendaItem.objects.none())
         # payment_method_formset = PaymentMethodServiceFormSet(queryset=PaymentMethod_VendaService.objects.none())
-        context = {
-            'form_Accounts':form_Accounts,
-            'form_payment_account':PaymentMethod_Accounts_FormSet,
-            'service_form':service_form,
-            'service_item_formset':service_item_formset,
-            'venda_item_formset':venda_item_formset
-            # 'payment_method_formset':payment_method_formset
-        }
+    context = {
+        'form_Accounts':form_Accounts,
+        'form_payment_account':PaymentMethod_Accounts_FormSet,
+        'service_form':service_form,
+        'service_item_formset':service_item_formset,
+        'venda_item_formset':venda_item_formset
+        # 'payment_method_formset':payment_method_formset
+    }
 
-        return render(request,'workOrders_form.html',context)
-    
+    return render(request,'workOrders_form.html',context)
+
+@login_required    
 @transaction.atomic 
 def workOrders_update(request,pk):
 
@@ -336,12 +339,15 @@ def workOrders_update(request,pk):
 
     return render(request,'workOrdersUpdate.html',context) 
 
+@login_required
 def workOrder(request):
     context = {
         'workOrders':VendaService.objects.all()
     }
     return render(request,'workOrders_list.html',context)
 
+@login_required
+@transaction.atomic 
 def workOrders_delete(request,pk):
         workOrders = get_object_or_404(VendaService, pk=pk)
 
@@ -359,6 +365,7 @@ def workOrders_delete(request,pk):
             'workOrders':workOrders
         }
         return render(request,'workOrders_list.html',context)
+
 def service_search(request):
    
     query = request.GET.get('query', '') 

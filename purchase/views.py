@@ -42,6 +42,7 @@ def productsWithStatus_list(request):
     })
 
 @login_required
+@transaction.atomic
 def update_product_quantity(request,pk):
     if request.method == "POST":
         id_venda = request.POST.get("id_venda")
@@ -65,6 +66,7 @@ def compras_list(request):
     return render(request, 'purchase/compras_list.html', {'compras': compras})
 
 @login_required
+@transaction.atomic
 def compras_create(request):
     CompraItemFormSet = inlineformset_factory(Compra, CompraItem, form=CompraItemForm, extra=1, can_delete=True)
     # PaymentMethodCompraFormSet = inlineformset_factory(Compra, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
@@ -358,6 +360,7 @@ def compras_update(request, pk):
         return render(request, 'purchase/compras_formUpdate.html', context)
 
 @login_required# Deletar uma Compra
+@transaction.atomic
 def compras_delete(request, pk):
     # Obtém o objeto Compra ou retorna 404 se não encontrado
     compra = get_object_or_404(Compra, pk=pk)
@@ -379,6 +382,7 @@ def compras_delete(request, pk):
     return redirect('compras_list')
 
 @login_required# Criar CompraItem para uma compra específica
+@transaction.atomic
 def compras_item_create(request, compra_pk):
     # Obtém a compra específica à qual o item será adicionado
     compra = get_object_or_404(Compra, pk=compra_pk)
@@ -419,6 +423,7 @@ def product(request):
     return render(request, 'purchase/product_list.html', {'products': products})
 
 @login_required
+@transaction.atomic
 @permission_required('purchase.add_product', raise_exception=True)
 def productForm(request):
     if request.method == 'POST':
@@ -433,6 +438,7 @@ def productForm(request):
     return render(request, 'purchase/product_form.html', {'form': form})
 
 @login_required
+@transaction.atomic
 def updateProduct(request, id_product):
     product = get_object_or_404(Product, id=id_product)
     if request.method == 'POST':
@@ -445,6 +451,7 @@ def updateProduct(request, id_product):
     return render(request, 'purchase/product_form.html', {'form': form})
 
 @login_required
+@transaction.atomic
 def deleteProduct(request, id_product):
     product = get_object_or_404(Product, id=id_product)
     product.is_active = False

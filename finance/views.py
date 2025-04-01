@@ -10,11 +10,13 @@ from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
 from django.core.paginator import Paginator
 import pdb
+from django.db import transaction
 
 ### CONTAS A PAGAR
 
 # funcionando
 @login_required
+@transaction.atomic 
 def Accounts_Create(request):
     verify = 0
     installments = []
@@ -94,6 +96,7 @@ def Accounts_Create(request):
     }
     return render(request, 'finance/AccountsPayform.html', context)
 
+
 # funcionando
 @login_required
 def Accounts_list(request):
@@ -151,6 +154,7 @@ def get_Accounts(request, id_Accounts):
     return render(request, 'finance/AccountsPay_GET.html', {'client': client})
 
 @login_required
+@transaction.atomic 
 def update_Accounts(request, id_Accounts):
     payment_instance = get_object_or_404(PaymentMethod_Accounts, id=id_Accounts)
     accounts_instance = get_object_or_404(Accounts, id=payment_instance.conta_id)
@@ -210,6 +214,7 @@ def update_Accounts(request, id_Accounts):
 
 # funcionando
 @login_required
+@transaction.atomic 
 def delete_Accounts(request, id_Accounts):
     # Recupera o accounte com o id fornecido
     account_deleta_pelo_amor_De_Deus = PaymentMethod_Accounts.objects.filter(id=id_Accounts,acc = True).delete() 
@@ -218,6 +223,7 @@ def delete_Accounts(request, id_Accounts):
 ### CONTAS A RECEBER
 
 @login_required
+@transaction.atomic 
 def AccountsReceivable_Create(request):
     verify = 0
     installments = []
@@ -353,6 +359,7 @@ def get_AccountsReceivable(request, id_Accounts):
     return render(request, 'finance/AccountsPay_GET.html', {'client': client})
 
 @login_required
+@transaction.atomic 
 def update_AccountsReceivable(request, id_Accounts):
     payment_instance = get_object_or_404(PaymentMethod_Accounts, id=id_Accounts)
     accounts_instance = get_object_or_404(Accounts, id=payment_instance.conta_id)
@@ -413,12 +420,14 @@ def update_AccountsReceivable(request, id_Accounts):
 # funcionando
 
 @login_required
+@transaction.atomic 
 def delete_AccountsReceivable(request, id_Accounts):
     # Recupera o accounte com o id fornecido
     account_deleta_pelo_amor_De_Deus = PaymentMethod_Accounts.objects.filter(id=id_Accounts,acc = False).delete() #filter(acc = False)
     return redirect('AccountsReceivable')
 
-
+@login_required
+@transaction.atomic 
 def Credit_Update(request,id_client):
     person = Person.objects.get(id=id_client)
     if request.method == "POST":
@@ -457,7 +466,8 @@ def Accounts_list(request,id_accounts):
         'accounts':accounts
     })
 # CreditedClients.html
-
+@login_required
+@transaction.atomic
 def deletePayment_Accounts(request,id):
     PaymentMethod_Accounts.objects.filter(id=id).delete()
     return JsonResponse({"message": "Pagamento deletado com sucesso!"}, status=200)

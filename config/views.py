@@ -10,7 +10,7 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.contrib.auth.models import Permission
-
+from django.db import transaction
 ### PAYMENT METHOD
 @login_required
 def paymentMethod(request):
@@ -20,6 +20,7 @@ def paymentMethod(request):
     return render(request, 'config/PaymentMethod.html', context)
 
 @login_required
+@transaction.atomic
 def PaymentMethodForm(request):
     if request.method == "GET":
         if 'HTTP_REFERER' in request.META:
@@ -42,7 +43,8 @@ def PaymentMethodForm(request):
     }
     return render(request, 'config/PaymentMethod.html', context)
 
-@login_required    
+@login_required  
+@transaction.atomic  
 def updatePaymentMethod(request, id_paymentMethod):
     paymentMethod = get_object_or_404(PaymentMethod, id=id_paymentMethod)
     if request.method == "GET":
@@ -65,6 +67,7 @@ def updatePaymentMethod(request, id_paymentMethod):
     return render(request, 'config/PaymentMethod.html', context)
 
 @login_required
+@transaction.atomic
 def deletePaymentMethod(request, id_paymentMethod):
     paymentMethod = get_object_or_404(PaymentMethod, id=id_paymentMethod)
     if request.method == "POST":
@@ -88,6 +91,7 @@ def position(request):
 
 
 @login_required
+@transaction.atomic
 def PositionForm(request):
     if request.method == "GET":
         PositionForm = PositionModelForm()
@@ -107,6 +111,7 @@ def PositionForm(request):
     return render(request, 'config/Position.html', context)
 
 @login_required
+@transaction.atomic
 def updatePosition(request, id_position):
     position = get_object_or_404(Position, id=id_position)
     if request.method == "GET":
@@ -129,6 +134,7 @@ def updatePosition(request, id_position):
     return render(request, 'config/Position.html', context)
 
 @login_required
+@transaction.atomic
 def deletePosition(request, id_position):
     position = get_object_or_404(Position, id=id_position)
     if request.method == "POST":
@@ -153,6 +159,7 @@ def situation(request):
     return render(request, 'config/Situation.html', context)
 
 @login_required
+@transaction.atomic
 def SituationForm(request):
     if request.method == "GET":
         situationForm = SituationModelForm()
@@ -172,6 +179,7 @@ def SituationForm(request):
     return render(request, 'config/Situation.html', context)
 
 @login_required
+@transaction.atomic
 def updateSituation(request, id_situation):
     
     situation = get_object_or_404(Situation, id=id_situation)
@@ -195,6 +203,7 @@ def updateSituation(request, id_situation):
     return render(request, 'config/Situation.html', context)
 
 @login_required
+@transaction.atomic
 def deleteSituation(request, id_situation):
     situation = get_object_or_404(Situation, id=id_situation)
     if request.method == "POST":
@@ -218,6 +227,7 @@ def chartOfAccounts(request):
     return render(request, 'config/ChartOfAccounts.html', context)
 
 @login_required
+@transaction.atomic
 def ChartOfAccountsForm(request):
     if request.method == "GET":
         chartOfAccountsForm = ChartOfAccountsModelForm()
@@ -239,6 +249,7 @@ def ChartOfAccountsForm(request):
     return render(request, 'config/ChartOfAccounts.html', context)
 
 @login_required
+@transaction.atomic
 def updateChartOfAccounts(request, id_chartOfAccounts):
     chartOfAccounts = get_object_or_404(ChartOfAccounts, id=id_chartOfAccounts)
     if request.method == "GET":
@@ -261,6 +272,7 @@ def updateChartOfAccounts(request, id_chartOfAccounts):
     return render(request, 'config/ChartOfAccounts.html', context)
 
 @login_required
+@transaction.atomic
 def deleteChartOfAccounts(request, id_chartOfAccounts):
     chartOfAccounts = get_object_or_404(ChartOfAccounts, id=id_chartOfAccounts)
     if request.method == "POST":
@@ -283,6 +295,8 @@ def service(request):
     return render(request,'config/Service.html',context)
     # return HttpResponse("Olá, esta é a minha nova app Django!")
 
+@login_required
+@transaction.atomic
 def ServiceForm(request):
     if request.method == 'POST':
         service_form = ServiceModelForm(request.POST)
@@ -301,7 +315,8 @@ def ServiceForm(request):
         }
         return render(request,'config/serviceForm.html',context)
     
-       
+@login_required
+@transaction.atomic      
 def updateService(request,pk):
     servico = get_object_or_404(Service,pk=pk)
     if request.method == "POST":
@@ -320,6 +335,8 @@ def updateService(request,pk):
         }
         return render(request,'config/serviceForm.html',context)
 
+@login_required
+@transaction.atomic
 def deleteService(request,pk):
     servico = get_object_or_404(Service, pk=pk)
     if request.method == "POST":

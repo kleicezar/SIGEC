@@ -40,6 +40,7 @@ def venda_list(request):
         })
 
 @login_required
+@transaction.atomic 
 def venda_create(request):
     VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=1, can_delete=True)
     PaymentMethodAccountsFormSet = inlineformset_factory(Venda,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=1,can_delete=True)
@@ -93,7 +94,7 @@ def venda_create(request):
                 for form in PaymentMethod_Accounts_FormSet.deleted_objects:
                     form.delete()
                     form.save()
-                
+                messages.success(request, "Venda cadastrada com sucesso.",extra_tags="successSale")
                 return redirect('venda_list')
 
             if total_payment != venda_form.cleaned_data['total_value']:
@@ -290,7 +291,7 @@ def venda_update(request, pk):
         
         if not Older_PaymentMethod_Accounts_FormSet.is_valid():
             print("Erros no Older_PaymentMethod_Accounts_Formset: ", Older_PaymentMethod_Accounts_FormSet.errors)
-        
+        messages.success(request, "Venda atualizada com sucesso.",extra_tags="successSale")
         return redirect('venda_list')
     else:
         
@@ -325,6 +326,7 @@ def venda_update(request, pk):
     return render(request, 'sale/venda_formUpdate.html', context)
 
 @login_required# Deletar uma Venda
+@transaction.atomic 
 def venda_delete(request, pk):
     # Obtém a venda com base no id (pk)
     venda = get_object_or_404(Venda, pk=pk)
@@ -342,10 +344,12 @@ def venda_delete(request, pk):
     venda_items.delete()
     # Exclui a venda
     venda.delete()
+    messages.success(request, "Venda deletada com sucesso.",extra_tags="successSale")
     # Redireciona para a lista de vendas após a deleção
     return redirect('venda_list')
 
 @login_required# Criar VendaItem para uma venda específica
+@transaction.atomic 
 def venda_item_create(request, venda_pk):
     venda = get_object_or_404(Venda, pk=venda_pk)
     if request.method == 'POST':
