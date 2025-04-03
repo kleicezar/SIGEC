@@ -3,45 +3,10 @@ const toggleButton = document.querySelector('.toggle-menu');
 const sidebar = document.querySelector('.sidebar');
 const content = document.querySelector('.content'); // Adicionado para referenciar o conteúdo
 const toggles = document.querySelectorAll('.toggle');
-// console.log('dfsfadsf');
 // Alterna a visibilidade da sidebar
 toggleButton.addEventListener('click', () => {
     sidebar.classList.toggle('hidden');
     content.classList.toggle('expanded'); // Alterna a classe no conteúdo
-});
-
-// Adiciona eventos de clique para os links do menu
-toggles.forEach(toggle => {
-    toggle.addEventListener('click', function(event) {
-        event.preventDefault(); // Impede o comportamento padrão do link
-
-        const subMenu = this.nextElementSibling; // Seleciona a próxima sub-menu
-        // let isToggle = true;
-        // Alterna a exibição da sub-menu
-        if (subMenu.style.display === 'block') {
-            
-            // toggle.classList.toggle('toggle');
-            subMenu.style.display = 'none';
-
-            toggle.classList.replace("rotate", "toggle");
-           
-            // console.log(meuElemento.className); // "classe3 classe2"
-
-        } else {
-            toggle.classList.replace( "toggle","rotate");
-            subMenu.style.display = 'block';
-          
-        }
-        /*nao colocar antes do if e do else de cima*/
-        // if(isToggle){
-        //     toggle.classList.toggle("rotate");
-        //     isToggle = !isToggle;
-        // }
-        // else{
-        //     toggle.classList.toggle("toggle");
-        //     isToggle = !isToggle;
-        // }
-    });
 });
 
 
@@ -64,4 +29,39 @@ window.addEventListener('click', function(event) {
     if (!userDropdownMenu.contains(event.target) && event.target !== userMenuButton) {
         userDropdownMenu.style.display = 'none';
     }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const toggles = document.querySelectorAll(".toggle");
+
+    toggles.forEach((toggle, index) => {
+        const submenu = toggle.nextElementSibling; // Pegamos o submenu associado
+
+        //Recupera o estado salvo no localStorage
+        const estadoSalvo = localStorage.getItem(`submenu-${index}`);
+
+  
+        if (estadoSalvo === "block") {
+            submenu.style.display = "block";
+            toggle.classList.replace( "toggle","rotate")
+        } else {
+            submenu.style.display = "none";
+            
+            toggle.classList.replace("rotate", "toggle");
+        }
+
+        toggle.addEventListener("click", function () {
+            const displayAtual = window.getComputedStyle(submenu).display;
+
+            if (displayAtual === "none") {
+                submenu.style.display = "block";
+                localStorage.setItem(`submenu-${index}`, "block"); // Salva o estado
+                toggle.classList.replace( "toggle","rotate")
+            } else {
+                submenu.style.display = "none";
+                localStorage.setItem(`submenu-${index}`, "none"); // Salva o estado
+                toggle.classList.replace("rotate", "toggle");
+            }
+        });
+    });
 });
