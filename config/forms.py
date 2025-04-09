@@ -1,4 +1,3 @@
-
 from django import forms
 from .models import *
 
@@ -36,11 +35,18 @@ class ChartOfAccountsModelForm(forms.ModelForm):
         self.fields['name_ChartOfAccounts'].widget.attrs.update({'class': 'label-text'})
 
 class PaymentMethodModelForm(forms.ModelForm):
+    # ativo = forms.BooleanField(widget=forms.CheckboxInput(), required=False)
+    
     class Meta:
         model = PaymentMethod
-        fields = ['name_paymentMethod','creditPermission']
+        fields = ['name_paymentMethod','creditPermission', 'considerInCash']
+        widgets = {
+            'considerInCash' : forms.CheckboxInput(attrs={
+                'class':'form-check-input'
+                })
+        } 
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs): 
         super(PaymentMethodModelForm, self).__init__(*args, **kwargs)
         self.fields['name_paymentMethod'].widget.attrs.update({'class': 'label-text'})
 
@@ -66,3 +72,4 @@ class ServiceModelForm(forms.ModelForm):
                 'class':'form-control row'
             })
         }   
+        self.fields['name_position'].widget.attrs.update({'class': 'label-text'})

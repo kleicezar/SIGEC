@@ -43,6 +43,11 @@
                                                 <div class="p-2 ">
                                                     {{paymentMethod.name_paymentMethod}}
                                                 </div>
+                                                <div class="form-check form-switch">
+                                                    {{paymentMethod.considerInCash.label}}
+                                                    {{paymentMethod.considerInCash}}
+                                                </div>
+                                                
                                             </div>
 
                                             <div class="mt-4">
@@ -66,7 +71,6 @@
             </div>
             {% endblock %}
         </main>
-        
         
         <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
     </body>

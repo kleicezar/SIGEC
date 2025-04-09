@@ -3,23 +3,25 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path('acctpay/', Accounts_list, name='AccountsPayable'),
-    path('c/acctpay/', Accounts_Create, name='Accounts_Create'),
-    # path('b-acctpay/', buscar_Accounts, name='buscar_Accounts'),
-    path('acctpay/upt/<int:id_Accounts>/', update_Accounts, name='update_Accounts'),  # Atualizar cliente
-    path('acctpay/del/<int:id_Accounts>/', delete_Accounts, name='delete_Accounts'),
-    path('acctpay/get/<int:id_Accounts>/', get_Accounts, name='get_Accounts'),
+    path('AccountsPayable/', Accounts_list, name='AccountsPayable'),
+    path('c/AccountsPayable/', Accounts_Create, name='Accounts_Create'),
+    # path('b-AccountsPayable/', buscar_Accounts, name='buscar_Accounts'),
+    path('AccountsPayable/upt/<int:id_Accounts>/', update_Accounts, name='update_Accounts'),  # Atualizar cliente
+    path('AccountsPayable/del/<int:id_Accounts>/', delete_Accounts, name='delete_Accounts'),
+    path('AccountsPayable/get/<int:id_Accounts>/', get_Accounts, name='get_Accounts'),
 
-    path('acctrec/', AccountsReceivable_list, name='AccountsReceivable'),
-    path('c/acctrec/', AccountsReceivable_Create, name='AccountsReceivable_Create'),
-    # path('b-acctrec/', buscar_AccountsReceivable, name='buscar_AccountsReceivable'),
-    path('acctrec/upt/<int:id_Accounts>/', update_AccountsReceivable, name='update_AccountsReceivable'),  # Atualizar cliente
-    path('acctrec/del/<int:id_Accounts>/', delete_AccountsReceivable, name='delete_AccountsReceivable'),
-    path('acctrec/get/<int:id_Accounts>/', get_AccountsReceivable, name='get_AccountsReceivable'),
+    path('AccountsReceivable/', AccountsReceivable_list, name='AccountsReceivable'),
+    path('c/AccountsReceivable/', AccountsReceivable_Create, name='AccountsReceivable_Create'),
+    # path('b-AccountsReceivable/', buscar_AccountsReceivable, name='buscar_AccountsReceivable'),
+    path('AccountsReceivable/upt/<int:id_Accounts>/', update_AccountsReceivable, name='update_AccountsReceivable'),  # Atualizar cliente
+    path('AccountsReceivable/del/<int:id_Accounts>/', delete_AccountsReceivable, name='delete_AccountsReceivable'),
+    path('AccountsReceivable/get/<int:id_Accounts>/', get_AccountsReceivable, name='get_AccountsReceivable'),
 
     path('credit/upt/<int:id_client>/',Credit_Update,name='update_creditLimit'),
 
     path('creditedClients/',CreditedClients_list,name='CreditedClients'),
     path('accounts_list/<int:id_accounts>/',Accounts_list,name='Accounts_list'),
     path('delete_payments/<int:id>/',deletePayment_Accounts,name='delete_payments')
+    path('cashFlow/get/', cashFlow, name='cashFlow'),
+
 ]

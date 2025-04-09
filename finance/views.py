@@ -475,3 +475,11 @@ def Accounts_list(request,id_accounts):
 def deletePayment_Accounts(request,id):
     PaymentMethod_Accounts.objects.filter(id=id).delete()
     return JsonResponse({"message": "Pagamento deletado com sucesso!"}, status=200)
+
+def cashFlow(request):
+    algumaCoisa = 10
+    algumaCoisa = 10
+    context = {
+        'get':algumaCoisa
+    }
+    return render(request, 'finance/cashFlow.html', context)

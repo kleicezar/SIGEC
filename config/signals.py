@@ -67,6 +67,4 @@ def add_permissions(sender, **kwargs):
             except ContentType.DoesNotExist:
                 print(f"⚠️ ContentType não encontrado: '{app_label}.{model}'")
                 
-
-
 post_migrate.connect(add_permissions)

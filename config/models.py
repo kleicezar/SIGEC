@@ -2,9 +2,17 @@ from django.db import models
 from Registry.models import Person
 
 class PaymentMethod(models.Model):
+    # CONSIDERINCASH = [
+    #     ('entrada', 'Entrada'),
+    #     ('saida', 'Saída'),
+
+    # ]
     name_paymentMethod = models.CharField('Nome da Forma de Pagamento', max_length=50)
     creditPermission = models.BooleanField('creditPermission',default=False)
     is_Active = models.BooleanField('ativo',default=True)
+    considerInCash = models.BooleanField('considerar em caixa', default=False, blank=True, null=True) 
+    # considerInCash = models.CharField('considerar em caixa',choices= CONSIDERINCASH, default=False, blank=True, null=True, max_length=50)
+    is_Active = models.BooleanField('ativo',default=True) 
 
     def __str__(self):
         return self.name_paymentMethod
