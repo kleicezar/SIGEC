@@ -210,7 +210,8 @@ class CashMovement(models.Model):  # transações do caixa diario
         PaymentMethod_Accounts,
         null=True,
         on_delete=models.SET_NULL, 
-        related_name="conta"
+        # related_name="conta",
+        related_name='cash_movements'
     )
     # tipo_movimentacao = models.CharField(max_length=10, choices=TIPO_MOVIMENTACAO) 
     #FIXME a movimentação de caixa se deve pelo campo acc presente em contas

@@ -21,7 +21,7 @@ urlpatterns = [
 
     path('creditedClients/',CreditedClients_list,name='CreditedClients'),
     path('accounts_list/<int:id_accounts>/',Accounts_list,name='Accounts_list'),
-    path('delete_payments/<int:id>/',deletePayment_Accounts,name='delete_payments')
+    path('delete_payments/<int:id>/',deletePayment_Accounts,name='delete_payments'),
     path('cashFlow/get/', cashFlow, name='cashFlow'),
 
 ]

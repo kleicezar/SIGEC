@@ -72,4 +72,4 @@ class ServiceModelForm(forms.ModelForm):
                 'class':'form-control row'
             })
         }   
-        self.fields['name_position'].widget.attrs.update({'class': 'label-text'})
+        # self.fields['name_position'].widget.attrs.update({'class': 'label-text'})
