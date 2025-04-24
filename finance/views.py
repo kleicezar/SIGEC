@@ -100,7 +100,7 @@ def Accounts_Create(request):
 
 # funcionando
 @login_required
-def Accounts_list(request):
+def AccountsPayable_list(request):
     # Obtenha o termo de pesquisa da requisição
     search_query = request.GET.get('query', '') 
 
@@ -307,7 +307,6 @@ def AccountsReceivable_Create(request):
 def AccountsReceivable_list(request):
     # Obtenha o termo de pesquisa da requisição
     search_query = request.GET.get('query', '') 
-
     # Filtrar os accountes com base no termo de pesquisa
     if search_query:
         account = PaymentMethod_Accounts.objects.filter(
