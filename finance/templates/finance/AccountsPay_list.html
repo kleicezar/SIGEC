@@ -84,9 +84,26 @@
                         <td>{{ account.conta.pessoa_id.id_LegalPerson_fk.fantasyName }}</td>
                     {% elif account.conta.pessoa_id.id_ForeignPerson_fk %}
                         <td>{{ account.conta.pessoa_id.id_ForeignPerson_fk.name_foreigner }}</td>
-                    {% else  %}
+                    {% elif account.conta  %}
                         <td>{{ account.conta.name }}</td>
+                  
+
+                    {% elif account.venda.pessoa.id_FisicPerson_fk %}
+                        <td>{{ account.venda.pessoa.id_FisicPerson_fk.name}}</td>
+                    {% elif account.venda.pessoa.id_LegalPerson_fk %}
+                        <td>{{ account.venda.id_LegalPerson_fk.fantasyName }}</td>
+                    {% elif account.venda.pessoa.id_ForeignPerson_fk %}
+                        <td>{{ account.conta.pessoa.id_ForeignPerson_fk.name_foreigner}}</td>
+                    
+
+                    {% elif account.ordem_servico.pessoa.id_FisicPerson_fk %}
+                        <td>{{account.ordem_servico.pessoa.id_FisicPerson_fk.name}}</td>
+                    {% elif account.ordem_servico.pessoa.id_LegalPerson_fk %}
+                        <td>{{account.ordem_servico.pessoa.id_LegalPerson_fk.name_foreigner}}</td>
+                    {% elif account.ordem_servico.pessoa.id_ForeignPerson_fk %}
+                        <td> {{account.ordem_servico.pessoa_id_ForeignPerson_fk.name}} </td>
                     {% endif %}
+
                     <td>{{ account.expirationDate|date:"d/m/Y" }}</td>
                     <td>{{ account.value }}</td>
                     <td>
