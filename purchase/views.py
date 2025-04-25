@@ -133,7 +133,7 @@ def compras_create(request):
                 # # Remover pagamentos marcados para exclusão
                 # for payment in payments_to_delete:
                 #     payment.delete()
-
+                messages.success(request,"Compra cadastrada com sucesso.",extra_tags='successShopping')
                 return redirect('compras_list')
             else:
                 messages.warning(request, "Ação cancelada! O valor total dos pagamentos não corresponde ao total da compra.")
@@ -316,7 +316,7 @@ def compras_update(request, pk):
             if total_payment != compra_form.cleaned_data["total_value"]:
                 messages.warning(request, "Ação cancelada! O valor total dos pagamentos não corresponde ao total da compra.")
 
-            messages.success(request,"Compra atualizada com sucesso!")
+            messages.success(request,"Compra atualizada com sucesso!",extra_tags='successShopping')
             return redirect('compras_list')
             # Atualiza o estoque, adicionando as quantidades compradas
         if not compra_form.is_valid():
@@ -381,6 +381,7 @@ def compras_delete(request, pk):
     compra.delete()
     
     # Redireciona para a lista de compras
+    messages.success(request,"Compra deletada com sucesso!",extra_tags='successShopping')
     return redirect('compras_list')
 
 @login_required# Criar CompraItem para uma compra específica
