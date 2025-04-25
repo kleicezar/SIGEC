@@ -106,7 +106,9 @@ def compras_create(request):
             # print(payment_method_formset)
             for form in PaymentMethod_Accounts_FormSet:
                 if form.cleaned_data:
-                    form.acc = True
+                 
+                    form.instance.acc = True
+                    
                     valor = form.cleaned_data['value']
                     total_payment+=valor
 
