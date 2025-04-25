@@ -438,6 +438,7 @@ def Credit_Update(request,id_client):
         if form_creditLimit.is_valid():
             person.creditLimit = form_creditLimit.cleaned_data["creditLimit"]
             person.save()
+            messages.success(request,"Crédito atualizado com sucesso.",extra_tags='successCredit')
             return redirect('CreditedClients')
         else:
             print("Erro no formulário de Limite de Crédito",form_creditLimit.errors)

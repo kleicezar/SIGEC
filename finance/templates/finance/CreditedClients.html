@@ -17,6 +17,23 @@
     <body>
         {% block content %}
         <div class='content'>
+            <div class="position-absolute start-50">
+                <div class="">
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% if "successClient" in message.tags or "successCredit" in message.tags %}
+                            <div style="max-height: 50px; max-width: 400px;" class="successContainer"> 
+                                <div class="alert {{ message.tags }} alert-success ">
+                                    <strong>Sucesso!</strong>
+                                {{ message }}
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
             <div class="container">
                 <a href="{% url 'Client_Create' %}">
                     <button class="btn btn-success">Cadastrar Cliente</button>
