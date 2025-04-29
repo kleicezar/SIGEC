@@ -36,7 +36,7 @@ def productsWithStatus_list(request):
     ] + [
         {'idOS': workOrder.venda.id, 'idProduto':workOrder.product.id,'idVendaItem':workOrder.id,'descricao': workOrder.product.description, 'quantidade': workOrder.quantidade,'status':workOrder.status} for workOrder in workOrders
     ]
-
+    # messages.warning(request,'TESTE',extra_tags='delivery_page')
     return render(request, 'purchase/manageDeliveries_list.html', {
         'all_products_with_status': all_products_with_status,
         "status_options": status_options
