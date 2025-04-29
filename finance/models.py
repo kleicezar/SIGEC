@@ -232,7 +232,7 @@ class CashMovement(models.Model):  # transações do caixa diario
 class FechamentoCaixa(models.Model):  # fechamento do caixa
     caixa = models.OneToOneField(CaixaDiario, on_delete=models.CASCADE)
     observacoes = models.TextField(blank=True, null=True)
-    closed_in = models.DateTimeField(auto_now_add=True)
+    closed_in = models.DateTimeField(auto_now_add=True, verbose_name='fechado_em')
 
     def __str__(self):
         return f"Fechamento {self.caixa.data} - Responsável: {self.caixa.usuario_responsavel}"

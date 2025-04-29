@@ -81,9 +81,20 @@
                     </a>
                     <ul class="sub-menu">
                         <li><a href="{% url 'Product' %}"><h5>Gerenciar Produtos</h5></a></li>
-                        <li><a href="{% url 'compras_list' %}"><h5>Compras</h5></a></li>
                         <li><a href="#"><h5>Relatorio de Produtos</h5></a></li>
                         <li><a href="{% url 'manageProductDelivery' %}"><h5>Status de Produtos</h5></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="toggle">
+                        <div class="page">
+                            <h3>Compras</h3>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                    </a>
+                    <ul class="sub-menu">
+                        <li><a href="{% url 'compras_list' %}"><h5>Registrar Compras</h5></a></li>
+                        <li><a href="#"><h5>Relatorio de Produtos Comprados</h5></a></li>
                     </ul>
                 </li>
                 <li>
@@ -98,8 +109,23 @@
                       
                     </a>
                     <ul class="sub-menu">
-                        <li><a href="{% url 'venda_list' %}"><h5>Pedidos</h5></a></li>
+                        <li><a href="{% url 'venda_list' %}"><h5>Registrar Pedidos</h5></a></li>
                         <!-- <li><a href="{% url 'venda_list' %}"><h5>Relatorio de Vendas</h5></a></li> -->
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="toggle">
+                        
+                        <div class="page">
+
+                            <h3>Ordem de Serviços (O.S.)</h3>
+                            <i class="fa-solid fa-chevron-down"></i>
+                            
+                        </div>
+                    </a>
+                    <ul class="sub-menu">
+                       
+                        <li><a href="{% url 'workOrders_list' %}"><h5>registrar Ordem de Serviço</h5></a></li>
                     </ul>
                 </li>
                 <li>
@@ -123,21 +149,6 @@
                 </li>
                 <li>
                     <a href="#" class="toggle">
-                        
-                        <div class="page">
-
-                            <h3>Serviços</h3>
-                            <i class="fa-solid fa-chevron-down"></i>
-                            
-                        </div>
-                    </a>
-                    <ul class="sub-menu">
-                       
-                        <li><a href="{% url 'workOrders_list' %}"><h5>Ordem de Serviço</h5></a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#" class="toggle">
                         <div class="page">
 
                             <h3>Configurações</h3>
@@ -150,7 +161,7 @@
                         <!-- <li><a href="#"><h5>Usuarios</h5></a></li> -->
                         <li><a href="{% url 'Situation' %}"><h5>Situação</h5></a></li>
                         <li><a href="{% url 'PaymentMethod' %}"><h5>Forma de Pagamento</h5></a></li>
-                        <li><a href="{% url 'Position' %}"><h5>Cargos</h5></a></li>
+                        <!-- <li><a href="{% url 'Position' %}"><h5>Cargos</h5></a></li> -->
                         <li><a href="{% url 'ChartofAccounts'%}">Plano de Contas</a></li>
                         <li><a href="{% url 'Service' %}"><h5>Serviços</h5></a></li>
                         <li><a href="#"><h5>Permissões</h5></a></li>
