@@ -26,7 +26,9 @@ def productsWithStatus_list(request):
     vendasItens = VendaItem.objects.filter(
         Q(status = 'Pendente')
     )
-    workOrders = VendaItemWS.objects.all()
+    workOrders = VendaItemWS.objects.filter(
+        Q(status = 'Pendente')
+    )
     status_options = ["Pendente", "Entregue"]
 
     all_products_with_status = [
@@ -57,6 +59,7 @@ def update_product_quantity(request,pk):
         if product.current_quantity >= vendaitem.quantidade:
             product.save()
         else:
+            messages.warning(request,"Estoque do produto acabou.",extra_tags='delivery_page')
             print("QUANTIDADE DE PRODUTOS MENOR QUE A SOLICITADA")
         
     return redirect('manageProductDelivery')
