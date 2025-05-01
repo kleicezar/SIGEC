@@ -79,6 +79,8 @@ def workOrders_create(request):
                 for form in PaymentMethod_Accounts_FormSet.deleted_objects:
                     form.delete()
                     form.save()
+                return redirect('workOrders_list')
+            
             if total_payment != service.total_value:
                 messages.warning(request,"Ação cancelada! O valor acumalado dos pagamentos é menor do que o valor acumulado dos prudutos.",extra_tags='workcreate_page')
 
@@ -98,8 +100,6 @@ def workOrders_create(request):
             print("Erro no VendaPagamentoService",PaymentMethod_Accounts_FormSet.errors)
 
         messages.success(request,"Ordem de Serviço cadastrada com sucesso.",extra_tags="successWorkOrder")
-        return  redirect('workOrders_list')
-    
     else:
         form_Accounts = AccountsForm()
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
