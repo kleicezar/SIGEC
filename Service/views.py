@@ -129,6 +129,7 @@ def workOrders_update(request,pk):
     Older_PaymentMethod_Accounts_FormSet = inlineformset_factory(VendaService, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=0, can_delete=True)
 
     if request.method == 'POST':
+        previous_url = request.session.get('previous_page','/')
         # print(request.POST)
         service_form = VendaServiceForm(request.POST, instance=servico)
         service_item_formset = ServiceItemFormSet(request.POST, instance=servico)
@@ -284,7 +285,7 @@ def workOrders_update(request,pk):
                         Older_PaymentMethod_Accounts_FormSet.save()                            
                 else:
                     Older_PaymentMethod_Accounts_FormSet.save()
-                return redirect('workOrders_list')
+                return redirect(previous_url)
             
             if total_payment != service.total_value:
                 messages.warning(request,"Ação cancelada! O valor acumalado dos pagamentos é menor do que o valor acumulado dos prudutos.",extra_tags='workupdate_page')
@@ -328,7 +329,9 @@ def workOrders_update(request,pk):
         form_Accounts.initial["date_init"] = data_modificada
         form_Accounts.initial["totalValue"] = service_form.initial['total_value'] + service_form.initial['total_value_service']
         form_Accounts.initial["numberOfInstallments"] = count_payment
-
+        
+        if 'HTTP_REFERER' in request.META:
+            request.session['previous_page'] = request.META['HTTP_REFERER']
     context = {
             'form_Accounts':form_Accounts,
             'service_form':service_form,
