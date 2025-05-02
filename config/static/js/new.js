@@ -117,7 +117,7 @@ function showSuggetionsServices(input){
 
 
 
-const totalValueField = document.getElementById("id_total_value_service");
+
 const totalServicesField = document.getElementById("id_service_total");
 const discountTotalField = document.getElementById("id_discount_total_service");
 const itemsContainerService = document.getElementById("itens-container-service");
@@ -135,11 +135,26 @@ function calcularPreco(input) {
     atualizarTotal(itemForms);
 }
 
+const totalValue = document.getElementById("id_totalValue");
+const totalValueInput = document.getElementById("id_total_value");
+const totalValueField = document.getElementById("id_total_value_service");
+document.addEventListener('DOMContentLoaded',()=>{
+   
+
+    if(!totalValueInput.value){
+        totalValueInput.value = 0;
+    }
+
+    if(!totalValueField.value){
+        totalValueField.value = 0;
+    }
+})
+
 function atualizarTotal(itemForms) {
     let totalSemDesconto = 0;
     let totalComDesconto = 0;
     let totalServicos = 0;
-
+    totalValueField.value = 0;
     itemForms.forEach(itemForm=>{
         if(window.getComputedStyle(itemForm).display != 'none'){
             const inputs = itemForm.querySelectorAll("input");
@@ -173,10 +188,12 @@ function atualizarTotal(itemForms) {
     discountTotalField.value = percentualDesconto;
     totalServicesField.value = totalServicos;
     totalValueField.value = totalComDesconto.toFixed(2);
+
+    totalValue.value = Number(totalValueField.value) + Number(totalValueInput.value);
 }
 
 
-const totalValueInput = document.getElementById("id_total_value");
+
 const totalProductsInput = document.getElementById("id_product_total");
 const totalDiscountInput = document.getElementById("id_discount_total");
 const itemsContainer = document.getElementById("itens-container");
@@ -196,12 +213,13 @@ function calcularPrecoProduto(input){
 
 }
 
-totalValue = document.getElementById("id_totalValue");
+
+
 function atualizarTotalProduto(itemForms){
     let totalSemDesconto = 0;
     let totalComDesconto = 0;
     let totalProdutos = 0;
-
+    totalValueInput.value = 0;
     itemForms.forEach(itemForm => {
         if (window.getComputedStyle(itemForm).display !== 'none') {
             const inputs = itemForm.querySelectorAll("input");
@@ -226,7 +244,7 @@ function atualizarTotalProduto(itemForms){
             totalComDesconto += subtotalComDesconto;
             totalProdutos += quantidade;
         }
-        totalValue.value = totalComDesconto.toFixed(2);
+        // totalValue.value = totalComDesconto.toFixed(2);
     });
 
     let percentualDesconto = totalSemDesconto > 0
@@ -236,6 +254,8 @@ function atualizarTotalProduto(itemForms){
     totalDiscountInput.value = percentualDesconto;
     totalProductsInput.value = totalProdutos;
     totalValueInput.value = totalComDesconto.toFixed(2);
+
+    totalValue.value = Number(totalValueField.value) + Number(totalValueInput.value);
 }
 
 const serviceInputs = document.querySelectorAll('input[type="hidden"][name$="-service"]')
@@ -262,4 +282,5 @@ serviceInputs.forEach(serviceInput=>{
     }
     
 })
+
 

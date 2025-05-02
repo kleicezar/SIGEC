@@ -79,6 +79,10 @@ def workOrders_create(request):
                 for form in PaymentMethod_Accounts_FormSet.deleted_objects:
                     form.delete()
                     form.save()
+
+                messages.success(request,"Ordem de Serviço cadastrada com sucesso.",extra_tags="successWorkOrder")
+                return redirect('workOrders_list')
+            
             if total_payment != service.total_value:
                 messages.warning(request,"Ação cancelada! O valor acumalado dos pagamentos é menor do que o valor acumulado dos prudutos.",extra_tags='workcreate_page')
 
@@ -97,9 +101,7 @@ def workOrders_create(request):
         if not PaymentMethod_Accounts_FormSet.is_valid():
             print("Erro no VendaPagamentoService",PaymentMethod_Accounts_FormSet.errors)
 
-        messages.success(request,"Ordem de Serviço cadastrada com sucesso.",extra_tags="successWorkOrder")
-        return  redirect('workOrders_list')
-    
+       
     else:
         form_Accounts = AccountsForm()
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
@@ -129,6 +131,7 @@ def workOrders_update(request,pk):
     Older_PaymentMethod_Accounts_FormSet = inlineformset_factory(VendaService, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=0, can_delete=True)
 
     if request.method == 'POST':
+        previous_url = request.session.get('previous_page','/')
         # print(request.POST)
         service_form = VendaServiceForm(request.POST, instance=servico)
         service_item_formset = ServiceItemFormSet(request.POST, instance=servico)
@@ -284,13 +287,16 @@ def workOrders_update(request,pk):
                         Older_PaymentMethod_Accounts_FormSet.save()                            
                 else:
                     Older_PaymentMethod_Accounts_FormSet.save()
-                return redirect('workOrders_list')
+            
+                messages.success(request,"Ordem de Serviço atualizada com sucesso.",extra_tags="successWorkOrder")
+                return redirect(previous_url)
             
             if total_payment != service.total_value:
                 messages.warning(request,"Ação cancelada! O valor acumalado dos pagamentos é menor do que o valor acumulado dos prudutos.",extra_tags='workupdate_page')
             
             if ((creditLimitAtual != creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual<0)):
                 messages.warning(request,"Ação Cancelada! O valor acumulado dos pagamentos é menor que o limite de crédito. ",extra_tags='workupdate_page')
+
         if not service_form.is_valid():
             print("Erro no ServiceForm",service_form.errors)
 
@@ -306,8 +312,8 @@ def workOrders_update(request,pk):
         if not Older_PaymentMethod_Accounts_FormSet.is_valid():
             print("Erro no Older_PaymentMethod_Accounts_FormSet",Older_PaymentMethod_Accounts_FormSet.errors)
         
-        messages.success(request,"Ordem de Serviço atualizada com sucesso.",extra_tags="successWorkOrder")
-        return redirect('workOrders_list')
+      
+      
     else:
         form_Accounts = AccountsForm(instance=servico)
         older_payment_method_formset = Older_PaymentMethod_Accounts_FormSet(queryset=servico.paymentmethod_accounts_set.all(),instance=servico,prefix='older_paymentmethod_accounts_set')
@@ -328,7 +334,9 @@ def workOrders_update(request,pk):
         form_Accounts.initial["date_init"] = data_modificada
         form_Accounts.initial["totalValue"] = service_form.initial['total_value'] + service_form.initial['total_value_service']
         form_Accounts.initial["numberOfInstallments"] = count_payment
-
+        
+        if 'HTTP_REFERER' in request.META:
+            request.session['previous_page'] = request.META['HTTP_REFERER']
     context = {
             'form_Accounts':form_Accounts,
             'service_form':service_form,

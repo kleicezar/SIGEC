@@ -46,6 +46,8 @@ def venda_create(request):
     PaymentMethodAccountsFormSet = inlineformset_factory(Venda,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=1,can_delete=True)
 
     if request.method == 'POST':
+        previous_url = request.session.get('previous_page','/')
+
         venda_form = VendaForm(request.POST)
         form_Accounts = AccountsForm(request.POST)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
@@ -95,7 +97,7 @@ def venda_create(request):
                     form.delete()
                     form.save()
                 messages.success(request, "Venda cadastrada com sucesso.",extra_tags="successSale")
-                return redirect('venda_list')
+                return redirect(previous_url)
 
             if total_payment != venda_form.cleaned_data['total_value']:
                 messages.warning(request, "Ação cancelada! O valor não foi salvo completamente.",extra_tags='salecreate_page')
@@ -115,10 +117,9 @@ def venda_create(request):
             print("Erro no PaymentMethod_Accounts_FormSet: ",PaymentMethod_Accounts_FormSet.errors)
 
     else:
-        # messages.warning(request, "Ação cancelada! O valor não foi salvo completamente.")
-        # messages.warning(request, "Ação cancelada! O valor acumulado dos pagamentos é menor que o limite de Crédito!")
-        # messages.warning(request,'Opa',extra_tags='salecreate_page')
-        # messages.warning(request,'fadfasdf',extra_tags='oi')
+        if 'HTTP_REFERER' in request.META:
+            request.session['previous_page'] = request.META['HTTP_REFERER']
+
         form_Accounts = AccountsForm()
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
         venda_form = VendaForm()
@@ -143,6 +144,7 @@ def venda_update(request, pk):
     Older_PaymentMethod_Accounts_FormSet = inlineformset_factory(Venda, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=0, can_delete=True)
 
     if request.method == 'POST':
+        previous_url = request.session.get('previous_page','/')
         venda_form = VendaForm(request.POST, instance=venda)
         venda_item_formset = VendaItemFormSet(request.POST, instance=venda)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST,instance=venda,prefix="paymentmethod_accounts_set")
@@ -272,7 +274,8 @@ def venda_update(request, pk):
                 else:
                     Older_PaymentMethod_Accounts_FormSet.save()    
                 # messages.success(request, "Venda atualizada com sucesso!")
-                return redirect('venda_list')
+                messages.success(request, "Venda atualizada com sucesso.",extra_tags="successSale")
+                return redirect(previous_url)
             
             if total_payment != venda_form.cleaned_data['total_value']:
                 messages.warning(request,"Ação cancelada! O valor acumalado dos pagamentos é menor do que o valor acumulado dos prudutos.",extra_tags='vendaupdate_page')
@@ -291,8 +294,8 @@ def venda_update(request, pk):
         
         if not Older_PaymentMethod_Accounts_FormSet.is_valid():
             print("Erros no Older_PaymentMethod_Accounts_Formset: ", Older_PaymentMethod_Accounts_FormSet.errors)
-        messages.success(request, "Venda atualizada com sucesso.",extra_tags="successSale")
-        return redirect('venda_list')
+       
+        # return redirect('venda_list')
     else:
         
         form_Accounts = AccountsForm(instance=venda)
@@ -313,7 +316,10 @@ def venda_update(request, pk):
         form_Accounts.initial["date_init"] = data_modificada
         form_Accounts.initial["totalValue"] = venda_form.initial['total_value']
         form_Accounts.initial["numberOfInstallments"] = count_payment 
-     
+
+        if 'HTTP_REFERER' in request.META:
+            request.session['previous_page'] = request.META['HTTP_REFERER']
+
 
     context = {
             'form_Accounts': form_Accounts,

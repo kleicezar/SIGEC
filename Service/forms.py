@@ -74,7 +74,10 @@ class VendaItemServiceForm(forms.ModelForm):
             'discount':forms.TextInput(attrs={
                 'class':'form-control row mb-3 mt-3',
                 'oninput': 'calcularPreco(this)'
-            }) 
+            }),
+            'technician':forms.Select(attrs={
+                'class':'form-select row mb-3 mt-3'
+            })
         }
 
     def __init__(self, *args, **kwargs):

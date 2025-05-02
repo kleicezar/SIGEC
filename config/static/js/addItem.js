@@ -40,15 +40,9 @@ function addItem() {
     if(formCountService){
         const [formCount,newForm] = clone(formCountService,emptyFormTemplate);
         formCountService.value = parseInt(formCount) + 1;
-        input_product = newForm.querySelector(".inputProduct");;
-        input_product.id = `idProduct-${formCount}`;
-
 
         const statusNewForm = newForm.querySelector("select");
         statusNewForm.value = 'Pendente';
-        field_list_products = newForm.querySelector(".v");
-        field_list_products.parentElement.style.display = "none";
-        field_list_products.id = `options_products-${formCount}`;
 
         formset.appendChild(newForm);
         

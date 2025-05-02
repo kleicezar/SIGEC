@@ -267,8 +267,8 @@
                                         <td>
                                             {{ venda_item_formset.empty_form.id.as_hidden }}
                                             {{ venda_item_formset.empty_form.product.as_hidden }}
-                                            <input type="text" class="row form-control inputProduct mb-3 mt-3 idSearch">
-                                            <input type="text" class="row form-control mb-3 mt-3" id="idProduct-0" onkeyup="showSuggetionsProducts(this)">
+                                            <!-- <input type="text" class="row form-control inputProduct mb-3 mt-3 idSearch"> -->
+                                            <input type="text" class="row form-control mb-3 mt-3 idSearch" id="idProduct-0" onkeyup="showSuggetionsProducts(this)">
                                             <div id="products-0" class="suggetions">
                                             </div>
                                         </td>
@@ -538,7 +538,7 @@
         <script src="{% static 'js/addItem.js' %}" defer></script>
         <!-- <script src="{% static 'js/order.js' %}"></script>  pesquisa clientes -->
         <script src="{% static 'js/venda_item.js' %}"></script> <!-- pesquisa produtos em vendas-->
-        
+        <script src="{% static 'js/error.js' %}"></script>
         {% endblock %}     
     </main>
 </body>

@@ -4,6 +4,9 @@ from django.forms import inlineformset_factory
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+
+from Sale.views import venda_update
+from Service.views import workOrders_update
 from .forms import *
 from .models import *
 from django.http import JsonResponse, HttpResponse
@@ -364,61 +367,67 @@ def get_AccountsReceivable(request, id_Accounts):
 @transaction.atomic 
 def update_AccountsReceivable(request, id_Accounts):
     payment_instance = get_object_or_404(PaymentMethod_Accounts, id=id_Accounts)
-    accounts_instance = get_object_or_404(Accounts, id=payment_instance.conta_id)
-    print('accounts_instance', accounts_instance)
-    if request.method == "POST":  
-        payment_form_instance = PaymentMethodAccountsForm(request.POST, instance=payment_instance)
-        accounts_form_instance = AccountsFormUpdate(
-            request.POST, 
-            instance=accounts_instance,
-            initial={
-                'numberOfInstallments': accounts_instance.numberOfInstallments,
-                'installment_Range': accounts_instance.installment_Range,
-                'totalValue': accounts_instance.totalValue,
-                'date_init': accounts_instance.date_init
-            }
-        )
-        for key, value in vars(payment_instance).items(): 
-            print(f"{key}: {value}")
-        print()
-        # for key, value in vars(accounts_instance).items():
-        #     print(f"{key}: {value}")
-        # print()
+    if payment_instance.conta:
+        accounts_instance = get_object_or_404(Accounts, id=payment_instance.conta_id)
+        print('accounts_instance', accounts_instance)
+        if request.method == "POST":  
+            payment_form_instance = PaymentMethodAccountsForm(request.POST, instance=payment_instance)
+            accounts_form_instance = AccountsFormUpdate(
+                request.POST, 
+                instance=accounts_instance,
+                initial={
+                    'numberOfInstallments': accounts_instance.numberOfInstallments,
+                    'installment_Range': accounts_instance.installment_Range,
+                    'totalValue': accounts_instance.totalValue,
+                    'date_init': accounts_instance.date_init
+                }
+            )
+            for key, value in vars(payment_instance).items(): 
+                print(f"{key}: {value}")
+            print()
+            # for key, value in vars(accounts_instance).items():
+            #     print(f"{key}: {value}")
+            # print()
 
-        if payment_form_instance.is_valid() and accounts_form_instance.is_valid():
-            accounts_form_instance.save()
+            if payment_form_instance.is_valid() and accounts_form_instance.is_valid():
+                accounts_form_instance.save()
 
-            payment_instance = payment_form_instance.save(commit=False)
+                payment_instance = payment_form_instance.save(commit=False)
 
-            # Definir None para valores vazios
-            if not payment_instance.interest:
-                payment_instance.interest = None
-            if not payment_instance.fine:
-                payment_instance.fine = None
+                # Definir None para valores vazios
+                if not payment_instance.interest:
+                    payment_instance.interest = None
+                if not payment_instance.fine:
+                    payment_instance.fine = None
 
 
-            payment_instance.save()
-            messages.success(request,"Conta atualizada com sucesso.",extra_tags="successAccount")
-            return redirect('AccountsReceivable')  # Redirecionar após salvar
+                payment_instance.save()
+                messages.success(request,"Conta atualizada com sucesso.",extra_tags="successAccount")
+                return redirect('AccountsReceivable')  # Redirecionar após salvar
+            else:
+                print("Erros no payment_form_instance:", payment_form_instance.errors)
+                print()
+                print("Erros no accounts_form_instance:", accounts_form_instance.errors)
+                print()
+
+
         else:
-            print("Erros no payment_form_instance:", payment_form_instance.errors)
-            print()
-            print("Erros no accounts_form_instance:", accounts_form_instance.errors)
-            print()
+            accounts_form_instance = AccountsFormUpdate(instance=accounts_instance)
+            payment_form_instance = PaymentMethodAccountsFormUpdate(instance=payment_instance)
 
+        context = {
+            'form_Accounts': accounts_form_instance,
+            'form_paymentMethodAccounts': payment_form_instance,
+            'tipo_conta': 'Receber'
+        }
 
+        return render(request, 'finance/AccountsPayformUpdate.html', context)
     else:
-        accounts_form_instance = AccountsFormUpdate(instance=accounts_instance)
-        payment_form_instance = PaymentMethodAccountsFormUpdate(instance=payment_instance)
-
-    context = {
-        'form_Accounts': accounts_form_instance,
-        'form_paymentMethodAccounts': payment_form_instance,
-        'tipo_conta': 'Receber'
-    }
-
-    return render(request, 'finance/AccountsPayformUpdate.html', context)
-
+        if payment_instance.venda:
+            return venda_update(request,payment_instance.venda.id)
+        elif payment_instance.ordem_servico:
+            return workOrders_update(request,payment_instance.ordem_servico.id)
+        
 # funcionando
 
 @login_required
