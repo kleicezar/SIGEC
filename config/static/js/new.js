@@ -138,8 +138,17 @@ function calcularPreco(input) {
 const totalValue = document.getElementById("id_totalValue");
 const totalValueInput = document.getElementById("id_total_value");
 const totalValueField = document.getElementById("id_total_value_service");
-totalValueField.value = 0;
-totalValueInput.value = 0;
+document.addEventListener('DOMContentLoaded',()=>{
+   
+
+    if(!totalValueInput.value){
+        totalValueInput.value = 0;
+    }
+
+    if(!totalValueField.value){
+        totalValueField.value = 0;
+    }
+})
 
 function atualizarTotal(itemForms) {
     let totalSemDesconto = 0;
