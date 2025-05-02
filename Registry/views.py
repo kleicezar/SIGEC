@@ -119,7 +119,7 @@ def client_list(request):
         )
 
     # Configure o Paginator com o queryset filtrado
-    paginator = Paginator(clients, 20)  # 5 itens por página
+    paginator = Paginator(clients, 20)  # 20 itens por página
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
 
