@@ -222,7 +222,8 @@ def deleteSituation(request, id_situation):
 @login_required
 def chartOfAccounts(request):
     context = {
-        'ChartOfAccounts': ChartOfAccounts.objects.filter(is_Active=True)
+        # 'ChartOfAccounts': ChartOfAccounts.objects.filter(is_Active=True)
+        'ChartOfAccounts': ChartOfAccounts.objects.all()
     }
     return render(request, 'config/ChartOfAccounts.html', context)
 
@@ -263,6 +264,7 @@ def updateChartOfAccounts(request, id_chartOfAccounts):
     elif request.method == "POST":
         chartOfAccountsForm = ChartOfAccountsModelForm(request.POST, instance=chartOfAccounts)
         if chartOfAccountsForm.is_valid():
+            chartOfAccounts.code = ''
             chartOfAccountsForm.save()
             messages.success(request, "Plano de Contas atualizado com sucesso.",extra_tags='successChartOfAccounts')
             return redirect('ChartofAccounts')
@@ -273,12 +275,27 @@ def updateChartOfAccounts(request, id_chartOfAccounts):
 
 @login_required
 @transaction.atomic
-def deleteChartOfAccounts(request, id_chartOfAccounts):
+def disableChartOfAccounts(request, id_chartOfAccounts):
     chartOfAccounts = get_object_or_404(ChartOfAccounts, id=id_chartOfAccounts)
     if request.method == "POST":
         chartOfAccounts.is_Active = False
         chartOfAccounts.save()
-        messages.success(request, "Plano de Contas deletado com sucesso.",extra_tags='successChartOfAccounts')
+        messages.success(request, "Plano de Contas desativado com sucesso.",extra_tags='successChartOfAccounts')
+        return redirect('ChartofAccounts')  # Redirecione para onde desejar
+    context = {
+        'chartOfAccounts': chartOfAccounts
+    }
+
+    return render(request, 'config/ChartOfAccounts.html', context)
+
+@login_required
+@transaction.atomic
+def ActiveChartOfAccounts(request, id_chartOfAccounts):
+    chartOfAccounts = get_object_or_404(ChartOfAccounts, id=id_chartOfAccounts)
+    if request.method == "POST":
+        chartOfAccounts.is_Active = True
+        chartOfAccounts.save()
+        messages.success(request, "Plano de Contas ativado com sucesso.",extra_tags='successChartOfAccounts')
         return redirect('ChartofAccounts')  # Redirecione para onde desejar
     context = {
         'chartOfAccounts': chartOfAccounts

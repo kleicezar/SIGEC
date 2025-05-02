@@ -9,3 +9,10 @@ def has_perm(user, perm_name):
 
     #FIXME - Esse filtro (pipe) verifica através da própria API do Django se o usuário tem uma permissão específica.
     #FIXME - O Django possui um sistema de permissões e grupos de usuários.
+
+@register.filter(name='entrada_saida')
+def entrada_saida(value):
+    if value == 'E':
+        return 'Entrada'
+    elif value == 'S':
+        return 'Saída' 
