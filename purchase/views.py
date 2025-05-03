@@ -65,8 +65,30 @@ def update_product_quantity(request,pk):
     return redirect('manageProductDelivery')
 @login_required
 def compras_list(request):
-    compras = Compra.objects.all()
-    return render(request, 'purchase/compras_list.html', {'compras': compras})
+    sort = request.GET.get('sort')
+    direction = request.GET.get('dir','asc')
+    if not sort:
+        compras = Compra.objects.all().order_by()
+    else:
+        if direction == 'desc':
+            ordering = f'-{sort}'
+        else:
+            ordering = sort
+        compras = Compra.objects.all().order_by(ordering)
+    colunas = [
+    ('id', 'ID'),
+    ('fornecedor', 'Pessoa'),
+    ('situacao', 'Situação')
+    ]
+    # compras = Compra.objects.all()
+    context = {
+        'colunas':colunas,
+        'compras':compras,
+        'current_sort':sort,
+        'current_dir':direction
+    }
+   
+    return render(request, 'purchase/compras_list.html', context)
 
 @login_required
 @transaction.atomic
