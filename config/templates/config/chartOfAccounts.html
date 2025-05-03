@@ -68,14 +68,14 @@
                             {% csrf_token %}
                             <button class="btn" style="background-color: #117027;color: white;">Editar</button>
                         </form>
-                        {% if ChartOfAccount.is_Active|yesno:"Ativo,Desativado" == 'Desativado' %}
-                            <form action="{% url 'ActiveChartOfAccounts' id_chartOfAccounts=ChartOfAccount.id %}" method="POST" style="display:inline-block;">
+                        {% if ChartOfAccount.is_Active|yesno:"Ativo,Desativado" == 'Ativo' %}
+                            <form action="{% url 'disableChartOfAccounts' id_chartOfAccounts=ChartOfAccount.id %}" method="POST" style="display:inline-block;">
                                 {% csrf_token %}
                                 <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja desativar Plano de Contas?')">Desativar</button>
                             </form>
                         {% endif %}
-                        {% if ChartOfAccount.is_Active|yesno:"Ativo,Desativado" == 'Ativo' %}
-                            <form action="{% url 'disableChartOfAccounts' id_chartOfAccounts=ChartOfAccount.id %}" method="POST" style="display:inline-block;">
+                        {% if ChartOfAccount.is_Active|yesno:"Ativo,Desativado" == 'Desativado' %}
+                            <form action="{% url 'ActiveChartOfAccounts' id_chartOfAccounts=ChartOfAccount.id %}" method="POST" style="display:inline-block;">
                                 {% csrf_token %}
                                 <button type="submit" class="btn" style="background-color: rgb(208, 255, 0);color: black;" onclick="return confirm('Tem certeza que deseja desativar Plano de Contas?')">Ativar</button>
                             </form>
