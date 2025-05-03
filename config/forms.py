@@ -20,14 +20,16 @@ class SituationModelForm(forms.ModelForm):
 
 class ChartOfAccountsModelForm(forms.ModelForm):
     class Meta:
+        
         model = ChartOfAccounts
-        fields = ['name_ChartOfAccounts']
+        fields = ['name_ChartOfAccounts', 'father', 'natureOfTheAccount']
         widgets = {
             'name_ChartOfAccounts' : forms.TextInput(
                 attrs = {
                     'class':'form-control row'
                 }
-            )
+            ),
+            # 'natureOfTheAccount' : forms.ChoiceField(choices=NatureOfTheAccount, label='Natureza da Conta')
         }
 
     def __init__(self, *args, **kwargs):
@@ -60,7 +62,7 @@ class PositionModelForm(forms.ModelForm):
         self.fields['name_position'].widget.attrs.update({'class': 'label-text'})
 
 
-class ServiceModelForm(forms.ModelForm):
+class ServiceModelForm(forms.ModelForm): 
     class Meta:
         model = Service
         fields = ['name_Service','value_Service']
