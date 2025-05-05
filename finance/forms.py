@@ -42,7 +42,8 @@ class BaseAccountsForm(forms.ModelForm):
             attrs={
                 'class':'form-control row'
             }
-        )
+        ),
+        label = 'Plano de Contas'
     )
     pessoa_id = forms.ModelChoiceField(
         queryset=Person.objects.filter(isActive=True),
@@ -72,6 +73,9 @@ class AccountsForm(BaseAccountsForm):
             'totalValue',
             'date_init',
         ]
+        labels = {
+            'chartOfAccounts':'Plano de Contas'
+        }
         widgets={
             'pessoa_id': forms.Select(attrs={ 
                 'class': 'form-select row'
