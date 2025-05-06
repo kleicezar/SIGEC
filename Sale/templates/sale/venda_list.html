@@ -49,7 +49,7 @@
                                 <label for="" class="">{{form.search.label}}</label>
                                 {{form.search}}
                                 <div class="col-sm-8" id="search_sale">
-                                    <input type="text" id="searchInput"  class="search-input" value="{{ request.GET.query }}" placeholder="Pesquisar venda(s)"> 
+                                    <input type="text" id="searchInput" name="query"  class="search-input" value="{{ request.GET.query }}" placeholder="Pesquisar venda(s)"> 
                                 </div>
                             </div>
                         </div>
@@ -61,10 +61,18 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Pessoa</th>
-                        <th>Data da Venda</th>
-                        <th>Situação</th>
+                        {% for field,label in colunas %}
+                        <th>
+                            <a href="?sort={{ field }}&dir={% if current_dir == 'asc' %}desc{% else %}asc{% endif %}&query={{ request.GET.query }}" style="color:inherit;text-decoration: none;">
+                                {{ label }}
+                                {% if current_dir == 'asc' %}
+                                    ▲
+                                {% else %}
+                                    ▼
+                                {% endif %}
+                            </a>
+                        </th>
+                        {% endfor %}
                         <th>Ativo</th>
                         <th>Ações</th>
                     </tr>

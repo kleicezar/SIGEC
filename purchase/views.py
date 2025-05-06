@@ -6,7 +6,8 @@ from django.forms import inlineformset_factory
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import authenticate, login, logout
-
+from django.db.models.functions import Coalesce
+from django.db.models import F, Value
 from Sale.models import Venda, VendaItem
 
 from Service.models import VendaItem as VendaItemWS
@@ -74,7 +75,33 @@ def compras_list(request):
             ordering = f'-{sort}'
         else:
             ordering = sort
-        compras = Compra.objects.all().order_by(ordering)
+
+        if ordering == 'fornecedor':
+            fisicName  = f'fornecedor__id_FisicPerson_fk__name'
+            legalPerson = f'fornecedor__id_LegalPerson_fk__fantasyName'
+            foreignPerson = f'fornecedor__id_ForeignPerson_fk__name_foreigner'
+            compras = Compra.objects.annotate(
+                ordened_name = Coalesce(
+                    F(fisicName),
+                    F(legalPerson),
+                    F(foreignPerson),
+                    Value('')
+                )
+            ).order_by('ordened_name')
+        elif ordering == '-fornecedor':
+            fisicName  = f'fornecedor__id_FisicPerson_fk__name'
+            legalPerson = f'fornecedor__id_LegalPerson_fk__fantasyName'
+            foreignPerson = f'fornecedor__id_ForeignPerson_fk__name_foreigner'
+            compras = Compra.objects.annotate(
+                ordened_name = Coalesce(
+                    F(fisicName),
+                    F(legalPerson),
+                    F(foreignPerson),
+                    Value('')
+                )
+            ).order_by('-ordened_name')
+        else:
+            compras = Compra.objects.all().order_by(ordering)
     colunas = [
     ('id', 'ID'),
     ('fornecedor', 'Pessoa'),

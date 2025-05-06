@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from datetime import datetime, timedelta
+# from Registry.forms import SearchForm
 from finance.forms import AccountsForm, PaymentMethodAccountsForm
 from finance.models import PaymentMethod_Accounts
 from .forms import *
@@ -17,26 +18,53 @@ from django.db import transaction
 
 @login_required
 def venda_list(request):
+    sort = request.GET.get('sort')
+    direction = request.GET.get('dir','asc')
     search_query = request.GET.get('query','')
-
-
-    if search_query:
-        sales = Venda.objects.filter(
-        Q(id__istartswith=search_query) | 
-        Q(pessoa__id_FisicPerson_fk__name__istartswith=search_query) |
-        Q(pessoa__id_ForeignPerson_fk__name_foreigner__istartswith=search_query) |
-        Q(pessoa__id_LegalPerson_fk__fantasyName__istartswith=search_query)
-    ).order_by('id')
+    if not sort:
+        if search_query:
+            sales = Venda.objects.filter(
+            Q(id__istartswith=search_query) | 
+            Q(pessoa__id_FisicPerson_fk__name__istartswith=search_query) |
+            Q(pessoa__id_ForeignPerson_fk__name_foreigner__istartswith=search_query) |
+            Q(pessoa__id_LegalPerson_fk__fantasyName__istartswith=search_query)
+        ).order_by('id')
+        else:
+            sales = Venda.objects.all()
     else:
-        sales = Venda.objects.all()
+        if direction == 'desc':
+            ordering = f'-{sort}'
+        else:
+            ordering = sort
+        print('entrei')
+        if search_query:
+            sales = Venda.objects.filter(
+            Q(id__istartswith=search_query) | 
+            Q(pessoa__id_FisicPerson_fk__name__istartswith=search_query) |
+            Q(pessoa__id_ForeignPerson_fk__name_foreigner__istartswith=search_query) |
+            Q(pessoa__id_LegalPerson_fk__fantasyName__istartswith=search_query)
+        ).order_by(ordering)
+            print(sales)
+        else:
+            sales = Venda.objects.all().order_by(ordering)    
 
-    paginator = Paginator(sales,1)
+    paginator = Paginator(sales,5)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-
+    form = SearchForm()
+    colunas = [
+        ('id','ID'),
+        ('pessoa','Pessoa'),
+        ('data_da_venda','Data da Venda'),
+        ('situacao','Situação'),
+    ]
     return render(request, 'sale/venda_list.html', {
+        'colunas':colunas,
         'vendas': page,
-        'query':search_query
+        'query':search_query,
+        'current_sort':sort,
+        'current_dir':direction,
+        # 'form':form
         })
 
 @login_required

@@ -145,9 +145,12 @@ document.addEventListener('DOMContentLoaded',()=>{
         totalValueInput.value = 0;
     }
 
-    if(!totalValueField.value){
-        totalValueField.value = 0;
+    if (totalValueField){
+        if(!totalValueField.value){
+            totalValueField.value = 0;
+        }
     }
+    
 })
 
 function atualizarTotal(itemForms) {
@@ -188,6 +191,7 @@ function atualizarTotal(itemForms) {
     discountTotalField.value = percentualDesconto;
     totalServicesField.value = totalServicos;
     totalValueField.value = totalComDesconto.toFixed(2);
+
 
     totalValue.value = Number(totalValueField.value) + Number(totalValueInput.value);
 }
@@ -255,7 +259,13 @@ function atualizarTotalProduto(itemForms){
     totalProductsInput.value = totalProdutos;
     totalValueInput.value = totalComDesconto.toFixed(2);
 
-    totalValue.value = Number(totalValueField.value) + Number(totalValueInput.value);
+    if (totalValueField){
+        totalValue.value = Number(totalValueField.value) + Number(totalValueInput.value);
+    }
+    else{
+        totalValue.value = Number(totalValueInput.value);
+    }
+   
 }
 
 const serviceInputs = document.querySelectorAll('input[type="hidden"][name$="-service"]')
