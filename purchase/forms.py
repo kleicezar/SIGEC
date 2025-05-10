@@ -64,9 +64,26 @@ class ProductModelForm(forms.ModelForm):
             self.fields['current_quantity'].disabled = True
 
 class CompraForm(forms.ModelForm):
+    FREIGHT_CHOICES = [
+        ('fob','fob'),
+        ('cif','cif')
+    ]
     class Meta:
         model = Compra
-        fields = ['data_da_compra', 'fornecedor', 'situacao','total_value','product_total','discount_total'] 
+        fields = [
+            'data_da_compra', 
+            'fornecedor', 
+            'situacao',
+            'total_value',
+            'product_total',
+            'discount_total',
+            'tax_value',
+            'observation_tax',
+            'freight_type',
+            'observation_freight',
+            'observation_picking_list',
+            'value_picking_list'
+            ] 
         widgets = {
                 'fornecedor':forms.TextInput(attrs={
                     'class':'' 
@@ -88,8 +105,29 @@ class CompraForm(forms.ModelForm):
                 }),
                 'discount_total':forms.TextInput(attrs={
                     'class':'form-control mb-3 mt-3 row-5',
-                    'readonly': 'readonly',
+                    'readonly': 'readonly'
                 }),
+                'tax_value':forms.NumberInput(attrs={
+                    'class':'form-control mb-3 mt-3 row-5',
+                    'step':1,
+                    'min':0
+                }),
+                'observation_tax':forms.Textarea(attrs={
+                    'class':'form-control mb-3 mt-3 row'
+                }),
+                'freight_type':forms.Select(),
+                'observation_freight':forms.Textarea(attrs={
+                    'class':'form-control mb-3 mt-3 row'
+                }),
+                'observation_picking_list':forms.Textarea(attrs={
+                    'class':'form-control mb-3 mt-3 row'
+                }),
+                'value_picking_list':forms.NumberInput(attrs={
+                    'class':'form-control mb-3 mt-3 row-5',
+                    'step':1,
+                    'min':0
+                })
+
             }
     def __init__(self, *args, **kwargs):
         super(CompraForm, self).__init__(*args, **kwargs)

@@ -51,7 +51,7 @@ def venda_list(request):
     paginator = Paginator(sales,5)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    form = SearchForm()
+    # form = SearchForm()
     colunas = [
         ('id','ID'),
         ('pessoa','Pessoa'),

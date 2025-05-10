@@ -16,8 +16,8 @@ from .models import *
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponse
-from finance.models import PaymentMethod_Accounts
-from finance.forms import PaymentMethodAccountsForm, AccountsForm
+from finance.models import PaymentMethod_Accounts, Tax_PaymentMethod_Accounts
+from finance.forms import PaymentMethodAccountsForm, AccountsForm, TaxPaymentMethodAccountsForm
 from django.db import transaction
 
 ### PURCHASE
@@ -124,6 +124,7 @@ def compras_create(request):
     # PaymentMethodCompraFormSet = inlineformset_factory(Compra, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
     
     PaymentMethodAccountsFormSet = inlineformset_factory(Compra, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
+    TaxPaymentMethodAccountsFormSet = inlineformset_factory(Compra,Tax_PaymentMethod_Accounts,form=TaxPaymentMethodAccountsForm,extra=1,can_delete=True)
     if request.method == 'POST':
         compra_form = CompraForm(request.POST)
         form_Accounts = AccountsForm(request.POST)
@@ -205,13 +206,20 @@ def compras_create(request):
     else:
         form_Accounts = AccountsForm()
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
+
+        tax_form_Accounts = AccountsForm(prefix='tax_form_accounts')
+        TaxPaymentMethod_Accounts_FormSet = TaxPaymentMethodAccountsFormSet(queryset=Tax_PaymentMethod_Accounts.objects.none())
+
         compra_form = CompraForm()
         compra_item_formset = CompraItemFormSet(queryset=CompraItem.objects.none())
+       
         # payment_method_formset = PaymentMethodCompraFormSet(queryset=PaymentMethod_Accounts.objects.none())
 
     context = {
         'form_Accounts': form_Accounts,
         'form_payment_account': PaymentMethod_Accounts_FormSet,
+        'taxform_Accounts':tax_form_Accounts,
+        'form_tax_payment_account':TaxPaymentMethod_Accounts_FormSet,
         'compra_form': compra_form,
         'compra_item_formset': compra_item_formset,
         # 'payment_method_formset': payment_method_formset

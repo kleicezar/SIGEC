@@ -23,6 +23,10 @@ class Product(models.Model):
         return self.description  # retorna a descrição
 
 class Compra(models.Model):
+    FREIGHT_CHOICES = [
+        ('fob','fob'),
+        ('cif','cif')
+    ]
     data_da_compra = models.DateTimeField(verbose_name='Data da Compra')
     total_value = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Total", blank=True, null=True)
     product_total =  models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Total de Produtos")
@@ -30,6 +34,19 @@ class Compra(models.Model):
     fornecedor = models.ForeignKey(Person, on_delete=models.SET_NULL, null=True, verbose_name="Fornecedor")
     situacao = models.ForeignKey(Situation, on_delete=models.SET_NULL, null=True, verbose_name="Situação")
     is_active = models.BooleanField(default=True, verbose_name='Está Ativo')  # está ativo
+
+    # CAMPOS IMPOSTO
+    tax_value = models.IntegerField(verbose_name='Valor do Imposto')
+    observation_tax = models.TextField(verbose_name='Observação sobre Imposto',null=True)
+    
+    # CAMPOS FRETE
+    freight_type = models.CharField(choices=FREIGHT_CHOICES,max_length=3)
+    observation_freight = models.TextField(verbose_name='Observação sobre Frete',null=True)
+
+    # CAMPOS ROMANEIO
+    observation_picking_list = models.TextField(verbose_name='Observação sobre Romaneio',null=True)
+    value_picking_list = models.IntegerField(verbose_name='Valor do Romaneio')
+
 
     def __str__(self):
         ...

@@ -52,8 +52,9 @@ class Accounts(models.Model):
         verbose_name="Observações para o Sistema",
         blank=True,
         null=True
+
         )
-    
+
 class PaymentMethod_Accounts(models.Model):
     INTEREST_CHOICES = [
         ('percent', '(%)'),
@@ -76,6 +77,7 @@ class PaymentMethod_Accounts(models.Model):
         blank=True,
         verbose_name='id_venda'
     )
+  
     compra = models.ForeignKey(Compra,
         on_delete=models.SET_NULL,
         null=True,
@@ -153,6 +155,110 @@ class PaymentMethod_Accounts(models.Model):
     blank=True  
 )
 
+
+class Tax_PaymentMethod_Accounts(models.Model):
+    compra = models.ForeignKey(Compra,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='id_compra'
+    )
+    forma_pagamento = models.ForeignKey(PaymentMethod,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Forma de Pagamento'
+    )
+    expirationDate = models.DateField(
+        max_length=50,
+        verbose_name='Data de Vencimento',
+        blank=True
+    )
+    days = models.IntegerField(             #dias entre as parcelas
+        verbose_name='Dias',
+        blank=True
+    )
+    value = models.DecimalField(decimal_places=2,
+        max_digits=8,
+        verbose_name='Valor Pago:',
+        blank=True
+    )
+    acc = models.BooleanField(
+        verbose_name='Tipo de Conta'
+    )
+    activeCredit = models.BooleanField(
+        default=False,
+        blank=True
+    )
+
+class Freight_PaymentMethod_Accounts(models.Model):
+    compra = models.ForeignKey(Compra,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='id_compra'
+    )
+    forma_pagamento = models.ForeignKey(PaymentMethod,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Forma de Pagamento'
+    )
+    expirationDate = models.DateField(
+        max_length=50,
+        verbose_name='Data de Vencimento',
+        blank=True
+    )
+    days = models.IntegerField(             #dias entre as parcelas
+        verbose_name='Dias',
+        blank=True
+    )
+    value = models.DecimalField(decimal_places=2,
+        max_digits=8,
+        verbose_name='Valor Pago:',
+        blank=True
+    )
+    acc = models.BooleanField(
+        verbose_name='Tipo de Conta'
+    )
+    activeCredit = models.BooleanField(
+        default=False,
+        blank=True
+    )
+class Romaneio_PaymentMethod_Accounts(models.Model):
+    compra = models.ForeignKey(Compra,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='id_compra'
+    )
+    forma_pagamento = models.ForeignKey(PaymentMethod,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Forma de Pagamento'
+    )
+    expirationDate = models.DateField(
+        max_length=50,
+        verbose_name='Data de Vencimento',
+        blank=True
+    )
+    days = models.IntegerField(             #dias entre as parcelas
+        verbose_name='Dias',
+        blank=True
+    )
+    value = models.DecimalField(decimal_places=2,
+        max_digits=8,
+        verbose_name='Valor Pago:',
+        blank=True
+    )
+    acc = models.BooleanField(
+        verbose_name='Tipo de Conta'
+    )
+    activeCredit = models.BooleanField(
+        default=False,
+        blank=True
+    )
     # interestPercent = models.DecimalField(
     #     decimal_places=2, 
     #     max_digits=8, 

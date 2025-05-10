@@ -41,7 +41,6 @@
                     </div>
                     <!-- Formulário de Compra -->
                     <h6>Dados da Compra</h6>
-                    <!-- {{ compra_form.as_p }} -->
                       
                     <table class="table">
                         <thead>
@@ -83,7 +82,6 @@
                         {{ compra_item_formset.management_form }}
                         {% for form in compra_item_formset %}
                             <div class="item-form">
-                                <!-- {{ form.as_p }} -->
                                   <table class="table">
                                     <thead>
                                         <tr>
@@ -147,7 +145,6 @@
                     </div>
                     <template id="empty-form-template">
                         <div class="item-form">
-                            <!-- {{ compra_item_formset.empty_form.as_p }} -->
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -171,11 +168,9 @@
                                         </td>
 
                                         <td>
-                                            <!-- <input type="number" class="form-control row descont"> SUPER IMPORTANTE -->
                                             {{compra_item_formset.empty_form.discount}}
                                         </td>
                                         <td>
-                                            <!-- <input type="number" class="form-control row totalValue" readonly> -->
                                             {{compra_item_formset.empty_form.price_total}}
                                         </td>
                                         <td>
@@ -209,15 +204,13 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <!-- <input type="text" id="id_all_total_products" readonly> -->
                                     {{compra_form.product_total}}
                                 </td>
                                 <td>
-                                    <!-- <input type="text" id="id_all_total_discount" readonly> -->
                                     {{compra_form.discount_total}}
                                 </td>
                                 <td>
-                                    <!-- <input type="text" id="id_all_total_value"readonly> -->
+
                                     {{compra_form.total_value}}
                                 </td>
                             </tr>
@@ -225,11 +218,24 @@
                     </table>
 
                     <!-- Formas de Pagamento -->
-                    <h6 class="mt-5 mb-3">Formas de Pagamento</h6>
+                    <h6 class="mt-5 mb-3">Geração de Parcelas - Produtos</h6>
 
                    
                     {% include 'parcela.html' %}
                 
+                    <h6 class="mt-5 mb-3">Geração de Parcelas - Imposto </h6>
+                    {{compra_form.tax_value.label}}
+                    {{compra_form.tax_value}}
+
+                    {% include 'parcelaImposto.html' %}
+
+                    <h6 class="mt-5 mb-3">Frete</h6>
+                    {{compra_form.freight_type.label}}
+                    {{compra_form.freight_type}}
+
+                    <h6 class="mt-5 mb-3">Romaneio</h6>
+                    {{compra_form.value_picking_list.label}}
+                    {{compra_form.value_picking_list}}
 
                     <div class="row">
                         <div class="col mt-5 text-end">

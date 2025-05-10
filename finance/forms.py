@@ -3,7 +3,7 @@ from .models import *
 from django.forms import BaseInlineFormSet
 from django.core.exceptions import ValidationError
 class BaseAccountsForm(forms.ModelForm):
-    """
+    """"
     Interface para formulários de contas. Define os campos usados.
     """
 
@@ -56,7 +56,7 @@ class BaseAccountsForm(forms.ModelForm):
 class AccountsForm(BaseAccountsForm):
     installment_Range = forms.ChoiceField(
         choices=Accounts.INSTALLMENT_RANGE_CHOICES,
-        widget=forms.Select(attrs={'class': 'form-control row','id': 'installment_Range'}),
+        widget=forms.Select(attrs={'class': 'form-control row'}),
         label="Intervalo de Parcelas"
     )
 
@@ -214,6 +214,38 @@ class PaymentMethodAccountsFormUpdate(BasePaymentMethodAccountsForm):
         self.fields['interestType'].required = False
         self.fields['fineType'].required = False
         self.fields['value_old'].required = False
+
+
+
+class TaxPaymentMethodAccountsForm(forms.ModelForm):
+    class Meta:
+        model = Tax_PaymentMethod_Accounts
+        fields = [
+            'forma_pagamento',  
+            'expirationDate', 
+            'days', 
+            'value', 
+            'acc',
+            'activeCredit'
+        ]
+        widgets = { 
+            'forma_pagamento': forms.Select(attrs={ 
+                'class': 'form-select row'
+            }),
+            'expirationDate': forms.DateInput(format='%d/%m/%Y', attrs={
+                'class': 'form-control row mask-date', 
+            }),
+            'days': forms.NumberInput(attrs={
+                'class': 'form-control row',
+                'min': 0
+            }),
+            'value': forms.NumberInput(attrs={
+                'class': 'form-control row',
+                'min': 0
+            }),
+            'acc':forms.HiddenInput()
+        }
+
 
 class CreditForm(forms.ModelForm):
     class Meta:
