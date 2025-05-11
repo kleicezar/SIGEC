@@ -211,7 +211,6 @@
                     <button id="item" type="button" onclick="addItem()" class="btn btn-outline-success mb-5 z-2">Adicionar Item</button>
                     <template id="empty-form-template">
                         <div class="item-form">
-                            <!-- {{ compra_item_formset.empty_form.as_p }} -->
                             <table class="table">
                                 <thead>
                                     <tr style="display: none;">
@@ -314,8 +313,32 @@
 
                     {% include 'parcela.html' %}
                     {% include 'parcelaUpdate.html' %}
-                    
-                    
+
+                    <h6 class="mt-5 mb-3">Geração de Parcelas - Imposto </h6>
+                    {{compra_form.tax_value.label}}
+                    {{compra_form.tax_value}}
+
+                   
+
+                    {% include 'parcelaImposto.html' %}
+                    {% include 'parcelaImpostoUpdate.html' %}
+
+                    {{compra_form.observation_tax.label}}
+                    {{compra_form.observation_tax}}
+
+                    <h6 class="mt-5 mb-3">Frete</h6>
+                    {{compra_form.freight_type.label}}
+                    {{compra_form.freight_type}}
+
+                    {{compra_form.observation_freight.label}}
+                    {{compra_form.observation_freight}}
+
+                    <h6 class="mt-5 mb-3">Romaneio</h6>
+                    {{compra_form.value_picking_list.label}}
+                    {{compra_form.value_picking_list}}
+
+                    {{compra_form.observation_picking_list.label}}
+                    {{compra_form.observation_picking_list}}
 
                     <div class="row">
                         <div class="col mt-5 text-end">
@@ -327,11 +350,11 @@
             </div>
         </div>
         
-        
+        <!-- {% include 'script.html' %} -->
         <script src="{% static 'js/addItem.js' %}" defer></script>
         <!-- <script src="{% static 'js/clientSearch.js' %}"></script> -->
          <!-- pesquisa clientes -->
-        <script src="{% static 'js/venda_item.js' %}"></script>
+        <!-- <script src="{% static 'js/venda_item.js' %}"></script> -->
          <!-- pesquisa produtos em vendas-->
          <script src="{% static 'js/new.js' %}"></script><!-- pesquisa clientes -->
          <script src="{% static 'js/newUpdate.js' %}"></script> 

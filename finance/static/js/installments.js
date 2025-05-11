@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const taxformContainer = document.getElementById("tax-payment-method-container");
 
     headerTax.style = 'display:none';
-    const tax_old_payment_method_form = document.getElementById("tax-old-payment-method-form");
+    const tax_old_payment_method_form = document.getElementById("old-tax-payment-method-form");
     let taxClick = 0;
     const taxInstallments = document.getElementById('taxGenerate');
 
@@ -141,11 +141,12 @@ document.addEventListener('DOMContentLoaded', function () {
             tax_old_payment_method_form.style.display = 'none';
         }
 
-        let TAX_TOTAL_FORMS = document.getElementById("id_tax_paymentmethod_accounts_set-TOTAL_FORMS");
+        let TAX_TOTAL_FORMS = document.getElementById("id_tax_paymentmethod_accounts_set-TOTAL_FORMS")|| document.getElementById("id_tax_form_payment_account_set-TOTAL_FORMS");
         let taxDays_installment_Range = document.getElementById("id_tax_form_accounts-installment_Range");
         let taxInstallmentRange = document.getElementById("id_tax_form_accounts-numberOfInstallments");
         let taxDateInitsemvalor = document.getElementById("id_tax_form_accounts-date_init");
-
+        console.log("OITO");
+        console.log(taxInstallmentRange.value);
         if(taxInstallmentRange.value <= 0){
             return 0
         }
@@ -239,7 +240,8 @@ document.addEventListener('DOMContentLoaded', function () {
             })
         }
         TAX_TOTAL_FORMS.value = Number(taxInstallmentRange.value);
-         console.log('IMPOSTO - total forms é igual a: ' + TAX_TOTAL_FORMS.value)
+        
+        console.log('IMPOSTO - total forms é igual a: ' + TAX_TOTAL_FORMS.value)
     })
 
     function compair(numero_parcelas, valor_total){
@@ -290,8 +292,3 @@ function getCSRFToken() {
     return cookieValue;
 }
 
-module.exports = { 
-    compair,
-    clean,
-    getCSRFToken
- };

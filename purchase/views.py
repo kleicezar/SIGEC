@@ -1,5 +1,6 @@
 
 from datetime import datetime, timedelta
+from decimal import Decimal, InvalidOperation
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.forms import inlineformset_factory
@@ -16,8 +17,8 @@ from .models import *
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponse
-from finance.models import PaymentMethod_Accounts, Tax_PaymentMethod_Accounts
-from finance.forms import PaymentMethodAccountsForm, AccountsForm, TaxPaymentMethodAccountsForm
+from finance.models import Freight_PaymentMethod_Accounts, PaymentMethod_Accounts, Tax_PaymentMethod_Accounts
+from finance.forms import FreightPaymentMethod_AccountsForm, PaymentMethodAccountsForm, AccountsForm, TaxPaymentMethodAccountsForm
 from django.db import transaction
 
 ### PURCHASE
@@ -120,72 +121,64 @@ def compras_list(request):
 @login_required
 @transaction.atomic
 def compras_create(request):
+
+    def calculateValuePayments(paymentForm):
+        total_payment = 0   
+        for form in paymentForm:
+            if form.cleaned_data:
+                form.instance.acc = True
+                valor = form.cleaned_data['value']
+                total_payment+=valor
+        return total_payment
+    
     CompraItemFormSet = inlineformset_factory(Compra, CompraItem, form=CompraItemForm, extra=1, can_delete=True)
     # PaymentMethodCompraFormSet = inlineformset_factory(Compra, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
-    
     PaymentMethodAccountsFormSet = inlineformset_factory(Compra, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
     TaxPaymentMethodAccountsFormSet = inlineformset_factory(Compra,Tax_PaymentMethod_Accounts,form=TaxPaymentMethodAccountsForm,extra=1,can_delete=True)
+    FreightPaymentMethodAccountsFormSet = inlineformset_factory(Compra,Freight_PaymentMethod_Accounts,form=FreightPaymentMethod_AccountsForm,extra=1,can_delete=True)
+    
     if request.method == 'POST':
+        
         compra_form = CompraForm(request.POST)
+
         form_Accounts = AccountsForm(request.POST)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
+
+        tax_form_Accounts = AccountsForm(request.POST,prefix='tax_form_accounts')
+        TaxPaymentMethod_Accounts_FormSet = TaxPaymentMethodAccountsFormSet(request.POST)
+
         compra_item_formset = CompraItemFormSet(request.POST)
-        # payment_method_formset = PaymentMethodCompraFormSet(request.POST)
-        if compra_form.is_valid() and compra_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
+        
+        if compra_form.is_valid() and compra_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid() and TaxPaymentMethod_Accounts_FormSet.is_valid():
             
             compra = compra_form.save(commit=False)
-            # compra.save()  
-            
             compra_item_formset.instance = compra
             compra_item_formset.save(commit=False) 
 
             print(f"Total de formulários processados: {compra_item_formset.total_form_count()}")
-            # compra_item_formset.save()
-
-            # Atualizar estoque
+                # Atualizar estoque
             for form in compra_item_formset:
                 if form.cleaned_data:
                     produto = form.cleaned_data['produto']
                     quantidade = form.cleaned_data['quantidade']
-                    # values = form.cleaned_data['value']
+    
                     produto.current_quantity += quantidade
                     produto.save()
 
 
             PaymentMethod_Accounts_FormSet.instance = compra
-            total_payment = 0
-            valid_payments = []
-            payments_to_delete = []
-            # print(payment_method_formset)
-            for form in PaymentMethod_Accounts_FormSet:
-                if form.cleaned_data:
-                 
-                    form.instance.acc = True
-                    
-                    valor = form.cleaned_data['value']
-                    total_payment+=valor
+            total_payment = calculateValuePayments(PaymentMethod_Accounts_FormSet)
 
-                    # print(form.cleaned_data.get("acc"))
-                    # if form.cleaned_data.get("DELETE", False):
-                    #     payments_to_delete.append(form.instance)
-                    # else:
-                    #     valor = form.cleaned_data['value']
-                    #     total_payment += valor
-                    #     valid_payments.append(form)
-
+            TaxPaymentMethod_Accounts_FormSet.instance = compra
+            taxTotal_payment = calculateValuePayments(TaxPaymentMethod_Accounts_FormSet)
+            tax_totalValue = compra.total_value - compra.total_value * (Decimal(compra.tax_value) / Decimal('100'))
             # Verificar se os pagamentos somam corretamente antes de salvar
-            if total_payment == compra.total_value:
+            if total_payment == compra.total_value and taxTotal_payment == tax_totalValue:
                 compra_form.save()
                 compra_item_formset.save()
                 PaymentMethod_Accounts_FormSet.save()
-                # for form in valid_payments:
-                #     form.instance.acc = True
-                #     form.instance.compra = compra  # Garante que a compra está associada
-                #     form.save()
-
-                # # Remover pagamentos marcados para exclusão
-                # for payment in payments_to_delete:
-                #     payment.delete()
+                TaxPaymentMethod_Accounts_FormSet.save()
+                print("ENTREI")
                 messages.success(request,"Compra cadastrada com sucesso.",extra_tags='successShopping')
                 return redirect('compras_list')
             else:
@@ -198,6 +191,9 @@ def compras_create(request):
 
         if not PaymentMethod_Accounts_FormSet.is_valid():
             print("Erro no PaymentMethod",PaymentMethod_Accounts_FormSet.errors)
+        
+        if not TaxPaymentMethod_Accounts_FormSet.is_valid():
+            print("Erro no TaxPaymentMethod",TaxPaymentMethod_Accounts_FormSet.errors)
 
         compra_form = CompraForm()
         compra_item_formset = CompraItemFormSet(queryset=CompraItem.objects.none())
@@ -228,24 +224,122 @@ def compras_create(request):
 
 @login_required
 @transaction.atomic 
+
 def compras_update(request, pk):
+    # TEM QUE MELHORAR ESSA FUNCAO DEPOIS CABEÇAO
+    def calculate_value_payments_update(paymentForm,olderPaymentForm):
+            try:
+                total_payment = 0
+                onlyOldPayments = False
+                for form in paymentForm:
+                    if form.cleaned_data:
+                        if not form.cleaned_data.get("DELETE"):
+                            valor = form.cleaned_data['value']
+                            total_payment += valor
+                    else:
+                        total_payment = 0
+                        onlyOldPayments = True
+                        for form in olderPaymentForm:
+                            if form.cleaned_data:
+                                if not form.cleaned_data['DELETE']:
+                                    valor = form.cleaned_data['value']
+                                    print(form.cleaned_data['value'])
+                                    total_payment+=valor
+                                    
+            except (TypeError, ValueError, InvalidOperation):
+                total_payment = 0
+                onlyOldPayments = True
+                for form in olderPaymentForm:
+                    print('eu entrio aqui?')
+                    if form.cleaned_data:
+                        print('eu entro aqui?')
+                        if not form.cleaned_data['DELETE']:
+                            valor = form.cleaned_data['value']
+                            print(form.cleaned_data['value'])
+                            total_payment+=valor
+            return total_payment,onlyOldPayments
+    
+    def rearrange_payments(onlyOldPayments,paymentForm,olderPaymentForm):
+        if not onlyOldPayments:
+            if len(paymentForm) >= len(olderPaymentForm):
+
+                for old_form, new_form in zip(olderPaymentForm, paymentForm):
+                    old_instance = old_form.instance
+                    new_instance = new_form.instance
+
+                    old_instance.forma_pagamento = new_instance.forma_pagamento
+                    old_instance.expirationDate = new_instance.expirationDate
+                    old_instance.days = new_instance.days
+                    old_instance.value = new_instance.value
+
+                    old_instance.save()
+
+                    new_form.cleaned_data["DELETE"] = True
+                
+                olderPaymentForm.save()
+                paymentForm.save() 
+    
+            else:
+            # atualizar os formulários existentes
+                for old_form, new_form in zip(olderPaymentForm, paymentForm):
+                    old_instance = old_form.instance
+                    new_instance = new_form.instance
+
+                    old_instance.forma_pagamento = new_instance.forma_pagamento
+                    old_instance.expirationDate = new_instance.expirationDate
+                    old_instance.days = new_instance.days
+                    old_instance.value = new_instance.value
+
+                    old_instance.save()
+
+                # remove os formulários extras de Older_PaymentMethod_Accounts_FormSet
+                for extra_form in olderPaymentForm[len(paymentForm):]:
+                    extra_form.instance.delete()
+
+                olderPaymentForm.save()                            
+        else:
+            olderPaymentForm.save()
+
+    def populate_account_form(olderForm,form_Payment_Accounts):
+        count_payment = 0
+        value_total_payment = 0
+        for i,form in enumerate(olderForm):
+            if i == 0:
+                data_obj = form.initial["expirationDate"]  
+                data_modificada = data_obj - timedelta(days=int(form.initial["days"])) 
+                data_modificada = datetime.strptime(str(data_modificada), "%Y-%m-%d").strftime("%d/%m/%Y") 
+                
+            value_total_payment+= form.initial["value"]
+                
+            count_payment+=1
+        form_Payment_Accounts.initial["date_init"] = data_modificada
+        form_Payment_Accounts.initial["totalValue"] = value_total_payment
+        form_Payment_Accounts.initial["numberOfInstallments"] = count_payment
+
+        return form_Payment_Accounts
     # Recupera a instância da Compra existente
     compra = get_object_or_404(Compra, pk=pk)
 
-    # Configuração do formset para itens de compra e métodos de pagamento
     CompraItemFormSet = inlineformset_factory(Compra, CompraItem, form=CompraItemForm, extra=0, can_delete=True)
-    # PaymentMethodCompraFormSet = inlineformset_factory(Compra, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=0, can_delete=True)
 
     PaymentMethodAccountsFormSet = inlineformset_factory(Compra, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
     Older_PaymentMethod_Accounts_Formset = inlineformset_factory(Compra,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=0,can_delete=True)
-    # print(request.POST)
+
+    TaxPaymentMethodAccountsFormSet = inlineformset_factory(Compra,Tax_PaymentMethod_Accounts,form=TaxPaymentMethodAccountsForm,extra=1,can_delete=True)
+    Older_Tax_PaymentMethod_Accounts_Formset = inlineformset_factory(Compra,Tax_PaymentMethod_Accounts,form=TaxPaymentMethodAccountsForm,extra=0,can_delete=True)
+
     if request.method == 'POST':
+        # print(request.POST)
         # Recupera os dados do formulário de compra e formsets de itens e métodos de pagamento
         compra_form = CompraForm(request.POST, instance=compra)
         compra_item_formset = CompraItemFormSet(request.POST, instance=compra)
+
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST,instance=compra)
         Older_PaymentMethod_Accounts_FormSet = Older_PaymentMethod_Accounts_Formset(request.POST,instance=compra,prefix="older_paymentmethod_accounts_set")
 
+        TaxPaymentMethod_Accounts_FormSet = TaxPaymentMethodAccountsFormSet(request.POST,instance=compra,prefix="tax_form_payment_account_set")
+        Older_Tax_PaymentMethod_Accounts_FormSet = Older_Tax_PaymentMethod_Accounts_Formset(request.POST,instance=compra,prefix="older_tax_form_payment_account_set")
+        
         compra_item = CompraItem.objects.filter(compra=compra)
         ids_existentes_compra_itens = set(compra_item.values_list('id',flat=True))
 
@@ -262,20 +356,17 @@ def compras_update(request, pk):
             produto = get_object_or_404(Product,pk = produto_id)
 
             produto.current_quantity = produto.current_quantity + compra.quantidade
-            # produto_quanti = produto_quanti + compra.quantidade
-      
             produto.save()
+
         compraitems_excluir.delete()
-        if compra_form.is_valid() and compra_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid() and Older_PaymentMethod_Accounts_FormSet.is_valid():
+        if compra_form.is_valid() and compra_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid() and Older_PaymentMethod_Accounts_FormSet.is_valid() and TaxPaymentMethod_Accounts_FormSet.is_valid() and Older_Tax_PaymentMethod_Accounts_FormSet.is_valid():
             # Salva a compra (atualiza os dados da compra)
             compra_form.save(commit=False)
             compra_item_instances = compra_item_formset.save(commit=False)
 
             compra_item_formset.save_m2m()
             # Atualiza os itens de compra
-
             for form in compra_item_formset:
-                
                 if form.cleaned_data:
                     produto = form.cleaned_data['produto']
                     quantidade = form.cleaned_data['quantidade']
@@ -304,24 +395,12 @@ def compras_update(request, pk):
 
             for item in itens_para_deletar:
                 item.delete()
-        
-            total_payment = 0
-            onlyOldPayments = 0
-            try:
-                for form in PaymentMethod_Accounts_FormSet:
-                    if form.cleaned_data:
-                        if not form.cleaned_data.get("DELETE"):
-                            valor = form.cleaned_data['value']
-                            total_payment += valor
-            except TypeError:
-                onlyOldPayments = True
-                for form in Older_PaymentMethod_Accounts_FormSet:
-                    if form.cleaned_data:
-                        if not form.cleaned_data['DELETE']:
-                            valor = form.cleaned_data['value']
-                            total_payment+=valor
-                        
-            if total_payment == compra_form.cleaned_data['total_value']:
+            
+            total_payment,onlyOldPayments = calculate_value_payments_update(PaymentMethod_Accounts_FormSet,Older_PaymentMethod_Accounts_FormSet)
+            taxTotalPayment,onlyTaxOldPayments = calculate_value_payments_update(TaxPaymentMethod_Accounts_FormSet,Older_Tax_PaymentMethod_Accounts_FormSet)
+
+            tax_totalValue = compra_form.cleaned_data['total_value'] - compra_form.cleaned_data['total_value']*(Decimal(compra_form.cleaned_data['tax_value'])/Decimal('100'))
+            if total_payment == compra_form.cleaned_data['total_value'] and taxTotalPayment == tax_totalValue:
                 compra_form.save()
 
                 for instance in compra_item_instances:
@@ -330,55 +409,15 @@ def compras_update(request, pk):
                 for item in itens_para_deletar:
                     item.delete()
                 
-                
-                if not onlyOldPayments:
+                rearrange_payments(onlyOldPayments,PaymentMethod_Accounts_FormSet,Older_PaymentMethod_Accounts_FormSet)
+                rearrange_payments(onlyTaxOldPayments,TaxPaymentMethod_Accounts_FormSet,Older_Tax_PaymentMethod_Accounts_FormSet)
 
-                    if len(PaymentMethod_Accounts_FormSet) >= len(Older_PaymentMethod_Accounts_FormSet):
+                messages.success(request,"Compra atualizada com sucesso!",extra_tags='successShopping')
+                return redirect('compras_list')
 
-                        for old_form, new_form in zip(Older_PaymentMethod_Accounts_FormSet, PaymentMethod_Accounts_FormSet):
-                            old_instance = old_form.instance
-                            new_instance = new_form.instance
-
-                            old_instance.forma_pagamento = new_instance.forma_pagamento
-                            old_instance.expirationDate = new_instance.expirationDate
-                            old_instance.days = new_instance.days
-                            old_instance.value = new_instance.value
-
-                            old_instance.save()
-
-                            new_form.cleaned_data["DELETE"] = True
-                        
-                        Older_PaymentMethod_Accounts_FormSet.save()
-                        PaymentMethod_Accounts_FormSet.save() 
-            
-
-                    else:
-                    # FALTA VERIFICAR ESSA
-                    # atualizar os formulários existentes
-                        for old_form, new_form in zip(Older_PaymentMethod_Accounts_FormSet, PaymentMethod_Accounts_FormSet):
-                            old_instance = old_form.instance
-                            new_instance = new_form.instance
-
-                            old_instance.forma_pagamento = new_instance.forma_pagamento
-                            old_instance.expirationDate = new_instance.expirationDate
-                            old_instance.days = new_instance.days
-                            old_instance.value = new_instance.value
-
-                            old_instance.save()
-
-                        # remover os formulários extras de Older_PaymentMethod_Accounts_FormSet
-                        for extra_form in Older_PaymentMethod_Accounts_FormSet[len(PaymentMethod_Accounts_FormSet):]:
-                            extra_form.instance.delete()
-
-                        Older_PaymentMethod_Accounts_FormSet.save()                            
-                else:
-                    Older_PaymentMethod_Accounts_FormSet.save()
             if total_payment != compra_form.cleaned_data["total_value"]:
                 messages.warning(request, "Ação cancelada! O valor total dos pagamentos não corresponde ao total da compra.")
-
-            messages.success(request,"Compra atualizada com sucesso!",extra_tags='successShopping')
-            return redirect('compras_list')
-            # Atualiza o estoque, adicionando as quantidades compradas
+        
         if not compra_form.is_valid():
             print('Erro no CompraForms', compra_form.errors)
 
@@ -386,38 +425,41 @@ def compras_update(request, pk):
             print("Erro no CompraItem",compra_item_formset.errors)
             
         if not PaymentMethod_Accounts_FormSet.is_valid():
-            print("Erro na FormPagamento",PaymentMethod_Accounts_FormSet.errors)
-        return redirect("compras_list")
+            print("Erro na PaymentMethod_Accounts_FormSet",PaymentMethod_Accounts_FormSet.errors)
+        
+        if not Older_PaymentMethod_Accounts_FormSet.is_valid():
+            print('Erro no Older_PaymentMethod_Accounts_FormSet',Older_PaymentMethod_Accounts_FormSet.errors)
+        
+        if not TaxPaymentMethod_Accounts_FormSet.is_valid():
+            print("Erro no TaxPaymentMethod_Accounts_FormSet",TaxPaymentMethod_Accounts_FormSet.errors)
+        
+        if not Older_Tax_PaymentMethod_Accounts_FormSet.is_valid():
+            print("Erro no Older_Tax_PaymentMethod_Accounts_FormSet",Older_Tax_PaymentMethod_Accounts_FormSet.errors)
     else:
         # Se for um GET, inicializa o formulário com os dados da compra existente
         form_Accounts = AccountsForm(instance=compra)
         Older_PaymentMethod_Accounts_Formset = Older_PaymentMethod_Accounts_Formset(queryset=compra.paymentmethod_accounts_set.all(),instance=compra,prefix="older_paymentmethod_accounts_set")
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
+
+        tax_form_Accounts = AccountsForm(instance = compra,prefix='tax_form_accounts')
+        Older_Tax_PaymentMethod_Accounts_Formset = Older_Tax_PaymentMethod_Accounts_Formset(queryset=compra.tax_paymentmethod_accounts_set.all(),instance=compra,prefix='older_tax_form_payment_account_set')
+        TaxPaymentMethod_Accounts_FormSet = TaxPaymentMethodAccountsFormSet(queryset=Tax_PaymentMethod_Accounts.objects.none(),prefix="tax_form_payment_account_set")
+
         compra_form = CompraForm(instance=compra)
-        # payment_method_formset = PaymentMethodCompraFormSet(queryset=compra.paymentmethod_accounts_set.all(), instance=compra)
         compra_item_formset = CompraItemFormSet(queryset=compra.compraitem_set.all(), instance=compra)
-        count_payment = 0
-       
-        for i,form in enumerate(Older_PaymentMethod_Accounts_Formset):
-            if i == 0:
-                data_obj = form.initial["expirationDate"]  
-                data_modificada = data_obj - timedelta(days=int(form.initial["days"])) 
-                data_modificada = datetime.strptime(str(data_modificada), "%Y-%m-%d").strftime("%d/%m/%Y") 
-
-            count_payment+=1
-        form_Accounts.initial["date_init"] = data_modificada
-        form_Accounts.initial["totalValue"] = compra_form.initial['total_value']
-        form_Accounts.initial["numberOfInstallments"] = count_payment
-
-        # payment_method_formset = PaymentMethodCompraFormSet(queryset=PaymentMethod_Accounts)
+        
+        form_Accounts = populate_account_form(Older_PaymentMethod_Accounts_Formset,form_Accounts)
+        tax_form_Accounts = populate_account_form(Older_Tax_PaymentMethod_Accounts_Formset,tax_form_Accounts)
 
         context = {
             'form_Accounts':form_Accounts,
+            'taxform_Accounts':tax_form_Accounts,
+            'older_form_payment_account':Older_PaymentMethod_Accounts_Formset,
             'form_payment_account':PaymentMethod_Accounts_FormSet,
+            'older_tax_form_payment_account':Older_Tax_PaymentMethod_Accounts_Formset,
+            'form_tax_payment_account':TaxPaymentMethod_Accounts_FormSet,
             'compra_form': compra_form,
-            'compra_item_formset': compra_item_formset,
-            'older_form_payment_account':Older_PaymentMethod_Accounts_Formset
-            # 'form_payment_account': payment_method_formset,
+            'compra_item_formset': compra_item_formset
         }
         return render(request, 'purchase/compras_formUpdate.html', context)
 

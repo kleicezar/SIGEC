@@ -127,7 +127,6 @@ function calcularPreco(input) {
     const itemForms = itemsContainerService.querySelectorAll(".item-form");
 
     let desconto = row.cells[2].querySelector("input").value || 0;
-    // let preco = row.cells[2].querySelector("input").value || 0;
 
     let precoFinal = preco_data - (preco_data*(desconto/100))
     row.cells[3].querySelector("input").value = precoFinal.toFixed(2);
