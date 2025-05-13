@@ -68,6 +68,14 @@ class CompraForm(forms.ModelForm):
         ('fob','fob'),
         ('cif','cif')
     ]
+    
+    freight_type = forms.ChoiceField(
+        choices=FREIGHT_CHOICES,
+        initial='fob',
+        widget=forms.Select(attrs={
+            'class': 'form-select mb-3 mt-3'
+        })
+    )
     class Meta:
         model = Compra
         fields = [
@@ -80,6 +88,7 @@ class CompraForm(forms.ModelForm):
             'tax_value',
             'observation_tax',
             'freight_type',
+            'freight_value',
             'observation_freight',
             'observation_picking_list',
             'value_picking_list'
@@ -115,7 +124,9 @@ class CompraForm(forms.ModelForm):
                 'observation_tax':forms.Textarea(attrs={
                     'class':'form-control mb-3 mt-3 row'
                 }),
-                'freight_type':forms.Select(),
+                'freight_value':forms.NumberInput(attrs={
+                    'class':'form-control mb-3 mt-3 row-5'
+                }),
                 'observation_freight':forms.Textarea(attrs={
                     'class':'form-control mb-3 mt-3 row'
                 }),

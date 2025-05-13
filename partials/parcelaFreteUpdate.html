@@ -1,25 +1,25 @@
-<div id="old-tax-payment-method-form" >
-    {{ older_tax_form_payment_account.management_form }}
+<div id="old-freight-payment-method-form" >
+    {{ older_freight_form_payment_account.management_form }}
     
     <table>
         <thead>
             <tr>
                 <th scope="col">
-                    {{older_tax_form_payment_account.forma_pagamento.label}}
+                    {{older_freight_form_payment_account.forma_pagamento.label}}
                 </th>
                 <th scope="col">
-                    {{older_tax_form_payment_account.expirationDate.label}}
+                    {{older_freight_form_payment_account.expirationDate.label}}
                 </th>
                 <th scope="col">
-                    {{older_tax_form_payment_account.days.label}}
+                    {{older_freight_form_payment_account.days.label}}
                 </th>
                 <th scope="col">
-                    {{older_tax_form_payment_account.value.label}}
+                    {{older_freight_form_payment_account.value.label}}
                 </th>
             </tr>
         </thead>
     </table>
-    {% for form in older_tax_form_payment_account %}
+    {% for form in older_freight_form_payment_account %}
     {% if form.instance.pk %}
     <div class="form-row">
         <table class="table">

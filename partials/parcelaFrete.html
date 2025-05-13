@@ -15,30 +15,30 @@
     
 </style>
 <div class="form-row">
-    <table class="table" id="paymentMethod_account">
+    <table class="table" id="freightpaymentMethod_account">
         <thead class="">
             <tr>
-                <th>{{ form_Accounts.numberOfInstallments.label }}</th>
-                <th>{{ form_Accounts.date_init.label }}</th>
-                <th>{{ form_Accounts.installment_Range.label }}</th>
-                <th>{{ form_Accounts.totalValue.label }}</th>
+                <th>{{ freightform_Accounts.numberOfInstallments.label }}</th>
+                <th>{{ freightform_Accounts.date_init.label }}</th>
+                <th>{{ freightform_Accounts.installment_Range.label }}</th>
+                <th>{{ freightform_Accounts.totalValue.label }}</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>{{ form_Accounts.numberOfInstallments }}</td>
+                <td>{{ freightform_Accounts.numberOfInstallments }}</td>
                 <td style="padding-right: 40px">
-                    <div class="input-group date" data-provide="datepicker" id="date_init" style="max-width: 250px;">
-                        {{ form_Accounts.date_init }}
+                    <div class="input-group date" data-provide="datepicker" id="freight_date_init" style="max-width: 250px;">
+                        {{ freightform_Accounts.date_init }}
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-th"></span>
                         </div>
                     </div>
                 </td>
-                <td>{{ form_Accounts.installment_Range }}</td>
-                <td>{{ form_Accounts.totalValue }}</td>
-                <td><button id="generate" type="button" class="btn btn-warning">GERAR</button></td>
+                <td>{{ freightform_Accounts.installment_Range }}</td>
+                <td>{{ freightform_Accounts.totalValue }}</td>
+                <td><button id="freightGenerate" type="button" class="btn btn-warning">GERAR</button></td>
             </tr>
         </tbody>
     </table>
@@ -48,10 +48,10 @@
     
 <!-- <form method="POST"> 
     {% csrf_token %}   -->
-{{ form_payment_account.management_form }}
+{{ form_freight_payment_account.management_form }}
 <div> <!-- style="display: none;" -->
     <div class="form-row">
-        <table class="table" id="installment">
+        <table class="table" id="freightInstallment">
             <thead>
                 <tr>
                     <th scope="col">
@@ -71,8 +71,8 @@
                     </th>
                 </tr>
             </thead>
-            <tbody id="payment-method-container">
-                {% for form in form_payment_account %}
+            <tbody id="freight-payment-method-container">
+                {% for form in form_freight_payment_account %}
                     <!-- <tr id="tr_one">
                         <td>{{ form.empty_form.forma_pagamento }}</td>
                         <td>
@@ -97,9 +97,9 @@
 <!-- <div id="payment-method-container"> -->
 
     
-<template id="empty-payment-method-form">
+<template id="empty-freight-payment-method-form">
     <!-- {{ form_payment_account.management_form }} -->
-    {% for form in form_payment_account %}
+    {% for form in form_freight_payment_account %}
     <tr>
         <!-- <td>{{ form.id }}</td> -->
         <td>{{ form.forma_pagamento }}</td>
@@ -118,10 +118,6 @@
     {% endfor %}
 </template>
 
-<script type="module" src="{% static 'js/installments.js' %}"></script>
-<script src="{% static 'js/jquery-3.7.1.js' %}"></script>
-<script src="{% static 'js/jquery.mask.min.js' %}"></script>
-<script src="{% static 'js/mask.js' %}"></script>
-<script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
-<script src="{% static 'js/bootstrap-datepicker.pt-BR.js' %}"></script>
-<script src="{% static 'js/date.js' %}"></script>
+
+<script type="module" src="{% static 'js/installmentsFreight.js' %}"></script>
+<script src="{% static 'js/freight.js' %}"></script>

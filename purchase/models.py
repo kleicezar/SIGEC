@@ -41,6 +41,7 @@ class Compra(models.Model):
     
     # CAMPOS FRETE
     freight_type = models.CharField(choices=FREIGHT_CHOICES,max_length=3)
+    freight_value = models.IntegerField(verbose_name='Valor do Frete',null=True)
     observation_freight = models.TextField(verbose_name='Observação sobre Frete',null=True)
 
     # CAMPOS ROMANEIO

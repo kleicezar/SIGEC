@@ -330,6 +330,12 @@
                     {{compra_form.freight_type.label}}
                     {{compra_form.freight_type}}
 
+                    {{compra_form.freight_value.label}}
+                    {{compra_form.freight_value}}
+
+                    {% include 'parcelaFrete.html' %}
+                    {% include 'parcelaFreteUpdate.html' %}
+
                     {{compra_form.observation_freight.label}}
                     {{compra_form.observation_freight}}
 
