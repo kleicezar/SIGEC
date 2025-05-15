@@ -420,14 +420,12 @@ def update_AccountsReceivable(request, id_Accounts):
             'form_paymentMethodAccounts': payment_form_instance,
             'tipo_conta': 'Receber'
         }
-
         return render(request, 'finance/AccountsPayformUpdate.html', context)
     else:
         if payment_instance.venda:
             return venda_update(request,payment_instance.venda.id)
         elif payment_instance.ordem_servico:
             return workOrders_update(request,payment_instance.ordem_servico.id)
-        
 # funcionando
 
 @login_required

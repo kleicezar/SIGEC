@@ -76,6 +76,14 @@ class CompraForm(forms.ModelForm):
             'class': 'form-select mb-3 mt-3'
         })
     )
+    freight_value = forms.DecimalField(
+        required=False,
+        widget=forms.NumberInput(
+            attrs={
+                'class': 'form-control mb-3 mt-3 row-5'
+            }
+        )
+    )
     class Meta:
         model = Compra
         fields = [
@@ -124,9 +132,6 @@ class CompraForm(forms.ModelForm):
                 'observation_tax':forms.Textarea(attrs={
                     'class':'form-control mb-3 mt-3 row'
                 }),
-                'freight_value':forms.NumberInput(attrs={
-                    'class':'form-control mb-3 mt-3 row-5'
-                }),
                 'observation_freight':forms.Textarea(attrs={
                     'class':'form-control mb-3 mt-3 row'
                 }),
@@ -145,7 +150,7 @@ class CompraForm(forms.ModelForm):
         if self.instance and self.instance.pk:
             self.fields['data_da_compra'].initial = self.instance.data_da_compra
             self.fields['data_da_compra'].widget.attrs['readonly'] = True
-
+            self.fields['freight_value'].required = False
 class CompraItemForm(forms.ModelForm):
     STATUS_CHOICES = [
         ('Pendente', 'Pendente'),

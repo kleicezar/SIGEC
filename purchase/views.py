@@ -191,7 +191,13 @@ def compras_create(request):
                 if freightFOB and equalValueFreight:
                     compra_form.save()
                     compra_item_formset.save()
-                    PaymentMethod_Accounts_FormSet.save()
+                    # PaymentMethod_Accounts_FormSet.save()
+                    for form in PaymentMethod_Accounts_FormSet:
+                        conta = form.save(commit=False)  # cria o objeto sem salvar ainda
+                        conta.compra = compra            # agora sim associa corretamente
+                        conta.acc = True
+                        conta.save()  
+
                     TaxPaymentMethod_Accounts_FormSet.save()
                     FreightPaymentMethod_Accounts_FormSet.save()
 
@@ -486,8 +492,6 @@ def compras_update(request, pk):
                     rearrange_payments(onlyOldPayments,PaymentMethod_Accounts_FormSet,Older_PaymentMethod_Accounts_FormSet)
                     rearrange_payments(onlyTaxOldPayments,TaxPaymentMethod_Accounts_FormSet,Older_Tax_PaymentMethod_Accounts_FormSet)
                     Older_Freight_PaymentMethod_Accounts_FormSet.save()
-                #    FOR IN VELHOS PAGAMENTOS
-                        # DELETE O
 
                     messages.success(request,"Compra atualizada com sucesso!",extra_tags='successShopping')
                     return redirect('compras_list')
