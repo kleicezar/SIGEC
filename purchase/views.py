@@ -17,8 +17,8 @@ from .models import *
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponse
-from finance.models import Freight_PaymentMethod_Accounts, PaymentMethod_Accounts, Tax_PaymentMethod_Accounts
-from finance.forms import FreightPaymentMethod_AccountsForm, PaymentMethodAccountsForm, AccountsForm, TaxPaymentMethodAccountsForm
+from finance.models import Freight_PaymentMethod_Accounts, PaymentMethod_Accounts, Romaneio_PaymentMethod_Accounts, Tax_PaymentMethod_Accounts
+from finance.forms import FreightPaymentMethod_AccountsForm, PaymentMethodAccountsForm, AccountsForm, RomaneioPaymentMethod_AccountsForm, TaxPaymentMethodAccountsForm
 from django.db import transaction
 
 ### PURCHASE
@@ -131,11 +131,19 @@ def compras_create(request):
                 total_payment+=valor
         return total_payment
     
+    def savePayments(paymentForm):
+        for form in paymentForm:
+            conta = form.save(commit=False)  # cria o objeto sem salvar ainda
+            conta.compra = compra            # agora sim associa corretamente
+            conta.acc = True
+            conta.save()  
+    
     CompraItemFormSet = inlineformset_factory(Compra, CompraItem, form=CompraItemForm, extra=1, can_delete=True)
     PaymentMethodAccountsFormSet = inlineformset_factory(Compra, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
     TaxPaymentMethodAccountsFormSet = inlineformset_factory(Compra,Tax_PaymentMethod_Accounts,form=TaxPaymentMethodAccountsForm,extra=1,can_delete=True)
     FreightPaymentMethodAccountsFormSet = inlineformset_factory(Compra,Freight_PaymentMethod_Accounts,form=FreightPaymentMethod_AccountsForm,extra=1,can_delete=True)
-    
+    RomaneioPaymentMethodAccountsFormSet = inlineformset_factory(Compra,Romaneio_PaymentMethod_Accounts,form=RomaneioPaymentMethod_AccountsForm,extra=1,can_delete=True)
+
     if request.method == 'POST':
         
         compra_form = CompraForm(request.POST)
@@ -149,9 +157,19 @@ def compras_create(request):
         freight_form_Accounts = AccountsForm(request.POST,prefix='freight_form_accounts')
         FreightPaymentMethod_Accounts_FormSet = FreightPaymentMethodAccountsFormSet(request.POST)
 
+        romaneio_form_Accounts = AccountsForm(request.POST,prefix='romaneio_form_accounts')
+        RomaneioPaymentMethod_Accounts_FormSet = RomaneioPaymentMethodAccountsFormSet(request.POST)
+
         compra_item_formset = CompraItemFormSet(request.POST)
         
-        if compra_form.is_valid() and compra_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid() and TaxPaymentMethod_Accounts_FormSet.is_valid() and FreightPaymentMethod_Accounts_FormSet.is_valid():
+        if (
+            compra_form.is_valid() and 
+            compra_item_formset.is_valid() and 
+            PaymentMethod_Accounts_FormSet.is_valid() and 
+            TaxPaymentMethod_Accounts_FormSet.is_valid() and 
+            FreightPaymentMethod_Accounts_FormSet.is_valid() and
+            RomaneioPaymentMethod_Accounts_FormSet.is_valid()
+            ):
             
             compra = compra_form.save(commit=False)
             compra_item_formset.instance = compra
@@ -186,20 +204,25 @@ def compras_create(request):
                     equalValueFreight = True
             else:
                 compra.freight_value = 0
+            
+            RomaneioPaymentMethod_Accounts_FormSet.instance = compra
+            romaneioTotal_payment = calculateValuePayments(RomaneioPaymentMethod_Accounts_FormSet)
             # Verificar se os pagamentos somam corretamente antes de salvar
-            if total_payment == compra.total_value and taxTotal_payment == tax_totalValue:
+            if total_payment == compra.total_value and taxTotal_payment == tax_totalValue and romaneioTotal_payment == compra.value_picking_list:
                 if freightFOB and equalValueFreight:
                     compra_form.save()
                     compra_item_formset.save()
                     # PaymentMethod_Accounts_FormSet.save()
-                    for form in PaymentMethod_Accounts_FormSet:
-                        conta = form.save(commit=False)  # cria o objeto sem salvar ainda
-                        conta.compra = compra            # agora sim associa corretamente
-                        conta.acc = True
-                        conta.save()  
-
-                    TaxPaymentMethod_Accounts_FormSet.save()
-                    FreightPaymentMethod_Accounts_FormSet.save()
+                    # for form in PaymentMethod_Accounts_FormSet:
+                    #     conta = form.save(commit=False)  # cria o objeto sem salvar ainda
+                    #     conta.compra = compra            # agora sim associa corretamente
+                    #     conta.acc = True
+                    #     conta.save()  
+                    
+                    savePayments(PaymentMethod_Accounts_FormSet)
+                    savePayments(TaxPaymentMethod_Accounts_FormSet)
+                    savePayments(FreightPaymentMethod_Accounts_FormSet)
+                    savePayments(RomaneioPaymentMethod_Accounts_FormSet)
 
                     messages.success(request,"Compra cadastrada com sucesso.",extra_tags='successShopping')
                     return redirect('compras_list')
@@ -209,6 +232,7 @@ def compras_create(request):
                     compra_item_formset.save()
                     PaymentMethod_Accounts_FormSet.save()
                     TaxPaymentMethod_Accounts_FormSet.save()
+                    RomaneioPaymentMethod_Accounts_FormSet.save()
 
                     messages.success(request,"Compra cadastrada com sucesso.",extra_tags='successShopping')
                     return redirect('compras_list')
@@ -230,6 +254,9 @@ def compras_create(request):
 
         if not FreightPaymentMethod_Accounts_FormSet.is_valid():
             print("Erro no FreightPaymentMethod",FreightPaymentMethod_Accounts_FormSet.errors)
+
+        if not RomaneioPaymentMethod_Accounts_FormSet.is_valid():
+            print("Erro no RomaneioPaymentMethod",RomaneioPaymentMethod_Accounts_FormSet.errors)
         # compra_form = CompraForm()
         # compra_item_formset = CompraItemFormSet(queryset=CompraItem.objects.none())
         # payment_method_formset = PaymentMethodCompraFormSet(queryset=PaymentMethod_Accounts.objects.none())
@@ -244,6 +271,9 @@ def compras_create(request):
         freight_form_Accounts = AccountsForm(prefix='freight_form_accounts')
         FreightPaymentMethod_Accounts_FormSet = FreightPaymentMethodAccountsFormSet(queryset=Freight_PaymentMethod_Accounts.objects.none())
 
+        RomaneioPaymentMethod_Accounts_FormSet = RomaneioPaymentMethodAccountsFormSet(queryset=Romaneio_PaymentMethod_Accounts.objects.none())
+        romaneio_form_Accounts =AccountsForm(prefix='romaneio_form_accounts')
+        
         compra_form = CompraForm()
         compra_item_formset = CompraItemFormSet(queryset=CompraItem.objects.none())
        
@@ -256,6 +286,8 @@ def compras_create(request):
         'form_tax_payment_account':TaxPaymentMethod_Accounts_FormSet,
         'freightform_Accounts':freight_form_Accounts,
         'form_freight_payment_account':FreightPaymentMethod_Accounts_FormSet,
+        'romaneioform_Accounts':romaneio_form_Accounts,
+        'form_romaneio_payment_account':RomaneioPaymentMethod_Accounts_FormSet,
         'compra_form': compra_form,
         'compra_item_formset': compra_item_formset,
         # 'payment_method_formset': payment_method_formset
@@ -264,7 +296,6 @@ def compras_create(request):
 
 @login_required
 @transaction.atomic 
-
 def compras_update(request, pk):
     # TEM QUE MELHORAR ESSA FUNCAO DEPOIS CABEÇAO
     def calculate_value_payments_update(paymentForm,olderPaymentForm):
@@ -296,10 +327,9 @@ def compras_update(request, pk):
                             total_payment+=valor
             return total_payment,onlyOldPayments
     
-    def rearrange_payments(onlyOldPayments,paymentForm,olderPaymentForm):
+    def rearrange_payments(onlyOldPayments, paymentForm, olderPaymentForm):
         if not onlyOldPayments:
             if len(paymentForm) >= len(olderPaymentForm):
-
                 for old_form, new_form in zip(olderPaymentForm, paymentForm):
                     old_instance = old_form.instance
                     new_instance = new_form.instance
@@ -308,16 +338,22 @@ def compras_update(request, pk):
                     old_instance.expirationDate = new_instance.expirationDate
                     old_instance.days = new_instance.days
                     old_instance.value = new_instance.value
+                    old_instance.acc = True
 
                     old_instance.save()
 
                     new_form.cleaned_data["DELETE"] = True
-                
+
                 olderPaymentForm.save()
-                paymentForm.save() 
-    
+
+                for form in paymentForm:
+                    form_instance = form.instance
+                    form_instance.acc = True
+                    # form_instance.save()
+                paymentForm.save()
+
             else:
-            # atualizar os formulários existentes
+                # atualizar os formulários existentes
                 for old_form, new_form in zip(olderPaymentForm, paymentForm):
                     old_instance = old_form.instance
                     new_instance = new_form.instance
@@ -326,6 +362,7 @@ def compras_update(request, pk):
                     old_instance.expirationDate = new_instance.expirationDate
                     old_instance.days = new_instance.days
                     old_instance.value = new_instance.value
+                    old_instance.acc = True
 
                     old_instance.save()
 
@@ -333,9 +370,16 @@ def compras_update(request, pk):
                 for extra_form in olderPaymentForm[len(paymentForm):]:
                     extra_form.instance.delete()
 
-                olderPaymentForm.save()                            
+                olderPaymentForm.save()
         else:
+            # Atualiza acc para True mesmo se só estiver usando os formulários antigos
+            for old_form in olderPaymentForm:
+                old_instance = old_form.instance
+                old_instance.acc = True
+                # old_instance.save()
+                
             olderPaymentForm.save()
+
 
     def populate_account_form(olderForm,form_Payment_Accounts):
         count_payment = 0
@@ -368,6 +412,8 @@ def compras_update(request, pk):
     FreightPaymentMethodAccountsFormSet = inlineformset_factory(Compra,Freight_PaymentMethod_Accounts,form=FreightPaymentMethod_AccountsForm,extra=1,can_delete=True)
     Older_Freight_PaymentMethod_Accounts_Formset = inlineformset_factory(Compra,Freight_PaymentMethod_Accounts,form=FreightPaymentMethod_AccountsForm,extra=0,can_delete=True)
 
+    RomaneioPaymentMethodAccountsFormSet = inlineformset_factory(Compra,Romaneio_PaymentMethod_Accounts,form=RomaneioPaymentMethod_AccountsForm,extra=1,can_delete=True)
+    Older_Romaneio_PaymentMethod_Accounts_Formset = inlineformset_factory(Compra,Romaneio_PaymentMethod_Accounts,form=RomaneioPaymentMethod_AccountsForm,extra=0,can_delete=True)
     if request.method == 'POST':
         # print(request.POST)
         # Recupera os dados do formulário de compra e formsets de itens e métodos de pagamento
@@ -528,14 +574,18 @@ def compras_update(request, pk):
         freight_form_Accounts = AccountsForm(prefix='freight_form_accounts')
         Older_Freight_PaymentMethod_Accounts_FormSet = Older_Freight_PaymentMethod_Accounts_Formset(queryset=compra.freight_paymentmethod_accounts_set.all(),instance=compra,prefix='older_freight_form_payment_account_set')
         FreightPaymentMethod_Accounts_FormSet = FreightPaymentMethodAccountsFormSet(queryset=Freight_PaymentMethod_Accounts.objects.none(),prefix="freight_form_payment_account_set")
-       
+
+        romaneio_form_Accounts = AccountsForm(prefix='romaneio_form_accounts')
+        Older_Romaneio_PaymentMethod_Accounts_FormSet = Older_Romaneio_PaymentMethod_Accounts_Formset(queryset=compra.romaneio_paymentmethod_accounts_set.all(),instance=compra,prefix='older_romaneio_form_payment_account_set')
+        RomaneioPaymentMethod_Accounts_FormSet = RomaneioPaymentMethodAccountsFormSet(queryset=Romaneio_PaymentMethod_Accounts.objects.none(),prefix="romaneio_form_payment_account_set")
+
         compra_form = CompraForm(instance=compra)
         compra_item_formset = CompraItemFormSet(queryset=compra.compraitem_set.all(), instance=compra)
         
         
         form_Accounts = populate_account_form(Older_PaymentMethod_Accounts_Formset,form_Accounts)
         tax_form_Accounts = populate_account_form(Older_Tax_PaymentMethod_Accounts_Formset,tax_form_Accounts)
-
+        romaneio_form_Accounts = populate_account_form(Older_Romaneio_PaymentMethod_Accounts_FormSet,romaneio_form_Accounts)
         # older_form_with_data = [form in Older_Freight_PaymentMethod_Accounts_FormSet.forms in form.instance.pk is not None]
         print(len(Older_Freight_PaymentMethod_Accounts_FormSet))
        
@@ -546,12 +596,15 @@ def compras_update(request, pk):
             'form_Accounts':form_Accounts,
             'taxform_Accounts':tax_form_Accounts,
             'freightform_Accounts':freight_form_Accounts,
+            'romaneioform_Accounts':romaneio_form_Accounts,
             'older_form_payment_account':Older_PaymentMethod_Accounts_Formset,
             'form_payment_account':PaymentMethod_Accounts_FormSet,
             'older_tax_form_payment_account':Older_Tax_PaymentMethod_Accounts_Formset,
             'form_tax_payment_account':TaxPaymentMethod_Accounts_FormSet,
             'older_freight_form_payment_account':Older_Freight_PaymentMethod_Accounts_FormSet,
             'form_freight_payment_account':FreightPaymentMethod_Accounts_FormSet,
+            'older_romaneio_form_payment_account':Older_Romaneio_PaymentMethod_Accounts_FormSet,
+            'form_romaneio_payment_account':RomaneioPaymentMethod_Accounts_FormSet,
             'compra_form': compra_form,
             'compra_item_formset': compra_item_formset
         }

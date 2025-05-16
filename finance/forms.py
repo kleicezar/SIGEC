@@ -275,6 +275,35 @@ class FreightPaymentMethod_AccountsForm(forms.ModelForm):
             'acc':forms.HiddenInput()
         }
 
+class RomaneioPaymentMethod_AccountsForm(forms.ModelForm):
+    class Meta:
+        model = Romaneio_PaymentMethod_Accounts
+        fields = [
+            'forma_pagamento',  
+            'expirationDate', 
+            'days', 
+            'value', 
+            'acc',
+            'activeCredit'
+        ]
+        widgets = { 
+            'forma_pagamento': forms.Select(attrs={ 
+                'class': 'form-select row'
+            }),
+            'expirationDate': forms.DateInput(format='%d/%m/%Y', attrs={
+                'class': 'form-control row mask-date', 
+            }),
+            'days': forms.NumberInput(attrs={
+                'class': 'form-control row',
+                'min': 0
+            }),
+            'value': forms.NumberInput(attrs={
+                'class': 'form-control row',
+                'min': 0
+            }),
+            'acc':forms.HiddenInput()
+        }
+
 class CreditForm(forms.ModelForm):
     class Meta:
         model = Person

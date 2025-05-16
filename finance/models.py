@@ -54,6 +54,7 @@ class Accounts(models.Model):
         null=True
 
         )
+    is_active = models.BooleanField(default=False,verbose_name='Está Ativo')
 
 class PaymentMethod_Accounts(models.Model):
     INTEREST_CHOICES = [
