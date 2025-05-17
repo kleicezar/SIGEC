@@ -13,7 +13,16 @@ class Accounts(models.Model):
         ('20', 'A cada 20 dias'),
         ('23', 'A cada 23 dias'),
         ('28', 'A cada 28 dias'),
-        ('30', 'A cada 30 dias'),
+        ('5', 'A cada 30 dias'),
+    ]
+
+    INSTALLMENT_RANGE_CHOICES_PLANNED_ACCOUNT = [
+        ('1', 'A cada 1 mês'),
+        ('2', 'A cada 2 mês'),
+        ('3', 'A cada 3 mês'),
+        ('4', 'A cada 4 mês'),
+        ('5', 'A cada 5 mês'),
+        ('6', 'A cada 6 mês'),
     ]
 
     description = models.TextField(
@@ -55,6 +64,7 @@ class Accounts(models.Model):
 
         )
     is_active = models.BooleanField(default=False,verbose_name='Está Ativo')
+    plannedAccount = models.BooleanField(default=False,verbose_name='Conta Prevista')
 
 class PaymentMethod_Accounts(models.Model):
     INTEREST_CHOICES = [

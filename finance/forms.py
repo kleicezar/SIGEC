@@ -60,6 +60,7 @@ class AccountsForm(BaseAccountsForm):
         label="Intervalo de Parcelas"
     )
 
+
     class Meta(BaseAccountsForm.Meta):
         fields = [
             'pessoa_id', 
@@ -72,6 +73,7 @@ class AccountsForm(BaseAccountsForm):
             'installment_Range',
             'totalValue',
             'date_init',
+            'plannedAccount'
         ]
         labels = {
             'chartOfAccounts':'Plano de Contas'
@@ -105,6 +107,8 @@ class AccountsForm(BaseAccountsForm):
             'date_init': forms.TextInput(attrs={
                 'class': 'form-control row mask-date'
             }),
+            'plannedAccounts':forms.CheckboxInput(attrs={'class':"form-check-input"})
+            
         }
 
     def __init__(self, *args, **kwargs):

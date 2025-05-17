@@ -34,6 +34,16 @@ $(document).ready(function() {
         language: 'pt-BR'
     });
 });
+$(document).ready(function () {
+    $('#date_init_planned_account').datepicker({
+      format: "mm/yyyy",
+      startView: "months",
+      minViewMode: "months",
+      autoclose: true,
+      todayHighlight: true,
+      language: "pt-BR"
+    });
+  });
 $(document).ready(function() {
     $('#tax_date_init').datepicker({
         format: 'dd/mm/yyyy', // Formato de data

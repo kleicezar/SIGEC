@@ -45,6 +45,16 @@
                         <h4 class="c-adapted text-center col mb-3">Cadastro de {{ Contas }}</h4>
                     </div>
 
+
+                    <div class="row">
+                        <div class="mb-3 col">
+                            <label class="form-label">
+                                {{ form_Accounts.plannedAccount.label }}
+                            </label>
+                            {{ form_Accounts.plannedAccount }}
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="mb-3 col ">
                             <label class="form-label">  
@@ -91,5 +101,14 @@
 </html>
 
 <script src="{% static 'js/additem.js' %}"></script>
-
+<script>
+    const plannedAccount_id = document.getElementById('id_plannedAccount');
+    
+    plannedAccount_id.addEventListener('change',()=>{
+        const url = new URL(window.location.href);
+        url.searchParams.set('plannedAccount', plannedAccount_id.checked ? 'true' : 'false');
+        window.location.href = url.toString();
+        
+    })
+</script>
 {% endblock %}

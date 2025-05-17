@@ -21,6 +21,8 @@ from django.db import transaction
 @login_required
 @transaction.atomic 
 def Accounts_Create(request):
+    plannedAccount = request.GET.get("plannedAccount",'false')
+    print(plannedAccount)
     verify = 0
     installments = []
     # PaymentMethodAccountsFormSet = inlineformset_factory(Accounts, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
@@ -89,7 +91,16 @@ def Accounts_Create(request):
             }
             return render(request, 'finance/AccountsPayform.html', context)
     else: 
-        form_Accounts = AccountsForm()
+        if plannedAccount =='false':
+            form_Accounts = AccountsForm()
+        else:
+            initial_data = {
+            'plannedAccount': plannedAccount,
+            }
+
+            form_Accounts = AccountsForm(initial=initial_data)
+       
+            form_Accounts.fields['installment_Range'].choices = Accounts.INSTALLMENT_RANGE_CHOICES_PLANNED_ACCOUNT
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
 
     context = {

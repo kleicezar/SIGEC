@@ -230,9 +230,10 @@ def compras_create(request):
                 elif not freightFOB and not equalValueFreight:
                     compra_form.save()
                     compra_item_formset.save()
-                    PaymentMethod_Accounts_FormSet.save()
-                    TaxPaymentMethod_Accounts_FormSet.save()
-                    RomaneioPaymentMethod_Accounts_FormSet.save()
+                    
+                    savePayments(PaymentMethod_Accounts_FormSet)
+                    savePayments(TaxPaymentMethod_Accounts_FormSet)
+                    savePayments(RomaneioPaymentMethod_Accounts_FormSet)
 
                     messages.success(request,"Compra cadastrada com sucesso.",extra_tags='successShopping')
                     return redirect('compras_list')
