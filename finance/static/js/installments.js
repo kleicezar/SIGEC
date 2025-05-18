@@ -68,8 +68,6 @@ function generateInstallmentsPlannedAccount(){
             return new Date(year, month - 1); // Mês no JavaScript é baseado em zero
         };
         const inputDate = dateInitsemvalor.value.trim();
-        console.log("OLHA O INPUT DATE")
-        console.log(inputDate);
         
         // Converter a data inicial
         const startDate = convertToDate(inputDate);
@@ -113,14 +111,10 @@ function generateInstallmentsPlannedAccount(){
                 }else if (input.name.includes("-expirationDate")) {
                     // Calcula a data da parcela
                     counter2+=1;
-                    console.log('fasdf')
-                    console.log(counter2)
-                    let mounth = (parseInt(mounths_installment_Range.value,10));
-                    console.log('fas')
-                    console.log((counter2*mounth)+1);
-                    let newDate = new Date(startDate.getFullYear(), startDate.getMonth() + (counter2*mounth)+2, 0);
+                    let mounth = (parseInt(mounths_installment_Range.value,10));       
+                    let newDate = new Date(startDate.getFullYear(), startDate.getMonth() + (counter2*mounth)+1, 0);
                     let final_date = new Date(newDate)
-                    input.value = `${final_date.getDate().toString().padStart(2, '0')}/${(final_date.getMonth()).toString().padStart(2, '0')}/${final_date.getFullYear()} `  
+                    input.value = `${final_date.getDate().toString().padStart(2, '0')}/${(final_date.getMonth()+1).toString().padStart(2, '0')}/${final_date.getFullYear()}`  
                     
                     row_expirationDate.appendChild(input)
                     parcela.appendChild(row_expirationDate)

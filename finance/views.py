@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.forms import inlineformset_factory
@@ -25,6 +26,8 @@ def Accounts_Create(request):
     print(plannedAccount)
     verify = 0
     installments = []
+    
+
     # PaymentMethodAccountsFormSet = inlineformset_factory(Accounts, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
     PaymentMethodAccountsFormSet = inlineformset_factory(
         Accounts,
@@ -34,11 +37,34 @@ def Accounts_Create(request):
         can_delete=True,
     )
     if request.method == "POST":
-
+        
         print(request.POST) 
-
-        form_Accounts = AccountsForm(request.POST)
+        post_data = request.POST.copy()
+        raw_data_planned_account = post_data.get('plannedAccount')
+        if raw_data_planned_account:
+            raw_date = post_data.get('date_init')
+            if raw_date:
+                try:
+                    date_obj = datetime.strptime(raw_date,"%m/%Y")
+                    completed_date = date_obj.replace(day=1).date()
+                    post_data['date_init'] = completed_date.isoformat()
+                    form_Accounts = AccountsFormPlannedAccount(post_data)
+                except ValueError as e:
+                    print("Erro ao tratar date_init",e)
+        else:
+            form_Accounts = AccountsForm(request.POST)
+        
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
+        print(f"Total de formulários no formset: {len(PaymentMethod_Accounts_FormSet)}")
+        print(f"Formulários que foram alterados (has_changed): {[form.has_changed() for form in PaymentMethod_Accounts_FormSet]}")
+        # raw_date_init = post_data.get('date_init')
+        # if raw_date_init:
+        #     # Exemplo: garantir que está no formato YYYY-MM-DD
+        #     treated_date = raw_date_init.strip()  # aqui você pode usar um parser também
+        #     post_data['date_init'] = treated_date
+        
+        if form_Accounts.is_valid():
+            print('oi')
 
         if form_Accounts.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
 
@@ -75,9 +101,12 @@ def Accounts_Create(request):
             # print("Erros no form_Accounts:", form_Accounts.errors)
             # print("Erros no PaymentMethod_Accounts_FormSet:", PaymentMethod_Accounts_FormSet.errors)
             # Aqui, o formset não é válido, vamos imprimir os erros para diagnóstico
+            print(f"Erros no formulario de FormAccounts",form_Accounts.errors)
             for form in PaymentMethod_Accounts_FormSet:
                 print(f"Erros no formulário {form.instance}: {form.errors}")
             print()
+            print("Erros do formset (non_field_errors):", PaymentMethod_Accounts_FormSet.non_form_errors())
+
             # Opcional: Você pode exibir os erros de cada campo individualmente
             for form in PaymentMethod_Accounts_FormSet:
                 for field in form:
@@ -93,14 +122,15 @@ def Accounts_Create(request):
     else: 
         if plannedAccount =='false':
             form_Accounts = AccountsForm()
+            # form_Accounts.fields['installment_Range'].choices = Accounts.INSTALLMENT_RANGE_CHOICES
         else:
             initial_data = {
             'plannedAccount': plannedAccount,
             }
 
-            form_Accounts = AccountsForm(initial=initial_data)
+            form_Accounts = AccountsFormPlannedAccount(initial=initial_data)
        
-            form_Accounts.fields['installment_Range'].choices = Accounts.INSTALLMENT_RANGE_CHOICES_PLANNED_ACCOUNT
+            # form_Accounts.fields['installment_Range'].choices = Accounts.INSTALLMENT_RANGE_CHOICES_PLANNED_ACCOUNT
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
 
     context = {

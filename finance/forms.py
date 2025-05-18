@@ -53,6 +53,7 @@ class BaseAccountsForm(forms.ModelForm):
             }
         )
     )
+
 class AccountsForm(BaseAccountsForm):
     installment_Range = forms.ChoiceField(
         choices=Accounts.INSTALLMENT_RANGE_CHOICES,
@@ -117,7 +118,12 @@ class AccountsForm(BaseAccountsForm):
         self.fields['installment_Range'].required = True 
         self.fields['totalValue'].required = True 
         self.fields['date_init'].required = True
-
+class AccountsFormPlannedAccount(AccountsForm):
+    installment_Range = forms.ChoiceField(
+        choices=Accounts.INSTALLMENT_RANGE_CHOICES_PLANNED_ACCOUNT,
+        widget=forms.Select(attrs={'class': 'form-control row'}),
+        label="Intervalo de Parcelas (Planejado)"
+    )
 class AccountsFormUpdate(BaseAccountsForm):
     
     class Meta(BaseAccountsForm.Meta):

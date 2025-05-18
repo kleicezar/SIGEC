@@ -39,7 +39,6 @@ class Accounts(models.Model):
     numberOfInstallments = models.PositiveIntegerField(verbose_name="Numero de Parcelas")
     installment_Range = models.CharField(
         max_length=20,
-        choices=INSTALLMENT_RANGE_CHOICES,
         verbose_name="Intervalo de Parcelas",
         default='este mês',
         null=True,
