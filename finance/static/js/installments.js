@@ -88,7 +88,7 @@ function generateInstallmentsPlannedAccount(){
         let counter2 = 0;
         for (let index = 0; index < installmentRange.value; index++) { 
             let parcela = document.createElement('tr')                  // linha
-            parcela.id = index + 1
+            parcela.id = `payment-${index + 1}`;
             let row_payment_Method = document.createElement('td')       // coluna
             let row_expirationDate = document.createElement('td')       // coluna
             let row_mounths = document.createElement('td')                 // coluna
@@ -212,7 +212,7 @@ function generateInstallments(){
         for (let index = 0; index < installmentRange.value; index++) { 
             console.log("entrie")     
             let parcela = document.createElement('tr')                  // linha
-            parcela.id = index + 1
+            parcela.id = `payment-${index + 1}`;
             let row_payment_Method = document.createElement('td')       // coluna
             let row_expirationDate = document.createElement('td')       // coluna
             let row_days = document.createElement('td')                 // coluna
@@ -296,7 +296,8 @@ export function valida(){
     }
 export function clean(total_forms){
     for (let index = 0; index < total_forms; index++) {
-        const del = document.getElementById(`${index+1}`)
+        const del = total_forms.querySelector(`[id$="${index + 1}"]`);
+        console.log(del)
         if (del != null) {
             console.log('variavel del igual a: ' + del.id)
             if(del.id >= 1){

@@ -122,7 +122,7 @@ class AccountsFormPlannedAccount(AccountsForm):
     installment_Range = forms.ChoiceField(
         choices=Accounts.INSTALLMENT_RANGE_CHOICES_PLANNED_ACCOUNT,
         widget=forms.Select(attrs={'class': 'form-control row'}),
-        label="Intervalo de Parcelas (Planejado)"
+        label="Intervalo de Parcelas"
     )
 class AccountsFormUpdate(BaseAccountsForm):
     

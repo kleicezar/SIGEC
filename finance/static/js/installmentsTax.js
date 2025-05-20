@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
         for(let index = 0;index < taxInstallmentRange.value;index++){
             let parcela = document.createElement('tr')                  // linha
-            parcela.id = index + 1
+            parcela.id = `taxPayment-${index + 1}`;
             let row_payment_Method = document.createElement('td')       // coluna
             let row_expirationDate = document.createElement('td')       // coluna
             let row_days = document.createElement('td')                 // coluna
