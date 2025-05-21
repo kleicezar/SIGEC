@@ -78,14 +78,17 @@ class CompraForm(forms.ModelForm):
         })
     )
     freight_value = forms.DecimalField(
-        label='Valor do Frete',
-        required=False,
-        widget=forms.NumberInput(
-            attrs={
-                'class': 'form-control mb-3 mt-3 row-5'
-            }
-        )
+    label='Valor do Frete',
+    required=False,
+    widget=forms.NumberInput(
+        attrs={
+            'class': 'form-control w-25 mb-3 mt-3',
+            'placeholder': '0.00',
+            'step': '0.01',  # permite decimais
+            'min':0
+        }
     )
+)
     class Meta:
         model = Compra
         fields = [
@@ -128,9 +131,10 @@ class CompraForm(forms.ModelForm):
                     'readonly': 'readonly'
                 }),
                 'tax_value':forms.NumberInput(attrs={
-                    'class':'form-control mb-3 mt-3 row-5',
-                    'step':1,
-                    'min':0
+                    'class': 'form-control w-25 mb-3 mt-3',
+                    # 'step':1,
+                    'min':0,
+                    'max':100
                 }),
                 'observation_product':forms.Textarea(attrs={
                     'class':'form-control mb-3 mt-3 row'
@@ -145,7 +149,7 @@ class CompraForm(forms.ModelForm):
                     'class':'form-control mb-3 mt-3 row'
                 }),
                 'value_picking_list':forms.NumberInput(attrs={
-                    'class':'form-control mb-3 mt-3 row-5',
+                    'class': 'form-control w-25 mb-3 mt-3',
                     'step':1,
                     'min':0
                 })

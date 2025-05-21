@@ -32,26 +32,32 @@
                         <div class="container">
                             <div class="row justify-content-center">
                                 <div class="col-lg-4 col-md-6 col-sm-8 col-10">
-                                    <div class="card mt-5 text-center">
+                                    <div class="card text-center">
                                         <div class="card-body">
                                             <h5 class="card-title">Forma de Pagamento</h5>
                         
                                             <div class="mt-4">
                                                 <label for="" class="p-2">
-                                                    {{paymentMethod.name_paymentMethod.label}}
+                                                    {{paymentMethod.name_paymentMethod.label_tag}}
                                                 </label>
                                                 <div class="p-2 ">
                                                     {{paymentMethod.name_paymentMethod}}
                                                 </div>
-                                                <div class="form-check form-switch">
-                                                    {{paymentMethod.considerInCash.label}}
-                                                    {{paymentMethod.considerInCash}}
-                                                </div>
+                                                
                                                 
                                             </div>
+                                            <div class="">
+                                                <label for="" class="">
+                                                    {{paymentMethod.considerInCash.label_tag}}
+                                                </label>
+                                                <div class="p-2">
+                                                       {{paymentMethod.considerInCash}}
+                                                </div>
+                                             
+                                            </div>
 
-                                            <div class="mt-4">
-                                                <label for="">{{paymentMethod.creditPermission.label}}</label>
+                                            <div class="">
+                                                <label for="">{{paymentMethod.creditPermission.label_tag}}</label>
                                                 <div class="p-2">
                                                     {{paymentMethod.creditPermission}}
                                                 </div>

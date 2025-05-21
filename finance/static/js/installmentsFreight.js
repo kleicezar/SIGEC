@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
          if (freightClick > 1){
             if (isNaN(freightInstallmentRange) || isNaN(freightDays_installment_Range)  || isNaN(freightStartDate) || isNaN(freightTotalValue)) {
-                clean(FREIGHT_TOTAL_FORMS.value)
+                clean(FREIGHT_TOTAL_FORMS.value,freightformContainer)
             }
         }
 

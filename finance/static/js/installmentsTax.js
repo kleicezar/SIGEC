@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
          if (taxClick > 1){
             if (isNaN(taxInstallmentRange) || isNaN(taxDays_installment_Range)  || isNaN(taxStartDate) || isNaN(taxTotalValue)) {
-                clean(TAX_TOTAL_FORMS.value)
+                clean(TAX_TOTAL_FORMS.value,taxformContainer)
             }
         }
 

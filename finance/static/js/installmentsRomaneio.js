@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
          if (romaneioClick > 1){
             if (isNaN(romaneioInstallmentRange) || isNaN(romaneioDays_installment_Range)  || isNaN(romaneioStartDate) || isNaN(romaneioTotalValue)) {
-                clean(ROMANEIO_TOTAL_FORMS.value)
+                clean(ROMANEIO_TOTAL_FORMS.value,romaneioformContainer)
             }
         }
 

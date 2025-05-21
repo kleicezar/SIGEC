@@ -56,7 +56,7 @@ function generateInstallmentsPlannedAccount(){
         console.log('quantidade de cliques ate agora: ' + click)
         if (click > 1){
             if (isNaN(installmentRange) || isNaN(mounths_installment_Range)  || isNaN(startDate) || isNaN(totalValue)) {
-                clean(TOTAL_FORMS.value)
+                clean(TOTAL_FORMS.value,formContainer)
             }
         }
         
@@ -181,7 +181,7 @@ function generateInstallments(){
         console.log('quantidade de cliques ate agora: ' + click)
         if (click > 1){
             if (isNaN(installmentRange) || isNaN(days_installment_Range)  || isNaN(startDate) || isNaN(totalValue)) {
-                clean(TOTAL_FORMS.value)
+                clean(TOTAL_FORMS.value,formContainer)
             }
         }
         
@@ -294,13 +294,12 @@ export function valida(){
         return;
     }
     }
-export function clean(total_forms){
+export function clean(total_forms,container){
     for (let index = 0; index < total_forms; index++) {
-        const del = total_forms.querySelector(`[id$="${index + 1}"]`);
-        console.log(del)
+        const del = container.querySelector(`[id$="${index + 1}"]`);
         if (del != null) {
             console.log('variavel del igual a: ' + del.id)
-            if(del.id >= 1){
+            if(index + 1 >= 1){
                 del.remove()
             }
         }
