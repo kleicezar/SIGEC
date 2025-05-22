@@ -202,7 +202,7 @@ body {
     background-color: #fff;
     border: 1px solid #ccc;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    width: 180px;
+    width: 300px;
     border-radius: 5px;
     padding: 10px 0;
 }
@@ -213,19 +213,19 @@ body {
     margin: 0;
 }
 
-.user-dropdown-menu ul li {
-    padding: 8px 16px;
-}
-
 .user-dropdown-menu ul li a {
     text-decoration: none;
     color: #333;
     display: block;
+    padding: 8px 16px;
+}
+.user-dropdown-menu ul li a:hover {
+     background-color: #f4f4f4;
+     cursor: pointer;
 }
 
-.user-dropdown-menu ul li:hover {
-    background-color: #f4f4f4;
-}
+
+
 
 /* Adiciona um cursor pointer no menu de usuário */
 .user-image img {
@@ -261,4 +261,38 @@ body {
 
 
 
+.notification-badge{
+    display: none;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: red;
+    color: white;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 16px;
+}
 
+.notifications-container{
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    right: 50px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    top: 60px;
+    height: 150px;
+    max-height: 170px;
+    display: none;
+    overflow-y: auto;
+}
+.notification{
+    padding: 8px 16px;
+}
+.notification:hover{
+    background-color: #f4f4f4;
+}
