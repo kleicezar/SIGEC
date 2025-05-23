@@ -332,7 +332,10 @@
                     {{compra_form.freight_type.label}}
                     {{compra_form.freight_type}}
 
-                    {{compra_form.freight_value.label}}
+                    <div id="labelFreight">
+                        {{compra_form.freight_value.label}}
+                    </div>
+                    
                     {{compra_form.freight_value}}
 
                     {% include 'parcelaFrete.html' %}

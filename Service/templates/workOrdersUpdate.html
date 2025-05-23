@@ -396,6 +396,9 @@
                                     <tbody>
                                         <tr>
                                             <td>
+                                                {{form.technician}}
+                                            </td>
+                                            <td>
                                                 <input type="hidden" name="{{ form.prefix }}-id" value="{{ form.instance.id }}">
                                                 {{form.service.as_hidden}}
                                                 <input type="text" class="row form-control mb-3 mt-3 idSearch" id="idService-0" onkeyup="showSuggetionsServices(this)">
@@ -441,7 +444,10 @@
                                 </thead>
 
                                 <tbody>
-                                    <tr >
+                                    <tr>
+                                        <td>
+                                            {{service_item_formset.empty_form.technician}}
+                                        </td>
                                         <td>
                                             {{ service_item_formset.empty_form.id.as_hidden }}
                                             {{ service_item_formset.empty_form.service.as_hidden }}
