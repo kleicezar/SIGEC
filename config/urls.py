@@ -36,4 +36,7 @@ urlpatterns = [
     path('service/update/<int:pk>/',updateService,name='updateService'),
 
     path('teste_permissao/', teste_permissao, name='teste_permissao'),
+
+    path('editperms/<int:id>/', editperms, name='editperms'),
+    path('permslist/', permitions_list, name='permitions_list'),
     ]

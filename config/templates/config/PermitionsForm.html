@@ -1,0 +1,56 @@
+{% extends 'login/menu.html' %}
+{% load bootstrap4 %}
+{% load static %}
+
+<head>  
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block css %}
+            <link rel="stylesheet" href="{% static 'css/Table.css' %}">
+        {% endblock  %}
+        {% block title %}
+            <title>Editar de Permissões do Usuario {{users.username}}</title>
+        {% endblock %}
+    </head>
+</body>
+    <main>
+        {% bootstrap_messages %}
+            {% block content %}
+            <div class='content'> 
+                <h1>TA FUNFANDO</h1>
+                    {% for form in users %}
+                    <tr>
+                        <td>{{ form }}</td>
+                        {% comment %}
+                        {% for form in users %}
+                            {% for field in form %}
+                                {% if field.label|slice:":6" == "Config" %}
+                                    {{ field }}
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                        <td>{{ form.id }}</td>
+                        <td>{{ form.name }}</td>
+                        <td>{{ form.codename }}</td>
+                        <td>{{ form.content_type }}</td>
+                        <td>
+                            <a href="{% url 'workOrdersUpdate' pk=workOrder.id %}">
+                                <button class="btn" style="background-color: #117027;color: white;">Editar</button>
+                            </a>
+                            <form action="{% url 'workOrdersDelete' pk=workOrder.id %}" method="POST" style="display:inline-block;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
+                            </form>
+                            {% endcomment %}
+                            {% comment %} <button>Deletar</button> {% endcomment %}
+                            {% comment %} <button>Mais</button> {% endcomment %}
+                            
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endblock %}
+    </main>
+<body>

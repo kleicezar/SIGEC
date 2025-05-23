@@ -2,6 +2,7 @@ formas de pagamento
     Descrição
     considerar em caixa (oculto)
     permissao pra usar o limite de credito(oculto)
+    ativo(oculto)
 
 plano de contas
     Descrição
