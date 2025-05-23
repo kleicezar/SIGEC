@@ -1,10 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Obter o valor do campo pamonha
+    // Obter o valor do campo
     var person = document.getElementById('id_pessoa')||document.getElementById('id_fornecedor');
     if (person){
         var inputField = person.closest('td').querySelector('.idSearch');
         const query = person.value;
-        console.log('existe');
         fetch(`/buscar_pessoas/?query=${encodeURIComponent(query)}`)
         .then(response => {
             if (response.ok && response.headers.get('Content-Type').includes('application/json')) {

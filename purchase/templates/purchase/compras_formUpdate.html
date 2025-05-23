@@ -49,7 +49,6 @@
                     </div>
                     <!-- Formulário de Venda -->
                     <h6 class="mt-5 mb-3">Dados da Compra</h6>
-                    <!-- {{ compra_form.as_p }} -->
                     {% if messages %}
                     <div>
                       {% for message in messages %}
@@ -76,7 +75,7 @@
 
                         <tbody>
                             <tr>
-                                <td id="form-client" class="">
+                                <td id="form-client">
                                     {{compra_form.fornecedor.as_hidden}}
                                     <div>
                                         <input type="text" class="row form-control mb-3 mt-3 idSearch" id="idSearch" onkeyup="showSuggetions(this)">
@@ -93,9 +92,7 @@
                                     required readonly>
                                 </td>
                                 <td>{{compra_form.situacao}}</td>
-                                <!-- <td>{{compra_form.is_active}}</td> -->
                             </tr>
-                    
                         </tbody>
                     </table>
                     
