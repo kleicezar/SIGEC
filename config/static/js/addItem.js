@@ -4,7 +4,6 @@ const emptyPaymentMethodTemplate = document.getElementById('empty-payment-method
 
 const itensIndex  = [0];
 
-
 function addItem() {
     const formset = document.getElementById('itens-container');
     const formCountSale = document.getElementById('id_vendaitem_set-TOTAL_FORMS');
@@ -82,15 +81,14 @@ function removeItem(button){
     const itens_container = document.getElementById("itens-container");
     const TOTAL_FORMS = document.getElementById("id_vendaitem_set-TOTAL_FORMS") || document.getElementById("id_compraitem_set-TOTAL_FORMS") || document.getElementById("id_vendaitemservice_set-TOTAL_FORMS") || document.getElementById("id_vendaitemproductservice_set-TOTAL_FORMS");
     let formCount = TOTAL_FORMS.value;
-    // let total_forms =  TOTAL_FORMS.value;
-    let  parent_button_5 =  button.parentElement.parentElement.parentElement.parentElement;
-    let  parent_button_6 =  button.parentElement.parentElement.parentElement.parentElement.parentElement;
+    let  parent_button =  button.parentElement.parentElement.parentElement.parentElement;
+    let  parent_button_2 =  button.parentElement.parentElement.parentElement.parentElement.parentElement;
     let  deleteButton = button.parentElement.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]');
     let itensForms = itens_container;
 
     //SE TIVER SÓ UM ITEM, AO INVÉS DE APAGAR, OS CAMPOS IRÃO SER SOMENTE LIMPOS
     if(deleteButton.id.includes("0") && formCount == 1){
-        let deleteButtons = parent_button_5.querySelectorAll('input[id*="0"]');
+        let deleteButtons = parent_button.querySelectorAll('input[id*="0"]');
         deleteButtons.forEach(deleteButton=>{
             deleteButton.value = "";
         })
@@ -99,9 +97,9 @@ function removeItem(button){
         formCount-=1;
         TOTAL_FORMS.value = formCount;
         updateId(deleteButton,itensForms);
-        parent_button_6.removeChild(parent_button_5);
+        parent_button_2.removeChild(parent_button);
 
-        const next_tr = parent_button_6.parentElement.querySelector("table thead tr");
+        const next_tr = parent_button_2.parentElement.querySelector("table thead tr");
         next_tr.style.display = "table-row";
     }
     else{
@@ -109,7 +107,7 @@ function removeItem(button){
         deleteButton.value = "on";
         formCount-=1;
         TOTAL_FORMS.value = formCount;
-        parent_button_6.removeChild(parent_button_5);
+        parent_button_2.removeChild(parent_button);
     }
 
     const formCountService = document.getElementById("id_vendaitemproductservice_set-TOTAL_FORMS");
@@ -133,7 +131,6 @@ function updateId(deleteButton, itensForms) {
 
     let number = parseInt(match[1]); // Número extraído do ID
     let allInputs = itensForms.querySelectorAll("input,select");
-    let allVs = itensForms.querySelectorAll(".v");
 
     // Atualiza IDs dos inputs
     allInputs.forEach(input => {
@@ -176,9 +173,6 @@ function updateId(deleteButton, itensForms) {
 
 
 function removeItemUpdate(button){
-    // const totalValue = document.getElementById("id_totalValue");
-    // const totalValueInput = document.getElementById("id_total_value");
-    // const totalValueField = document.getElementById("id_total_value_service");
     const itens_container = document.getElementById("itens-container");
     let containerItems = button.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
     const TOTAL_FORMS = containerItems.querySelector("#id_vendaitem_set-TOTAL_FORMS") ||
@@ -188,14 +182,14 @@ function removeItemUpdate(button){
 
     let formCount = TOTAL_FORMS.value;
     let itensForms = itens_container;
-    let parent_button_3 =  button.parentElement.parentElement.parentElement.parentElement;
-    let  parent_button_4 =  button.parentElement.parentElement.parentElement.parentElement.parentElement;
+    let parent_button =  button.parentElement.parentElement.parentElement.parentElement;
+    let parent_button_2 =  button.parentElement.parentElement.parentElement.parentElement.parentElement;
 
     let deleteButton = button.parentElement.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]')
 
     if(deleteButton.id.includes("0") && formCount == 1){
 
-        let deleteButtons = parent_button_4.querySelectorAll('input[id*="0"]');
+        let deleteButtons = parent_button_2.querySelectorAll('input[id*="0"]');
         deleteButtons.forEach(deleteButton=>{
             deleteButton.value = "";
         })
@@ -206,18 +200,20 @@ function removeItemUpdate(button){
         TOTAL_FORMS.value = formCount;
         updateId(deleteButton,itensForms);
 
-        parent_button_4.removeChild(parent_button_3);
-        const next_tr = parent_button_4.parentElement.querySelector(".item-form table thead tr");
+        parent_button_2.removeChild(parent_button);
+        const next_tr = parent_button_2.parentElement.querySelector(".item-form table thead tr");
 
         next_tr.style.display = "table-row";
     }
     else{
+
         updateId(deleteButton,itensForms);
         deleteButton.value="on";
         console.log(formCount)
         formCount-=1;
         TOTAL_FORMS.value = formCount;
-        parent_button_4.removeChild(parent_button_3);
+        parent_button_2.removeChild(parent_button);
+        
     }
     const formCountService = document.getElementById("id_vendaitemproductservice_set-TOTAL_FORMS");
     if (formCountService){
@@ -259,11 +255,11 @@ function addPaymentMethod() {
 }
 
 function removePayment(button){
-    let parent_button_payment_3 = button.parentElement.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]');
-    parent_button_payment_3.value="on";
-    let parent_button_payment_5 = button.parentElement.parentElement.parentElement.parentElement;
-    let parent_button_payment_6 = button.parentElement.parentElement.parentElement.parentElement.parentElement;
-    parent_button_payment_6.removeChild(parent_button_payment_5);
+    let parent_button_payment = button.parentElement.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]');
+    parent_button_payment.value="on";
+    let parent_button_payment_2 = button.parentElement.parentElement.parentElement.parentElement;
+    let parent_button_payment_3 = button.parentElement.parentElement.parentElement.parentElement.parentElement;
+    parent_button_payment_3.removeChild(parent_button_payment_2);
 }
 
 function addItemCompra() {
@@ -323,6 +319,8 @@ function addPaymentMethodCompra() {
     formCountElem.value = parseInt(formCount) + 1;
     container.appendChild(newForm);
 }   
+
+
 
 function atualizarTotalProduto(itemForms){
     let totalSemDesconto = 0;
