@@ -314,6 +314,8 @@
                     {% include 'parcela.html' %}
                     {% include 'parcelaUpdate.html' %}
 
+                    {{compra_form.observation_product.label}}
+                    {{compra_form.observation_product}}
                     <h6 class="mt-5 mb-3">Geração de Parcelas - Imposto </h6>
                     {{compra_form.tax_value.label}}
                     {{compra_form.tax_value}}
@@ -342,6 +344,9 @@
                     <h6 class="mt-5 mb-3">Romaneio</h6>
                     {{compra_form.value_picking_list.label}}
                     {{compra_form.value_picking_list}}
+
+                    {% include 'parcelaRomaneio.html' %}
+                    {% include 'parcelaRomaneioUpdate.html' %}
 
                     {{compra_form.observation_picking_list.label}}
                     {{compra_form.observation_picking_list}}

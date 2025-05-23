@@ -24,8 +24,8 @@ class Product(models.Model):
 
 class Compra(models.Model):
     FREIGHT_CHOICES = [
-        ('fob','fob'),
-        ('cif','cif')
+        ('FOB','FOB'),
+        ('CIF','CIF')
     ]
     data_da_compra = models.DateTimeField(verbose_name='Data da Compra')
     total_value = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Total", blank=True, null=True)
@@ -35,17 +35,18 @@ class Compra(models.Model):
     situacao = models.ForeignKey(Situation, on_delete=models.SET_NULL, null=True, verbose_name="Situação")
     is_active = models.BooleanField(default=True, verbose_name='Está Ativo')  # está ativo
 
+    observation_product =  models.TextField(verbose_name='Observação sobre Produtos',null=True,blank=True)
     # CAMPOS IMPOSTO
-    tax_value = models.IntegerField(verbose_name='Valor do Imposto')
-    observation_tax = models.TextField(verbose_name='Observação sobre Imposto',null=True)
+    tax_value = models.IntegerField(verbose_name='Valor do Imposto(%)')
+    observation_tax = models.TextField(verbose_name='Observação sobre Imposto',null=True,blank=True)
     
     # CAMPOS FRETE
-    freight_type = models.CharField(choices=FREIGHT_CHOICES,max_length=3)
+    freight_type = models.CharField(choices=FREIGHT_CHOICES,max_length=3,verbose_name='Tipo de Frete')
     freight_value = models.IntegerField(verbose_name='Valor do Frete',null=True)
-    observation_freight = models.TextField(verbose_name='Observação sobre Frete',null=True)
+    observation_freight = models.TextField(verbose_name='Observação sobre Frete',null=True,blank=True)
 
     # CAMPOS ROMANEIO
-    observation_picking_list = models.TextField(verbose_name='Observação sobre Romaneio',null=True)
+    observation_picking_list = models.TextField(verbose_name='Observação sobre Romaneio',null=True,blank=True)
     value_picking_list = models.IntegerField(verbose_name='Valor do Romaneio')
 
 

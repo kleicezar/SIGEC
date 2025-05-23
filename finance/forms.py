@@ -53,12 +53,14 @@ class BaseAccountsForm(forms.ModelForm):
             }
         )
     )
+
 class AccountsForm(BaseAccountsForm):
     installment_Range = forms.ChoiceField(
         choices=Accounts.INSTALLMENT_RANGE_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control row'}),
         label="Intervalo de Parcelas"
     )
+
 
     class Meta(BaseAccountsForm.Meta):
         fields = [
@@ -72,6 +74,7 @@ class AccountsForm(BaseAccountsForm):
             'installment_Range',
             'totalValue',
             'date_init',
+            'plannedAccount'
         ]
         labels = {
             'chartOfAccounts':'Plano de Contas'
@@ -105,6 +108,8 @@ class AccountsForm(BaseAccountsForm):
             'date_init': forms.TextInput(attrs={
                 'class': 'form-control row mask-date'
             }),
+            'plannedAccounts':forms.CheckboxInput(attrs={'class':"form-check-input"})
+            
         }
 
     def __init__(self, *args, **kwargs):
@@ -113,7 +118,12 @@ class AccountsForm(BaseAccountsForm):
         self.fields['installment_Range'].required = True 
         self.fields['totalValue'].required = True 
         self.fields['date_init'].required = True
-
+class AccountsFormPlannedAccount(AccountsForm):
+    installment_Range = forms.ChoiceField(
+        choices=Accounts.INSTALLMENT_RANGE_CHOICES_PLANNED_ACCOUNT,
+        widget=forms.Select(attrs={'class': 'form-control row'}),
+        label="Intervalo de Parcelas"
+    )
 class AccountsFormUpdate(BaseAccountsForm):
     
     class Meta(BaseAccountsForm.Meta):
@@ -249,6 +259,35 @@ class TaxPaymentMethodAccountsForm(forms.ModelForm):
 class FreightPaymentMethod_AccountsForm(forms.ModelForm):
     class Meta:
         model = Freight_PaymentMethod_Accounts
+        fields = [
+            'forma_pagamento',  
+            'expirationDate', 
+            'days', 
+            'value', 
+            'acc',
+            'activeCredit'
+        ]
+        widgets = { 
+            'forma_pagamento': forms.Select(attrs={ 
+                'class': 'form-select row'
+            }),
+            'expirationDate': forms.DateInput(format='%d/%m/%Y', attrs={
+                'class': 'form-control row mask-date', 
+            }),
+            'days': forms.NumberInput(attrs={
+                'class': 'form-control row',
+                'min': 0
+            }),
+            'value': forms.NumberInput(attrs={
+                'class': 'form-control row',
+                'min': 0
+            }),
+            'acc':forms.HiddenInput()
+        }
+
+class RomaneioPaymentMethod_AccountsForm(forms.ModelForm):
+    class Meta:
+        model = Romaneio_PaymentMethod_Accounts
         fields = [
             'forma_pagamento',  
             'expirationDate', 

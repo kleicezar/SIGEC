@@ -177,7 +177,7 @@
                                             {{compra_item_formset.empty_form.status}}
                                         </td>
                                         <td>
-                                            <button  type="button" class="btn btn-danger delete" onclick="removePayment(this)">Deletar</button>
+                                            <button  type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removeItem(this)">Deletar</button>
                                             {{compra_item_formset.empty_form.DELETE.as_hidden}}</td>
                                     </tr>
                                 </tbody>
@@ -222,6 +222,9 @@
 
                    
                     {% include 'parcela.html' %}
+
+                    {{compra_form.observation_product.label}}
+                    {{compra_form.observation_product}}
                 
                     <h6 class="mt-5 mb-3">Geração de Parcelas - Imposto </h6>
                     {{compra_form.tax_value.label}}
@@ -235,8 +238,11 @@
                     <h6 class="mt-5 mb-3">Frete</h6>
                     {{compra_form.freight_type.label}}
                     {{compra_form.freight_type}}
-
-                    {{compra_form.freight_value.label}}
+                    
+                    <div id="labelFreight">
+                        {{compra_form.freight_value.label}}
+                    </div>
+                    
                     {{compra_form.freight_value}}
 
                     {% include 'parcelaFrete.html' %}
@@ -247,6 +253,8 @@
                     <h6 class="mt-5 mb-3">Romaneio</h6>
                     {{compra_form.value_picking_list.label}}
                     {{compra_form.value_picking_list}}
+
+                    {% include 'parcelaRomaneio.html' %}
 
                     {{compra_form.observation_picking_list.label}}
                     {{compra_form.observation_picking_list}}

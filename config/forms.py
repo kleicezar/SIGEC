@@ -30,7 +30,17 @@ class ChartOfAccountsModelForm(forms.ModelForm):
         widgets = {
             'name_ChartOfAccounts' : forms.TextInput(
                 attrs = {
-                    'class':'form-control row'
+                    'class':'form-control'
+                }
+            ),
+            'father':forms.Select(
+                attrs={
+                    'class':'form-select ' 
+                }
+            ),
+            'natureOfTheAccount':forms.Select(
+                attrs={
+                    'class':'form-select ' 
                 }
             ),
             # 'natureOfTheAccount' : forms.ChoiceField(choices=NatureOfTheAccount, label='Natureza da Conta')
@@ -48,6 +58,9 @@ class PaymentMethodModelForm(forms.ModelForm):
         fields = ['name_paymentMethod','creditPermission', 'considerInCash']
         widgets = {
             'considerInCash' : forms.CheckboxInput(attrs={
+                'class':'form-check-input'
+                }),
+            'creditPermission':forms.CheckboxInput(attrs={
                 'class':'form-check-input'
                 })
         } 
@@ -74,7 +87,8 @@ class ServiceModelForm(forms.ModelForm):
                 'class':'form-control row'
             }),
             'value_Service':forms.NumberInput(attrs={
-                'class':'form-control row'
+                'class':'form-control row',
+                'min':0.01
             })
         }   
         # self.fields['name_position'].widget.attrs.update({'class': 'label-text'})

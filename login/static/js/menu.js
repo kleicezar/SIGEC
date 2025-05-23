@@ -8,8 +8,8 @@ toggleButton.addEventListener('click', () => {
     sidebar.classList.toggle('hidden');
     content.classList.toggle('expanded'); // Alterna a classe no conteúdo
 });
-
-
+ const notificationContainer = document.getElementById("notificationContainer");
+const buttonNotification = document.getElementById("buttonNotification");
 // Seleciona o botão e o menu
 const userMenuButton = document.getElementById('user-menu-button');
 const userDropdownMenu = document.getElementById('user-dropdown-menu');
@@ -22,6 +22,7 @@ userMenuButton.addEventListener('click', function(event) {
     // Alterna a visibilidade do menu
     const isMenuVisible = userDropdownMenu.style.display === 'block';
     userDropdownMenu.style.display = isMenuVisible ? 'none' : 'block';
+    notificationContainer.style.display = "none";
 });
 
 // Fecha o menu se o usuário clicar fora dele
@@ -29,11 +30,15 @@ window.addEventListener('click', function(event) {
     if (!userDropdownMenu.contains(event.target) && event.target !== userMenuButton) {
         userDropdownMenu.style.display = 'none';
     }
+    if(!notificationContainer.contains(event.target) && event.target !== buttonNotification){
+        notificationContainer.style.display = "none";
+    }
+    
 });
 
 document.addEventListener("DOMContentLoaded", function () {
     const toggles = document.querySelectorAll(".toggle");
-
+    let notificationExists = false;
     toggles.forEach((toggle, index) => {
         const submenu = toggle.nextElementSibling; // Pegamos o submenu associado
 
@@ -64,4 +69,38 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
+
+    fetch(`/notifications/`) .then(response => {
+        if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
+            return response.json();
+        } else {
+            throw new Error('Response is not JSON');
+        }
+    })
+    .then(data=>{
+        const notificationBadge = document.getElementById("notification-badge");
+        const notificationContainer = document.getElementById("notificationContainer");
+        if(data.notifications.length >= 1){
+            notificationBadge.style.display = "block";
+            notificationExists = true;
+        }
+        data.notifications.forEach(notification=>{
+            console.log("entro")
+            const newNotification = document.createElement("div");
+            newNotification.innerHTML = `${notification.date}: Pagamento ID ${notification.idPayment} precisa ser pago em ${notification.remainsDays} dias`
+            newNotification.classList.add("notification");
+            notificationContainer.appendChild(newNotification);
+        })
+    })
+
+    const buttonNotification = document.getElementById("buttonNotification");
+    buttonNotification.addEventListener("click",(event)=>{
+        event.stopPropagation();
+
+        const isMenuVisible = notificationContainer.style.display === "block";
+
+        notificationContainer.style.display = isMenuVisible ? 'none' : 'block';
+        userDropdownMenu.style.display = 'none';
+    })
+    
 });

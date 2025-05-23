@@ -65,17 +65,30 @@ class ProductModelForm(forms.ModelForm):
 
 class CompraForm(forms.ModelForm):
     FREIGHT_CHOICES = [
-        ('fob','fob'),
-        ('cif','cif')
+        ('FOB','FOB'),
+        ('CIF','CIF')
     ]
     
     freight_type = forms.ChoiceField(
+        label='Tipo de Frete',
         choices=FREIGHT_CHOICES,
-        initial='fob',
+        initial='FOB',
         widget=forms.Select(attrs={
             'class': 'form-select mb-3 mt-3'
         })
     )
+    freight_value = forms.DecimalField(
+    label='Valor do Frete',
+    required=False,
+    widget=forms.NumberInput(
+        attrs={
+            'class': 'form-control w-25 mb-3 mt-3',
+            'placeholder': '0.00',
+            'step': '0.01',  # permite decimais
+            'min':0
+        }
+    )
+)
     class Meta:
         model = Compra
         fields = [
@@ -85,6 +98,7 @@ class CompraForm(forms.ModelForm):
             'total_value',
             'product_total',
             'discount_total',
+            'observation_product',
             'tax_value',
             'observation_tax',
             'freight_type',
@@ -117,15 +131,16 @@ class CompraForm(forms.ModelForm):
                     'readonly': 'readonly'
                 }),
                 'tax_value':forms.NumberInput(attrs={
-                    'class':'form-control mb-3 mt-3 row-5',
-                    'step':1,
-                    'min':0
+                    'class': 'form-control w-25 mb-3 mt-3',
+                    # 'step':1,
+                    'min':0,
+                    'max':100
+                }),
+                'observation_product':forms.Textarea(attrs={
+                    'class':'form-control mb-3 mt-3 row'
                 }),
                 'observation_tax':forms.Textarea(attrs={
                     'class':'form-control mb-3 mt-3 row'
-                }),
-                'freight_value':forms.NumberInput(attrs={
-                    'class':'form-control mb-3 mt-3 row-5'
                 }),
                 'observation_freight':forms.Textarea(attrs={
                     'class':'form-control mb-3 mt-3 row'
@@ -134,7 +149,7 @@ class CompraForm(forms.ModelForm):
                     'class':'form-control mb-3 mt-3 row'
                 }),
                 'value_picking_list':forms.NumberInput(attrs={
-                    'class':'form-control mb-3 mt-3 row-5',
+                    'class': 'form-control w-25 mb-3 mt-3',
                     'step':1,
                     'min':0
                 })
@@ -145,7 +160,7 @@ class CompraForm(forms.ModelForm):
         if self.instance and self.instance.pk:
             self.fields['data_da_compra'].initial = self.instance.data_da_compra
             self.fields['data_da_compra'].widget.attrs['readonly'] = True
-
+            self.fields['freight_value'].required = False
 class CompraItemForm(forms.ModelForm):
     STATUS_CHOICES = [
         ('Pendente', 'Pendente'),

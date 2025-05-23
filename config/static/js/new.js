@@ -14,9 +14,9 @@ function showSuggetions(input){
                 }
             })
             .then(data => {
+                suggetionsBox.innerHTML = "";
                 data.clientes.forEach(cliente => {
                     let newSuggest = document.createElement("div");
-                    suggetionsBox.innerHTML = ""
                     newSuggest.innerHTML = `${cliente.id} - ${cliente.name}`
                     suggetionsBox.appendChild(newSuggest);
                     newSuggest.onclick = function(){
@@ -52,8 +52,8 @@ function showSuggetionsProducts(input){
                 }
             })
             .then(data => {
+                suggetionsBox.innerHTML = "";
                 data.produtos.forEach(produto => {
-                    suggetionsBox.innerHTML = ""
                     let newSuggest = document.createElement("div");
                     newSuggest.innerHTML = `${produto.product_code} - ${produto.description}`;
                     suggetionsBox.appendChild(newSuggest);
@@ -92,10 +92,8 @@ function showSuggetionsServices(input){
                 }
             })
             .then(data => {
-                data.servicos.forEach(servico => {
-                    console.log("--------")
-                    console.log(servico);
-                    suggetionsBox.innerHTML = "";
+                suggetionsBox.innerHTML = "";
+                data.servicos.forEach(servico => {           
                     let newSuggest = document.createElement("div");
                     newSuggest.innerHTML = `${servico.id} - ${servico.name_Service}`
                     suggetionsBox.appendChild(newSuggest);
