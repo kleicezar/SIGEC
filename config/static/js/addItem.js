@@ -18,9 +18,6 @@ function addItem() {
 
         itens.appendChild(newForm);
     }
-    
-    // Cria ids para identificação da area em que sera requisitado os produtos pelo filtro do campo product
-   
 }
 
 function addItemService(){
@@ -59,14 +56,12 @@ function clone(formCountElem,template){
 function removeItem(button){
     const itens_container = button.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
     
-    const TOTAL_FORMS = document.getElementById("id_vendaitem_set-TOTAL_FORMS") || document.getElementById("id_compraitem_set-TOTAL_FORMS") || document.getElementById("id_vendaitemservice_set-TOTAL_FORMS") || document.getElementById("id_vendaitemproductservice_set-TOTAL_FORMS");
+    const TOTAL_FORMS = itens_container.querySelector('input[type="hidden"][name$="-TOTAL_FORMS"]')
     const itens = itens_container.querySelector(".itens");
     const row_item = button.parentElement.parentElement;
     let formCount = TOTAL_FORMS.value;
 
     let  deleteButton = button.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]');
-    let itensForms = itens_container;
-
     //SE TIVER SÓ UM ITEM, AO INVÉS DE APAGAR, OS CAMPOS IRÃO SER SOMENTE LIMPOS
     if(deleteButton.id.includes("0") && formCount == 1){
         let deleteButtons = row_item.querySelectorAll('input[id*="0"]');
@@ -88,10 +83,9 @@ function removeItem(button){
         itens.removeChild(row_item);
     }
 
-    const formCountService = document.getElementById("id_vendaitemproductservice_set-TOTAL_FORMS");
-    if (formCountService){
+    if (TOTAL_FORMS.id == "id_vendaitemservice_set-TOTAL_FORMS"){
          const itemsContainerService = document.getElementById("itens-container-service");
-         const itemForms = itemsContainerService.querySelectorAll(".item-form");  
+         const itemForms = itemsContainerService.querySelectorAll("table tbody tr");  
          atualizarTotal(itemForms);
     }
     const itemForms = itens_container.querySelectorAll("table tbody tr")
@@ -143,61 +137,6 @@ function updateId(deleteButton, itensForms) {
     });
 }
 
-
-
-// function removeItemUpdate(button){
-//     const itens_container = document.getElementById("itens-container");
-//     let containerItems = button.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
-//     const TOTAL_FORMS = containerItems.querySelector("#id_vendaitem_set-TOTAL_FORMS") ||
-//                     containerItems.querySelector("#id_compraitem_set-TOTAL_FORMS") ||
-//                     containerItems.querySelector("#id_vendaitemservice_set-TOTAL_FORMS") ||
-//                     containerItems.querySelector("#id_vendaitemproductservice_set-TOTAL_FORMS");
-
-//     let formCount = TOTAL_FORMS.value;
-//     let itensForms = itens_container;
-//     let parent_button =  button.parentElement.parentElement.parentElement.parentElement;
-//     let parent_button_2 =  button.parentElement.parentElement.parentElement.parentElement.parentElement;
-
-//     let deleteButton = button.parentElement.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]')
-
-//     if(deleteButton.id.includes("0") && formCount == 1){
-
-//         let deleteButtons = parent_button_2.querySelectorAll('input[id*="0"]');
-//         deleteButtons.forEach(deleteButton=>{
-//             deleteButton.value = "";
-//         })
-
-//     }
-//     else if(deleteButton.id.includes("0")){
-//         formCount-=1;
-//         TOTAL_FORMS.value = formCount;
-//         updateId(deleteButton,itensForms);
-
-//         parent_button_2.removeChild(parent_button);
-//         const next_tr = parent_button_2.parentElement.querySelector(".item-form table thead tr");
-
-//         next_tr.style.display = "table-row";
-//     }
-//     else{
-
-//         updateId(deleteButton,itensForms);
-//         deleteButton.value="on";
-//         console.log(formCount)
-//         formCount-=1;
-//         TOTAL_FORMS.value = formCount;
-//         parent_button_2.removeChild(parent_button);
-        
-//     }
-//     const formCountService = document.getElementById("id_vendaitemproductservice_set-TOTAL_FORMS");
-//     if (formCountService){
-//          const itemsContainerService = document.getElementById("itens-container-service");
-//          const itemForms = itemsContainerService.querySelectorAll(".item-form");  
-//          atualizarTotal(itemForms);
-//     }
-//     const itemForms = itens_container.querySelectorAll(".item-form");
-//     atualizarTotalProduto(itemForms);
-   
-// }
 
 function addPaymentMethod() {
     const container = document.getElementById('payment-method-container');
@@ -388,3 +327,57 @@ function atualizarTotal(itemForms) {
 
     totalValue.value = Number(totalValueField.value) + Number(totalValueInput.value);
 }
+
+// function removeItemUpdate(button){
+//     const itens_container = document.getElementById("itens-container");
+//     let containerItems = button.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
+//     const TOTAL_FORMS = containerItems.querySelector("#id_vendaitem_set-TOTAL_FORMS") ||
+//                     containerItems.querySelector("#id_compraitem_set-TOTAL_FORMS") ||
+//                     containerItems.querySelector("#id_vendaitemservice_set-TOTAL_FORMS") ||
+//                     containerItems.querySelector("#id_vendaitemproductservice_set-TOTAL_FORMS");
+
+//     let formCount = TOTAL_FORMS.value;
+//     let itensForms = itens_container;
+//     let parent_button =  button.parentElement.parentElement.parentElement.parentElement;
+//     let parent_button_2 =  button.parentElement.parentElement.parentElement.parentElement.parentElement;
+
+//     let deleteButton = button.parentElement.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]')
+
+//     if(deleteButton.id.includes("0") && formCount == 1){
+
+//         let deleteButtons = parent_button_2.querySelectorAll('input[id*="0"]');
+//         deleteButtons.forEach(deleteButton=>{
+//             deleteButton.value = "";
+//         })
+
+//     }
+//     else if(deleteButton.id.includes("0")){
+//         formCount-=1;
+//         TOTAL_FORMS.value = formCount;
+//         updateId(deleteButton,itensForms);
+
+//         parent_button_2.removeChild(parent_button);
+//         const next_tr = parent_button_2.parentElement.querySelector(".item-form table thead tr");
+
+//         next_tr.style.display = "table-row";
+//     }
+//     else{
+
+//         updateId(deleteButton,itensForms);
+//         deleteButton.value="on";
+//         console.log(formCount)
+//         formCount-=1;
+//         TOTAL_FORMS.value = formCount;
+//         parent_button_2.removeChild(parent_button);
+        
+//     }
+//     const formCountService = document.getElementById("id_vendaitemproductservice_set-TOTAL_FORMS");
+//     if (formCountService){
+//          const itemsContainerService = document.getElementById("itens-container-service");
+//          const itemForms = itemsContainerService.querySelectorAll(".item-form");  
+//          atualizarTotal(itemForms);
+//     }
+//     const itemForms = itens_container.querySelectorAll(".item-form");
+//     atualizarTotalProduto(itemForms);
+   
+// }
