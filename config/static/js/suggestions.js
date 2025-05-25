@@ -1,31 +1,59 @@
 function showSuggetions(input){
     let container_td = input.closest('td');
     let suggetionsBox = container_td.querySelector('.suggetions');
-    let id_person = container_td.querySelector('[name="pessoa"]')|| container_td.querySelector('[name="fornecedor"]');
+    let id_client = container_td.querySelector('[name="pessoa"]')
+    id_supplier = container_td.querySelector('[name="fornecedor"]');
     suggetionsBox.style.display= "block";
     if(input.value.length >=1 && input.value.trim() !==""){
         const query = input.value;
-        fetch(`/buscar_pessoas/?query=${encodeURIComponent(query)}`)
-            .then(response => {
-                if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
-                    return response.json();
-                } else {
-                    throw new Error('Response is not JSON');
-                }
-            })
-            .then(data => {
-                suggetionsBox.innerHTML = "";
-                data.clientes.forEach(cliente => {
-                    let newSuggest = document.createElement("div");
-                    newSuggest.innerHTML = `${cliente.id} - ${cliente.name}`
-                    suggetionsBox.appendChild(newSuggest);
-                    newSuggest.onclick = function(){
-                        id_person.value = cliente.id;
-                        input.value = `${cliente.id} - ${cliente.name}`
-                        suggetionsBox.style.display = "none";
+        if (id_client){
+            fetch(`/buscar_pessoas/?query=${encodeURIComponent(query)}`)
+                .then(response => {
+                    if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
+                        return response.json();
+                    } else {
+                        throw new Error('Response is not JSON');
                     }
+                })
+                .then(data => {
+                    suggetionsBox.innerHTML = "";
+                    data.clientes.forEach(cliente => {
+                        let newSuggest = document.createElement("div");
+                        newSuggest.innerHTML = `${cliente.id} - ${cliente.name}`
+                        suggetionsBox.appendChild(newSuggest);
+                        newSuggest.onclick = function(){
+                            id_client.value = cliente.id;
+                            input.value = `${cliente.id} - ${cliente.name}`
+                            suggetionsBox.style.display = "none";
+                        }
+                    });
                 });
-            });
+            
+        }
+        else{
+            fetch(`/buscar_fornecedores/?query=${encodeURIComponent(query)}`)
+                .then(response => {
+                    if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
+                        return response.json();
+                    } else {
+                        throw new Error('Response is not JSON');
+                    }
+                })
+                .then(data => {
+                    suggetionsBox.innerHTML = "";
+                    data.fornecedores.forEach(fornecedor => {
+                        let newSuggest = document.createElement("div");
+                        newSuggest.innerHTML = `${fornecedor.id} - ${fornecedor.name}`
+                        suggetionsBox.appendChild(newSuggest);
+                        newSuggest.onclick = function(){
+                            id_supplier.value = fornecedor.id;
+                            input.value = `${fornecedor.id} - ${fornecedor.name}`
+                            suggetionsBox.style.display = "none";
+                        }
+                    });
+                });
+        }
+       
     }
     else{
         suggetionsBox.style.display = "none";
@@ -122,8 +150,9 @@ const itemsContainerService = document.getElementById("itens-container-service")
 
 function calcularPreco(input) {
     let row = input.closest("tr"); 
-    const itemForms = itemsContainerService.querySelectorAll(".item-form");
-
+    const itemForms = itemsContainerService.querySelectorAll("table .itens tr");
+    console.log('novo')
+    console.log(itemForms)
     let desconto = row.cells[2].querySelector("input").value || 0;
 
     let precoFinal = preco_data - (preco_data*(desconto/100))
@@ -155,6 +184,7 @@ function atualizarTotal(itemForms) {
     let totalComDesconto = 0;
     let totalServicos = 0;
     totalValueField.value = 0;
+    console.log('entrei aqui senhor')
     itemForms.forEach(itemForm=>{
         if(window.getComputedStyle(itemForm).display != 'none'){
             const inputs = itemForm.querySelectorAll("input");
@@ -200,8 +230,9 @@ const totalDiscountInput = document.getElementById("id_discount_total");
 const itemsContainer = document.getElementById("itens-container");
 
 function calcularPrecoProduto(input){
+
     let row = input.closest("tr");
-    const itemForms = itemsContainer.querySelectorAll(".item-form");
+    const itemForms = itemsContainer.querySelectorAll("table .itens tr");
 
     let quantidade = row.cells[1].querySelector("input").value || 0;
     let preco = row.cells[2].querySelector("input").value || 0;

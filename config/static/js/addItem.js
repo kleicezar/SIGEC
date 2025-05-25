@@ -6,56 +6,35 @@ const itensIndex  = [0];
 
 function addItem() {
     const formset = document.getElementById('itens-container');
-    const formCountSale = document.getElementById('id_vendaitem_set-TOTAL_FORMS');
-    const formCountService = document.getElementById("id_vendaitemproductservice_set-TOTAL_FORMS");
-
-    if(formCountService){
-        const [formCount,newForm] = clone(formCountService,emptyFormTemplate);
-        formCountService.value = parseInt(formCount) + 1;
-
-        const statusNewForm = newForm.querySelector("select");
-        statusNewForm.value = 'Pendente';
-
-        formset.appendChild(newForm);
-        
-    }
-    const formCountCompra = document.getElementById("id_compraitem_set-TOTAL_FORMS");
-    if(formCountSale){
-        const [formCount,newForm] = clone(formCountSale,emptyFormTemplate);
-        formCountSale.value = parseInt(formCount) + 1;
+    const formCountProduts = document.getElementById("id_compraitem_set-TOTAL_FORMS") || document.getElementById('id_vendaitem_set-TOTAL_FORMS');
+    if(formCountProduts){
+        const itens = formset.querySelector(".itens");
+        const [formCount,newForm] = clone(formCountProduts,emptyFormTemplate);
+        formCountProduts.value = parseInt(formCount) + 1;
 
         const statusNewForm = newForm.querySelector("select");
         statusNewForm.value = "Pendente";
 
 
-        formset.appendChild(newForm);
+        itens.appendChild(newForm);
     }
-    if(formCountCompra){
-        console.log(formCountCompra)
-        const [formCount,newForm] = clone(formCountCompra,emptyFormTemplate);
-        formCountCompra.value = parseInt(formCount) + 1 ;
-        console.log(formCountCompra.value)
-        input_product = newForm.querySelector(".inputProduct");
-
-        const statusNewForm = newForm.querySelector("select");
-        statusNewForm.value = "Pendente";
-       
-        formset.appendChild(newForm)
-        
-    }
+    
     // Cria ids para identificação da area em que sera requisitado os produtos pelo filtro do campo product
    
 }
 
 function addItemService(){
-    const formset = document.getElementById('itens-container-service');
+    const formsetService = document.getElementById('itens-container-service');
+   
     const formCountService = document.getElementById("id_vendaitemservice_set-TOTAL_FORMS");
 
     if(formCountService){
+        const itensService = formsetService.querySelector('.itens');
         const [formCount,newForm] = clone(formCountService,emptyServiceTemplate);
         formCountService.value = parseInt(formCount) + 1;
+
+        itensService.appendChild(newForm);
         
-        formset.appendChild(newForm);
     }
 }
 
@@ -78,17 +57,19 @@ function clone(formCountElem,template){
 
 
 function removeItem(button){
-    const itens_container = document.getElementById("itens-container");
+    const itens_container = button.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
+    
     const TOTAL_FORMS = document.getElementById("id_vendaitem_set-TOTAL_FORMS") || document.getElementById("id_compraitem_set-TOTAL_FORMS") || document.getElementById("id_vendaitemservice_set-TOTAL_FORMS") || document.getElementById("id_vendaitemproductservice_set-TOTAL_FORMS");
+    const itens = itens_container.querySelector(".itens");
+    const row_item = button.parentElement.parentElement;
     let formCount = TOTAL_FORMS.value;
-    let  parent_button =  button.parentElement.parentElement.parentElement.parentElement;
-    let  parent_button_2 =  button.parentElement.parentElement.parentElement.parentElement.parentElement;
-    let  deleteButton = button.parentElement.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]');
+
+    let  deleteButton = button.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]');
     let itensForms = itens_container;
 
     //SE TIVER SÓ UM ITEM, AO INVÉS DE APAGAR, OS CAMPOS IRÃO SER SOMENTE LIMPOS
     if(deleteButton.id.includes("0") && formCount == 1){
-        let deleteButtons = parent_button.querySelectorAll('input[id*="0"]');
+        let deleteButtons = row_item.querySelectorAll('input[id*="0"]');
         deleteButtons.forEach(deleteButton=>{
             deleteButton.value = "";
         })
@@ -96,18 +77,15 @@ function removeItem(button){
     else if(deleteButton.id.includes("0")){
         formCount-=1;
         TOTAL_FORMS.value = formCount;
-        updateId(deleteButton,itensForms);
-        parent_button_2.removeChild(parent_button);
-
-        const next_tr = parent_button_2.parentElement.querySelector("table thead tr");
-        next_tr.style.display = "table-row";
+        updateId(deleteButton,itens);
+        itens.removeChild(row_item);
     }
     else{
-        updateId(deleteButton,itensForms);
+        updateId(deleteButton,itens);
         deleteButton.value = "on";
         formCount-=1;
         TOTAL_FORMS.value = formCount;
-        parent_button_2.removeChild(parent_button);
+        itens.removeChild(row_item);
     }
 
     const formCountService = document.getElementById("id_vendaitemproductservice_set-TOTAL_FORMS");
@@ -116,115 +94,110 @@ function removeItem(button){
          const itemForms = itemsContainerService.querySelectorAll(".item-form");  
          atualizarTotal(itemForms);
     }
-    // else{
-    //     const itemForms = itens_container.querySelectorAll(".item-form");
-    //     atualizarTotal(itemForms);
-    // }
-    const itemForms = itens_container.querySelectorAll(".item-form");
+    const itemForms = itens_container.querySelectorAll("table tbody tr")
     atualizarTotalProduto(itemForms);
 }
+
 function updateId(deleteButton, itensForms) {
-    let regex = /(\d+)/; // Captura qualquer número dentro do ID
-    let match = deleteButton.id.match(regex);
-    let matchName = deleteButton.name.match(regex)
-    if (!match) return; // Se não encontrar número no ID do botão, sai da função
+    const regex = /(\d+)/;
+    const match = deleteButton.id.match(regex);
+    if (!match) return;
 
-    let number = parseInt(match[1]); // Número extraído do ID
-    let allInputs = itensForms.querySelectorAll("input,select");
+    const deletedIndex = parseInt(match[1]);
+    const allInputs = itensForms.querySelectorAll("input, select");
 
-    // Atualiza IDs dos inputs
-    allInputs.forEach(input => {
-        if (input.id.endsWith("-id")){
-            if (input.value == ""){
-                input.value = -1;
+    allInputs.forEach((input) => {
+        const inputMatch = input.id.match(/\d+/);
+        if (!inputMatch) return;
+
+        const inputIndex = parseInt(inputMatch[0]);
+
+        // Só atualiza se o índice do input for maior que o deletado
+        if (inputIndex > deletedIndex) {
+            const oldId = input.id;
+            const oldName = input.name;
+            console.log('novo nome')
+            console.log(oldName)
+            const newIndex = inputIndex - 1;
+
+            const newId = oldId.replace(inputMatch[0], newIndex);
+            const newName = oldName.replace(inputMatch[0], newIndex);
+
+            // Atualiza o ID e name
+            input.id = newId;
+            input.name = newName;
+
+            // Se for campo "-id", tenta recuperar o valor anterior
+            if (oldName.endsWith("-id")) {
+                const oldInput = document.querySelector(`input[name="${newName}"]`);
+                if (oldInput) {
+                    input.value = oldInput.value;
+                } else if (input.value === "") {
+                    input.value = -1;
+                }
             }
+        } else if (input.id.endsWith("-id") && input.value === "") {
+            // Se for o campo "-id" do último (ainda não reindexado) e estiver vazio
+            input.value = -1;
         }
-            let inputMatch = input.id.match(/\d+/); // Captura número do input
-            if (!inputMatch) return; // Evita erro se o ID não tiver número
-
-            let inputNumber = parseInt(inputMatch[0]); // Converte para número
-            // ASSIM, OS IDS SAO TROCADOS SÓ SE FOREM MAIORES QUE O DELETADO;
-            if (inputNumber - 1 >= number) {
-        
-                inputNumber = inputNumber - 1;
-                let onInput  = input.value;
-
-                let novoName = input.name.replace(inputMatch[0],inputNumber);
-                let novoId = input.id.replace(inputMatch[0], inputNumber);
-                
-                if (input.name.endsWith("-id")){
-                    oldInputValue = document.querySelector(`input[name="${novoName}"]`).value;
-                    input.value = oldInputValue;
-                    input.id = novoId; // Atribui novo ID     
-                    input.name = novoName
-                   
-                }
-                else{
-                    input.value = onInput;
-                    input.id = novoId; // Atribui novo ID     
-                    input.name = novoName
-                }
-                
-            }
-        
     });
-
 }
 
 
-function removeItemUpdate(button){
-    const itens_container = document.getElementById("itens-container");
-    let containerItems = button.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
-    const TOTAL_FORMS = containerItems.querySelector("#id_vendaitem_set-TOTAL_FORMS") ||
-                    containerItems.querySelector("#id_compraitem_set-TOTAL_FORMS") ||
-                    containerItems.querySelector("#id_vendaitemservice_set-TOTAL_FORMS") ||
-                    containerItems.querySelector("#id_vendaitemproductservice_set-TOTAL_FORMS");
 
-    let formCount = TOTAL_FORMS.value;
-    let itensForms = itens_container;
-    let parent_button =  button.parentElement.parentElement.parentElement.parentElement;
-    let parent_button_2 =  button.parentElement.parentElement.parentElement.parentElement.parentElement;
+// function removeItemUpdate(button){
+//     const itens_container = document.getElementById("itens-container");
+//     let containerItems = button.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
+//     const TOTAL_FORMS = containerItems.querySelector("#id_vendaitem_set-TOTAL_FORMS") ||
+//                     containerItems.querySelector("#id_compraitem_set-TOTAL_FORMS") ||
+//                     containerItems.querySelector("#id_vendaitemservice_set-TOTAL_FORMS") ||
+//                     containerItems.querySelector("#id_vendaitemproductservice_set-TOTAL_FORMS");
 
-    let deleteButton = button.parentElement.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]')
+//     let formCount = TOTAL_FORMS.value;
+//     let itensForms = itens_container;
+//     let parent_button =  button.parentElement.parentElement.parentElement.parentElement;
+//     let parent_button_2 =  button.parentElement.parentElement.parentElement.parentElement.parentElement;
 
-    if(deleteButton.id.includes("0") && formCount == 1){
+//     let deleteButton = button.parentElement.parentElement.querySelector('input[type="hidden"][name$="-DELETE"]')
 
-        let deleteButtons = parent_button_2.querySelectorAll('input[id*="0"]');
-        deleteButtons.forEach(deleteButton=>{
-            deleteButton.value = "";
-        })
+//     if(deleteButton.id.includes("0") && formCount == 1){
 
-    }
-    else if(deleteButton.id.includes("0")){
-        formCount-=1;
-        TOTAL_FORMS.value = formCount;
-        updateId(deleteButton,itensForms);
+//         let deleteButtons = parent_button_2.querySelectorAll('input[id*="0"]');
+//         deleteButtons.forEach(deleteButton=>{
+//             deleteButton.value = "";
+//         })
 
-        parent_button_2.removeChild(parent_button);
-        const next_tr = parent_button_2.parentElement.querySelector(".item-form table thead tr");
+//     }
+//     else if(deleteButton.id.includes("0")){
+//         formCount-=1;
+//         TOTAL_FORMS.value = formCount;
+//         updateId(deleteButton,itensForms);
 
-        next_tr.style.display = "table-row";
-    }
-    else{
+//         parent_button_2.removeChild(parent_button);
+//         const next_tr = parent_button_2.parentElement.querySelector(".item-form table thead tr");
 
-        updateId(deleteButton,itensForms);
-        deleteButton.value="on";
-        console.log(formCount)
-        formCount-=1;
-        TOTAL_FORMS.value = formCount;
-        parent_button_2.removeChild(parent_button);
+//         next_tr.style.display = "table-row";
+//     }
+//     else{
+
+//         updateId(deleteButton,itensForms);
+//         deleteButton.value="on";
+//         console.log(formCount)
+//         formCount-=1;
+//         TOTAL_FORMS.value = formCount;
+//         parent_button_2.removeChild(parent_button);
         
-    }
-    const formCountService = document.getElementById("id_vendaitemproductservice_set-TOTAL_FORMS");
-    if (formCountService){
-         const itemsContainerService = document.getElementById("itens-container-service");
-         const itemForms = itemsContainerService.querySelectorAll(".item-form");  
-         atualizarTotal(itemForms);
-    }
-    const itemForms = itens_container.querySelectorAll(".item-form");
-    atualizarTotalProduto(itemForms);
+//     }
+//     const formCountService = document.getElementById("id_vendaitemproductservice_set-TOTAL_FORMS");
+//     if (formCountService){
+//          const itemsContainerService = document.getElementById("itens-container-service");
+//          const itemForms = itemsContainerService.querySelectorAll(".item-form");  
+//          atualizarTotal(itemForms);
+//     }
+//     const itemForms = itens_container.querySelectorAll(".item-form");
+//     atualizarTotalProduto(itemForms);
    
-}
+// }
 
 function addPaymentMethod() {
     const container = document.getElementById('payment-method-container');

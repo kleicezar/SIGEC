@@ -144,45 +144,35 @@
                         
                     </div>
                     <template id="empty-form-template">
-                        <div class="item-form">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                    </tr>
-                                </thead>
+                        <tr>
+                            <td>{{ compra_item_formset.empty_form.produto.as_hidden }}
+                                <input type="text" class="row form-control mb-3 mt-3" onkeyup="showSuggetionsProducts(this)">
+                                <div class="suggetions">
+                        
+                                </div>
+                            </td>
+                            <td>
+                                {{compra_item_formset.empty_form.quantidade}}
+                            </td>
+                    
+                            <td>
+                                {{compra_item_formset.empty_form.preco_unitario}}
+                            </td>
 
-                                <tbody>
-                                    <tr >
-                                        <td>{{ compra_item_formset.empty_form.produto.as_hidden }}
-                                            <input type="text" class="row form-control mb-3 mt-3" onkeyup="showSuggetionsProducts(this)">
-                                            <div class="suggetions">
-                                    
-                                            </div>
-                                        </td>
-                                        <td>
-                                            {{compra_item_formset.empty_form.quantidade}}
-                                        </td>
-                                
-                                        <td>
-                                            {{compra_item_formset.empty_form.preco_unitario}}
-                                        </td>
-
-                                        <td>
-                                            {{compra_item_formset.empty_form.discount}}
-                                        </td>
-                                        <td>
-                                            {{compra_item_formset.empty_form.price_total}}
-                                        </td>
-                                        <td>
-                                            {{compra_item_formset.empty_form.status}}
-                                        </td>
-                                        <td>
-                                            <button  type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removeItem(this)">Deletar</button>
-                                            {{compra_item_formset.empty_form.DELETE.as_hidden}}</td>
-                                    </tr>
-                                </tbody>
-                              </table>
-                        </div>
+                            <td>
+                                {{compra_item_formset.empty_form.discount}}
+                            </td>
+                            <td>
+                                {{compra_item_formset.empty_form.price_total}}
+                            </td>
+                            <td>
+                                {{compra_item_formset.empty_form.status}}
+                            </td>
+                            <td>
+                                <button  type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removeItem(this)">Deletar</button>
+                                {{compra_item_formset.empty_form.DELETE.as_hidden}}
+                            </td>
+                        </tr>
                     </template>
                     <button id="item" type="button" onclick="addItem()" class="btn btn-outline-success mb-5">Adicionar Item</button>
                 

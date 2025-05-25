@@ -250,9 +250,6 @@ def compras_create(request):
 
         if not RomaneioPaymentMethod_Accounts_FormSet.is_valid():
             print("Erro no RomaneioPaymentMethod",RomaneioPaymentMethod_Accounts_FormSet.errors)
-        # compra_form = CompraForm()
-        # compra_item_formset = CompraItemFormSet(queryset=CompraItem.objects.none())
-        # payment_method_formset = PaymentMethodCompraFormSet(queryset=PaymentMethod_Accounts.objects.none())
 
     else:
         form_Accounts = AccountsForm()
@@ -270,7 +267,6 @@ def compras_create(request):
         compra_form = CompraForm()
         compra_item_formset = CompraItemFormSet(queryset=CompraItem.objects.none())
        
-        # payment_method_formset = PaymentMethodCompraFormSet(queryset=PaymentMethod_Accounts.objects.none())
 
     context = {
         'form_Accounts': form_Accounts,
@@ -282,8 +278,7 @@ def compras_create(request):
         'romaneioform_Accounts':romaneio_form_Accounts,
         'form_romaneio_payment_account':RomaneioPaymentMethod_Accounts_FormSet,
         'compra_form': compra_form,
-        'compra_item_formset': compra_item_formset,
-        # 'payment_method_formset': payment_method_formset
+        'compra_item_formset': compra_item_formset
     }
     return render(request, 'purchase/compras_form.html', context)
 
