@@ -11,6 +11,8 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.contrib.auth.models import Permission
 from django.db import transaction
+from django.contrib.auth.models import User
+
 ### PAYMENT METHOD
 @login_required
 def paymentMethod(request):
@@ -74,7 +76,7 @@ def deletePaymentMethod(request, id_paymentMethod):
         paymentMethod.is_Active = False
         paymentMethod.save()
         messages.success(request, "Forma de Pagamento deletada com sucesso.",extra_tags="successPayment")
-        return redirect('PaymentMethod')  # Redirecione para onde desejar
+        return redirect('PaymentMethod')  
     context = {
         'paymentMethod': paymentMethod
     }
@@ -141,7 +143,7 @@ def deletePosition(request, id_position):
         position.is_Active = False
         position.save()
         messages.success(request, "Cargo deletado com sucesso.",extra_tags="successPosition")
-        return redirect('Position')  # Redirecione para onde desejar
+        return redirect('Position')  
     context = {
         'position': position
     }
@@ -281,7 +283,7 @@ def disableChartOfAccounts(request, id_chartOfAccounts):
         chartOfAccounts.is_Active = False
         chartOfAccounts.save()
         messages.success(request, "Plano de Contas desativado com sucesso.",extra_tags='successChartOfAccounts')
-        return redirect('ChartofAccounts')  # Redirecione para onde desejar
+        return redirect('ChartofAccounts') 
     context = {
         'chartOfAccounts': chartOfAccounts
     }
@@ -296,7 +298,7 @@ def ActiveChartOfAccounts(request, id_chartOfAccounts):
         chartOfAccounts.is_Active = True
         chartOfAccounts.save()
         messages.success(request, "Plano de Contas ativado com sucesso.",extra_tags='successChartOfAccounts')
-        return redirect('ChartofAccounts')  # Redirecione para onde desejar
+        return redirect('ChartofAccounts')  
     context = {
         'chartOfAccounts': chartOfAccounts
     }
@@ -365,6 +367,7 @@ def deleteService(request,pk):
         'service':servico
     }
     return render(request,'config/Service',context)
+
 @login_required
 def buscar_situacao(request):
     query = request.GET.get('query','').strip()
@@ -401,6 +404,7 @@ def buscar_situacao(request):
     }
     return JsonResponse(response_data)
 
+@login_required
 def buscar_forma_pagamento(request):
     query = request.GET.get('query','').strip()
     page_num = request.GET.get('page,1')
@@ -435,7 +439,6 @@ def buscar_forma_pagamento(request):
     }
     return JsonResponse(response_data)
    
-   
 @login_required
 def teste_permissao(request):
     permissoes = Permission.objects.all()
@@ -453,3 +456,51 @@ def teste_permissao(request):
         })
 
     return render(request, 'config/testePermissao.html', {"permissoes": permissoes_formatadas})
+
+@login_required
+def editperms(request, id=id):
+    user = get_object_or_404(User,id=id)
+    permitions = Permission.objects.all()
+    if (request.method == 'POST'): 
+        # Permissões enviadas pelo formulário
+        permissoes_ids = request.POST.getlist('permissoes')
+        novas_permissoes = Permission.objects.filter(id__in=permissoes_ids)
+
+        # Remove todas as permissões diretas e adiciona as selecionadas
+        user.user_permissions.set(novas_permissoes)
+
+        return redirect('permitions_list')  # ou qualquer outra página que desejar
+
+    else: 
+        # users = user.get_all_permissions()
+        # u = user.get_all_permissions()
+        u = permitions
+        users = UserPermissionAssignForm(instance=user)
+        for i in u:
+            print(i)
+        print(type(u))
+
+    # user = get_object_or_404(User, id=id)
+    
+    # if request.method == "POST":
+    #     users = PermsForm(request.POST, instance=user)
+    #     if users.is_valid():
+    #         messages.success(request, f'Permissao do Usuario {user.username} atualizadas com Sucesso')
+    #         return redirect('permitions_list')
+    # else: 
+    #     users = PermsForm(instance=user) 
+    #     print(f'permissoes do usuario {user.get_all_permissions()}')
+        # print(f'formulario de permissoes {users}')
+    context = {
+        'users': users,
+        'perm': permitions,
+    }
+    return render(request, 'config/PermitionsForm.html', context) 
+
+@login_required
+def permitions_list(request):
+    users = User.objects.exclude(id = request.user.id)
+    context = {
+        'users': users
+    }
+    return render(request, 'config/PermitionsList.html', context)

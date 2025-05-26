@@ -1,0 +1,60 @@
+{% extends 'login/menu.html' %}
+{% load bootstrap4 %}
+{% load static %}
+
+<head>  
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block css %}
+            <link rel="stylesheet" href="{% static 'css/Table.css' %}">
+        {% endblock  %}
+        {% block title %}
+            <title>Listagem de Permissões</title>
+        {% endblock %}
+    </head>
+</body>
+    <main>
+        {% bootstrap_messages %}
+            {% block content %}
+            <div class='content'>
+                <table >
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Usuario</th>
+                            <th>Ultimo Login</th>
+                            <th>Super Usuario</th>
+                            <th>Ativo</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>  
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.last_login|date:"d/m/Y"  }}</td>
+                        <td>{{ user.is_superuser|yesno:"Sim,Não"}}</td>
+                        <td>{{ user.is_Active|yesno:"Sim,Não" }}</td>
+                        <td>
+                            <a href="{% url 'editperms' id=user.id %}">
+                                <button class="btn" style="background-color: #117027;color: white;">Editar</button>
+                            </a>
+                            {% comment %}
+                            <form action="{% url 'workOrdersDelete' pk=workOrder.id %}" method="POST" style="display:inline-block;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
+                            </form>
+                            {% endcomment %}
+                            {% comment %} <button>Deletar</button> {% endcomment %}
+                            {% comment %} <button>Mais</button> {% endcomment %}
+                            
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endblock %}
+    </main>
+<body>
