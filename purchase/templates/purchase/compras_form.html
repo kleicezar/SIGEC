@@ -41,7 +41,30 @@
                     </div>
                     <!-- Formulário de Compra -->
                     <h6>Dados da Compra</h6>
-                      
+                    
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% if "shoppingcreate_page" in message.tags %}
+                            <div class="modal"> 
+                                <header class="mHeader">
+                                    <p>Falha ao salvar Compra</p>
+                                </header>
+                            
+                                <div class="alert {{ message.tags }} mBody">
+                                    <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur, illum atque. Doloremque, dolor ipsum labore numquam quaerat doloribus, incidunt provident suscipit maiores dicta animi, itaque at reiciendis exercitationem assumenda odit?</p> -->
+                                {{ message }}
+
+                                </div>
+                        
+                                <footer>
+                                    <button id="mBtn" class="mButton" type="button" onclick="closeModal(this)">Fechar</button>
+                                </footer>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+
                     <table class="table">
                         <thead>
                             <tr>
@@ -264,6 +287,9 @@
         <script src="{% static 'js/addItem.js' %}" defer></script>
         <script src="{% static 'js/suggestions.js' %}"></script><!-- pesquisa clientes -->
         <script src="{% static 'js/tax.js' %}"></script> 
+    
+        <script src="{% static 'js/error.js' %}"></script>
+
         <!-- <script src="{% static 'js/clientSearch.js' %}"></script>  pesquisa clientes -->
         {% comment %} <script src="{% static 'js/compra_item.js' %}"></script> <!-- pesquisa produtos em compras --> {% endcomment %}
         {% endblock %}     

@@ -88,7 +88,8 @@ function removeItem(button){
          const itemForms = itemsContainerService.querySelectorAll("table tbody tr");  
          atualizarTotal(itemForms);
     }
-    const itemForms = itens_container.querySelectorAll("table tbody tr")
+    const itensContainerProduct = document.getElementById("itens-container");
+    const itemForms = itensContainerProduct.querySelectorAll("table tbody tr");
     atualizarTotalProduto(itemForms);
 }
 

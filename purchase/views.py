@@ -230,9 +230,28 @@ def compras_create(request):
                     messages.success(request,"Compra cadastrada com sucesso.",extra_tags='successShopping')
                     return redirect('compras_list')
                 else:
-                    messages.warning(request,"Ação cancelada! O valor total de pagamentos sobre frete FOB não corresponde ao total do frete")
-            else:
-                messages.warning(request, "Ação cancelada! O valor total dos pagamentos não corresponde ao total da compra.")
+                    # messages.warning(request,"Ação cancelada! O valor total de pagamentos sobre frete FOB não corresponde ao total do frete",extra_tags='shoppingcreate_page')
+                    messages.warning(
+                        request,
+                        "Ação cancelada: o valor total pago pelo frete não corresponde ao valor de frete da compra.",
+                        extra_tags='shoppingcreate_page'
+                    )
+            if total_payment != compra.total_value:
+                messages.warning(
+                    request,
+                    "Ação cancelada: o valor total pago pelos produtos não corresponde ao valor total da compra.",
+                    extra_tags='shoppingcreate_page'
+                )
+
+            if taxTotal_payment != tax_totalValue:
+                messages.warning(
+                    request,
+                    "Ação cancelada: o valor pago de imposto está incorreto com base na porcentagem aplicada.",
+                    extra_tags='shoppingupdate_page'
+                )
+
+            # elif romaneioTotal_payment != compra.value_picking_list:
+                # messages.warning(request, "Ação cancelada! O valor total dos pagamentos não corresponde ao total da compra.",extra_tags='shoppingcreate_page')
         if not compra_form.is_valid():
             print("Erro no CompraForm",compra_form.errors)
 
@@ -530,9 +549,30 @@ def compras_update(request, pk):
 
                     messages.success(request,"Compra atualizada com sucesso!",extra_tags='successShopping')
                     return redirect('compras_list')
+                else:
+
+                    messages.warning(
+                        request,
+                        "Ação cancelada: o valor total pago pelo frete não corresponde ao valor de frete da compra.",
+                        extra_tags='shoppingupdate_page'
+                    )
+
             if total_payment != compra_form.cleaned_data["total_value"]:
-                messages.warning(request, "Ação cancelada! O valor total dos pagamentos não corresponde ao total da compra.")
-        
+
+                messages.warning(
+                        request,
+                        "Ação cancelada: o valor total pago pelos produtos não corresponde ao valor total da compra.",
+                        extra_tags='shoppingupdate_page'
+                    )            
+                
+            if taxTotalPayment != tax_totalValue:
+
+                messages.warning(
+                        request,
+                        "Ação cancelada: o valor pago de imposto está incorreto com base na porcentagem aplicada.",
+                        extra_tags='shoppingupdate_page'
+                    )     
+                   
         if not compra_form.is_valid():
             print('Erro no CompraForms', compra_form.errors)
 
