@@ -57,7 +57,7 @@
                     <td>{{ workOrder.pessoa }}</td>
                     <td>{{ workOrder.data_da_venda|date:"d/m/Y"  }}</td>
                     <td>{{ workOrder.situacao}}</td>
-                    <td>{{ workOrder.is_Active|yesno:"Sim,Não" }}</td>
+                    <td>{{ workOrder.is_active |yesno:"Sim,Não" }}</td>
                     <td>
                         <a href="{% url 'workOrdersUpdate' pk=workOrder.id %}">
                             <button class="btn" style="background-color: #117027;color: white;">Editar</button>

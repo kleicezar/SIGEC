@@ -38,7 +38,6 @@ def Accounts_Create(request):
     )
     if request.method == "POST":
         
-        print(request.POST) 
         post_data = request.POST.copy()
         raw_data_planned_account = post_data.get('plannedAccount')
         if raw_data_planned_account:
@@ -276,6 +275,8 @@ def delete_Accounts(request, id_Accounts):
 @login_required
 @transaction.atomic 
 def AccountsReceivable_Create(request):
+
+    plannedAccount = request.GET.get("plannedAccount",'false')
     verify = 0
     installments = []
     # PaymentMethodAccountsFormSet = inlineformset_factory(Accounts, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
@@ -289,9 +290,22 @@ def AccountsReceivable_Create(request):
     )
     if request.method == "POST":
 
-        print(request.POST) 
 
-        form_Accounts = AccountsForm(request.POST)
+        post_data = request.POST.copy()
+        raw_data_planned_account = post_data.get('plannedAccount')
+        if raw_data_planned_account:
+            raw_date = post_data.get('date_init')
+            if raw_date:
+                try:
+                    date_obj = datetime.strptime(raw_date,"%m/%Y")
+                    completed_date = date_obj.replace(day=1).date()
+                    post_data['date_init'] = completed_date.isoformat()
+                    form_Accounts = AccountsFormPlannedAccount(post_data)
+                except ValueError as e:
+                    print("Erro ao tratar date_init",e)
+        else:
+            form_Accounts = AccountsForm(request.POST)
+
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
 
         if form_Accounts.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
@@ -324,6 +338,8 @@ def AccountsReceivable_Create(request):
 
                     form.add_error('value', f'O valor do somatorio das parcelas ({parcela}) é inferior ao Valor Total ({total_value}).')
         else:
+
+            print(f"Erros no formulario de FormAccounts",form_Accounts.errors)
             for form in PaymentMethod_Accounts_FormSet:
                 print(f"Erros no formulário {form.instance}: {form.errors}")
             print()
@@ -340,7 +356,15 @@ def AccountsReceivable_Create(request):
             }
             return render(request, 'finance/AccountsPayform.html', context)
     else: 
-        form_Accounts = AccountsForm()
+        if plannedAccount == 'false':
+            form_Accounts = AccountsForm()
+        else:
+            initial_data = {
+            'plannedAccount': plannedAccount,
+            }
+
+            form_Accounts = AccountsFormPlannedAccount(initial=initial_data)
+
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
         
     context = {

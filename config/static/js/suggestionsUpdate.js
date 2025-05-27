@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Obter o valor do campo pamonha
-    var person = document.getElementById('id_pessoa')||document.getElementById('id_fornecedor');
-    if (person){
-        var inputField = person.closest('td').querySelector('.idSearch');
-        const query = person.value;
-        console.log('existe');
+    // Obter o valor do campo
+    let id_client = document.getElementById('id_pessoa')
+    let id_supplier = document.getElementById('id_fornecedor');
+    if (id_client){
+        var inputField = id_client.closest('td').querySelector('.idSearch');
+        const query = id_client.value;
         fetch(`/buscar_pessoas/?query=${encodeURIComponent(query)}`)
         .then(response => {
             if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
@@ -17,6 +17,24 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log(data);
             data.clientes.forEach(cliente=>{
                 inputField.value = `${cliente.id} - ${cliente.name}`
+            })
+        });
+    }
+    else{
+        var inputField = id_supplier.closest('td').querySelector('.idSearch');
+        const query = id_supplier.value;
+        fetch(`/buscar_fornecedores/?query=${encodeURIComponent(query)}`)
+        .then(response => {
+            if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
+                return response.json();
+            } else {
+                throw new Error('Resposta não é JSON');
+            }
+        })
+        .then(data => {
+            console.log(data);
+            data.fornecedores.forEach(fornecedor=>{
+                inputField.value = `${fornecedor.id} - ${fornecedor.name}`
             })
         });
     }

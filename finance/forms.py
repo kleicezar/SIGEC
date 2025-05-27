@@ -141,6 +141,13 @@ class BasePaymentMethodAccountsForm(forms.ModelForm):
         label="Tipo de Multa"
     )
 
+    forma_pagamento =  forms.ModelChoiceField(
+        queryset=PaymentMethod.objects.filter(is_Active=True),
+        widget=forms.Select(
+            attrs=
+            {'class':'form-control row'}
+        )
+    )   
     class Meta:
         model = PaymentMethod_Accounts
         fields = [
@@ -157,9 +164,7 @@ class BasePaymentMethodAccountsForm(forms.ModelForm):
             'activeCredit'
         ]
         widgets = { 
-            'forma_pagamento': forms.Select(attrs={ 
-                'class': 'form-select row'
-            }),
+           
             'expirationDate': forms.DateInput(format='%d/%m/%Y', attrs={
                 'class': 'form-control row mask-date', 
             }),

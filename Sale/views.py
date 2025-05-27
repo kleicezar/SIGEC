@@ -189,6 +189,8 @@ def venda_update(request, pk):
         
         ids_para_excluir_venda_itens = ids_existentes_venda_itens - ids_enviados_venda_itens
         VendaItem.objects.filter(id__in=ids_para_excluir_venda_itens).delete()
+        print('ids para excluir')
+        print(ids_para_excluir_venda_itens)
 
         if venda_form.is_valid() and venda_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid() and Older_PaymentMethod_Accounts_FormSet.is_valid():
             venda_form.save(commit=False)
@@ -425,6 +427,31 @@ def client_search(request):
     ]
     return JsonResponse({'clientes': clients})
 
+def supplier_search(request):
+    query = request.GET.get('query', '') 
+    resultados = Person.objects.filter(
+        (
+        Q(id__icontains=query) | 
+        Q(id_FisicPerson_fk__name__icontains=query) | 
+        Q(id_ForeignPerson_fk__name_foreigner__icontains=query) | 
+        Q(id_LegalPerson_fk__fantasyName__icontains=query)
+        ) & Q(isSupllier = True)
+    ).order_by('id')[:5]
+
+    if not resultados:
+        return JsonResponse({'clientes': [], 'message': 'Nenhum cliente encontrado.'})
+
+    suppliers = [
+        {
+            'id': supplier.id,
+            'name': (
+                    supplier.id_FisicPerson_fk.name if supplier.id_FisicPerson_fk else 
+                    (supplier.id_ForeignPerson_fk.name_foreigner if supplier.id_ForeignPerson_fk else 
+                    (supplier.id_LegalPerson_fk.fantasyName if cliente.id_LegalPerson_fk else 'Nome não disponível')))
+        }
+        for supplier in resultados
+    ]
+    return JsonResponse({'fornecedores': suppliers})
 @login_required
 def get_product_id(request):
     query = request.GET.get('query','')

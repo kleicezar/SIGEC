@@ -9,9 +9,8 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import authenticate, login, logout
 from django.db.models.functions import Coalesce
 from django.db.models import F, Value
-from sale.models import Venda, VendaItem
-
-from service.models import VendaItem as VendaItemWS
+from Sale.models import Venda, VendaItem
+from Service.models import VendaItem as VendaItemWS
 from .forms import *
 from .models import *
 from django.db.models import Q
@@ -196,7 +195,7 @@ def compras_create(request):
 
             freightFOB = False
             equalValueFreight = False
-            if compra.freight_type == "fob":
+            if compra.freight_type == "FOB":
                 freightFOB = True
                 FreightPaymentMethod_Accounts_FormSet.instance = compra
                 freightTotal_payment = calculateValuePayments(FreightPaymentMethod_Accounts_FormSet)
@@ -212,13 +211,6 @@ def compras_create(request):
                 if freightFOB and equalValueFreight:
                     compra_form.save()
                     compra_item_formset.save()
-                    # PaymentMethod_Accounts_FormSet.save()
-                    # for form in PaymentMethod_Accounts_FormSet:
-                    #     conta = form.save(commit=False)  # cria o objeto sem salvar ainda
-                    #     conta.compra = compra            # agora sim associa corretamente
-                    #     conta.acc = True
-                    #     conta.save()  
-                    
                     savePayments(PaymentMethod_Accounts_FormSet)
                     savePayments(TaxPaymentMethod_Accounts_FormSet)
                     savePayments(FreightPaymentMethod_Accounts_FormSet)
@@ -238,9 +230,28 @@ def compras_create(request):
                     messages.success(request,"Compra cadastrada com sucesso.",extra_tags='successShopping')
                     return redirect('compras_list')
                 else:
-                    messages.warning(request,"Ação cancelada! O valor total de pagamentos sobre frete FOB não corresponde ao total do frete")
-            else:
-                messages.warning(request, "Ação cancelada! O valor total dos pagamentos não corresponde ao total da compra.")
+                    # messages.warning(request,"Ação cancelada! O valor total de pagamentos sobre frete FOB não corresponde ao total do frete",extra_tags='shoppingcreate_page')
+                    messages.warning(
+                        request,
+                        "Ação cancelada: o valor total pago pelo frete não corresponde ao valor de frete da compra.",
+                        extra_tags='shoppingcreate_page'
+                    )
+            if total_payment != compra.total_value:
+                messages.warning(
+                    request,
+                    "Ação cancelada: o valor total pago pelos produtos não corresponde ao valor total da compra.",
+                    extra_tags='shoppingcreate_page'
+                )
+
+            if taxTotal_payment != tax_totalValue:
+                messages.warning(
+                    request,
+                    "Ação cancelada: o valor pago de imposto está incorreto com base na porcentagem aplicada.",
+                    extra_tags='shoppingupdate_page'
+                )
+
+            # elif romaneioTotal_payment != compra.value_picking_list:
+                # messages.warning(request, "Ação cancelada! O valor total dos pagamentos não corresponde ao total da compra.",extra_tags='shoppingcreate_page')
         if not compra_form.is_valid():
             print("Erro no CompraForm",compra_form.errors)
 
@@ -258,9 +269,6 @@ def compras_create(request):
 
         if not RomaneioPaymentMethod_Accounts_FormSet.is_valid():
             print("Erro no RomaneioPaymentMethod",RomaneioPaymentMethod_Accounts_FormSet.errors)
-        # compra_form = CompraForm()
-        # compra_item_formset = CompraItemFormSet(queryset=CompraItem.objects.none())
-        # payment_method_formset = PaymentMethodCompraFormSet(queryset=PaymentMethod_Accounts.objects.none())
 
     else:
         form_Accounts = AccountsForm()
@@ -278,7 +286,6 @@ def compras_create(request):
         compra_form = CompraForm()
         compra_item_formset = CompraItemFormSet(queryset=CompraItem.objects.none())
        
-        # payment_method_formset = PaymentMethodCompraFormSet(queryset=PaymentMethod_Accounts.objects.none())
 
     context = {
         'form_Accounts': form_Accounts,
@@ -290,8 +297,7 @@ def compras_create(request):
         'romaneioform_Accounts':romaneio_form_Accounts,
         'form_romaneio_payment_account':RomaneioPaymentMethod_Accounts_FormSet,
         'compra_form': compra_form,
-        'compra_item_formset': compra_item_formset,
-        # 'payment_method_formset': payment_method_formset
+        'compra_item_formset': compra_item_formset
     }
     return render(request, 'purchase/compras_form.html', context)
 
@@ -502,13 +508,14 @@ def compras_update(request, pk):
 
             freightFOB = False
             equalValueFreight = False
-            if compra_form.cleaned_data['freight_type'] == 'fob':
+            if compra_form.cleaned_data['freight_type'] == 'FOB':
                 freightFOB = True
                 freightTotalPayment,onlyFreightPayments = calculate_value_payments_update(FreightPaymentMethod_Accounts_FormSet,Older_Freight_PaymentMethod_Accounts_FormSet)
                 if compra_form.cleaned_data['freight_value'] == freightTotalPayment:
                     equalValueFreight = True 
             else:
                 compra_form.cleaned_data['freight_value'] = 0
+                
 
             if total_payment == compra_form.cleaned_data['total_value'] and taxTotalPayment == tax_totalValue:
                 if freightFOB and equalValueFreight:
@@ -542,9 +549,30 @@ def compras_update(request, pk):
 
                     messages.success(request,"Compra atualizada com sucesso!",extra_tags='successShopping')
                     return redirect('compras_list')
+                else:
+
+                    messages.warning(
+                        request,
+                        "Ação cancelada: o valor total pago pelo frete não corresponde ao valor de frete da compra.",
+                        extra_tags='shoppingupdate_page'
+                    )
+
             if total_payment != compra_form.cleaned_data["total_value"]:
-                messages.warning(request, "Ação cancelada! O valor total dos pagamentos não corresponde ao total da compra.")
-        
+
+                messages.warning(
+                        request,
+                        "Ação cancelada: o valor total pago pelos produtos não corresponde ao valor total da compra.",
+                        extra_tags='shoppingupdate_page'
+                    )            
+                
+            if taxTotalPayment != tax_totalValue:
+
+                messages.warning(
+                        request,
+                        "Ação cancelada: o valor pago de imposto está incorreto com base na porcentagem aplicada.",
+                        extra_tags='shoppingupdate_page'
+                    )     
+                   
         if not compra_form.is_valid():
             print('Erro no CompraForms', compra_form.errors)
 
@@ -562,6 +590,13 @@ def compras_update(request, pk):
         
         if not Older_Tax_PaymentMethod_Accounts_FormSet.is_valid():
             print("Erro no Older_Tax_PaymentMethod_Accounts_FormSet",Older_Tax_PaymentMethod_Accounts_FormSet.errors)
+        
+        if not FreightPaymentMethod_Accounts_FormSet.is_valid():
+            print("Erro no FreightPaymentMethod_Accounts_FormSet",FreightPaymentMethod_Accounts_FormSet.errors)
+        
+        if not Older_Freight_PaymentMethod_Accounts_FormSet.is_valid():
+            print("Erro no Older_Freight_PaymentMethod_Accounts_FormSet",Older_Freight_PaymentMethod_Accounts_FormSet.errors)
+        
     else:
         # Se for um GET, inicializa o formulário com os dados da compra existente
         form_Accounts = AccountsForm(instance=compra)
@@ -583,12 +618,10 @@ def compras_update(request, pk):
         compra_form = CompraForm(instance=compra)
         compra_item_formset = CompraItemFormSet(queryset=compra.compraitem_set.all(), instance=compra)
         
-        
         form_Accounts = populate_account_form(Older_PaymentMethod_Accounts_Formset,form_Accounts)
         tax_form_Accounts = populate_account_form(Older_Tax_PaymentMethod_Accounts_Formset,tax_form_Accounts)
         romaneio_form_Accounts = populate_account_form(Older_Romaneio_PaymentMethod_Accounts_FormSet,romaneio_form_Accounts)
         # older_form_with_data = [form in Older_Freight_PaymentMethod_Accounts_FormSet.forms in form.instance.pk is not None]
-        print(len(Older_Freight_PaymentMethod_Accounts_FormSet))
        
         if len(Older_Freight_PaymentMethod_Accounts_FormSet) != 0:
             freight_form_Accounts = populate_account_form(Older_Freight_PaymentMethod_Accounts_FormSet,freight_form_Accounts)

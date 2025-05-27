@@ -87,7 +87,8 @@ document.addEventListener("DOMContentLoaded", function () {
         data.notifications.forEach(notification=>{
             console.log("entro")
             const newNotification = document.createElement("div");
-            newNotification.innerHTML = `${notification.date}: Pagamento ID ${notification.idPayment} precisa ser pago em ${notification.remainsDays} dias`
+            const dateFormated = new Date(notification.date).toLocaleDateString('pt-BR');
+            newNotification.innerHTML = `${dateFormated}: Pagamento ${notification.idPayment} precisa ser pago em ${notification.remainsDays} dias!`
             newNotification.classList.add("notification");
             notificationContainer.appendChild(newNotification);
         })

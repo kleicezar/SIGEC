@@ -115,7 +115,6 @@
                     <h6 class="mt-5 mb-3 ">Itens de Venda</h6>
                     <div id="itens-container">      
                         {{ venda_item_formset.management_form }}
-                        {% for form in venda_item_formset %}
                             <div class="item-form">
                                 <!-- {{ form.as_p }} -->
                                   <table class="table ">
@@ -146,6 +145,7 @@
                                     </thead>
 
                                     <tbody class="itens">
+                                         {% for form in venda_item_formset %}
                                         <tr>
                                            
                                             <td >{{form.product.as_hidden}}
@@ -174,78 +174,46 @@
                                                 {{form.DELETE.as_hidden}}
                                             </td>
                                         </tr>
-                               
+                                    {% endfor %}
                                     </tbody>
                                   </table>
                             </div>
-                        {% endfor %}
                     </div>
-                    <template id="empty-form-template">
-                        <div class="item-form">
+                     <template id="empty-form-template">
                             <!-- {{ venda_item_formset.empty_form.as_p }} -->
-                            <table class="table">
-                                <thead>
-                                    <tr style="display: none;">
-                                       
-                                        <th scope="col">
-                                            Produto
-                                        </th>
-                                        <th scope="col">
-                                            Quantidade
-                                        </th>
-                                        <th scope="col">
-                                            Preço Unitário
-                                        </th>
-                                        <th scope="col">
-                                            Desconto(%)
-                                        </th>
-                                        <th scope="col">
-                                            Valor Total
-                                        </th>
-                                        <th>
-                                            Status
-                                        </th>
-                                        <th scope="col">
-                                            Ações
-                                        </th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    <tr>
-                                        
-                                        <td>
-                                            {{ venda_item_formset.empty_form.product.as_hidden }}
-                                            <input type="text" class="row form-control mb-3 mt-3" onkeyup="showSuggetionsProducts(this)">
-                                            <div class="suggetions">
-                                    
-                                            </div>
-                                        </td>
-                                        
-                                        <td>
-                                            {{venda_item_formset.empty_form.quantidade}}
-                                        </td>
+                            <tr>
+                                <td>
+                                    <input type="hidden" name="{{ venda_item_formset.empty_form.prefix }}-id" id="{{venda_item_formset.empty_form.prefix }}-id">
+                                    {{ venda_item_formset.empty_form.product.as_hidden }}
+                                    <input type="text" class="row form-control mb-3 mt-3" onkeyup="showSuggetionsProducts(this)">
+                                    <div class="suggetions">
+                            
+                                    </div>
+                                </td>
                                 
-                                        <td>
-                                            {{venda_item_formset.empty_form.preco_unitario}}
-                                        </td>
+                                <td>
+                                    {{venda_item_formset.empty_form.quantidade}}
+                                </td>
+                        
+                                <td>
+                                    {{venda_item_formset.empty_form.preco_unitario}}
+                                </td>
 
-                                        <td>
-                                            {{venda_item_formset.empty_form.discount}}
-                                        </td>
-                                        <td>
-                                            {{venda_item_formset.empty_form.price_total}}
-                                        </td>
-                                        <td>
-                                            {{venda_item_formset.empty_form.status}}
-                                        </td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removeItem(this)">Deletar</button>
-                                            {{venda_item_formset.empty_form.DELETE.as_hidden}}</td>
-                                    </tr>
-                                </tbody>
-                              </table>
-                        </div>
+                                <td>
+                                    {{venda_item_formset.empty_form.discount}}
+                                </td>
+                                <td>
+                                    {{venda_item_formset.empty_form.price_total}}
+                                </td>
+
+                                <td>
+                                    {{venda_item_formset.empty_form.status}}
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removeItem(this)">Deletar</button>
+                                    {{venda_item_formset.empty_form.DELETE.as_hidden}}
+                                </td>
+                            </tr>
                     </template>
                     
                      <button id="item" type="button" onclick="addItem()" class="btn btn-outline-success mb-5 z-2">Adicionar Item</button>
@@ -286,9 +254,7 @@
                     <h6 class="mt-5 mb-3">Itens de Venda</h6>
                     <div id="itens-container-service">      
                         {{ service_item_formset.management_form }}
-                        {% for form in service_item_formset %}
                             <div class="item-form">
-                                <!-- {{ form.as_p }} -->
                                   <table class="table">
                                     <thead >
                                         <tr>
@@ -314,6 +280,7 @@
                                     </thead>
 
                                     <tbody class="itens">
+                                        {% for form in service_item_formset %}
                                         <tr>
                                             <td>
                                                 {{form.technician}}
@@ -338,50 +305,39 @@
                                                 {{form.DELETE.as_hidden}}
                                             </td>
                                         </tr>
-                                     
+                                    {% endfor %}
                                     </tbody>
                                   </table>
                             </div>
-                        {% endfor %}
                     </div>
                     <template id="empty-service-template">
-                        <div class="item-form">
-                            <!-- {{ service_item_formset.empty_form.as_p }} -->
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                    </tr>
-                                </thead>
+                        <tr>
+                            <td>
+                                {{service_item_formset.empty_form.technician}}
+                            </td>
 
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            {{service_item_formset.empty_form.technician}}
-                                        </td>
-                                        <td>
-                                            {{ service_item_formset.empty_form.service.as_hidden}}
-                                            <input type="text" class="row form-control mb-3 mt-3" id="idService-0" onkeyup="showSuggetionsServices(this)">
-                                            <div id="suggetionsServices" class="suggetions">
+                            <td>
+                                <input type="hidden" name="{{service_item_formset.empty_form.prefix }}-id" id="{{service_item_formset.empty_form.prefix }}-id">
+                                {{ service_item_formset.empty_form.service.as_hidden}}
+                                <input type="text" class="row form-control mb-3 mt-3" id="idService-0" onkeyup="showSuggetionsServices(this)">
+                                <div id="suggetionsServices" class="suggetions">
 
-                                            </div>
-                                        </td>
+                                </div>
+                            </td>
 
-                                        <td>
-                                            {{service_item_formset.empty_form.discount}}
-                                        </td>
-                                        <td>
-                                            {{service_item_formset.empty_form.preco}}
-                                        <td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removeItem(this)">Deletar</button>
-                                            {{service_item_formset.empty_form.DELETE.as_hidden}}</td>
-                                        </td>
-                                            
-                                    </tr>
-                          
-                                </tbody>
-                              </table>
-                        </div>
+                            <td>
+                                {{service_item_formset.empty_form.discount}}
+                            </td>
+
+                            <td>
+                                {{service_item_formset.empty_form.preco}}
+                            </td>
+                            
+                            <td>
+                                <button type="button" class="btn btn-danger delete mb-3 mt-3" onclick="removeItem(this)">Deletar</button>
+                                {{service_item_formset.empty_form.DELETE.as_hidden}}</td>
+                            </td>
+                        </tr>
                     </template>
 
                    
@@ -453,7 +409,7 @@
         <script type="text/javascript" src="{% static 'js/jquery.mask.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/mask.js' %}"></script> - -->
         <!-- <script type="text/javascript" src="{% static 'js/interest.js' %}"></script> -->
-        <script src="{% static 'js/new.js' %}"></script> 
+        <script src="{% static 'js/suggestions.js' %}"></script><!-- pesquisa clientes -->
         <script src="{% static 'js/addItem.js' %}" defer></script>
         <!-- <script src="{% static 'js/order.js' %}"></script> -->
         <script src="{% static 'js/venda_item.js' %}"></script> <!-- pesquisa produtos em vendas-->
