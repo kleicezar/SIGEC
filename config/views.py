@@ -13,6 +13,11 @@ from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
 from .forms import PermissionMultipleSelectForm
 from django.db import transaction
+from django.urls import reverse_lazy
+from django.views.generic import ListView
+from django.views.generic.edit import CreateView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin # Para segurança
+
 
 ### PAYMENT METHOD
 @login_required
@@ -307,7 +312,7 @@ def ActiveChartOfAccounts(request, id_chartOfAccounts):
     return render(request, 'config/ChartOfAccounts.html', context)
 
 @login_required
-def service(request):
+def Service(request):
     print('----------------')
     context = {
         'services':service.objects.all()
@@ -530,3 +535,39 @@ def editperms(request, id=id):
         'form': form,
         'grouped_permissions': grouped_permissions
     })
+
+
+### TESTE
+
+# View para listar os MetaGroups (Supergrupos)
+class SuperGroupListView(LoginRequiredMixin, ListView): # Adicionado LoginRequiredMixin
+    model = SuperGroup
+    template_name = 'sua_app/metagroup_list.html' # Seu template para listar
+    context_object_name = 'metagroups'
+    # paginate_by = 10 # Opcional: para paginação
+
+# View para criar um novo SuperGroup
+class SuperGroupCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView): # Adicionado Mixins de segurança
+    model = SuperGroup
+    form_class = SuperGroupForm
+    template_name = 'sua_app/metagroup_form.html' # Seu template para o formulário
+    success_url = reverse_lazy('sua_app:metagroup_list') # URL para redirecionar após sucesso
+    permission_required = 'sua_app.add_metagroup' # Permissão necessária
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = 'Criar Novo Supergrupo'
+        return context
+
+# View para editar um SuperGroup existente
+class SuperGroupUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView): # Adicionado Mixins de segurança
+    model = SuperGroup # Django pega o 'pk' da URL automaticamente
+    form_class = SuperGroupForm
+    template_name = 'sua_app/metagroup_form.html'
+    success_url = reverse_lazy('sua_app:metagroup_list')
+    permission_required = 'sua_app.change_metagroup'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = f'Editar Supergrupo: {self.object.name}'
+        return context

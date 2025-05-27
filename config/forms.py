@@ -200,3 +200,22 @@ class PermissionMultipleSelectForm(forms.Form):
         widget=forms.CheckboxSelectMultiple,
         label="Permissões"
     )
+
+class SuperGroupForm(forms.ModelForm):
+    class Meta:
+        model = SuperGroup
+        fields = ['name', 'groups', 'members']  # Campos que estarão no formulário
+        widgets = {
+            'groups': forms.CheckboxSelectMultiple,  # Lista de grupos com checkboxes
+            'members': forms.CheckboxSelectMultiple, # Lista de usuários com checkboxes (opcional, pode ser outro widget)
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Opcional: Ordenar os itens nos checkboxes
+        if 'groups' in self.fields:
+            # Certifique-se de que django.contrib.auth.models.Group está importado
+            self.fields['groups'].queryset = Group.objects.order_by('name')
+        if 'members' in self.fields:
+            # Certifique-se de que django.contrib.auth.models.User está importado
+            self.fields['members'].queryset = User.objects.order_by('username')

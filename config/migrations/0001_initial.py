@@ -59,12 +59,4 @@ class Migration(migrations.Migration):
                 ('father', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='filhos', to='config.chartofaccounts', verbose_name='Referente a')),
             ],
         ),
-        migrations.CreateModel(
-            name='GroupSet',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=150, unique=True)),
-                ('groups', models.ManyToManyField(to='auth.group')),
-            ],
-        ),
     ]

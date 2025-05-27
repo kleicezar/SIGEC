@@ -18,3 +18,9 @@ class SituationAdmin(admin.ModelAdmin):
 @admin.register(Position)
 class PositionAdmin(admin.ModelAdmin):
     pass
+
+@admin.register(SuperGroup)
+class MetaGroupAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    filter_horizontal = ('groups', 'members') # Melhora a usabilidade para campos ManyToMany
+    search_fields = ('name',)
