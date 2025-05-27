@@ -1,7 +1,7 @@
 from django.db import models
 from registry.models import Person
 from sale.models import Venda
-from service.models import VendaService
+from service.models import Vendaservice
 from purchase.models import Compra
 from config.models import ChartOfAccounts, PaymentMethod, Situation
 from django.utils import timezone
@@ -94,7 +94,7 @@ class PaymentMethod_Accounts(models.Model):
         blank=True,
         verbose_name='id_compra'
     )
-    ordem_servico = models.ForeignKey(VendaService,
+    ordem_servico = models.ForeignKey(Vendaservice,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,

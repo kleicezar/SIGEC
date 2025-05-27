@@ -310,26 +310,26 @@ def ActiveChartOfAccounts(request, id_chartOfAccounts):
 def service(request):
     print('----------------')
     context = {
-        'Services':service.objects.all()
+        'services':service.objects.all()
     }
     return render(request,'config/service.html',context)
     # return HttpResponse("Olá, esta é a minha nova app Django!")
 
 @login_required
 @transaction.atomic
-def ServiceForm(request):
+def serviceForm(request):
     if request.method == 'POST':
-        service_form = ServiceModelForm(request.POST)
+        service_form = serviceModelForm(request.POST)
         print(f'\n\n\n{request.POST}')
         print(f'\n\n\n{service_form.is_valid()}')
         if service_form.is_valid():
             service_form.save() 
-            messages.success(request, "Tipo de serviço cadastrado com sucesso.",extra_tags='successService')
+            messages.success(request, "Tipo de serviço cadastrado com sucesso.",extra_tags='successservice')
             return redirect('service')
         else: 
             return render(request, 'config/serviceForm.html', {'form': service_form})
     else:
-        service_form = ServiceModelForm()
+        service_form = serviceModelForm()
         context = {
             'service':service_form
         }
@@ -337,19 +337,19 @@ def ServiceForm(request):
     
 @login_required
 @transaction.atomic      
-def updateService(request,pk):
+def updateservice(request,pk):
     servico = get_object_or_404(service,pk=pk)
     if request.method == "POST":
-        service_form = ServiceModelForm(request.POST,instance=servico)
+        service_form = serviceModelForm(request.POST,instance=servico)
         if service_form.is_valid():
             service_form.save()
-            messages.success(request, "Tipo de serviço atualizado com sucesso.",extra_tags='successService')
-            # return redirect('orderServiceForm')
+            messages.success(request, "Tipo de serviço atualizado com sucesso.",extra_tags='successservice')
+            # return redirect('orderserviceForm')
             return redirect('service')
 
         print(service_form.errors)
     else:
-        service_form = ServiceModelForm(instance=servico)
+        service_form = serviceModelForm(instance=servico)
         context = {
             'service':service_form,
         }
@@ -357,12 +357,12 @@ def updateService(request,pk):
 
 @login_required
 @transaction.atomic
-def deleteService(request,pk):
+def deleteservice(request,pk):
     servico = get_object_or_404(service, pk=pk)
     if request.method == "POST":
         servico.is_Active = False
         servico.save()
-        messages.success(request, "Tipo de serviço deletado com sucesso.",extra_tags='successService')
+        messages.success(request, "Tipo de serviço deletado com sucesso.",extra_tags='successservice')
         return redirect('config/service')
     context ={
         'service':servico

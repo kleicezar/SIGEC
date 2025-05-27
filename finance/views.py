@@ -536,7 +536,7 @@ def CreditedClients_list(request):
 def Accounts_list(request,id_accounts):
     venda = Venda.objects.filter(pessoa=id_accounts)
     conta = Accounts.objects.filter(pessoa_id=id_accounts)
-    ordem_servico = VendaService.objects.filter(pessoa=id_accounts)
+    ordem_servico = Vendaservice.objects.filter(pessoa=id_accounts)
     
     accounts = PaymentMethod_Accounts.objects.filter(
         ( Q(venda__in = venda) | Q (conta__in = conta) | Q(ordem_servico__in = ordem_servico) ) 

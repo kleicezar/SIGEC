@@ -77,15 +77,15 @@ class PositionModelForm(forms.ModelForm):
         super(PositionModelForm, self).__init__(*args, **kwargs)
         self.fields['name_position'].widget.attrs.update({'class': 'label-text'})
 
-class ServiceModelForm(forms.ModelForm): 
+class serviceModelForm(forms.ModelForm): 
     class Meta:
         model = service
-        fields = ['name_Service','value_Service']
+        fields = ['name_service','value_service']
         widgets = {
-            'name_Service':forms.TextInput(attrs={
+            'name_service':forms.TextInput(attrs={
                 'class':'form-control row'
             }),
-            'value_Service':forms.NumberInput(attrs={
+            'value_service':forms.NumberInput(attrs={
                 'class':'form-control row',
                 'min':0.01
             })

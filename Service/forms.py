@@ -3,11 +3,11 @@ from django import forms
 from purchase.models import Product
 from .models import *
 
-class VendaServiceForm(forms.ModelForm):
+class VendaserviceForm(forms.ModelForm):
 
     
     class Meta:
-        model = VendaService
+        model = Vendaservice
         fields = ['data_da_venda', 'pessoa', 'situacao', 'observacao_pessoas', 'observacao_sistema', 'total_value','product_total','discount_total','service_total','discount_total_service','total_value_service']
         widgets = {
             'pessoa':forms.TextInput(attrs={
@@ -53,15 +53,15 @@ class VendaServiceForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(VendaServiceForm, self).__init__(*args, **kwargs)
+        super(VendaserviceForm, self).__init__(*args, **kwargs)
         if self.instance and self.instance.pk:
             self.fields['data_da_venda'].initial = self.instance.data_da_venda
             self.fields['data_da_venda'].widget.attrs['readonly'] = True
 
-class VendaItemServiceForm(forms.ModelForm):
+class VendaItemserviceForm(forms.ModelForm):
     
     class Meta:
-        model = VendaItemService
+        model = VendaItemservice
         fields = ['service', 'preco','discount','technician']
         widgets = {
             'service':forms.TextInput(attrs={
@@ -146,7 +146,7 @@ class VendaItemForm(forms.ModelForm):
 
 class PaymentMethodVendaForm(forms.ModelForm):
     class Meta:
-        model = PaymentMethod_VendaService
+        model = PaymentMethod_Vendaservice
         fields = ['forma_pagamento', 'expirationDate', 'valor']
         widgets = { 
             'forma_pagamento':forms.Select(attrs={

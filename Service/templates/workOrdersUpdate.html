@@ -265,8 +265,8 @@
                                             <td>
                                                 <input type="hidden" name="{{ form.prefix }}-id" value="{{ form.instance.id }}">
                                                 {{form.service.as_hidden}}
-                                                <input type="text" class="row form-control mb-3 mt-3 idSearch" id="idService-0" onkeyup="showSuggetionsServices(this)">
-                                                <div id="suggetionsServices" class="suggetions">
+                                                <input type="text" class="row form-control mb-3 mt-3 idSearch" id="idservice-0" onkeyup="showSuggetionsservices(this)">
+                                                <div id="suggetionsservices" class="suggetions">
 
                                                 </div>
                                             </td>
@@ -291,7 +291,7 @@
                             </div>
                     </div>
                     
-                    <button id="item" type="button" onclick="addItemService()" class="btn btn-outline-success mb-5 z-2">Adicionar Item</button>
+                    <button id="item" type="button" onclick="addItemservice()" class="btn btn-outline-success mb-5 z-2">Adicionar Item</button>
                     <template id="empty-service-template">
                         <tr>
                             <td>
@@ -301,8 +301,8 @@
                             <td>
                                 <input type="hidden" name="{{ service_item_formset.empty_form.prefix }}-id" id="{{service_item_formset.empty_form.prefix }}-id">
                                 {{ service_item_formset.empty_form.service.as_hidden }}
-                                <input type="text" class="row form-control mb-3 mt-3 idSearch" id="idService-0" onkeyup="showSuggetionsServices(this)">
-                                <div id="suggetionsServices" class="suggetions">
+                                <input type="text" class="row form-control mb-3 mt-3 idSearch" id="idservice-0" onkeyup="showSuggetionsservices(this)">
+                                <div id="suggetionsservices" class="suggetions">
 
                                 </div>
                             </td>

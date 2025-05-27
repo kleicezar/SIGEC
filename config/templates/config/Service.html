@@ -17,7 +17,7 @@
                 <div class="">
                     {% if messages %}
                         {% for message in messages %}
-                            {% if "successService" in message.tags %}
+                            {% if "successservice" in message.tags %}
                             <div style="max-height: 50px; max-width: 400px;" class="successContainer"> 
                                 <div class="alert {{ message.tags }} alert-success ">
                                     <strong>Sucesso!</strong>
@@ -53,18 +53,18 @@
                     </tr>
                 </thead>
                 <tbody>  
-                {% for Service in Services %}
+                {% for service in services %}
                 <tr>
-                    <td>{{ Service.id }}</td>
-                    <td>{{ Service.name_Service }}</td>
-                    <td>{{ Service.value_Service }}</td>
-                    <td>{{ Service.is_Active|yesno:"Sim,Não" }}</td>
+                    <td>{{ service.id }}</td>
+                    <td>{{ service.name_service }}</td>
+                    <td>{{ service.value_service }}</td>
+                    <td>{{ service.is_Active|yesno:"Sim,Não" }}</td>
                     <td>
                       
-                        <a href="{% url 'updateService' pk=Service.id %}">
+                        <a href="{% url 'updateservice' pk=service.id %}">
                             <button class="btn" style="background-color: #117027;color: white;">Editar</button>
                         </a>
-                        <form action="{% url 'deleteService' pk=Service.id %}" method="POST" style="display:inline-block;">
+                        <form action="{% url 'deleteservice' pk=service.id %}" method="POST" style="display:inline-block;">
                             {% csrf_token %}
                             <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
                         </form>

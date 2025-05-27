@@ -88,12 +88,12 @@ class Position(models.Model): #desativado
         return self.name_position
  
 class service(models.Model):
-    name_Service = models.CharField('Nome do Serviço',max_length=500)
+    name_service = models.CharField('Nome do Serviço',max_length=500)
     is_Active = models.BooleanField('ativo',default=True)
-    value_Service = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor do Serviço", blank=True, null=True)
+    value_service = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor do Serviço", blank=True, null=True)
     
     def __str__(self):
-        return self.name_Service 
+        return self.name_service 
 
 class GroupSet(models.Model):
     name = models.CharField(max_length=150, unique=True)

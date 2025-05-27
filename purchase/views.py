@@ -9,8 +9,8 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import authenticate, login, logout
 from django.db.models.functions import Coalesce
 from django.db.models import F, Value
-from Sale.models import Venda, VendaItem
-from Service.models import VendaItem as VendaItemWS
+from sale.models import Venda, VendaItem
+from service.models import VendaItem as VendaItemWS
 from .forms import *
 from .models import *
 from django.db.models import Q
