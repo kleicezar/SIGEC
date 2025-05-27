@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from faker import Faker
 from random import randint, choice
 from decimal import Decimal
-from Registry.models import Address, FisicPerson, ForeignPerson, LegalPerson, Person
+from registry.models import Address, FisicPerson, ForeignPerson, LegalPerson, Person
 
 class Command(BaseCommand):
     help = "Popula o banco de dados com dados fictícios."

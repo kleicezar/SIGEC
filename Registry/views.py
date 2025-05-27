@@ -298,7 +298,7 @@ def get_client(request, id_client):
                 'WorkPhone': person.WorkPhone,
                 'PersonalPhone': person.PersonalPhone,
                 'Site': person.site if person.site else 'Não Informado',
-                'Salesman': person.salesman if person.salesman else 'Não Informado',
+                'salesman': person.salesman if person.salesman else 'Não Informado',
                 'CreditLimit': person.creditLimit if person.creditLimit else 'Não Informado',
                 'id_FisicPerson_fk': 1,
                 }
@@ -316,7 +316,7 @@ def get_client(request, id_client):
                 'WorkPhone': person.WorkPhone,
                 'PersonalPhone': person.PersonalPhone,
                 'Site': person.site if person.site else 'Não Informado',
-                'Salesman': person.salesman if person.salesman else 'Não Informado',
+                'salesman': person.salesman if person.salesman else 'Não Informado',
                 'CreditLimit': person.creditLimit if person.creditLimit else 'Não Informado',
                 'id_LegalPerson_fk': 1,
             }
@@ -329,7 +329,7 @@ def get_client(request, id_client):
                 'WorkPhone': person.WorkPhone,
                 'PersonalPhone': person.PersonalPhone,
                 'Site': person.site if person.site else 'Não Informado',
-                'Salesman': person.salesman if person.salesman else 'Não Informado',
+                'salesman': person.salesman if person.salesman else 'Não Informado',
                 'CreditLimit': person.creditLimit if person.creditLimit else 'Não Informado',
                 'id_ForeignPerson_fk': 1,
             }

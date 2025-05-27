@@ -6,8 +6,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
-from Sale.views import venda_update
-from Service.views import workOrders_update
+from sale.views import venda_update
+from service.views import workOrders_update
 from .forms import *
 from .models import *
 from django.http import JsonResponse, HttpResponse

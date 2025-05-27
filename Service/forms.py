@@ -83,7 +83,7 @@ class VendaItemServiceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['technician'].queryset = Person.objects.filter(isTechnician = True)
-        self.fields['service'].queryset = Service.objects.all()
+        self.fields['service'].queryset = service.objects.all()
         self.fields['preco'].widget.attrs['readonly'] = True
 
     # def clean(self):

@@ -12,7 +12,7 @@ urlpatterns = [
     path('buscar_pessoas/', client_search, name='buscar_pessoas'),
     path('buscar_produtos/',product_search,name='buscar_produtos'),
     path('get_product_id/',get_product_id,name='buscar_idprodutos'),
-    path('venda/<int:venda_pk>/print', printSale, name='printSale'),
+    path('venda/<int:venda_pk>/print', printsale, name='printsale'),
     ]
 
  

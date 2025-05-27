@@ -30,7 +30,7 @@ urlpatterns = [
     path('chartAcc/dlt/<int:id_chartOfAccounts>/',disableChartOfAccounts,name='disableChartOfAccounts'),
     path('chartAcc/act/<int:id_chartOfAccounts>/',ActiveChartOfAccounts,name='ActiveChartOfAccounts'),
     
-    path('service/', service, name='Service'),
+    path('service/', service, name='service'),
     path('service/create/',ServiceForm,name='serviceForm'),
     path('service/delete/<int:pk>/',deleteService,name='deleteService'),
     path('service/update/<int:pk>/',updateService,name='updateService'),

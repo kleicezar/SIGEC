@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from datetime import datetime, timedelta
-# from Registry.forms import SearchForm
+# from registry.forms import SearchForm
 from finance.forms import AccountsForm, PaymentMethodAccountsForm
 from finance.models import PaymentMethod_Accounts
 from .forms import *
@@ -124,7 +124,7 @@ def venda_create(request):
                 for form in PaymentMethod_Accounts_FormSet.deleted_objects:
                     form.delete()
                     form.save()
-                messages.success(request, "Venda cadastrada com sucesso.",extra_tags="successSale")
+                messages.success(request, "Venda cadastrada com sucesso.",extra_tags="successsale")
                 return redirect(previous_url)
 
             if total_payment != venda_form.cleaned_data['total_value']:
@@ -302,7 +302,7 @@ def venda_update(request, pk):
                 else:
                     Older_PaymentMethod_Accounts_FormSet.save()    
                 # messages.success(request, "Venda atualizada com sucesso!")
-                messages.success(request, "Venda atualizada com sucesso.",extra_tags="successSale")
+                messages.success(request, "Venda atualizada com sucesso.",extra_tags="successsale")
                 return redirect(previous_url)
             
             if total_payment != venda_form.cleaned_data['total_value']:
@@ -378,7 +378,7 @@ def venda_delete(request, pk):
     venda_items.delete()
     # Exclui a venda
     venda.delete()
-    messages.success(request, "Venda deletada com sucesso.",extra_tags="successSale")
+    messages.success(request, "Venda deletada com sucesso.",extra_tags="successsale")
     # Redireciona para a lista de vendas após a deleção
     return redirect('venda_list')
 
@@ -509,7 +509,7 @@ def buscar_vendas(request):
 
     return JsonResponse(response_data)
 
-def printSale(request, venda_pk=1):
+def printsale(request, venda_pk=1):
     venda_list = Venda.objects.get(id=venda_pk)
     venda_item = VendaItem.objects.filter(venda=venda_list.id)
     # print(vars(venda_list))

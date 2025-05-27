@@ -1,6 +1,7 @@
 from django.db import models
-from Registry.models import Person
+from registry.models import Person
 from django.db import transaction
+from django.contrib.auth.models import Group
 
 class PaymentMethod(models.Model):
     # CONSIDERINCASH = [
@@ -79,17 +80,30 @@ class Situation(models.Model):
     def __str__(self):
         return self.name_Situation
     
-class Position(models.Model):
+class Position(models.Model): #desativado
     name_position = models.CharField('Nome do Cargo', max_length=25)
     is_Active = models.BooleanField('ativo',default=True)
 
     def __str__(self):
         return self.name_position
  
-class Service(models.Model):
+class service(models.Model):
     name_Service = models.CharField('Nome do Serviço',max_length=500)
     is_Active = models.BooleanField('ativo',default=True)
     value_Service = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor do Serviço", blank=True, null=True)
     
     def __str__(self):
         return self.name_Service 
+
+class GroupSet(models.Model):
+    name = models.CharField(max_length=150, unique=True)
+    groups = models.ManyToManyField(Group)
+
+    def get_all_permissions(self):
+        perms = set()
+        for group in self.groups.all():
+            perms.update(group.permissions.all())
+        return perms
+
+    def __str__(self):
+        return self.name

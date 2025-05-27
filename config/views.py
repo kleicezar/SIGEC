@@ -9,9 +9,10 @@ from .models import *
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.http import JsonResponse
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, User
+from django.contrib.contenttypes.models import ContentType
+from .forms import PermissionMultipleSelectForm
 from django.db import transaction
-from django.contrib.auth.models import User
 
 ### PAYMENT METHOD
 @login_required
@@ -309,9 +310,9 @@ def ActiveChartOfAccounts(request, id_chartOfAccounts):
 def service(request):
     print('----------------')
     context = {
-        'Services':Service.objects.all()
+        'Services':service.objects.all()
     }
-    return render(request,'config/Service.html',context)
+    return render(request,'config/service.html',context)
     # return HttpResponse("Olá, esta é a minha nova app Django!")
 
 @login_required
@@ -324,7 +325,7 @@ def ServiceForm(request):
         if service_form.is_valid():
             service_form.save() 
             messages.success(request, "Tipo de serviço cadastrado com sucesso.",extra_tags='successService')
-            return redirect('Service')
+            return redirect('service')
         else: 
             return render(request, 'config/serviceForm.html', {'form': service_form})
     else:
@@ -337,14 +338,14 @@ def ServiceForm(request):
 @login_required
 @transaction.atomic      
 def updateService(request,pk):
-    servico = get_object_or_404(Service,pk=pk)
+    servico = get_object_or_404(service,pk=pk)
     if request.method == "POST":
         service_form = ServiceModelForm(request.POST,instance=servico)
         if service_form.is_valid():
             service_form.save()
             messages.success(request, "Tipo de serviço atualizado com sucesso.",extra_tags='successService')
             # return redirect('orderServiceForm')
-            return redirect('Service')
+            return redirect('service')
 
         print(service_form.errors)
     else:
@@ -357,16 +358,16 @@ def updateService(request,pk):
 @login_required
 @transaction.atomic
 def deleteService(request,pk):
-    servico = get_object_or_404(Service, pk=pk)
+    servico = get_object_or_404(service, pk=pk)
     if request.method == "POST":
         servico.is_Active = False
         servico.save()
         messages.success(request, "Tipo de serviço deletado com sucesso.",extra_tags='successService')
-        return redirect('config/Service')
+        return redirect('config/service')
     context ={
         'service':servico
     }
-    return render(request,'config/Service',context)
+    return render(request,'config/service',context)
 
 @login_required
 def buscar_situacao(request):
@@ -458,7 +459,16 @@ def teste_permissao(request):
     return render(request, 'config/testePermissao.html', {"permissoes": permissoes_formatadas})
 
 @login_required
-def editperms(request, id=id):
+def permitions_list(request):
+    users = User.objects.exclude(id = request.user.id)
+    context = {
+        'users': users
+    }
+    return render(request, 'config/PermitionsList.html', context)
+
+@login_required
+def select_permissions(request, id=id):
+    # def editperms(request, id=id):
     user = get_object_or_404(User,id=id)
     permitions = Permission.objects.all()
     if (request.method == 'POST'): 
@@ -497,10 +507,26 @@ def editperms(request, id=id):
     }
     return render(request, 'config/PermitionsForm.html', context) 
 
-@login_required
-def permitions_list(request):
-    users = User.objects.exclude(id = request.user.id)
-    context = {
-        'users': users
-    }
-    return render(request, 'config/PermitionsList.html', context)
+def editperms(request, id=id):
+    # Organizar permissões por modelo
+    content_types = ContentType.objects.all().order_by('app_label', 'model')
+    grouped_permissions = {}
+
+    for ct in content_types:
+        perms = Permission.objects.filter(content_type=ct)
+        if perms.exists():
+            grouped_permissions[ct] = perms
+
+    if request.method == 'POST':
+        form = PermissionMultipleSelectForm(request.POST)
+        if form.is_valid():
+            selected_perms = form.cleaned_data['permissions']
+            request.user.user_permissions.set(selected_perms)
+            return render(request, 'success.html', {'perms': selected_perms})
+    else:
+        form = PermissionMultipleSelectForm()
+
+    return render(request, 'config/PermitionsForm.html', {
+        'form': form,
+        'grouped_permissions': grouped_permissions
+    })

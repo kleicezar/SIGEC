@@ -28,11 +28,11 @@ from datetime import date, timedelta
 def notifications(request):
     today = date.today()
     results = []
-    print("DIA ATUAL: ",today)
+    # print("DIA ATUAL: ",today)
     
     for i in range(0,365):
         target_date = today + timedelta(days=i)
-        print(target_date)
+        # print(target_date)
         pagamentos = PaymentMethod_Accounts.objects.filter(expirationDate=target_date)
         for pagamento in pagamentos:
             results.append({
