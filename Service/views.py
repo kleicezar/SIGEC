@@ -20,16 +20,16 @@ from django.db import transaction
 @login_required
 @transaction.atomic 
 def workOrders_create(request):
-    ServiceItemFormSet  = inlineformset_factory(VendaService,VendaItemService,form=VendaItemServiceForm,extra=1,can_delete=True)
-    VendaItemFormSet = inlineformset_factory(VendaService, VendaItem, form=VendaItemForm, extra=1, can_delete=True)
-    # PaymentMethodServiceFormSet = inlineformset_factory(VendaService,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=1,can_delete=True)
-    PaymentMethodAccountsFormSet = inlineformset_factory(VendaService,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=1,can_delete=True)
+    serviceItemFormSet  = inlineformset_factory(Vendaservice,VendaItemservice,form=VendaItemserviceForm,extra=1,can_delete=True)
+    VendaItemFormSet = inlineformset_factory(Vendaservice, VendaItem, form=VendaItemForm, extra=1, can_delete=True)
+    # PaymentMethodserviceFormSet = inlineformset_factory(Vendaservice,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=1,can_delete=True)
+    PaymentMethodAccountsFormSet = inlineformset_factory(Vendaservice,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=1,can_delete=True)
     
     if(request.method == 'POST'):
-        service_form = VendaServiceForm(request.POST)
+        service_form = VendaserviceForm(request.POST)
         form_Accounts = AccountsForm(request.POST)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
-        service_item_formset = ServiceItemFormSet(request.POST)
+        service_item_formset = serviceItemFormSet(request.POST)
         venda_item_formset = VendaItemFormSet(request.POST)
 
         if(service_form.is_valid() and venda_item_formset.is_valid() and service_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid()):
@@ -90,24 +90,24 @@ def workOrders_create(request):
                 messages.warning(request,"Ação Cancelada! O valor acumulado dos pagamentos é menor que o limite de crédito. ",extra_tags='workcreate_page')
         
         if not service_form.is_valid():
-            print("Erro no ServiceForm",service_form.errors)
+            print("Erro no serviceForm",service_form.errors)
 
         if not venda_item_formset.is_valid():
             print("Erro na VendaItem",venda_item_formset.errors)
             
         if not service_item_formset.is_valid():
-            print("Erro no VendaServiceItem",service_item_formset.errors)
+            print("Erro no VendaserviceItem",service_item_formset.errors)
 
         if not PaymentMethod_Accounts_FormSet.is_valid():
-            print("Erro no VendaPagamentoService",PaymentMethod_Accounts_FormSet.errors)
+            print("Erro no VendaPagamentoservice",PaymentMethod_Accounts_FormSet.errors)
 
         return redirect('workOrdersForm')
        
     else:
         form_Accounts = AccountsForm()
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
-        service_form = VendaServiceForm()
-        service_item_formset = ServiceItemFormSet(queryset=VendaItemService.objects.none())
+        service_form = VendaserviceForm()
+        service_item_formset = serviceItemFormSet(queryset=VendaItemservice.objects.none())
         venda_item_formset = VendaItemFormSet(queryset=VendaItem.objects.none())
 
         # payment_method_formset = PaymentMethodServiceFormSet(queryset=PaymentMethod_VendaService.objects.none())
@@ -135,8 +135,8 @@ def workOrders_update(request,pk):
     if request.method == 'POST':
         # previous_url = request.session.get('previous_page','/')
         # print(request.POST)
-        service_form = VendaServiceForm(request.POST, instance=servico)
-        service_item_formset = ServiceItemFormSet(request.POST, instance=servico)
+        service_form = VendaserviceForm(request.POST, instance=servico)
+        service_item_formset = serviceItemFormSet(request.POST, instance=servico)
         venda_item_formset = VendaItemFormSet(request.POST,instance=servico)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST, instance=servico,prefix="paymentmethod_accounts_set")
         Older_PaymentMethod_Accounts_FormSet = OlderPaymentMethodAccountsFormSet(request.POST,instance=servico,prefix="older_paymentmethod_accounts_set")
@@ -152,7 +152,7 @@ def workOrders_update(request,pk):
         VendaItem.objects.filter(id__in=ids_para_excluir_venda_itens).delete()
         
 
-        venda_service_item = VendaItemService.objects.filter(venda=servico)
+        venda_service_item = VendaItemservice.objects.filter(venda=servico)
         ids_existentes_venda_service_itens = set(venda_service_item.values_list('id',flat=True))
         ids_enviados_vendas_service_itens = set(
              int(value) for key, value in request.POST.items() 
@@ -302,16 +302,16 @@ def workOrders_update(request,pk):
             return redirect('workOrdersUpdate', pk=pk)
 
         if not service_form.is_valid():
-            print("Erro no ServiceForm",service_form.errors)
+            print("Erro no serviceForm",service_form.errors)
 
         if not venda_item_formset.is_valid():
             print("Erro no VendaItem",venda_item_formset.errors)
 
         if not service_item_formset.is_valid():
-            print("Erro no VendaServiceItem",service_item_formset.errors)
+            print("Erro no VendaserviceItem",service_item_formset.errors)
             
         if not PaymentMethod_Accounts_FormSet.is_valid():
-            print("Erro no VendaPagamentoService",PaymentMethod_Accounts_FormSet.errors)
+            print("Erro no VendaPagamentoservice",PaymentMethod_Accounts_FormSet.errors)
         
         if not Older_PaymentMethod_Accounts_FormSet.is_valid():
             print("Erro no Older_PaymentMethod_Accounts_FormSet",Older_PaymentMethod_Accounts_FormSet.errors)
@@ -353,14 +353,14 @@ def workOrders_update(request,pk):
 @login_required
 def workOrder(request):
     context = {
-        'workOrders':VendaService.objects.all()
+        'workOrders':Vendaservice.objects.all()
     }
     return render(request,'workOrders_list.html',context)
 
 @login_required
 @transaction.atomic 
 def workOrders_delete(request,pk):
-        workOrders = get_object_or_404(VendaService, pk=pk)
+        workOrders = get_object_or_404(Vendaservice, pk=pk)
 
         if request.method == "POST":
             pessoa = workOrders.pessoa
@@ -380,18 +380,18 @@ def workOrders_delete(request,pk):
 def service_search(request):
    
     query = request.GET.get('query', '') 
-    resultados = Service.objects.filter(
+    resultados = service.objects.filter(
         (
             Q(id__icontains=query) |
-            Q(name_Service__icontains=query)
+            Q(name_service__icontains=query)
         )
         & Q(is_Active =True)
     ).order_by('id')[:5]
     services = [
         {
             'id':servico.id,
-            'name_Service':servico.name_Service,
-            'price':servico.value_Service
+            'name_service':servico.name_service,
+            'price':servico.value_service
         }
         for servico in resultados
     ]
@@ -400,8 +400,8 @@ def service_search(request):
 
 def get_service_id(request):
     query = request.GET.get('query','')
-    resultados = Service.objects.filter(
+    resultados = service.objects.filter(
         Q(id=query)
     )
-    resultados_json = list(resultados.values('id','name_Service'))
+    resultados_json = list(resultados.values('id','name_service'))
     return JsonResponse({'servico':resultados_json})

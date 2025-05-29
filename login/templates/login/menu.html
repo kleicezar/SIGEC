@@ -69,10 +69,10 @@
         <div class="sidebar">
             <!-- <h2>Menu</h2> -->
             <ul>
-                {% if request.user|has_perm:"auth.view_user" %}
+                {% if perms.registry.view_fisicperson and perms.registry.view_foreignperson and perms.registry.view_legalperson and perms.registry.view_person %}
                 <li>
                     <a href="#" class="toggle">
-
+                        
                         <div class="page">
                             <h3>Cadastros</h3>
 
@@ -88,16 +88,17 @@
                     </ul>
                 </li>
                 {% endif %}
+                {% if perms.purchase.view_product %}
                 <li>
                     <a href="#" class="toggle">
-
+                        
                         <div class="page">
 
                             <h3>Produtos</h3>
                             <i class="fa-solid fa-chevron-down"></i>
 
                         </div>
-                       
+                        
                     </a>
                     <ul class="sub-menu">
                         <li><a href="{% url 'Product' %}"><h5>Gerenciar Produtos</h5></a></li>
@@ -105,6 +106,8 @@
                         <li><a href="{% url 'manageProductDelivery' %}"><h5>Status de Produtos</h5></a></li>
                     </ul>
                 </li>
+                {% endif %}
+                {% if perms.purchase.view_compra %}
                 <li>
                     <a href="#" class="toggle">
                         <div class="page">
@@ -117,11 +120,13 @@
                         <li><a href="#"><h5>Relatorio de Produtos Comprados</h5></a></li>
                     </ul>
                 </li>
+                {% endif %}
+                {% if perms.sale.view_venda %}
                 <li>
                     <a href="#" class="toggle">
-
+                        
                         <div class="page">
-
+                            
                             <h3>Vendas</h3>
                             <i class="fa-solid fa-chevron-down"></i>
 
@@ -133,6 +138,8 @@
                         <!-- <li><a href="{% url 'venda_list' %}"><h5>Relatorio de Vendas</h5></a></li> -->
                     </ul>
                 </li>
+                {% endif %}
+                {% if perms.service.view_vendaservice %}
                 <li>
                     <a href="#" class="toggle">
                         
@@ -148,10 +155,12 @@
                         <li><a href="{% url 'workOrders_list' %}"><h5>registrar Ordem de Serviço</h5></a></li>
                     </ul>
                 </li>
+                {% endif %}
+                {% if perms.finance.view_accounts or perms.finance.view_caixadiario or perms.finance.view_cashmovement or perms.finance.view_accounts and perms.finance.view_person %}
                 <li>
                     <a href="#" class="toggle">
                         <div class="page">
-
+                            
                             <h3>Financeiro</h3>
                             <i class="fa-solid fa-chevron-down"></i>
                             
@@ -159,18 +168,37 @@
                         
                     </a>
                     <ul class="sub-menu">
-
-                        <li><a href="{% url 'AccountsPayable' %}"><h5>Contas a Pagar</h5></a></li>
-                        <li><a href="{% url 'AccountsReceivable' %}"><h5>Contas a Receber</h5></a></li>
-                        <li><a href="{% url 'cashFlow' %}"><h5>Fluxo de Caixa</h5></a></li>
-                        <li><a href="#"><h5>Caixa</h5></a></li>
-                        <li><a href="{% url 'CreditedClients'%}"><h5>Credito</h5></a></li>
+                        {% if perms.finance.view_accounts and perms.finance.change_accounts %}
+                        <li>
+                            <a href="{% url 'AccountsPayable' %}"><h5>Contas a Pagar</h5></a>
+                        </li>
+                        <li>
+                            <a href="{% url 'AccountsReceivable' %}"><h5>Contas a Receber</h5></a>
+                        </li>
+                        {% endif %}
+                        {% if perms.finance.view_cashmovement  %}
+                        <li>
+                            <a href="{% url 'cashFlow' %}"><h5>Fluxo de Caixa</h5></a>
+                        </li>
+                        {% endif %}
+                        {% if perms.finance.view_caixadiario  %}
+                            <li>
+                                <a href="#"><h5>Caixa</h5></a>
+                            </li>
+                        {% endif %}
+                        {% if perms.finance.view_accounts and perms.registry.view_person  %}
+                            <li>
+                                <a href="{% url 'CreditedClients'%}"><h5>Credito</h5></a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </li>
+                {% endif %}
+                {% if perms.config.view_situation or perms.config.view_paymentmethod or perms.config.view_chartofaccounts or perms.config.view_service or perms.auth.view_permission and perms.auth.view_group %}
                 <li>
                     <a href="#" class="toggle">
                         <div class="page">
-
+                            
                             <h3>Configurações</h3>
                             <i class="fa-solid fa-chevron-down"></i>
                             
@@ -179,14 +207,37 @@
                     </a>
                     <ul class="sub-menu">
                         <!-- <li><a href="#"><h5>Usuarios</h5></a></li> -->
-                        <li><a href="{% url 'Situation' %}"><h5>Situação</h5></a></li>
-                        <li><a href="{% url 'PaymentMethod' %}"><h5>Forma de Pagamento</h5></a></li>
-                        <!-- <li><a href="{% url 'Position' %}"><h5>Cargos</h5></a></li> -->
-                        <li><a href="{% url 'ChartofAccounts'%}">Plano de Contas</a></li>
-                        <li><a href="{% url 'Service' %}"><h5>Serviços</h5></a></li>
-                        <li><a href="{% url 'permitions_list' %}"><h5>Permissões</h5></a></li>
+                        {% if perms.config.view_situation %}
+                            <li>
+                                <a href="{% url 'Situation' %}"><h5>Situação</h5></a>
+                            </li>
+                        {% endif %}
+                        {% if perms.config.view_paymentmethod %}
+                            <li>
+                                <a href="{% url 'PaymentMethod' %}"><h5>Forma de Pagamento</h5></a>
+                            </li>
+                        {% endif %}
+                        <!--     <li>
+                                <a href="{% url 'Position' %}"><h5>Cargos</h5></a>
+                            </li> -->
+                        {% if perms.config.view_chartofaccounts %}
+                            <li>
+                                <a href="{% url 'ChartofAccounts'%}">Plano de Contas</a>
+                            </li>
+                        {% endif %}
+                        {% if perms.config.view_service  %}
+                            <li>
+                                <a href="{% url 'service' %}"><h5>Serviços</h5></a>
+                            </li>
+                        {% endif %}
+                        {% if perms.auth.view_permission and perms.auth.view_group %}
+                            <li>
+                                <a href="{% url 'permitions_list' %}"><h5>Permissões</h5></a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </li>
+                {% endif %}
             </ul>
         </div>
         <main>

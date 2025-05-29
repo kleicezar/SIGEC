@@ -30,13 +30,19 @@ urlpatterns = [
     path('chartAcc/dlt/<int:id_chartOfAccounts>/',disableChartOfAccounts,name='disableChartOfAccounts'),
     path('chartAcc/act/<int:id_chartOfAccounts>/',ActiveChartOfAccounts,name='ActiveChartOfAccounts'),
     
-    path('service/', service, name='Service'),
-    path('service/create/',ServiceForm,name='serviceForm'),
-    path('service/delete/<int:pk>/',deleteService,name='deleteService'),
-    path('service/update/<int:pk>/',updateService,name='updateService'),
+    path('service/', Service, name='service'),
+    path('service/create/',serviceForm,name='serviceForm'),
+    path('service/delete/<int:pk>/',deleteservice,name='deleteservice'),
+    path('service/update/<int:pk>/',updateservice,name='updateservice'),
 
     path('teste_permissao/', teste_permissao, name='teste_permissao'),
 
-    path('editperms/<int:id>/', editperms, name='editperms'),
+    # path('editperms/<int:id>/', editperms, name='editperms'),
     path('permslist/', permitions_list, name='permitions_list'),
+
+    ###teste
+    path('supergrupos/', SuperGroupListView.as_view(), name='metagroup_list'),
+    path('supergrupos/novo/', SuperGroupCreateView.as_view(), name='metagroup_create'),
+    path('supergrupos/<int:pk>/editar/', SuperGroupUpdateView.as_view(), name='metagroup_update'),
+
     ]

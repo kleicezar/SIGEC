@@ -9,6 +9,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ('auth', '0012_alter_user_first_name_max_length'),
     ]
 
     operations = [
@@ -31,12 +32,12 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='Service',
+            name='service',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name_Service', models.CharField(max_length=500, verbose_name='Nome do Serviço')),
+                ('name_service', models.CharField(max_length=500, verbose_name='Nome do Serviço')),
                 ('is_Active', models.BooleanField(default=True, verbose_name='ativo')),
-                ('value_Service', models.DecimalField(blank=True, decimal_places=2, max_digits=10, null=True, verbose_name='Valor do Serviço')),
+                ('value_service', models.DecimalField(blank=True, decimal_places=2, max_digits=10, null=True, verbose_name='Valor do Serviço')),
             ],
         ),
         migrations.CreateModel(

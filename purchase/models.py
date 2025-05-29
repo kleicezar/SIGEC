@@ -1,5 +1,5 @@
 from django.db import models
-from Registry.models import Person
+from registry.models import Person
 from config.models import Situation, PaymentMethod
 
 class Product(models.Model):

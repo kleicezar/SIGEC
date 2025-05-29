@@ -9,8 +9,8 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('Registry', '0001_initial'),
         ('config', '0001_initial'),
+        ('registry', '0001_initial'),
     ]
 
     operations = [
@@ -27,11 +27,17 @@ class Migration(migrations.Migration):
                 ('tax_value', models.IntegerField(verbose_name='Valor do Imposto(%)')),
                 ('observation_tax', models.TextField(blank=True, null=True, verbose_name='Observação sobre Imposto')),
                 ('freight_type', models.CharField(choices=[('FOB', 'FOB'), ('CIF', 'CIF')], max_length=3, verbose_name='Tipo de Frete')),
+                ('observation_product', models.TextField(blank=True, null=True, verbose_name='Observação sobre Produtos')),
+                ('tax_value', models.IntegerField(verbose_name='Valor do Imposto(%)')),
+                ('observation_tax', models.TextField(blank=True, null=True, verbose_name='Observação sobre Imposto')),
+                ('freight_type', models.CharField(choices=[('FOB', 'FOB'), ('CIF', 'CIF')], max_length=3, verbose_name='Tipo de Frete')),
                 ('freight_value', models.IntegerField(null=True, verbose_name='Valor do Frete')),
                 ('observation_freight', models.TextField(blank=True, null=True, verbose_name='Observação sobre Frete')),
                 ('observation_picking_list', models.TextField(blank=True, null=True, verbose_name='Observação sobre Romaneio')),
+                ('observation_freight', models.TextField(blank=True, null=True, verbose_name='Observação sobre Frete')),
+                ('observation_picking_list', models.TextField(blank=True, null=True, verbose_name='Observação sobre Romaneio')),
                 ('value_picking_list', models.IntegerField(verbose_name='Valor do Romaneio')),
-                ('fornecedor', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='Registry.person', verbose_name='Fornecedor')),
+                ('fornecedor', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='registry.person', verbose_name='Fornecedor')),
                 ('situacao', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='config.situation', verbose_name='Situação')),
             ],
         ),
@@ -53,7 +59,7 @@ class Migration(migrations.Migration):
                 ('maximum_quantity', models.IntegerField(verbose_name='Quantidade Máxima')),
                 ('minimum_quantity', models.IntegerField(verbose_name='Quantidade Mínima')),
                 ('is_active', models.BooleanField(default=True, verbose_name='Está Ativo')),
-                ('supplier', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Registry.person', verbose_name='Fornecedor')),
+                ('supplier', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='registry.person', verbose_name='Fornecedor')),
             ],
         ),
         migrations.CreateModel(

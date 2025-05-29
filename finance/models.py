@@ -1,7 +1,7 @@
 from django.db import models
-from Registry.models import Person
-from Sale.models import Venda
-from Service.models import VendaService
+from registry.models import Person
+from sale.models import Venda
+from service.models import Vendaservice
 from purchase.models import Compra
 from config.models import ChartOfAccounts, PaymentMethod, Situation
 from django.utils import timezone
@@ -94,7 +94,7 @@ class PaymentMethod_Accounts(models.Model):
         blank=True,
         verbose_name='id_compra'
     )
-    ordem_servico = models.ForeignKey(VendaService,
+    ordem_servico = models.ForeignKey(Vendaservice,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -165,7 +165,6 @@ class PaymentMethod_Accounts(models.Model):
     blank=True  
 )
 
-
 class Tax_PaymentMethod_Accounts(models.Model):
     compra = models.ForeignKey(Compra,
         on_delete=models.SET_NULL,
@@ -235,6 +234,7 @@ class Freight_PaymentMethod_Accounts(models.Model):
         default=False,
         blank=True
     )
+
 class Romaneio_PaymentMethod_Accounts(models.Model):
     compra = models.ForeignKey(Compra,
         on_delete=models.SET_NULL,
@@ -352,4 +352,3 @@ class FechamentoCaixa(models.Model):  # fechamento do caixa
 
     def __str__(self):
         return f"Fechamento {self.caixa.data} - Responsável: {self.caixa.usuario_responsavel}"
-

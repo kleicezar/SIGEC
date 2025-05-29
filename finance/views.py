@@ -6,8 +6,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
-from Sale.views import venda_update
-from Service.views import workOrders_update
+from sale.views import venda_update
+from service.views import workOrders_update
 from .forms import *
 from .models import *
 from django.http import JsonResponse, HttpResponse
@@ -536,7 +536,7 @@ def CreditedClients_list(request):
 def Accounts_list(request,id_accounts):
     venda = Venda.objects.filter(pessoa=id_accounts)
     conta = Accounts.objects.filter(pessoa_id=id_accounts)
-    ordem_servico = VendaService.objects.filter(pessoa=id_accounts)
+    ordem_servico = Vendaservice.objects.filter(pessoa=id_accounts)
     
     accounts = PaymentMethod_Accounts.objects.filter(
         ( Q(venda__in = venda) | Q (conta__in = conta) | Q(ordem_servico__in = ordem_servico) ) 

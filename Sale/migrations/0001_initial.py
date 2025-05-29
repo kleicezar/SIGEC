@@ -9,9 +9,9 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('Registry', '0001_initial'),
         ('config', '0001_initial'),
         ('purchase', '0001_initial'),
+        ('registry', '0001_initial'),
     ]
 
     operations = [
@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                 ('total_value', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Valor Total')),
                 ('product_total', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Total de Produtos')),
                 ('discount_total', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Total de Descontos')),
-                ('pessoa', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='vendas', to='Registry.person', verbose_name='Pessoa')),
+                ('pessoa', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='vendas', to='registry.person', verbose_name='Pessoa')),
                 ('situacao', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='vendas', to='config.situation', verbose_name='Situação')),
             ],
         ),
@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
                 ('expirationDate', models.CharField(max_length=50, verbose_name='Data de Vencimento')),
                 ('valor', models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor Pago:')),
                 ('forma_pagamento', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='config.paymentmethod', verbose_name='id_forma_de_pagamento')),
-                ('venda', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='Sale.venda', verbose_name='id_venda')),
+                ('venda', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='sale.venda', verbose_name='id_venda')),
             ],
         ),
         migrations.CreateModel(
@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
                 ('price_total', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Valor Total')),
                 ('status', models.CharField(default='Pendente', max_length=50)),
                 ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='VendaProduto', to='purchase.product', verbose_name='Produto')),
-                ('venda', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Sale.venda', verbose_name='Venda')),
+                ('venda', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sale.venda', verbose_name='Venda')),
             ],
         ),
     ]

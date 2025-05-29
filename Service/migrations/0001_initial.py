@@ -9,14 +9,14 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('Registry', '0001_initial'),
         ('config', '0001_initial'),
         ('purchase', '0001_initial'),
+        ('registry', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='VendaService',
+            name='Vendaservice',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('data_da_venda', models.DateTimeField(verbose_name='Data da Venda')),
@@ -34,14 +34,14 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='VendaItemService',
+            name='VendaItemservice',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('preco', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Preço Unitário')),
                 ('discount', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Desconto(%)')),
                 ('service', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='config.service', verbose_name='Servico')),
-                ('technician', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Registry.person', verbose_name='Técnico')),
-                ('venda', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Service.vendaservice', verbose_name='vendaService')),
+                ('technician', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='registry.person', verbose_name='Técnico')),
+                ('venda', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='service.vendaservice', verbose_name='vendaservice')),
             ],
         ),
         migrations.CreateModel(
@@ -58,13 +58,13 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='PaymentMethod_VendaService',
+            name='PaymentMethod_Vendaservice',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('expirationDate', models.CharField(max_length=50, verbose_name='Data de Vencimento')),
                 ('valor', models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor Pago:')),
                 ('forma_pagamento', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='config.paymentmethod', verbose_name='id_forma_de_pagamento')),
-                ('venda', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='Service.vendaservice', verbose_name='id_vendaService')),
+                ('venda', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='service.vendaservice', verbose_name='id_vendaservice')),
             ],
         ),
     ]

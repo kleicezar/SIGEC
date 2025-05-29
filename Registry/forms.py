@@ -133,7 +133,7 @@ class PersonForm(forms.ModelForm):
                   'isSupllier', 
                   'isUser', 
                   'isEmployee', 
-                  'isSalesman', 
+                  'issalesman', 
                   'isFormer_employee', 
                   'isCarrier', 
                   'isDelivery_man', 
@@ -168,7 +168,7 @@ class PersonForm(forms.ModelForm):
             'isEmployee':forms.CheckboxInput(attrs={
                 'class':'form-check-input'}
             ), 
-            'isSalesman':forms.CheckboxInput(attrs={
+            'issalesman':forms.CheckboxInput(attrs={
                 'class':'form-check-input'}
             ), 
             'isFormer_employee':forms.CheckboxInput(attrs={

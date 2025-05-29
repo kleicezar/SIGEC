@@ -13,7 +13,7 @@ urlpatterns = [
     path('buscar_fornecedores/',supplier_search,name='buscar_fornecedores'),
     path('buscar_produtos/',product_search,name='buscar_produtos'),
     path('get_product_id/',get_product_id,name='buscar_idprodutos'),
-    path('venda/<int:venda_pk>/print', printSale, name='printSale'),
+    path('venda/<int:venda_pk>/print', printsale, name='printsale'),
     ]
 
  

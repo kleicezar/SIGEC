@@ -9,9 +9,15 @@ from .models import *
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.http import JsonResponse
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, User
+from django.contrib.contenttypes.models import ContentType
+from .forms import PermissionMultipleSelectForm
 from django.db import transaction
-from django.contrib.auth.models import User
+from django.urls import reverse_lazy
+from django.views.generic import ListView
+from django.views.generic.edit import CreateView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin # Para segurança
+
 
 ### PAYMENT METHOD
 @login_required
@@ -306,29 +312,29 @@ def ActiveChartOfAccounts(request, id_chartOfAccounts):
     return render(request, 'config/ChartOfAccounts.html', context)
 
 @login_required
-def service(request):
+def Service(request):
     print('----------------')
     context = {
-        'Services':Service.objects.all()
+        'services':service.objects.all()
     }
-    return render(request,'config/Service.html',context)
+    return render(request,'config/service.html',context)
     # return HttpResponse("Olá, esta é a minha nova app Django!")
 
 @login_required
 @transaction.atomic
-def ServiceForm(request):
+def serviceForm(request):
     if request.method == 'POST':
-        service_form = ServiceModelForm(request.POST)
+        service_form = serviceModelForm(request.POST)
         print(f'\n\n\n{request.POST}')
         print(f'\n\n\n{service_form.is_valid()}')
         if service_form.is_valid():
             service_form.save() 
-            messages.success(request, "Tipo de serviço cadastrado com sucesso.",extra_tags='successService')
-            return redirect('Service')
+            messages.success(request, "Tipo de serviço cadastrado com sucesso.",extra_tags='successservice')
+            return redirect('service')
         else: 
             return render(request, 'config/serviceForm.html', {'form': service_form})
     else:
-        service_form = ServiceModelForm()
+        service_form = serviceModelForm()
         context = {
             'service':service_form
         }
@@ -336,19 +342,19 @@ def ServiceForm(request):
     
 @login_required
 @transaction.atomic      
-def updateService(request,pk):
-    servico = get_object_or_404(Service,pk=pk)
+def updateservice(request,pk):
+    servico = get_object_or_404(service,pk=pk)
     if request.method == "POST":
-        service_form = ServiceModelForm(request.POST,instance=servico)
+        service_form = serviceModelForm(request.POST,instance=servico)
         if service_form.is_valid():
             service_form.save()
-            messages.success(request, "Tipo de serviço atualizado com sucesso.",extra_tags='successService')
-            # return redirect('orderServiceForm')
-            return redirect('Service')
+            messages.success(request, "Tipo de serviço atualizado com sucesso.",extra_tags='successservice')
+            # return redirect('orderserviceForm')
+            return redirect('service')
 
         print(service_form.errors)
     else:
-        service_form = ServiceModelForm(instance=servico)
+        service_form = serviceModelForm(instance=servico)
         context = {
             'service':service_form,
         }
@@ -356,17 +362,17 @@ def updateService(request,pk):
 
 @login_required
 @transaction.atomic
-def deleteService(request,pk):
-    servico = get_object_or_404(Service, pk=pk)
+def deleteservice(request,pk):
+    servico = get_object_or_404(service, pk=pk)
     if request.method == "POST":
         servico.is_Active = False
         servico.save()
-        messages.success(request, "Tipo de serviço deletado com sucesso.",extra_tags='successService')
-        return redirect('config/Service')
+        messages.success(request, "Tipo de serviço deletado com sucesso.",extra_tags='successservice')
+        return redirect('config/service')
     context ={
         'service':servico
     }
-    return render(request,'config/Service',context)
+    return render(request,'config/service',context)
 
 @login_required
 def buscar_situacao(request):
@@ -458,7 +464,16 @@ def teste_permissao(request):
     return render(request, 'config/testePermissao.html', {"permissoes": permissoes_formatadas})
 
 @login_required
-def editperms(request, id=id):
+def permitions_list(request):
+    users = User.objects.exclude(id = request.user.id)
+    context = {
+        'users': users
+    }
+    return render(request, 'config/PermitionsList.html', context)
+
+@login_required
+def select_permissions(request, id=id):
+    # def editperms(request, id=id):
     user = get_object_or_404(User,id=id)
     permitions = Permission.objects.all()
     if (request.method == 'POST'): 
@@ -497,10 +512,62 @@ def editperms(request, id=id):
     }
     return render(request, 'config/PermitionsForm.html', context) 
 
-@login_required
-def permitions_list(request):
-    users = User.objects.exclude(id = request.user.id)
-    context = {
-        'users': users
-    }
-    return render(request, 'config/PermitionsList.html', context)
+def editperms(request, id=id):
+    # Organizar permissões por modelo
+    content_types = ContentType.objects.all().order_by('app_label', 'model')
+    grouped_permissions = {}
+
+    for ct in content_types:
+        perms = Permission.objects.filter(content_type=ct)
+        if perms.exists():
+            grouped_permissions[ct] = perms
+
+    if request.method == 'POST':
+        form = PermissionMultipleSelectForm(request.POST)
+        if form.is_valid():
+            selected_perms = form.cleaned_data['permissions']
+            request.user.user_permissions.set(selected_perms)
+            return render(request, 'success.html', {'perms': selected_perms})
+    else:
+        form = PermissionMultipleSelectForm()
+
+    return render(request, 'config/PermitionsForm.html', {
+        'form': form,
+        'grouped_permissions': grouped_permissions
+    })
+
+
+### TESTE
+
+# View para listar os MetaGroups (Supergrupos)
+class SuperGroupListView(LoginRequiredMixin, ListView): # Adicionado LoginRequiredMixin
+    model = SuperGroup
+    template_name = 'sua_app/metagroup_list.html' # Seu template para listar
+    context_object_name = 'metagroups'
+    # paginate_by = 10 # Opcional: para paginação
+
+# View para criar um novo SuperGroup
+class SuperGroupCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView): # Adicionado Mixins de segurança
+    model = SuperGroup
+    form_class = SuperGroupForm
+    template_name = 'sua_app/metagroup_form.html' # Seu template para o formulário
+    success_url = reverse_lazy('sua_app:metagroup_list') # URL para redirecionar após sucesso
+    permission_required = 'sua_app.add_metagroup' # Permissão necessária
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = 'Criar Novo Supergrupo'
+        return context
+
+# View para editar um SuperGroup existente
+class SuperGroupUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView): # Adicionado Mixins de segurança
+    model = SuperGroup # Django pega o 'pk' da URL automaticamente
+    form_class = SuperGroupForm
+    template_name = 'sua_app/metagroup_form.html'
+    success_url = reverse_lazy('sua_app:metagroup_list')
+    permission_required = 'sua_app.change_metagroup'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = f'Editar Supergrupo: {self.object.name}'
+        return context

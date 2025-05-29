@@ -13,44 +13,79 @@
         {% endblock %}
     </head>
 </body>
-    <main>
-        {% bootstrap_messages %}
-            {% block content %}
-            <div class='content'> 
-                <h1>TA FUNFANDO</h1>
-                    {% for form in users %}
-                    <tr>
-                        <td>{{ form }}</td>
-                        {% comment %}
-                        {% for form in users %}
-                            {% for field in form %}
-                                {% if field.label|slice:":6" == "Config" %}
-                                    {{ field }}
-                                {% endif %}
-                            {% endfor %}
+<main>
+    {% bootstrap_messages %}
+        {% block content %}
+            <h1>{{ page_title|default:"Gerenciar Supergrupo" }}</h1>
+
+            <form method="post">
+                {% csrf_token %} {# Proteção CSRF, essencial! #}
+
+                {# Renderiza o formulário campo a campo para melhor controle com checkboxes #}
+                <div>
+                    <label for="{{ form.name.id_for_label }}">{{ form.name.label }}:</label><br>
+                    {{ form.name }}
+                    {% if form.name.help_text %}<small style="display: block;">{{ form.name.help_text }}</small>{% endif %}
+                    {% for error in form.name.errors %}<p style="color: red;">{{ error }}</p>{% endfor %}
+                </div>
+                <hr>
+                <div>
+                    <p><strong>{{ form.groups.label }}:</strong></p>
+                    {% if form.groups.help_text %}<small style="display: block;">{{ form.groups.help_text }}</small>{% endif %}
+                    <div style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+                        {% for checkbox in form.groups %}
+                            <label for="{{ checkbox.id_for_label }}">
+                                {{ checkbox.tag }} {{ checkbox.choice_label }}
+                            </label><br>
                         {% endfor %}
-                        <td>{{ form.id }}</td>
-                        <td>{{ form.name }}</td>
-                        <td>{{ form.codename }}</td>
-                        <td>{{ form.content_type }}</td>
-                        <td>
-                            <a href="{% url 'workOrdersUpdate' pk=workOrder.id %}">
-                                <button class="btn" style="background-color: #117027;color: white;">Editar</button>
-                            </a>
-                            <form action="{% url 'workOrdersDelete' pk=workOrder.id %}" method="POST" style="display:inline-block;">
-                                {% csrf_token %}
-                                <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
-                            </form>
-                            {% endcomment %}
-                            {% comment %} <button>Deletar</button> {% endcomment %}
-                            {% comment %} <button>Mais</button> {% endcomment %}
-                            
-                        </td>
-                    </tr>
+                    </div>
+                    {% for error in form.groups.errors %}<p style="color: red;">{{ error }}</p>{% endfor %}
+                </div>
+                <hr>
+                <div>
+                    <p><strong>{{ form.members.label }}:</strong></p>
+                    {% if form.members.help_text %}<small style="display: block;">{{ form.members.help_text }}</small>{% endif %}
+                    <div style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+                        {% for checkbox in form.members %}
+                            <label for="{{ checkbox.id_for_label }}">
+                                {{ checkbox.tag }} {{ checkbox.choice_label }}
+                            </label><br>
+                        {% endfor %}
+                    </div>
+                    {% for error in form.members.errors %}<p style="color: red;">{{ error }}</p>{% endfor %}
+                </div>
+                <hr>
+                <button type="submit">Salvar</button>
+            </form>
+
+            <p style="margin-top: 20px;">
+                <a href="{% url 'permitions_list' %}">Voltar para a lista</a>
+            </p>
+            {% comment %}
+            <div class='content'>
+                <h2>Selecione Permissões</h2>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    {% for ct, permissions in grouped_permissions.items %}
+                        <fieldset>
+                            <legend>{{ ct.app_label|capfirst }} / {{ ct.model|capfirst }}</legend>
+                            {% for perm in permissions %}
+                                <label>
+                                    <input type="checkbox" name="permissions" value="{{ perm.id }}"
+                                        {% if perm.id in form.permissions.value %}checked{% endif %}>
+                                    {{ perm.name }}
+                                </label><br>
+                            {% endfor %}
+                        </fieldset>
                     {% endfor %}
-                    </tbody>
-                </table>
+
+                    <button type="submit">Salvar</button>
+                </form> 
+
             </div>
-            {% endblock %}
+            {% endcomment %}
+        {% endblock %}
     </main>
 <body>

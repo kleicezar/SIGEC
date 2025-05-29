@@ -1,7 +1,9 @@
 from django.db import models
-from Registry.models import Person
+from registry.models import Person
 from django.db import transaction
-
+from django.contrib.auth.models import User, Group
+from django.db.models.signals import m2m_changed
+from django.dispatch import receiver
 class PaymentMethod(models.Model):
     # CONSIDERINCASH = [
     #     ('entrada', 'Entrada'),
@@ -79,17 +81,107 @@ class Situation(models.Model):
     def __str__(self):
         return self.name_Situation
     
-class Position(models.Model):
+class Position(models.Model): #desativado
     name_position = models.CharField('Nome do Cargo', max_length=25)
     is_Active = models.BooleanField('ativo',default=True)
 
     def __str__(self):
         return self.name_position
  
-class Service(models.Model):
-    name_Service = models.CharField('Nome do Serviço',max_length=500)
+class service(models.Model):
+    name_service = models.CharField('Nome do Serviço',max_length=500)
     is_Active = models.BooleanField('ativo',default=True)
-    value_Service = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor do Serviço", blank=True, null=True)
+    value_service = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor do Serviço", blank=True, null=True)
     
     def __str__(self):
-        return self.name_Service 
+        return self.name_service 
+
+class SuperGroup(models.Model):
+    name = models.CharField(
+        max_length=150,
+        unique=True,
+        verbose_name='nome do super grupo'
+    )
+    # Grupos que este SuperGroup contém
+    groups = models.ManyToManyField(
+        Group,
+        blank=True,
+        verbose_name='grupos contidos',
+        help_text='Os grupos que este super grupo engloba.'
+    )
+    # Usuários que pertencem a este SuperGroup
+    members = models.ManyToManyField(
+        User,
+        blank=True,
+        verbose_name='membros',
+        help_text='Usuários que pertencem a este super grupo.',
+        related_name='super_groups'  # Importante para evitar conflito com user.groups
+    )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'super grupo'
+        verbose_name_plural = 'super grupos'
+
+def sync_user_groups_from_supergroups(user_pk):
+    """
+    Sincroniza os grupos Django de um usuário com base nos SuperGroups aos quais ele pertence.
+    """
+    try:
+        user = User.objects.get(pk=user_pk)
+    except User.DoesNotExist:
+        return
+
+    desired_groups = set()
+    # Garante que a relação 'super_groups' exista no modelo User
+    if hasattr(user, 'super_groups'):
+        for supergroup in user.super_groups.all():
+            desired_groups.update(supergroup.groups.all())
+
+    current_groups = set(user.groups.all())
+
+    # Adiciona grupos que estão nos MetaGroups mas não diretamente no usuário
+    groups_to_add = desired_groups - current_groups
+    if groups_to_add:
+        user.groups.add(*groups_to_add)
+
+    # Remove grupos que estão no usuário mas não são mais justificados por nenhum SuperGroup
+    # ATENÇÃO: Isso significa que os MetaGroups gerenciam completamente os grupos.
+    # Se um grupo for atribuído diretamente ao usuário e não estiver em nenhum SuperGroup do usuário,
+    # ele será removido por esta lógica.
+    groups_to_remove = current_groups - desired_groups
+    if groups_to_remove:
+        user.groups.remove(*groups_to_remove)
+
+@receiver(m2m_changed, sender=SuperGroup.members.through)
+def supergroup_members_changed_handler(sender, instance, action, reverse, pk_set, **kwargs):
+    """
+    Chamado quando a relação many-to-many SuperGroup.members é alterada.
+    (Ex: um usuário é adicionado/removido de um SuperGroup)
+    """
+    if action in ["post_add", "post_remove", "post_clear"]:
+        if reverse:
+            # 'instance' é um User, 'pk_set' contém PKs de SuperGroup
+            # Ex: user_instance.super_groups.add(supergroup_instance)
+            user_instance = instance
+            sync_user_groups_from_supergroups(user_instance.pk)
+        else:
+            # 'instance' é um SuperGroup, 'pk_set' contém PKs de User
+            # Ex: supergroup_instance.members.add(user_instance)
+            for user_pk in pk_set:
+                sync_user_groups_from_supergroups(user_pk)
+
+@receiver(m2m_changed, sender=SuperGroup.groups.through)
+def supergroup_definition_changed_handler(sender, instance, action, pk_set, **kwargs):
+    """
+    Chamado quando a relação many-to-many SuperGroup.groups é alterada.
+    (Ex: um Group é adicionado/removido da definição de um SuperGroup)
+    'instance' é o SuperGroup que foi modificado.
+    """
+    if action in ["post_add", "post_remove", "post_clear"]:
+        # Todos os membros do SuperGroup modificado precisam ter seus grupos recalculados.
+        supergroup = instance
+        for user in supergroup.members.all():
+            sync_user_groups_from_supergroups(user.pk)

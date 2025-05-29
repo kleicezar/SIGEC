@@ -57,7 +57,7 @@ class Person(models.Model):
     isSupllier = models.BooleanField("Fornecedor",null=True, blank=True)
     isUser = models.BooleanField("Usuario do Sistema",null=True, blank=True)
     isEmployee = models.BooleanField("Funcionario",null=True, blank=True)
-    isSalesman = models.BooleanField("Vendedor",null=True, blank=True)
+    issalesman = models.BooleanField("Vendedor",null=True, blank=True)
     isFormer_employee = models.BooleanField("Ex-Funcionario",null=True, blank=True)
     isCarrier = models.BooleanField("Transportadora",null=True, blank=True)
     isDelivery_man = models.BooleanField("Entregador",null=True, blank=True)
