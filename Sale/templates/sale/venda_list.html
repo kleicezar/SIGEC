@@ -63,7 +63,7 @@
                     <tr>
                         {% for field,label in colunas %}
                         <th>
-                            <a href="?sort={{ field }}&dir={% if current_dir == 'asc' %}desc{% else %}asc{% endif %}&query={{ request.GET.query }}" style="color:inherit;text-decoration: none;">
+                            <a class="cabecalho" href="?page={{ vendas.number }}&sort={{ field }}&dir={% if current_dir == 'asc' %}desc{% else %}asc{% endif %}&query={{ query }}" style="color:inherit;text-decoration: none;">
                                 {{ label }}
                                 {% if current_dir == 'asc' %}
                                     ▲

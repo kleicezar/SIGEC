@@ -36,10 +36,8 @@
         {% bootstrap_messages %}
         {% block content %}
         <div class='content'>
-            <div class='container-fluid justify-content-center align-items-center'>
-               
-                
-                <form method="post">
+            <div class='container-fluid justify-content-center align-items-center'>   
+                <form method="post" id="form">
                     {% csrf_token %}
                     <div class="col d-flex mb-5 gap-4 mt-5">
                         <a href="{% url 'venda_list' %}">
@@ -95,7 +93,7 @@
                                     <td id="form-client" class="">
                                         {{venda_form.pessoa.as_hidden}}
                                         <div>
-                                            <input type="text" class="row form-control mb-3 mt-3" id="idSearch" onkeyup="showSuggetions(this)">
+                                            <input type="text" class="row form-control mb-3 mt-3" id="idSearch" onkeyup="showSuggetions(this)" required>
                                             <div id="suggestions" class="suggetions">
                                                 
                                             </div>
@@ -146,7 +144,7 @@
                                     <tbody class="itens">
                                         <tr>
                                             <td >{{form.product.as_hidden}}
-                                                <input type="text" class="row form-control mb-3 mt-3" id="idProduct-0" onkeyup="showSuggetionsProducts(this)">
+                                                <input type="text" class="row form-control mb-3 mt-3" id="idProduct-0" onkeyup="showSuggetionsProducts(this)" required>
                                                 <div id="products-0" class="suggetions">
                                                 </div>
                                             </td>
@@ -180,7 +178,7 @@
                         <tr>
                             <td>
                                 {{ venda_item_formset.empty_form.product.as_hidden }}
-                                <input type="text" class="row form-control mb-3 mt-3" onkeyup="showSuggetionsProducts(this)">
+                                <input type="text" class="row form-control mb-3 mt-3" onkeyup="showSuggetionsProducts(this)" required>
                                 <div class="suggetions">
                         
                                 </div>
@@ -267,7 +265,7 @@
 
                     <div class="row">
                         <div class="col mt-5 text-end">
-                            <button  type="submit" class="btn bg-adapted">Enviar</button>
+                            <button  type="submit" class="btn bg-adapted" id="enviar" >Enviar</button>
                         </div>
                     </div>
                 </form>
@@ -276,6 +274,23 @@
         </div>
         
         <script src="{% static 'js/addItem.js' %}" defer></script>
+        <!-- <script>
+            let botaoClicado = false;
+
+            document.getElementById('generate').addEventListener('click', () => {
+            botaoClicado = true;
+            });
+
+            document.getElementById('form').addEventListener('submit', function (event) {
+            if (!botaoClicado) {
+                console.log("fdsafd")
+                event.preventDefault(); // Impede o envio
+                alert('Você precisa gerar os pagamentos!');
+            }
+            });
+
+        </script> -->
+        <script src="{% static 'js/alertInstallments.js' %}"></script>
         <script src="{% static 'js/suggestions.js' %}"></script><!-- pesquisa clientes -->
         <!-- <script src="{% static 'js/clientSearch.js' %}"></script>  pesquisa clientes -->
         <script src="{% static 'js/venda_item.js' %}"></script> <!-- pesquisa produtos em vendas-->

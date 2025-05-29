@@ -10,6 +10,8 @@ from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.db import transaction
+from django.db.models import Case, When, Value, CharField, F
+from operator import attrgetter
 ### CLIENT
 
 @login_required
@@ -97,35 +99,72 @@ def Client_Create(request):
 def client_list(request):
     # Obtenha o termo de pesquisa da requisição
     search_query = request.GET.get('query', '')
+    sort = request.GET.get('sort')
+    direction = request.GET.get('dir', 'asc')
 
     # Filtrar os clientes com base no termo de pesquisa
-    if search_query:
-        clients = Person.objects.filter(
-
-        (
-            Q(id__icontains=search_query) | 
-            Q(id_FisicPerson_fk__name__icontains=search_query) | 
-            Q(id_ForeignPerson_fk__name_foreigner__icontains=search_query) | 
-            Q(id_LegalPerson_fk__fantasyName__icontains=search_query) 
-            
-        ) 
-        & Q(isActive = False)
-        
-        ).order_by('id')
     
-    else:
-        clients = Person.objects.filter(
-            isActive = True
+    if search_query:
+        clients = Person.objects.annotate(
+            nome_cliente = Case(
+            When(id_FisicPerson_fk__name__isnull = False,then=F('id_FisicPerson_fk__name')),
+            When(id_LegalPerson_fk__isnull=False, then=F('id_LegalPerson_fk__fantasyName')),
+            When(id_ForeignPerson_fk__isnull=False, then=F('id_ForeignPerson_fk__name_foreigner')),
+            default=Value(''),
+            output_field=CharField()
+            )
+        ).filter(
+            (
+                Q(id__startswith=search_query) |
+                Q(nome_cliente__istartswith=search_query)
+            ) &
+            Q(isActive = True)
         )
+    else:
+        clients = Person.objects.annotate(
+            nome_cliente = Case(
+                When(id_FisicPerson_fk__name__isnull = False,then=F('id_FisicPerson_fk__name')),
+                When(id_LegalPerson_fk__isnull=False, then=F('id_LegalPerson_fk__fantasyName')),
+                When(id_ForeignPerson_fk__isnull=False, then=F('id_ForeignPerson_fk__name_foreigner')),
+                default=Value(''),
+                output_field=CharField()
+            )).filter(
+                Q(isActive = True)
+            )
+       
 
     # Configure o Paginator com o queryset filtrado
-    paginator = Paginator(clients, 20)  # 20 itens por página
+    paginator = Paginator(clients, 2)  # 20 itens por página
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
 
+    page_items = list(page.object_list)
+
+    foreign_keys = {
+        'pessoa':'nome_cliente'
+    }
+
+    if sort:
+        reverse = (direction == 'desc')
+        if sort in foreign_keys:
+            value = foreign_keys[sort]
+            page_items = sorted(page_items,key=attrgetter(value), reverse=reverse)
+        else:
+            page_items = sorted(page_items,key=attrgetter(sort),reverse=reverse)
+
+    page.object_list = page_items
+
+    colunas = [
+        ('id','ID'),
+        ('pessoa','Pessoa')
+    ]
+
     return render(request, 'registry/client_list.html', {
+        'colunas':colunas,
         'clients': page,
         'query': search_query,  # Envie o termo de pesquisa para o template
+        'current_sort':sort,
+        'current_dir':direction
     })
 
 
@@ -161,12 +200,13 @@ def buscar_clientes(request):
     ]
 
     # Paginação
-    usuario_paginator = Paginator(clients, 20)  # 20 resultados por página
+    usuario_paginator = Paginator(clients, 2)  # 20 resultados por página
     page = usuario_paginator.get_page(page_num)
 
     # Constrói a resposta JSON
     response_data = {
         'clientes': list(page.object_list),
+        'query':query,
         'pagination': {
             'has_previous': page.has_previous(),
             'previous_page': page.previous_page_number() if page.has_previous() else None,
@@ -175,7 +215,7 @@ def buscar_clientes(request):
             'current_page': page.number,
             'total_pages': usuario_paginator.num_pages,
         },
-        'message': f"{len(clients)} Clientes encontrados." if page.object_list else "Nenhum cliente encontrado."
+        'message': f"{len(clients)} cliente(s) encontrado(s)" if page.object_list else "Nenhum cliente encontrado."
     }
     return JsonResponse(response_data)
 

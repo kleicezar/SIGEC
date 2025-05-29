@@ -1,6 +1,7 @@
 
 from datetime import datetime, timedelta
 from decimal import Decimal, InvalidOperation
+from operator import attrgetter
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.forms import inlineformset_factory
@@ -705,9 +706,51 @@ def compras_item_create(request, compra_pk):
 @login_required
 @permission_required('purchase.view_product', raise_exception=True)
 def product(request):
-    products = Product.objects.filter(is_active=True)
-    return render(request, 'purchase/product_list.html', {'products': products})
+    search_query = request.GET.get('query', '')
+    sort = request.GET.get('sort')
+    direction = request.GET.get('dir', 'asc')
+    if search_query:
+        products = Product.objects.filter(
+        (
+            Q(id__startswith=search_query) |
+            Q(description__startswith=search_query) |
+            Q(product_code__startswith=search_query)
+            ) &
+        Q(is_active=True)
+        )
+    else:
+        products = Product.objects.filter(
+            is_active=True
+        )
+    
+    paginator = Paginator(products,2)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
 
+    page_items = list(page.object_list)
+
+    colunas = [
+        ('id','ID'),
+        ('description','Descrição'),
+        ('product_code','Código do Produto'),
+        ('selling_price','Preço de Venda')
+    ]
+    if sort:
+        reverse = (direction == 'desc')
+        page_items = sorted(page_items,key=attrgetter(sort),reverse=reverse)
+
+    page.object_list = page_items
+
+    # products = Product.objects.filter(is_active=True)
+    return render(request, 'purchase/product_list.html', 
+        {
+            'colunas':colunas,
+            'products': page,
+            'query':search_query,
+            'current_sort':sort,
+            'current_dir':direction
+         }
+    )
 @login_required
 @transaction.atomic
 @permission_required('purchase.add_product', raise_exception=True)
@@ -770,11 +813,12 @@ def buscar_produtos(request):
         } for produto in resultados
     ]
 
-    usuario_paginator = Paginator(products,20)
+    usuario_paginator = Paginator(products,2)
     page = usuario_paginator.get_page(page_num)
 
     response_data = {
         'produtos':list(page.object_list),
+        'quert':query,
         'pagination':{
             'has_previous': page.has_previous(),
             'previous_page': page.previous_page_number() if page.has_previous() else None,
@@ -783,7 +827,7 @@ def buscar_produtos(request):
             'current_page': page.number,
             'total_pages': usuario_paginator.num_pages,
         },
-        'message': f"{len(products)} produtos encontrados" if page.object_list else "Nenhum produto encontrado."
+        'message': f"{len(products)} produto(s) encontrado(s)" if page.object_list else "Nenhum produto encontrado"
     }
 
     return JsonResponse(response_data)

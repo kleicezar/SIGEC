@@ -11,7 +11,9 @@ class VendaServiceForm(forms.ModelForm):
         fields = ['data_da_venda', 'pessoa', 'situacao', 'observacao_pessoas', 'observacao_sistema', 'total_value','product_total','discount_total','service_total','discount_total_service','total_value_service']
         widgets = {
             'pessoa':forms.TextInput(attrs={
-                'class':'form-control row-xl-5' 
+                'class':'form-control row-xl-5',
+                'required':'required'
+                
             }),
             'data_da_venda':forms.DateTimeInput(attrs={
                 'class':'form-control row-xl-2 mb-3 mt-3 ' ,
@@ -65,18 +67,22 @@ class VendaItemServiceForm(forms.ModelForm):
         fields = ['service', 'preco','discount','technician']
         widgets = {
             'service':forms.TextInput(attrs={
-                'class':'form-control row-2 mb-3 mt-3'
+                'class':'form-control row-2 mb-3 mt-3',
+                'required':'required'
             }),
             'preco':forms.TextInput(attrs={
                 'class':'form-control row mb-3 mt-3 ',
-                'oninput': 'calcularPreco(this)'
+                'oninput': 'calcularPreco(this)',
+                'required':'required'
             }),
             'discount':forms.TextInput(attrs={
                 'class':'form-control row mb-3 mt-3',
-                'oninput': 'calcularPreco(this)'
+                'oninput': 'calcularPreco(this)',
+                'required':'required'
             }),
             'technician':forms.Select(attrs={
-                'class':'form-select row mb-3 mt-3'
+                'class':'form-select row mb-3 mt-3',
+                'required':'required'
             })
         }
 
@@ -111,23 +117,28 @@ class VendaItemForm(forms.ModelForm):
         fields = ['product', 'quantidade', 'preco_unitario','discount','price_total','status']
         widgets = {
             'product':forms.TextInput(attrs={
-                'class':'form-control row-2  '
+                'class':'form-control row-2 ',
+                'required':'required'
             }),
             'quantidade':forms.TextInput(attrs={
                 'class':'form-control row mt-3 mb-3',
-                'oninput':'calcularPrecoProduto(this)'
+                'oninput':'calcularPrecoProduto(this)',
+                'required':'required'
             }),
             'preco_unitario':forms.TextInput(attrs={
                 'class':'form-control row mt-3 mb-3',
-                'oninput':'calcularPrecoProduto(this)'
+                'oninput':'calcularPrecoProduto(this)',
+                'required':'required'
             }),
             'discount':forms.TextInput(attrs={
                 'class':'form-control row mt-3 mb-3',
-                'oninput':'calcularPrecoProduto(this)'
+                'oninput':'calcularPrecoProduto(this)',
+                'required':'required'
             }),
             'price_total':forms.TextInput(attrs={
                 'class':'form-control row mt-3 mb-3',
-                'oninput':'calcularPrecoProduto(this)'
+                'oninput':'calcularPrecoProduto(this)',
+                'required':'required'
             })
         }
 

@@ -1,3 +1,4 @@
+from operator import attrgetter
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.forms import inlineformset_factory
@@ -14,44 +15,76 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.db import transaction
+from django.db.models import Case, When, Value, CharField, F
 ### SALE
 
 @login_required
 def venda_list(request):
     sort = request.GET.get('sort')
-    direction = request.GET.get('dir','asc')
-    search_query = request.GET.get('query','')
-    if not sort:
-        if search_query:
-            sales = Venda.objects.filter(
-            Q(id__istartswith=search_query) | 
-            Q(pessoa__id_FisicPerson_fk__name__istartswith=search_query) |
-            Q(pessoa__id_ForeignPerson_fk__name_foreigner__istartswith=search_query) |
-            Q(pessoa__id_LegalPerson_fk__fantasyName__istartswith=search_query)
-        ).order_by('id')
-        else:
-            sales = Venda.objects.all()
-    else:
-        if direction == 'desc':
-            ordering = f'-{sort}'
-        else:
-            ordering = sort
-        print('entrei')
-        if search_query:
-            sales = Venda.objects.filter(
-            Q(id__istartswith=search_query) | 
-            Q(pessoa__id_FisicPerson_fk__name__istartswith=search_query) |
-            Q(pessoa__id_ForeignPerson_fk__name_foreigner__istartswith=search_query) |
-            Q(pessoa__id_LegalPerson_fk__fantasyName__istartswith=search_query)
-        ).order_by(ordering)
-            print(sales)
-        else:
-            sales = Venda.objects.all().order_by(ordering)    
+    direction = request.GET.get('dir', 'asc')
+    search_query = request.GET.get('query', '')
 
-    paginator = Paginator(sales,5)
+    # Filtro de busca
+    if search_query:
+       sales = Venda.objects.annotate(
+        nome_cliente=Case(
+        When(pessoa__id_FisicPerson_fk__isnull=False, then=F('pessoa__id_FisicPerson_fk__name')),
+        When(pessoa__id_LegalPerson_fk__isnull=False, then=F('pessoa__id_LegalPerson_fk__fantasyName')),
+        When(pessoa__id_ForeignPerson_fk__isnull=False, then=F('pessoa__id_ForeignPerson_fk__name_foreigner')),
+        default=Value(''),
+        output_field=CharField()
+        ),
+        nome_situacao = Case(
+        When(situacao__isnull=False,then=F('situacao__name_Situation')),
+        default=Value(''),
+        output_field=CharField()
+        )
+        ).filter(
+            Q(id__istartswith=search_query) |
+            Q(nome_cliente__istartswith=search_query) |
+            Q(nome_situacao__istartswith=search_query)
+        )
+    else:
+        sales = Venda.objects.annotate(
+        nome_cliente=Case(
+        When(pessoa__id_FisicPerson_fk__isnull=False, then=F('pessoa__id_FisicPerson_fk__name')),
+        When(pessoa__id_LegalPerson_fk__isnull=False, then=F('pessoa__id_LegalPerson_fk__fantasyName')),
+        When(pessoa__id_ForeignPerson_fk__isnull=False, then=F('pessoa__id_ForeignPerson_fk__name_foreigner')),
+        default=Value(''),
+        output_field=CharField()
+        ),
+        nome_situacao = Case(
+        When(situacao__isnull=False,then=F('situacao__name_Situation')),
+        default=Value(''),
+        output_field=CharField()
+        )).all()
+
+    # Paginar primeiro, sem ordenar ainda
+    paginator = Paginator(sales, 2)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    # form = SearchForm()
+
+    # Obter os objetos da página
+    page_items = list(page.object_list)
+
+    # Ordenar SOMENTE os itens da página
+    foreign_keys = {
+        'pessoa':'nome_cliente',
+        'situacao':'nome_situacao'
+    }
+
+    if sort:
+        reverse = (direction == 'desc')
+        if sort in foreign_keys:
+            value = foreign_keys[sort]
+            page_items = sorted(page_items, key=attrgetter(value), reverse=reverse)
+        else:
+            page_items = sorted(page_items, key=attrgetter(sort), reverse=reverse)
+     
+
+    # Substitui os itens da página ordenados
+    page.object_list = page_items
+    
     colunas = [
         ('id','ID'),
         ('pessoa','Pessoa'),
@@ -63,7 +96,7 @@ def venda_list(request):
         'vendas': page,
         'query':search_query,
         'current_sort':sort,
-        'current_dir':direction,
+        'current_dir':direction
         # 'form':form
         })
 
@@ -124,6 +157,7 @@ def venda_create(request):
                 for form in PaymentMethod_Accounts_FormSet.deleted_objects:
                     form.delete()
                     form.save()
+                    
                 messages.success(request, "Venda cadastrada com sucesso.",extra_tags="successSale")
                 return redirect(previous_url)
 
@@ -132,7 +166,8 @@ def venda_create(request):
                 
             if ((creditLimitAtual != creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual<0)):
                 messages.warning(request, "Ação cancelada! O valor acumulado dos pagamentos é menor que o limite de Crédito!",extra_tags='salecreate_page')
-                
+            
+            return redirect('venda_create')
            
             
         if not venda_form.is_valid():
@@ -144,14 +179,13 @@ def venda_create(request):
         if not PaymentMethod_Accounts_FormSet.is_valid():
             print("Erro no PaymentMethod_Accounts_FormSet: ",PaymentMethod_Accounts_FormSet.errors)
 
-    else:
-        if 'HTTP_REFERER' in request.META:
-            request.session['previous_page'] = request.META['HTTP_REFERER']
+    if 'HTTP_REFERER' in request.META:
+        request.session['previous_page'] = request.META['HTTP_REFERER']
 
-        form_Accounts = AccountsForm()
-        PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
-        venda_form = VendaForm()
-        venda_item_formset = VendaItemFormSet(queryset=VendaItem.objects.none())
+    form_Accounts = AccountsForm()
+    PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
+    venda_form = VendaForm()
+    venda_item_formset = VendaItemFormSet(queryset=VendaItem.objects.none())
 
     context = {
         'form_Accounts':form_Accounts,
@@ -169,15 +203,15 @@ def venda_update(request, pk):
     # Criar formsets para itens de venda e formas de pagamento
     VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=0, can_delete=True)
     PaymentMethodAccountsFormSet = inlineformset_factory(Venda, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
-    Older_PaymentMethod_Accounts_FormSet = inlineformset_factory(Venda, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=0, can_delete=True)
+    OlderPaymentMethodAccountsFormSet = inlineformset_factory(Venda, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=0, can_delete=True)
 
     if request.method == 'POST':
-        previous_url = request.session.get('previous_page','/')
+        # previous_url = request.session.get('previous_page','/')
         venda_form = VendaForm(request.POST, instance=venda)
         venda_item_formset = VendaItemFormSet(request.POST, instance=venda)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST,instance=venda,prefix="paymentmethod_accounts_set")
-        Older_PaymentMethod_Accounts_FormSet = Older_PaymentMethod_Accounts_FormSet(request.POST,instance=venda,prefix="older_paymentmethod_accounts_set")
-        
+        Older_PaymentMethod_Accounts_FormSet = OlderPaymentMethodAccountsFormSet(request.POST,instance=venda,prefix="older_paymentmethod_accounts_set")
+        form_Accounts = AccountsForm(request.POST,instance=venda)
         # # APAGANDO ITENS QUE NAO FORAM SUBMETIDOS NO FORMS (FORAM DELETADOS VISUALMENTE) - VENDA ITENS
         venda_item = VendaItem.objects.filter(venda=venda)
         ids_existentes_venda_itens = set(venda_item.values_list('id',flat=True))
@@ -305,7 +339,7 @@ def venda_update(request, pk):
                     Older_PaymentMethod_Accounts_FormSet.save()    
                 # messages.success(request, "Venda atualizada com sucesso!")
                 messages.success(request, "Venda atualizada com sucesso.",extra_tags="successSale")
-                return redirect(previous_url)
+                return redirect('venda_list')
             
             if total_payment != venda_form.cleaned_data['total_value']:
                 messages.warning(request,"Ação cancelada! O valor acumalado dos pagamentos é menor do que o valor acumulado dos prudutos.",extra_tags='vendaupdate_page')
@@ -313,6 +347,7 @@ def venda_update(request, pk):
             if ((creditLimitAtual != creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual<0)):
                 messages.warning(request,"Ação Cancelada! O valor acumulado dos pagamentos é menor que o limite de crédito. ",extra_tags='vendaupdate_page')
 
+            return redirect('venda_update',pk=pk)
         if not venda_form.is_valid():
             print('Erros no venda_form: ',venda_form.errors)
 
@@ -326,29 +361,29 @@ def venda_update(request, pk):
             print("Erros no Older_PaymentMethod_Accounts_Formset: ", Older_PaymentMethod_Accounts_FormSet.errors)
        
         # return redirect('venda_list')
-    else:
+ 
         
-        form_Accounts = AccountsForm(instance=venda)
-        Older_PaymentMethod_Accounts_FormSet = Older_PaymentMethod_Accounts_FormSet(queryset=venda.paymentmethod_accounts_set.all(),instance=venda,prefix='older_paymentmethod_accounts_set')
-        PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
-        venda_form = VendaForm(instance=venda)
-        venda_item_formset = VendaItemFormSet(queryset=venda.vendaitem_set.all(),instance=venda)
-        
-        count_payment = 0
-       
-        for i,form in enumerate(Older_PaymentMethod_Accounts_FormSet):
-            if i == 0:
-                data_obj = form.initial["expirationDate"]  
-                data_modificada = data_obj - timedelta(days=int(form.initial["days"])) 
-                data_modificada = datetime.strptime(str(data_modificada), "%Y-%m-%d").strftime("%d/%m/%Y") 
+    form_Accounts = AccountsForm(instance=venda)
+    Older_PaymentMethod_Accounts_FormSet = OlderPaymentMethodAccountsFormSet(queryset=venda.paymentmethod_accounts_set.all(),instance=venda,prefix='older_paymentmethod_accounts_set')
+    PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
+    venda_form = VendaForm(instance=venda)
+    venda_item_formset = VendaItemFormSet(queryset=venda.vendaitem_set.all(),instance=venda)
+    
+    count_payment = 0
+    
+    for i,form in enumerate(Older_PaymentMethod_Accounts_FormSet):
+        if i == 0:
+            data_obj = form.initial["expirationDate"]  
+            data_modificada = data_obj - timedelta(days=int(form.initial["days"])) 
+            data_modificada = datetime.strptime(str(data_modificada), "%Y-%m-%d").strftime("%d/%m/%Y") 
 
-            count_payment+=1
-        form_Accounts.initial["date_init"] = data_modificada
-        form_Accounts.initial["totalValue"] = venda_form.initial['total_value']
-        form_Accounts.initial["numberOfInstallments"] = count_payment 
+        count_payment+=1
+    form_Accounts.initial["date_init"] = data_modificada
+    form_Accounts.initial["totalValue"] = venda_form.initial['total_value']
+    form_Accounts.initial["numberOfInstallments"] = count_payment 
 
-        if 'HTTP_REFERER' in request.META:
-            request.session['previous_page'] = request.META['HTTP_REFERER']
+    # if 'HTTP_REFERER' in request.META:
+    #     request.session['previous_page'] = request.META['HTTP_REFERER']
 
 
     context = {
@@ -523,6 +558,7 @@ def buscar_vendas(request):
 
     response_data = {
         'vendas':list(page.object_list),
+        'query':query,
         'pagination': {
             'has_previous': page.has_previous(),
             'previous_page': page.previous_page_number() if page.has_previous() else None,

@@ -109,7 +109,8 @@ class CompraForm(forms.ModelForm):
             ] 
         widgets = {
                 'fornecedor':forms.TextInput(attrs={
-                    'class':'' 
+                    'class':'' ,
+                    'required':'required'
                 }),
                 'data_da_compra':forms.DateTimeInput(attrs={
                     'class':'form-control mb-3 mt-3 row-xl-2 ',
@@ -134,7 +135,8 @@ class CompraForm(forms.ModelForm):
                     'class': 'form-control w-25 mb-3 mt-3',
                     # 'step':1,
                     'min':0,
-                    'max':100
+                    'max':100,
+                    'required':'required'
                 }),
                 'observation_product':forms.Textarea(attrs={
                     'class':'form-control mb-3 mt-3 row'
@@ -179,23 +181,28 @@ class CompraItemForm(forms.ModelForm):
         fields = ['produto', 'quantidade', 'preco_unitario','discount','price_total','status']
         widgets = {
             'produto':forms.TextInput(attrs={
-                'class':'form-control row-2'
+                'class':'form-control row-2',
+                'required':'required'
             }),
             'quantidade':forms.TextInput(attrs={
                 'class':'form-control mt-3 mb-3 row',
-                'oninput':'calcularPrecoProduto(this)'
+                'oninput':'calcularPrecoProduto(this)',
+                'required':'required'
             }),
             'preco_unitario':forms.TextInput(attrs={
                 'class':'form-control mt-3 mb-3 row',
-                'oninput':'calcularPrecoProduto(this)'
+                'oninput':'calcularPrecoProduto(this)',
+                'required':'required'
             }),
             'discount':forms.TextInput(attrs={
                 'class':'form-control mt-3 mb-3 row',
-                'oninput':'calcularPrecoProduto(this)'
+                'oninput':'calcularPrecoProduto(this)',
+                'required':'required'
             }),
             'price_total':forms.TextInput(attrs={
                 'class':'form-control mt-3 mb-3 row',
-                'oninput':'calcularPrecoProduto(this)'
+                'oninput':'calcularPrecoProduto(this)',
+                'required':'required'
             })
         }
 

@@ -45,7 +45,7 @@
                     <h4 class="c-adapted">Criar Ordem</h4>
                 </div>
   
-                <form method="post">
+                <form method="post" id="form">
                     {% csrf_token %}
                 
                     <!-- Formulário de Venda -->
@@ -91,7 +91,7 @@
                                 <td id="form-client" class="">
                                     {{service_form.pessoa.as_hidden}}
                                     <div>
-                                        <input type="text" class="row form-control mb-3 mt-3" id="idSearch" onkeyup="showSuggetions(this)">
+                                        <input type="text" class="row form-control mb-3 mt-3" id="idSearch" onkeyup="showSuggetions(this)" required>
                                         <div id="suggestions" class="suggetions">
                                             
                                         </div>
@@ -149,7 +149,7 @@
                                         <tr>
                                            
                                             <td >{{form.product.as_hidden}}
-                                                <input type="text" class="row form-control mb-3 mt-3" id="idProduct-0" onkeyup="showSuggetionsProducts(this)">
+                                                <input type="text" class="row form-control mb-3 mt-3" id="idProduct-0" onkeyup="showSuggetionsProducts(this)" required>
                                                 <div id="products-0" class="suggetions">
                                                 </div>
                                             </td>
@@ -185,7 +185,7 @@
                                 <td>
                                     <input type="hidden" name="{{ venda_item_formset.empty_form.prefix }}-id" id="{{venda_item_formset.empty_form.prefix }}-id">
                                     {{ venda_item_formset.empty_form.product.as_hidden }}
-                                    <input type="text" class="row form-control mb-3 mt-3" onkeyup="showSuggetionsProducts(this)">
+                                    <input type="text" class="row form-control mb-3 mt-3" onkeyup="showSuggetionsProducts(this)" required>
                                     <div class="suggetions">
                             
                                     </div>
@@ -288,7 +288,7 @@
                                             <td>
                                                 {{form.service.as_hidden}}
 
-                                                <input type="text" class="row form-control mb-3 mt-3" id="idService-0" onkeyup="showSuggetionsServices(this)">
+                                                <input type="text" class="row form-control mb-3 mt-3" id="idService-0" onkeyup="showSuggetionsServices(this)" required>
                                                 <div id="suggetionsServices" class="suggetions">
 
                                                 </div>
@@ -319,7 +319,7 @@
                             <td>
                                 <input type="hidden" name="{{service_item_formset.empty_form.prefix }}-id" id="{{service_item_formset.empty_form.prefix }}-id">
                                 {{ service_item_formset.empty_form.service.as_hidden}}
-                                <input type="text" class="row form-control mb-3 mt-3" id="idService-0" onkeyup="showSuggetionsServices(this)">
+                                <input type="text" class="row form-control mb-3 mt-3" id="idService-0" onkeyup="showSuggetionsServices(this)" required>
                                 <div id="suggetionsServices" class="suggetions">
 
                                 </div>
@@ -396,7 +396,7 @@
 
                     <div class="row">
                         <div class="col mt-5 text-end">
-                            <button  type="submit" class="btn bg-adapted">SALVAR VENDA</button>
+                            <button  type="submit" class="btn bg-adapted">Enviar</button>
                         </div>
                     </div>
                 </form>
@@ -417,6 +417,23 @@
         <!-- <script src="{% static 'js/clientSearch.js' %}"></script> -->
         <!-- <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
         <script src="{% static 'js/bootstrap-datepicker.pt-BR.js' %}"></script> -->
+        <!-- <script>
+            let botaoClicado = false;
+
+            document.getElementById('generate').addEventListener('click', () => {
+            botaoClicado = true;
+            });
+
+            document.getElementById('form').addEventListener('submit', function (event) {
+            if (!botaoClicado) {
+                console.log("fdsafd")
+                event.preventDefault(); // Impede o envio
+                alert('Você precisa gerar os pagamentos!');
+            }
+            });
+
+        </script> -->
+        <script src="{% static 'js/alertInstallments.js' %}"></script>
         {% endblock %}     
     </main>
 </body>

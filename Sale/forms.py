@@ -7,7 +7,8 @@ class VendaForm(forms.ModelForm):
         fields = ['data_da_venda', 'pessoa', 'situacao','observacao_pessoas', 'observacao_sistema', 'total_value', 'product_total', 'discount_total']
         widgets = {
             'pessoa':forms.TextInput(attrs={
-                'class':'form-control  row-xl-5 mb-3 mt-3' 
+                'class':'form-control  row-xl-5 mb-3 mt-3' ,
+                'required':'required'
             }),
             'data_da_venda':forms.DateTimeInput(attrs={
                 'class':'form-control mb-3 mt-3 row-xl-2 ' ,
@@ -62,11 +63,11 @@ class VendaItemForm(forms.ModelForm):
         model = VendaItem
         fields = ['product', 'quantidade', 'preco_unitario', 'discount', 'price_total', 'status']
         widgets = {
-            'product': forms.TextInput(attrs={'class': 'form-control row-2'}),
-            'quantidade': forms.TextInput(attrs={'class': 'form-control row mt-3 mb-3','oninput':'calcularPrecoProduto(this)'}),
-            'preco_unitario': forms.TextInput(attrs={'class': 'form-control row mt-3 mb-3','oninput':'calcularPrecoProduto(this)'}),
-            'discount': forms.TextInput(attrs={'class': 'form-control row mt-3 mb-3','oninput':'calcularPrecoProduto(this)'}),
-            'price_total': forms.TextInput(attrs={'class': 'form-control row mt-3 mb-3', 'readonly': True,'oninput':'calcularPrecoProduto(this)'}),
+            'product': forms.TextInput(attrs={'class': 'form-control row-2','required':'required'}),
+            'quantidade': forms.TextInput(attrs={'class': 'form-control row mt-3 mb-3','oninput':'calcularPrecoProduto(this)','required':'required'}),
+            'preco_unitario': forms.TextInput(attrs={'class': 'form-control row mt-3 mb-3','oninput':'calcularPrecoProduto(this)','required':'required'}),
+            'discount': forms.TextInput(attrs={'class': 'form-control row mt-3 mb-3','oninput':'calcularPrecoProduto(this)','required':'required'}),
+            'price_total': forms.TextInput(attrs={'class': 'form-control row mt-3 mb-3', 'readonly': True,'oninput':'calcularPrecoProduto(this)','required':'required'},),
         }
 
     def __init__(self, *args, **kwargs):

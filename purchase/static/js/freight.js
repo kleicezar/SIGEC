@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded",()=>{
         freightType.style.display = "block";
     }
     else{
+        freightValue.value = null;
         freightValue.style.display = "none";
         freightFormAccounts.style.display = "none";
         freightTable.style.display = "none";
@@ -57,6 +58,7 @@ selectFreight.addEventListener("change",function(){
         freightValue.setAttribute('required',true);
     }
     else{
+        freightValue.value = null;
         freightValue.style.display = "none";
         freightFormAccounts.style.display = "none";
         freightTable.style.display = "none";

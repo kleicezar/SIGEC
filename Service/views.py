@@ -88,7 +88,7 @@ def workOrders_create(request):
 
             if ((creditLimitAtual != creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual<0)):
                 messages.warning(request,"Ação Cancelada! O valor acumulado dos pagamentos é menor que o limite de crédito. ",extra_tags='workcreate_page')
-
+        
         if not service_form.is_valid():
             print("Erro no ServiceForm",service_form.errors)
 
@@ -101,6 +101,7 @@ def workOrders_create(request):
         if not PaymentMethod_Accounts_FormSet.is_valid():
             print("Erro no VendaPagamentoService",PaymentMethod_Accounts_FormSet.errors)
 
+        return redirect('workOrdersForm')
        
     else:
         form_Accounts = AccountsForm()
@@ -108,6 +109,7 @@ def workOrders_create(request):
         service_form = VendaServiceForm()
         service_item_formset = ServiceItemFormSet(queryset=VendaItemService.objects.none())
         venda_item_formset = VendaItemFormSet(queryset=VendaItem.objects.none())
+
         # payment_method_formset = PaymentMethodServiceFormSet(queryset=PaymentMethod_VendaService.objects.none())
     context = {
         'form_Accounts':form_Accounts,
@@ -128,16 +130,17 @@ def workOrders_update(request,pk):
     ServiceItemFormSet  = inlineformset_factory(VendaService,VendaItemService,form=VendaItemServiceForm,extra=0,can_delete=True)
     VendaItemFormSet = inlineformset_factory(VendaService, VendaItem, form=VendaItemForm, extra=0, can_delete=True)
     PaymentMethodAccountsFormSet = inlineformset_factory(VendaService,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=1,can_delete=True)
-    Older_PaymentMethod_Accounts_FormSet = inlineformset_factory(VendaService, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=0, can_delete=True)
+    OlderPaymentMethodAccountsFormSet = inlineformset_factory(VendaService, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=0, can_delete=True)
 
     if request.method == 'POST':
-        previous_url = request.session.get('previous_page','/')
+        # previous_url = request.session.get('previous_page','/')
         # print(request.POST)
         service_form = VendaServiceForm(request.POST, instance=servico)
         service_item_formset = ServiceItemFormSet(request.POST, instance=servico)
         venda_item_formset = VendaItemFormSet(request.POST,instance=servico)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST, instance=servico,prefix="paymentmethod_accounts_set")
-        Older_PaymentMethod_Accounts_FormSet = Older_PaymentMethod_Accounts_FormSet(request.POST,instance=servico,prefix="older_paymentmethod_accounts_set")
+        Older_PaymentMethod_Accounts_FormSet = OlderPaymentMethodAccountsFormSet(request.POST,instance=servico,prefix="older_paymentmethod_accounts_set")
+        form_Accounts = AccountsForm(request.POST,instance=servico)
 
         venda_item = VendaItem.objects.filter(venda=servico)
         ids_existentes_venda_itens = set(venda_item.values_list('id',flat=True))
@@ -156,15 +159,13 @@ def workOrders_update(request,pk):
             if key.startswith("vendaitemservice_set-") and key.endswith("-id") and value.isdigit()
         )
         ids_para_excluir_venda_service_itens = ids_existentes_venda_service_itens - ids_enviados_vendas_service_itens
-        print('itens para excluir')
-        print(ids_para_excluir_venda_service_itens)
         VendaItemService.objects.filter(id__in=ids_para_excluir_venda_service_itens).delete()
 
 
         if(
             service_form.is_valid() and 
             venda_item_formset.is_valid() and 
-            service_item_formset.is_valid() and 
+            service_item_formset.is_valid() and
             PaymentMethod_Accounts_FormSet.is_valid() and 
             Older_PaymentMethod_Accounts_FormSet.is_valid() 
             ):
@@ -290,13 +291,15 @@ def workOrders_update(request,pk):
                     Older_PaymentMethod_Accounts_FormSet.save()
             
                 messages.success(request,"Ordem de Serviço atualizada com sucesso.",extra_tags="successWorkOrder")
-                return redirect(previous_url)
+                return redirect('workOrders_list')
             
-            if total_payment != service.total_value:
+            if total_payment != service.total_value + service.total_value_service:
                 messages.warning(request,"Ação cancelada! O valor acumalado dos pagamentos é menor do que o valor acumulado dos prudutos.",extra_tags='workupdate_page')
             
             if ((creditLimitAtual != creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual<0)):
                 messages.warning(request,"Ação Cancelada! O valor acumulado dos pagamentos é menor que o limite de crédito. ",extra_tags='workupdate_page')
+            
+            return redirect('workOrdersUpdate', pk=pk)
 
         if not service_form.is_valid():
             print("Erro no ServiceForm",service_form.errors)
@@ -313,40 +316,37 @@ def workOrders_update(request,pk):
         if not Older_PaymentMethod_Accounts_FormSet.is_valid():
             print("Erro no Older_PaymentMethod_Accounts_FormSet",Older_PaymentMethod_Accounts_FormSet.errors)
         
-      
-      
-    else:
-        form_Accounts = AccountsForm(instance=servico)
-        older_payment_method_formset = Older_PaymentMethod_Accounts_FormSet(queryset=servico.paymentmethod_accounts_set.all(),instance=servico,prefix='older_paymentmethod_accounts_set')
-        payment_method_formset = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
-        service_form = VendaServiceForm(instance=servico)
-        venda_item_formset = VendaItemFormSet(queryset=servico.vendaitem_set.all(),instance=servico)
-        service_item_formset = ServiceItemFormSet(queryset = servico.vendaitemservice_set.all(),instance=servico)
-       
-        count_payment = 0
-       
-        for i,form in enumerate(older_payment_method_formset):
-            if i == 0:
-                data_obj = form.initial["expirationDate"]  
-                data_modificada = data_obj - timedelta(days=int(form.initial["days"])) 
-                data_modificada = datetime.strptime(str(data_modificada), "%Y-%m-%d").strftime("%d/%m/%Y") 
+    
+    form_Accounts = AccountsForm(instance=servico)
+    Older_PaymentMethod_Accounts_FormSet = OlderPaymentMethodAccountsFormSet(queryset=servico.paymentmethod_accounts_set.all(),instance=servico,prefix='older_paymentmethod_accounts_set')
+    PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
+    service_form = VendaServiceForm(instance=servico)
+    venda_item_formset = VendaItemFormSet(queryset=servico.vendaitem_set.all(),instance=servico)
+    service_item_formset = ServiceItemFormSet(queryset = servico.vendaitemservice_set.all(),instance=servico)
+    
+    count_payment = 0
+    
+    for i,form in enumerate(Older_PaymentMethod_Accounts_FormSet):
+        if i == 0:
+            data_obj = form.initial["expirationDate"]  
+            data_modificada = data_obj - timedelta(days=int(form.initial["days"])) 
+            data_modificada = datetime.strptime(str(data_modificada), "%Y-%m-%d").strftime("%d/%m/%Y") 
 
-            count_payment+=1
-        form_Accounts.initial["date_init"] = data_modificada
-        form_Accounts.initial["totalValue"] = service_form.initial['total_value'] + service_form.initial['total_value_service']
-        form_Accounts.initial["numberOfInstallments"] = count_payment
-        
-        if 'HTTP_REFERER' in request.META:
-            request.session['previous_page'] = request.META['HTTP_REFERER']
+        count_payment+=1
+    form_Accounts.initial["date_init"] = data_modificada
+    form_Accounts.initial["totalValue"] = service_form.initial['total_value'] + service_form.initial['total_value_service']
+    form_Accounts.initial["numberOfInstallments"] = count_payment
+    
+
     context = {
-            'form_Accounts':form_Accounts,
-            'service_form':service_form,
-            'service_item_formset':service_item_formset,
-            'form_payment_account':payment_method_formset,
-            'venda_item_formset':venda_item_formset,
-            'older_form_payment_account':older_payment_method_formset
-            # 'form_payment_account':payment_method_formset
-        }
+        'form_Accounts':form_Accounts,
+        'service_form':service_form,
+        'service_item_formset':service_item_formset,
+        'form_payment_account':PaymentMethod_Accounts_FormSet,
+        'venda_item_formset':venda_item_formset,
+        'older_form_payment_account':Older_PaymentMethod_Accounts_FormSet
+        # 'form_payment_account':payment_method_formset
+    }
 
     return render(request,'workOrdersUpdate.html',context) 
 

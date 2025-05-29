@@ -93,7 +93,7 @@
                                 <td id="form-client" class="">
                                     {{service_form.pessoa.as_hidden}}
                                     <div>
-                                        <input type="text" class="row form-control mb-3 mt-3 idSearch" id="idSearch" onkeyup="showSuggetions(this)">
+                                        <input type="text" class="row form-control mb-3 mt-3 idSearch" id="idSearch" onkeyup="showSuggetions(this)" required>
                                         <div id="suggestions" class="suggetions">
                                             
                                         </div>
@@ -107,7 +107,6 @@
                                         required id="id_data_da_venda" readonly>
                                 </td>
                                 <td>{{service_form.situacao}}</td>
-                                <!-- <td>{{service_form.is_active}}</td> -->
                             </tr>
                         </tbody>
                     </table>
@@ -134,7 +133,7 @@
                                                 <td>
                                                     <input type="hidden" name="{{ form.prefix }}-id" value="{{ form.instance.id }}" id="{{ form.prefix }}-id">
                                                     {{form.product.as_hidden}}
-                                                    <input type="text" class="row form-control mb-3 mt-3 idSearch" id="idProduct-0" onkeyup="showSuggetionsProducts(this)">
+                                                    <input type="text" class="row form-control mb-3 mt-3 idSearch" id="idProduct-0" onkeyup="showSuggetionsProducts(this)" required>
                                                     <div id="products-0" class="suggetions">
                                                     </div>
                                                 </td>
@@ -175,7 +174,7 @@
                                 <td>
                                     <input type="hidden" name="{{ venda_item_formset.empty_form.prefix }}-id" id="{{venda_item_formset.empty_form.prefix }}-id">
                                     {{ venda_item_formset.empty_form.product.as_hidden }}
-                                    <input type="text" class="row form-control mb-3 mt-3" onkeyup="showSuggetionsProducts(this)">
+                                    <input type="text" class="row form-control mb-3 mt-3" onkeyup="showSuggetionsProducts(this)" required>
                                     <div class="suggetions">
                             
                                     </div>

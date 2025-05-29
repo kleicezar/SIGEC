@@ -118,6 +118,7 @@ class AccountsForm(BaseAccountsForm):
         self.fields['installment_Range'].required = True 
         self.fields['totalValue'].required = True 
         self.fields['date_init'].required = True
+        
 class AccountsFormPlannedAccount(AccountsForm):
     installment_Range = forms.ChoiceField(
         choices=Accounts.INSTALLMENT_RANGE_CHOICES_PLANNED_ACCOUNT,
@@ -142,6 +143,7 @@ class BasePaymentMethodAccountsForm(forms.ModelForm):
     )
 
     forma_pagamento =  forms.ModelChoiceField(
+        required=False,
         queryset=PaymentMethod.objects.filter(is_Active=True),
         widget=forms.Select(
             attrs=

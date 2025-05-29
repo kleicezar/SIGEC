@@ -16,8 +16,7 @@ input.addEventListener("input",()=>{
     .then(data=>{
         resultContainer.innerHTML="";
         messageContainer.innerHTML="";
-        console.log('testando produtos');
-        if (data.message){
+        if (data.message && query !=''){
             messageContainer.innerHTML=`<p>${data.message}</p>`;
         }
 
@@ -45,24 +44,82 @@ input.addEventListener("input",()=>{
             });
            
         }
-        
+        paginationContainer.innerHTML = "";
+
         if(data.pagination){
             const { has_previous, has_next, previous_page, next_page } = data.pagination;
+
+            const createDiv = document.createElement('div');
+            const boxPagination = document.createElement('div');
+
+            createDiv.className = 'row text-center';
+            boxPagination.className = 'col me-5';
             if (has_previous){
                 const prevLink = document.createElement("a");
 
-                prevLink.href=`/venda/?page=${previous_page}&query=${encodeURIComponent(query)}`;
-                prevLink.textContent = "Anterior";
-                prevLink.className="pagination-link";
-                paginationContainer.appendChild(prevLink)
+                prevLink.href=`/Sdct/?page=${previous_page}&query=${encodeURIComponent(query)}`;
+                prevLink.className="pagination-link me-5";
+
+                const span = document.createElement('span');
+                span.setAttribute('aria-hidden','true');
+                span.style.fontSize = '32px';
+                span.innerHTML = '&laquo;'
+
+                prevLink.appendChild(span);
+                prevLink.appendChild(span);
+                boxPagination.appendChild(prevLink);
+                createDiv.appendChild(boxPagination)
+                paginationContainer.appendChild(createDiv);
+            }
+            else{
+                const prevLink = document.createElement("a");
+                prevLink.className="pagination-link me-5";
+
+                const span = document.createElement('span');
+                span.setAttribute('aria-hidden','true');
+                span.setAttribute('aria-disabled','true');
+                span.style.fontSize = '32px';
+                span.style.color = 'gray';
+                span.style.pointerEvents = 'none';
+                span.innerHTML = '&laquo;'
+
+                prevLink.appendChild(span);
+                boxPagination.appendChild(prevLink);
+                createDiv.appendChild(boxPagination)
+                paginationContainer.appendChild(createDiv);
             }
 
             if(has_next){
                 const nextLink = document.createElement("a");
-                nextLink.href = `/venda/?prsn/?page=${next_page}&query=${encodeURIComponent(query)}`;
-                nextLink.textContent = "Próximo";
-                nextLink.className = "pagination-link";
-                paginationContainer.appendChild(nextLink);
+                nextLink.href = `/Sdct/?page=${next_page}&query=${encodeURIComponent(query)}`;
+                nextLink.className = "pagination-link me-5";
+
+                const span = document.createElement('span');
+                span.setAttribute('aria-hidden','true');
+                span.style.fontSize = '32px';
+                span.innerHTML = `&raquo;`
+
+                nextLink.appendChild(span);
+                boxPagination.appendChild(nextLink);
+                createDiv.appendChild(boxPagination)
+                paginationContainer.appendChild(createDiv);
+            }
+             else{
+                const nextLink = document.createElement("a");
+                nextLink.className = "pagination-link me-5";
+
+                const span = document.createElement('span');
+                span.setAttribute('aria-hidden','true');
+                span.setAttribute('aria-disabled','true');
+                span.style.fontSize = '32px';
+                span.style.color = 'gray';
+                span.style.pointerEvents = 'none';
+                span.innerHTML = `&raquo;`
+
+                nextLink.appendChild(span);
+                boxPagination.appendChild(nextLink);
+                createDiv.appendChild(boxPagination)
+                paginationContainer.appendChild(createDiv);
             }
         }
     })
