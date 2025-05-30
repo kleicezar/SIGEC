@@ -19,8 +19,8 @@ urlpatterns = [
 
     path('credit/upt/<int:id_client>/',Credit_Update,name='update_creditLimit'),
 
-    path('updateReceivableSale/upt/<int:id_Accounts>/',updateAccounts_Sale,name='update_AccountsReceivableAccounts'),
-
+    path('updateReceivableSale/upt/<int:id_Accounts>/',updateAccounts_Sale,name='update_AccountsReceivableSale'),
+    path('updateReceivableShopping/upt/<int:id_Accounts>/',updateAccounts_Shopping,name='update_AccountsPayableShopping'),
     path('creditedClients/',CreditedClients_list,name='CreditedClients'),
     path('accounts_list/<int:id_accounts>/',Accounts_list,name='Accounts_list'),
     path('delete_payments/<int:id>/',deletePayment_Accounts,name='delete_payments'),

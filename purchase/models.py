@@ -41,7 +41,7 @@ class Compra(models.Model):
     observation_tax = models.TextField(verbose_name='Observação sobre Imposto',null=True,blank=True)
     
     # CAMPOS FRETE
-    freight_type = models.CharField(choices=FREIGHT_CHOICES,max_length=3,verbose_name='Tipo de Frete')
+    freight_type = models.CharField(choices=FREIGHT_CHOICES,max_length=3,verbose_name='Tipo de Frete',null=True, blank=True)
     freight_value = models.IntegerField(verbose_name='Valor do Frete',null=True)
     observation_freight = models.TextField(verbose_name='Observação sobre Frete',null=True,blank=True)
 

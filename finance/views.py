@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
+from purchase.forms import CompraFormUpdate
 from sale.forms import VendaForm, VendaFormUpdate
 from sale.views import venda_update
 from service.forms import VendaServiceFormUpdate, VendaserviceForm
@@ -208,64 +209,110 @@ def get_Accounts(request, id_Accounts):
 @transaction.atomic 
 def update_Accounts(request, id_Accounts):
     payment_instance = get_object_or_404(PaymentMethod_Accounts, id=id_Accounts)
-    accounts_instance = get_object_or_404(Accounts, id=payment_instance.conta_id)
-    print('accounts_instance', accounts_instance)
-    if request.method == "POST":  
-        payment_form_instance = PaymentMethodAccountsForm(request.POST, instance=payment_instance)
-        accounts_form_instance = AccountsFormUpdate(
-            request.POST, 
-            instance=accounts_instance,
-            initial={
-                'numberOfInstallments': accounts_instance.numberOfInstallments,
-                'installment_Range': accounts_instance.installment_Range,
-                'totalValue': accounts_instance.totalValue,
-                'date_init': accounts_instance.date_init
-            }
-        )
-        for key, value in vars(payment_instance).items(): 
-            print(f"{key}: {value}")
-        print()
-        # for key, value in vars(accounts_instance).items():
-        #     print(f"{key}: {value}")
-        # print()
+    if payment_instance.conta:
+        accounts_instance = get_object_or_404(Accounts, id=payment_instance.conta_id)
+        print('accounts_instance', accounts_instance)
+        if request.method == "POST":  
+            payment_form_instance = PaymentMethodAccountsForm(request.POST, instance=payment_instance)
+            accounts_form_instance = AccountsFormUpdate(
+                request.POST, 
+                instance=accounts_instance,
+                initial={
+                    'numberOfInstallments': accounts_instance.numberOfInstallments,
+                    'installment_Range': accounts_instance.installment_Range,
+                    'totalValue': accounts_instance.totalValue,
+                    'date_init': accounts_instance.date_init
+                }
+            )
+            for key, value in vars(payment_instance).items(): 
+                print(f"{key}: {value}")
+            print()
+            # for key, value in vars(accounts_instance).items():
+            #     print(f"{key}: {value}")
+            # print()
 
+            if payment_form_instance.is_valid() and accounts_form_instance.is_valid():
+                accounts_form_instance.save()
+
+                payment_instance = payment_form_instance.save(commit=False)
+
+                # Definir None para valores vazios
+                if not payment_instance.interest:
+                    payment_instance.interest = None
+                if not payment_instance.fine:
+                    payment_instance.fine = None
+
+                payment_instance.save()
+                messages.success(request,"Conta atualizada com sucesso.",extra_tags="successAccount")
+                return redirect('AccountsReceivable')  # Redirecionar após salvar
+            else:
+                print("Erros no payment_form_instance:", payment_form_instance.errors)
+                print()
+                print("Erros no accounts_form_instance:", accounts_form_instance.errors)
+                print()
+
+
+        else:
+            accounts_form_instance = AccountsFormUpdate(instance=accounts_instance)
+            payment_form_instance = PaymentMethodAccountsFormUpdate(instance=payment_instance)
+
+        context = {
+            'form_Accounts': accounts_form_instance,
+            'form_paymentMethodAccounts': payment_form_instance,
+            'tipo_conta': 'Receber'
+        }
+
+        return render(request, 'finance/AccountsPayformUpdate.html', context)
+    else:
+        if payment_instance.compra:
+            return updateAccounts_Shopping(request,payment_instance.id)
+
+def updateAccounts_Shopping(request,id_Accounts):
+    payment_instance = get_object_or_404(PaymentMethod_Accounts, id=id_Accounts)
+    if request.method == "POST":
+        payment_form_instance = PaymentMethodAccountsForm(request.POST,instance=payment_instance)
+
+        if payment_instance.compra:
+            accounts_instance = get_object_or_404(Compra, id=payment_instance.compra.id)
+            accounts_form_instance = CompraFormUpdate(request.POST,instance=accounts_instance)
+            
         if payment_form_instance.is_valid() and accounts_form_instance.is_valid():
             accounts_form_instance.save()
 
             payment_instance = payment_form_instance.save(commit=False)
 
-            # Definir None para valores vazios
             if not payment_instance.interest:
                 payment_instance.interest = None
             if not payment_instance.fine:
                 payment_instance.fine = None
-
+            payment_instance.acc = True
             payment_instance.save()
             messages.success(request,"Conta atualizada com sucesso.",extra_tags="successAccount")
-            return redirect('AccountsReceivable')  # Redirecionar após salvar
-        else:
-            print("Erros no payment_form_instance:", payment_form_instance.errors)
-            print()
-            print("Erros no accounts_form_instance:", accounts_form_instance.errors)
-            print()
-
-
+            return redirect('AccountsPayable') 
+        
+        if not payment_form_instance.is_valid():
+            print('irra')
+        if not accounts_form_instance.is_valid():
+            print('Erros na Conta a Pagar',accounts_form_instance.errors)
+        
     else:
-        accounts_form_instance = AccountsFormUpdate(instance=accounts_instance)
+        if payment_instance.compra:
+            id = payment_instance.compra.id
+            accounts_instance = get_object_or_404(Compra, id=id)
+            accounts_form_instance = CompraFormUpdate(instance=accounts_instance)
+
         payment_form_instance = PaymentMethodAccountsFormUpdate(instance=payment_instance)
-
+    
     context = {
-        'form_Accounts': accounts_form_instance,
-        'form_paymentMethodAccounts': payment_form_instance,
-        'tipo_conta': 'Receber'
+        'form_Accounts':accounts_form_instance,
+        'form_paymentMethodAccounts':payment_form_instance,
+        'tipo_conta':'Pagar'
     }
-
-    return render(request, 'finance/AccountsPayformUpdate.html', context)
+    return render(request, 'finance/AccountsPayformShoppingUpdate.html', context)
 
 def updateAccounts_Sale(request,id_Accounts):
     print("passei")
     payment_instance = get_object_or_404(PaymentMethod_Accounts, id=id_Accounts)
-    
 
     if request.method == "POST":
         payment_form_instance = PaymentMethodAccountsForm(request.POST,instance=payment_instance)

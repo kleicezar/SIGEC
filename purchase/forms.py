@@ -163,6 +163,7 @@ class CompraForm(forms.ModelForm):
             self.fields['data_da_compra'].initial = self.instance.data_da_compra
             self.fields['data_da_compra'].widget.attrs['readonly'] = True
             self.fields['freight_value'].required = False
+
 class CompraItemForm(forms.ModelForm):
     STATUS_CHOICES = [
         ('Pendente', 'Pendente'),
@@ -214,6 +215,22 @@ class CompraItemForm(forms.ModelForm):
             cleaned_data['total'] = preco_unitario * quantidade
         return cleaned_data
 
+class CompraFormUpdate(forms.ModelForm):
+    class Meta:
+        model = Compra
+        fields = ['data_da_compra', 'fornecedor']
+        widgets = {
+            'fornecedor':forms.Select(attrs={
+                'class':'form-select  row-xl-5 mb-3 mt-3' ,
+                'required':'required'
+            }),
+            'data_da_compra': forms.TextInput(attrs={
+                'class': 'form-control row mask-date'
+            })
+    }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # self.fields['freightType'].required = False
 class ProductSearchForm(forms.Form):
     search = forms.CharField(max_length=100,required=False,label='Pesquisar Produto')
 

@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
     data = document.getElementById('id_expirationDate').value
     console.log(data)
     
-    const date = document.getElementById("id_date_account") || document.getElementById('id_data_da_venda'); // data da conta
+    const date = document.getElementById("id_date_account") || document.getElementById('id_data_da_venda') || document.getElementById("id_data_da_compra"); // data da conta
     
     const convertToDate = (dateStr) => {
         const [year, month, day ] = dateStr.split('-').map(num => parseInt(num, 10));

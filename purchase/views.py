@@ -598,6 +598,8 @@ def compras_update(request, pk):
         if not Older_Freight_PaymentMethod_Accounts_FormSet.is_valid():
             print("Erro no Older_Freight_PaymentMethod_Accounts_FormSet",Older_Freight_PaymentMethod_Accounts_FormSet.errors)
         
+        return redirect('compras_update',pk=pk)
+        
     else:
         # Se for um GET, inicializa o formulário com os dados da compra existente
         form_Accounts = AccountsForm(instance=compra)

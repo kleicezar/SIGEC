@@ -32,7 +32,7 @@ if (select_freight){
         })
     }
     else{
-        botaoClicadoFrete = false;
+        botaoClicadoFrete = true;
     }
     })
 }
