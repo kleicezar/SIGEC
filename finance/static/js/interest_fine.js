@@ -9,11 +9,11 @@ document.addEventListener('DOMContentLoaded', function () {
     let ValueOLD = document.getElementById('id_value_old');     // html valor bruto
     //const defalt = ValueOLD.value                               // valor bruto
 
-    dataa = document.getElementById('id_date_account').value
+    // dataa = document.getElementById('id_date_account').value
     data = document.getElementById('id_expirationDate').value
     console.log(data)
     
-    const date = document.getElementById("id_date_account"); // data da conta
+    const date = document.getElementById("id_date_account") || document.getElementById('id_data_da_venda'); // data da conta
     
     const convertToDate = (dateStr) => {
         const [year, month, day ] = dateStr.split('-').map(num => parseInt(num, 10));

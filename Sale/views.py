@@ -159,7 +159,7 @@ def venda_create(request):
                     form.save()
                     
                 messages.success(request, "Venda cadastrada com sucesso.",extra_tags="successSale")
-                return redirect(previous_url)
+                return redirect('venda_list')
 
             if total_payment != venda_form.cleaned_data['total_value']:
                 messages.warning(request, "Ação cancelada! O valor não foi salvo completamente.",extra_tags='salecreate_page')

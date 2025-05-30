@@ -6,7 +6,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
+from sale.forms import VendaForm, VendaFormUpdate
 from sale.views import venda_update
+from service.forms import VendaServiceFormUpdate, VendaserviceForm
 from service.views import workOrders_update
 from .forms import *
 from .models import *
@@ -238,7 +240,6 @@ def update_Accounts(request, id_Accounts):
             if not payment_instance.fine:
                 payment_instance.fine = None
 
-
             payment_instance.save()
             messages.success(request,"Conta atualizada com sucesso.",extra_tags="successAccount")
             return redirect('AccountsReceivable')  # Redirecionar após salvar
@@ -261,6 +262,52 @@ def update_Accounts(request, id_Accounts):
 
     return render(request, 'finance/AccountsPayformUpdate.html', context)
 
+def updateAccounts_Sale(request,id_Accounts):
+    print("passei")
+    payment_instance = get_object_or_404(PaymentMethod_Accounts, id=id_Accounts)
+    
+
+    if request.method == "POST":
+        payment_form_instance = PaymentMethodAccountsForm(request.POST,instance=payment_instance)
+        if payment_instance.venda:
+            accounts_instance = get_object_or_404(Venda, id=payment_instance.venda.id)
+            accounts_form_instance = VendaFormUpdate(request.POST,instance=accounts_instance)
+        
+        if payment_instance.ordem_servico:
+            accounts_instance =  get_object_or_404(Vendaservice, id=payment_instance.ordem_servico.id)
+            accounts_form_instance = VendaServiceFormUpdate(request.POST,instance=accounts_instance)
+        
+        if payment_form_instance.is_valid() and accounts_form_instance.is_valid():
+            accounts_form_instance.save()
+
+            payment_instance = payment_form_instance.save(commit=False)
+
+            if not payment_instance.interest:
+                payment_instance.interest = None
+            if not payment_instance.fine:
+                payment_instance.fine = None
+
+            payment_instance.save()
+            messages.success(request,"Conta atualizada com sucesso.",extra_tags="successAccount")
+            return redirect('AccountsReceivable') 
+    else:
+        if payment_instance.venda:
+            accounts_instance = get_object_or_404(Venda, id=payment_instance.venda.id)
+            accounts_form_instance = VendaFormUpdate(instance=accounts_instance)
+        
+        if payment_instance.ordem_servico:
+            accounts_instance =  get_object_or_404(Vendaservice, id=payment_instance.ordem_servico.id)
+            accounts_form_instance = VendaServiceFormUpdate(instance=accounts_instance)
+
+        print('accounts_instance', accounts_instance)
+        payment_form_instance = PaymentMethodAccountsFormUpdate(instance=payment_instance)
+    
+    context = {
+        'form_Accounts':accounts_form_instance,
+        'form_paymentMethodAccounts':payment_form_instance,
+        'tipo_conta':'Receber'
+    }
+    return render(request, 'finance/AccountsPayformSaleUpdate.html', context)
 # funcionando
 @login_required
 @transaction.atomic 
@@ -492,10 +539,10 @@ def update_AccountsReceivable(request, id_Accounts):
         }
         return render(request, 'finance/AccountsPayformUpdate.html', context)
     else:
-        if payment_instance.venda:
-            return venda_update(request,payment_instance.venda.id)
-        elif payment_instance.ordem_servico:
-            return workOrders_update(request,payment_instance.ordem_servico.id)
+        if payment_instance.venda or payment_instance.ordem_servico:
+            return updateAccounts_Sale(request,payment_instance.id)
+        # elif payment_instance.ordem_servico:
+        #     return workOrders_update(request,payment_instance.ordem_servico.id)
 # funcionando
 
 @login_required

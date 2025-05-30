@@ -155,6 +155,27 @@ class VendaItemForm(forms.ModelForm):
             cleaned_data['total'] = preco_unitario * quantidade
         return cleaned_data
 
+class VendaServiceFormUpdate(VendaserviceForm):
+    class Meta:
+        model = Vendaservice
+        fields = ['data_da_venda', 'pessoa','observacao_pessoas','observacao_sistema']
+        widgets = {
+            'pessoa':forms.Select(attrs={
+                'class':'form-select  row-xl-5 mb-3 mt-3' ,
+                'required':'required'
+            }),
+            'data_da_venda': forms.TextInput(attrs={
+                'class': 'form-control row mask-date'
+            }),
+            'observacao_pessoas':forms.Textarea(attrs={
+                'class':'form-control mb-3 mt-3 row'
+            }),
+            'observacao_sistema':forms.Textarea(attrs={
+                'class':'form-control mb-3 mt-3 row'
+            })
+    }
+
+
 class PaymentMethodVendaForm(forms.ModelForm):
     class Meta:
         model = PaymentMethod_Vendaservice

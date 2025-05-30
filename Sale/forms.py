@@ -45,6 +45,26 @@ class VendaForm(forms.ModelForm):
             self.fields['pessoa'].queryset = Person.objects.filter(isClient=True)
 
 
+class VendaFormUpdate(VendaForm):
+    class Meta:
+        model = Venda
+        fields = ['data_da_venda', 'pessoa','observacao_pessoas','observacao_sistema']
+        widgets = {
+            'pessoa':forms.Select(attrs={
+                'class':'form-select  row-xl-5 mb-3 mt-3' ,
+                'required':'required'
+            }),
+            'data_da_venda': forms.TextInput(attrs={
+                'class': 'form-control row mask-date'
+            }),
+            'observacao_pessoas':forms.Textarea(attrs={
+                'class':'form-control mb-3 mt-3 row'
+            }),
+            'observacao_sistema':forms.Textarea(attrs={
+                'class':'form-control mb-3 mt-3 row'
+            }),
+    }
+    
 class VendaItemForm(forms.ModelForm):
     
     STATUS_CHOICES = [
