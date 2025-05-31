@@ -242,9 +242,10 @@ def update_Accounts(request, id_Accounts):
                 if not payment_instance.fine:
                     payment_instance.fine = None
 
+                payment_instance.acc = True
                 payment_instance.save()
                 messages.success(request,"Conta atualizada com sucesso.",extra_tags="successAccount")
-                return redirect('AccountsReceivable')  # Redirecionar após salvar
+                return redirect('AccountsPayable')  # Redirecionar após salvar
             else:
                 print("Erros no payment_form_instance:", payment_form_instance.errors)
                 print()
