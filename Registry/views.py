@@ -33,14 +33,15 @@ def Client_Create(request):
 
         #verificação se o cadastro é valido 
         if form_Person.is_valid():
-
+            person = form_Person.save(commit=False)
+            person.id_address_fk = address
             # verificação em qual cadastro foi feito    
             if form_fisicPerson.is_valid():
                 fisicPerson = form_fisicPerson.save(commit=False)
-                fisicPerson.id_address_fk = address
+                # fisicPerson.id_address_fk = address
                 fisicPerson = form_fisicPerson.save()
 
-                person = form_Person.save(commit=False)
+                # person = form_Person.save(commit=False)
                 person.id_FisicPerson_fk = fisicPerson
                 person.isActive = 1
                 person.save()
@@ -49,10 +50,10 @@ def Client_Create(request):
 
             if form_legalPerson.is_valid():
                 legalPerson = form_legalPerson.save(commit=False)
-                legalPerson.id_address_fk = address
+                # legalPerson.id_address_fk = address
                 legalPerson = form_legalPerson.save()
 
-                person = form_Person.save(commit=False)
+                # person = form_Person.save(commit=False)
                 person.id_LegalPerson_fk = legalPerson
                 person.isActive = 1
                 person.save()
@@ -61,10 +62,10 @@ def Client_Create(request):
 
             if form_foreigner.is_valid():
                 foreigner = form_foreigner.save(commit=False)
-                foreigner.id_address_fk = address
+                # foreigner.id_address_fk = address
                 foreigner = form_foreigner.save()
 
-                person = form_Person.save(commit=False)
+                # person = form_Person.save(commit=False)
                 person.id_ForeignPerson_fk = foreigner
                 person.isActive = 1
                 person.save()
