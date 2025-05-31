@@ -298,7 +298,6 @@ class Romaneio_PaymentMethod_Accounts(models.Model):
     #     blank=True
     # )
 
-
 class CaixaDiario(models.Model): #abertura de caixa
     usuario_responsavel = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = models.DateField(default=timezone.now)  # Um registro por dia

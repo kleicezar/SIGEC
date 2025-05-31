@@ -74,7 +74,8 @@ class AccountsForm(BaseAccountsForm):
             'installment_Range',
             'totalValue',
             'date_init',
-            'plannedAccount'
+            'plannedAccount',
+            'description',
         ]
         labels = {
             'chartOfAccounts':'Plano de Contas'
@@ -108,7 +109,11 @@ class AccountsForm(BaseAccountsForm):
             'date_init': forms.TextInput(attrs={
                 'class': 'form-control row mask-date'
             }),
+            'description': forms.TextInput(attrs={
+                'class': 'form-control row'
+            }),
             'plannedAccounts':forms.CheckboxInput(attrs={'class':"form-check-input"})
+            
             
         }
 
@@ -163,7 +168,8 @@ class BasePaymentMethodAccountsForm(forms.ModelForm):
             'interestType',
             'fineType',
             'acc',
-            'activeCredit'
+            'activeCredit',
+
         ]
         widgets = { 
            
