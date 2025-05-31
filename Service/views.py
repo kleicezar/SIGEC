@@ -126,17 +126,17 @@ def workOrders_create(request):
 @transaction.atomic 
 def workOrders_update(request,pk):
 
-    servico = get_object_or_404(VendaService, pk=pk)
-    ServiceItemFormSet  = inlineformset_factory(VendaService,VendaItemService,form=VendaItemServiceForm,extra=0,can_delete=True)
-    VendaItemFormSet = inlineformset_factory(VendaService, VendaItem, form=VendaItemForm, extra=0, can_delete=True)
-    PaymentMethodAccountsFormSet = inlineformset_factory(VendaService,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=1,can_delete=True)
-    OlderPaymentMethodAccountsFormSet = inlineformset_factory(VendaService, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=0, can_delete=True)
+    servico = get_object_or_404(Vendaservice, pk=pk)
+    ServiceItemFormSet  = inlineformset_factory(Vendaservice,VendaItemservice,form=VendaItemserviceForm,extra=0,can_delete=True)
+    VendaItemFormSet = inlineformset_factory(Vendaservice, VendaItem, form=VendaItemForm, extra=0, can_delete=True)
+    PaymentMethodAccountsFormSet = inlineformset_factory(Vendaservice,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=1,can_delete=True)
+    OlderPaymentMethodAccountsFormSet = inlineformset_factory(Vendaservice, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=0, can_delete=True)
 
     if request.method == 'POST':
         # previous_url = request.session.get('previous_page','/')
         # print(request.POST)
         service_form = VendaserviceForm(request.POST, instance=servico)
-        service_item_formset = serviceItemFormSet(request.POST, instance=servico)
+        service_item_formset = ServiceItemFormSet(request.POST, instance=servico)
         venda_item_formset = VendaItemFormSet(request.POST,instance=servico)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST, instance=servico,prefix="paymentmethod_accounts_set")
         Older_PaymentMethod_Accounts_FormSet = OlderPaymentMethodAccountsFormSet(request.POST,instance=servico,prefix="older_paymentmethod_accounts_set")
@@ -159,7 +159,7 @@ def workOrders_update(request,pk):
             if key.startswith("vendaitemservice_set-") and key.endswith("-id") and value.isdigit()
         )
         ids_para_excluir_venda_service_itens = ids_existentes_venda_service_itens - ids_enviados_vendas_service_itens
-        VendaItemService.objects.filter(id__in=ids_para_excluir_venda_service_itens).delete()
+        VendaItemservice.objects.filter(id__in=ids_para_excluir_venda_service_itens).delete()
 
 
         if(
@@ -320,7 +320,7 @@ def workOrders_update(request,pk):
     form_Accounts = AccountsForm(instance=servico)
     Older_PaymentMethod_Accounts_FormSet = OlderPaymentMethodAccountsFormSet(queryset=servico.paymentmethod_accounts_set.all(),instance=servico,prefix='older_paymentmethod_accounts_set')
     PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
-    service_form = VendaServiceForm(instance=servico)
+    service_form = VendaserviceForm(instance=servico)
     venda_item_formset = VendaItemFormSet(queryset=servico.vendaitem_set.all(),instance=servico)
     service_item_formset = ServiceItemFormSet(queryset = servico.vendaitemservice_set.all(),instance=servico)
     
