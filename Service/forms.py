@@ -4,8 +4,6 @@ from purchase.models import Product
 from .models import *
 
 class VendaserviceForm(forms.ModelForm):
-
-    
     class Meta:
         model = Vendaservice
         fields = ['data_da_venda', 'pessoa', 'situacao', 'observacao_pessoas', 'observacao_sistema', 'total_value','product_total','discount_total','service_total','discount_total_service','total_value_service']

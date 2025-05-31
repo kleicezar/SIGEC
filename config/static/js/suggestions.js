@@ -123,11 +123,13 @@ function showSuggetionsServices(input){
                 suggetionsBox.innerHTML = "";
                 data.servicos.forEach(servico => {           
                     let newSuggest = document.createElement("div");
-                    newSuggest.innerHTML = `${servico.id} - ${servico.name_Service}`
+                    newSuggest.innerHTML = `${servico.id} - ${servico.name_service}`
                     suggetionsBox.appendChild(newSuggest);
+                    console.log("novo servico")
+                    console.log(servico)
                     newSuggest.onclick = function(){
                             id_service.value = servico.id;
-                            input.value = `${servico.id} - ${servico.name_Service}`
+                            input.value = `${servico.id} - ${servico.name_service}`
                             price.value = servico.price;
                             preco_data = price.value;
                             suggetionsBox.style.display = "none";
