@@ -61,31 +61,6 @@
             <p style="margin-top: 20px;">
                 <a href="{% url 'permitions_list' %}">Voltar para a lista</a>
             </p>
-            {% comment %}
-            <div class='content'>
-                <h2>Selecione Permissões</h2>
-
-                <form method="post">
-                    {% csrf_token %}
-
-                    {% for ct, permissions in grouped_permissions.items %}
-                        <fieldset>
-                            <legend>{{ ct.app_label|capfirst }} / {{ ct.model|capfirst }}</legend>
-                            {% for perm in permissions %}
-                                <label>
-                                    <input type="checkbox" name="permissions" value="{{ perm.id }}"
-                                        {% if perm.id in form.permissions.value %}checked{% endif %}>
-                                    {{ perm.name }}
-                                </label><br>
-                            {% endfor %}
-                        </fieldset>
-                    {% endfor %}
-
-                    <button type="submit">Salvar</button>
-                </form> 
-
-            </div>
-            {% endcomment %}
         {% endblock %}
     </main>
 <body>
