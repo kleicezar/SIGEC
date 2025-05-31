@@ -33,14 +33,15 @@ def Client_Create(request):
 
         #verificação se o cadastro é valido 
         if form_Person.is_valid():
-
+            person = form_Person.save(commit=False)
+            person.id_address_fk = address
             # verificação em qual cadastro foi feito    
             if form_fisicPerson.is_valid():
                 fisicPerson = form_fisicPerson.save(commit=False)
-                fisicPerson.id_address_fk = address
+                # fisicPerson.id_address_fk = address
                 fisicPerson = form_fisicPerson.save()
 
-                person = form_Person.save(commit=False)
+                # person = form_Person.save(commit=False)
                 person.id_FisicPerson_fk = fisicPerson
                 person.isActive = 1
                 person.save()
@@ -49,10 +50,10 @@ def Client_Create(request):
 
             if form_legalPerson.is_valid():
                 legalPerson = form_legalPerson.save(commit=False)
-                legalPerson.id_address_fk = address
+                # legalPerson.id_address_fk = address
                 legalPerson = form_legalPerson.save()
 
-                person = form_Person.save(commit=False)
+                # person = form_Person.save(commit=False)
                 person.id_LegalPerson_fk = legalPerson
                 person.isActive = 1
                 person.save()
@@ -61,10 +62,10 @@ def Client_Create(request):
 
             if form_foreigner.is_valid():
                 foreigner = form_foreigner.save(commit=False)
-                foreigner.id_address_fk = address
+                # foreigner.id_address_fk = address
                 foreigner = form_foreigner.save()
 
-                person = form_Person.save(commit=False)
+                # person = form_Person.save(commit=False)
                 person.id_ForeignPerson_fk = foreigner
                 person.isActive = 1
                 person.save()
@@ -134,7 +135,7 @@ def client_list(request):
        
 
     # Configure o Paginator com o queryset filtrado
-    paginator = Paginator(clients, 2)  # 20 itens por página
+    paginator = Paginator(clients, 20)  # 20 itens por página
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
 
@@ -166,7 +167,6 @@ def client_list(request):
         'current_sort':sort,
         'current_dir':direction
     })
-
 
 @login_required
 def buscar_clientes(request):
@@ -223,79 +223,88 @@ def buscar_clientes(request):
 @transaction.atomic
 def update_client(request, id_client):
     # Buscar o cliente e os dados relacionados
-    selected_form = 'a'
+
     try:
         person = Person.objects.get(id=id_client)
-        print(person)
-        if person.id_FisicPerson_fk:
-            fisicPerson = person.id_FisicPerson_fk
-            address = person.id_FisicPerson_fk.id_address_fk
+        fisicPerson = person.id_FisicPerson_fk
+        legalPerson = person.id_LegalPerson_fk
+        foreigner = person.id_ForeignPerson_fk
+        address = person.id_address_fk
+
+        # Identifica o tipo atual e o endereço
+        if fisicPerson:
             selected_form = "Pessoa Fisica"
-            legalPerson = None
-            foreigner = None
+        elif legalPerson:
+            selected_form = "Pessoa Juridica"
+        elif foreigner:
+            selected_form = "Estrangeiro"
         else:
-            fisicPerson = None
-            if person.id_LegalPerson_fk:
-                legalPerson = person.id_LegalPerson_fk
-                address = person.id_LegalPerson_fk.id_address_fk
-                selected_form = "Pessoa Juridica"
-                foreigner = None
-            else:
-                legalPerson = None
-                if person.id_ForeignPerson_fk:
-                    foreigner = person.id_ForeignPerson_fk
-                    address = person.id_ForeignPerson_fk.id_address_fk
-                    selected_form = "Estrangeiro"
-                else:
-                    foreigner = None
-                    selected_form = ""
+            selected_form = ""
+            address = None
 
     except Person.DoesNotExist:
-        return redirect('Client')  # Redirecionar para pagina inicial de clientes
-
+        return redirect('Client')
     if request.method == "POST":
+        # Tipo novo informado no formulário
+        tipo_novo = request.POST.get("form_choice")
+
+        # Detecta troca de tipo e deleta os registros antigos
+        if selected_form != tipo_novo:
+            if fisicPerson:
+                fisicPerson.delete()
+                person.id_FisicPerson_fk = None
+            if legalPerson:
+                legalPerson.delete()
+                person.id_LegalPerson_fk = None
+            if foreigner:
+                foreigner.delete()
+                person.id_ForeignPerson_fk = None
+            person.save()
+
+            # Reseta variáveis para reconstrução
+            fisicPerson = None
+            legalPerson = None
+            foreigner = None
+
+        # Recria os formulários com base no novo tipo
         form_address = AddressForm(request.POST, instance=address)
-        form_fisicPerson = FisicPersonForm(request.POST, instance=fisicPerson)
-        form_legalPerson = LegalPersonModelForm(request.POST, instance=legalPerson)
-        form_foreigner = ForeignerModelForm(request.POST, instance=foreigner)
         form_Person = PersonForm(request.POST, instance=person)
 
-        # Atualização do endereço
+        form_fisicPerson = FisicPersonForm(request.POST)
+        form_legalPerson = LegalPersonModelForm(request.POST)
+        form_foreigner = ForeignerModelForm(request.POST)
+
         if form_address.is_valid():
             address = form_address.save()
 
-        # Atualização dos dados principais
         if form_Person.is_valid():
-            if fisicPerson and form_fisicPerson.is_valid():
+            person = form_Person.save(commit=False)
+
+            # Salva novo tipo de pessoa com endereço atualizado
+            if tipo_novo == "Pessoa Fisica" and form_fisicPerson.is_valid():
                 fisicPerson = form_fisicPerson.save(commit=False)
                 fisicPerson.id_address_fk = address
                 fisicPerson.save()
-
-                person = form_Person.save(commit=False)
                 person.id_FisicPerson_fk = fisicPerson
-                person.save()
 
-            elif legalPerson and form_legalPerson.is_valid():
+            elif tipo_novo == "Pessoa Juridica" and form_legalPerson.is_valid():
                 legalPerson = form_legalPerson.save(commit=False)
                 legalPerson.id_address_fk = address
                 legalPerson.save()
-
-                person = form_Person.save(commit=False)
                 person.id_LegalPerson_fk = legalPerson
-                person.save()
 
-            elif foreigner and form_foreigner.is_valid():
+            elif tipo_novo == "Estrangeiro" and form_foreigner.is_valid():
                 foreigner = form_foreigner.save(commit=False)
                 foreigner.id_address_fk = address
                 foreigner.save()
-
-                person = form_Person.save(commit=False)
                 person.id_ForeignPerson_fk = foreigner
-                person.save()
-            messages.success(request,"Cliente atualizado com sucesso.",extra_tags="successClient")
-            return redirect('Client')  # Redirecionar após salvar as alterações
+                ('cadastru estrangeiro')
+
+            person.save()
+            messages.success(request, "Cliente atualizado com sucesso.", extra_tags="successClient")
+            return redirect('Client')
+
     else:
-        # Preencher os formulários com os dados existentes
         form_address = AddressForm(instance=address)
         form_fisicPerson = FisicPersonForm(instance=fisicPerson)
         form_legalPerson = LegalPersonModelForm(instance=legalPerson)
@@ -310,10 +319,9 @@ def update_client(request, id_client):
         'form_Person': form_Person,
         'selected_form': selected_form,
     }
-    print(selected_form)
-    print(type(selected_form))
 
-    return render(request, 'registry/ClientformUpdate.html', context)
+    return render(request, 'registry/Clientform.html', context)
+
 
 @login_required
 @transaction.atomic
@@ -440,3 +448,19 @@ def search_tech(request):
         'message': f"{len(clients)} Clientes encontrados." if page.object_list else "Nenhum cliente encontrado."
     }
     return JsonResponse(response_data)
+
+def verificar_tipo_de_pessoa(id_client):
+    try:
+        person = Person.objects.get(id=id_client)
+        
+        if person.id_FisicPerson_fk:
+            return "Pessoa Física"
+        elif person.id_LegalPerson_fk:
+            return "Pessoa Jurídica"
+        elif person.id_ForeignPerson_fk:
+            return "Estrangeiro"
+        else:
+            return "Nenhum tipo de pessoa associado"
+    
+    except Person.DoesNotExist:
+        return "Cliente não encontrado"

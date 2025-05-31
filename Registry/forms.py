@@ -93,7 +93,6 @@ class ForeignerModelForm(forms.ModelForm):
             })
         }
 
-
 class FisicPersonForm(forms.ModelForm):
     class Meta:
         model = FisicPerson

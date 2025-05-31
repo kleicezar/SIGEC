@@ -19,7 +19,6 @@ class FisicPerson(models.Model):
     cpf = models.CharField('Cadastro de Pessoa Fisica - CPF', max_length=100)
     rg = models.CharField('Registro Geral - RG', max_length=100)
     dateOfBirth = models.CharField('Data de Aniversario', max_length=14)
-    id_address_fk = models.OneToOneField ('Address', on_delete=models.CASCADE, db_column='id_address_fk')
 
     def __str__(self):
         return self.name
@@ -27,7 +26,6 @@ class FisicPerson(models.Model):
 class ForeignPerson(models.Model):
     name_foreigner = models.CharField('Nome', max_length=100)
     num_foreigner = models.CharField('Numero do Documento', max_length=100)
-    id_address_fk = models.OneToOneField ('Address', on_delete=models.CASCADE, db_column='id_address_fk')
 
     def __str__(self):
         return self.name_foreigner
@@ -41,7 +39,6 @@ class LegalPerson(models.Model):
     MunicipalRegistration = models.CharField('Inscrição Municipal', max_length=100)
     suframa = models.CharField('SUFRAMA', max_length=100)
     Responsible = models.CharField('Responsavel', max_length=100)
-    id_address_fk = models.OneToOneField ('Address', on_delete=models.CASCADE, db_column='id_address_fk')
 
     def __str__(self):
         return self.fantasyName
@@ -63,9 +60,11 @@ class Person(models.Model):
     isDelivery_man = models.BooleanField("Entregador",null=True, blank=True)
     isTechnician = models.BooleanField("Tecnico",null=True, blank=True)
  
-    id_FisicPerson_fk = models.OneToOneField ('FisicPerson', on_delete=models.CASCADE,null=True, blank=True, db_column='id_FisicPerson_fk')
-    id_LegalPerson_fk = models.OneToOneField ('LegalPerson', on_delete=models.CASCADE,null=True, blank=True, db_column='id_LegalPerson_fk')
-    id_ForeignPerson_fk = models.OneToOneField ('ForeignPerson', on_delete=models.CASCADE,null=True, blank=True, db_column='id_ForeignPerson_fk')
+    id_FisicPerson_fk = models.OneToOneField ('FisicPerson', on_delete=models.SET_NULL,null=True, blank=True, db_column='id_FisicPerson_fk')
+    id_LegalPerson_fk = models.OneToOneField ('LegalPerson', on_delete=models.SET_NULL,null=True, blank=True, db_column='id_LegalPerson_fk')
+    id_ForeignPerson_fk = models.OneToOneField ('ForeignPerson', on_delete=models.SET_NULL,null=True, blank=True, db_column='id_ForeignPerson_fk')
+    id_address_fk = models.OneToOneField ('Address', on_delete=models.CASCADE, db_column='id_address_fk')
+
 
     def __str__(self):
         if self.id_FisicPerson_fk != None:

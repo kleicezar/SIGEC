@@ -45,7 +45,6 @@ class Command(BaseCommand):
                 cpf=fake.cpf(),
                 rg=fake.rg(),
                 dateOfBirth=fake.date_of_birth(minimum_age=18, maximum_age=80).strftime('%d/%m/%Y'),
-                id_address_fk=available_addresses.pop(),  # Retira um endereço da lista
             )
             fisic_persons.append(fisic_person)
 
@@ -55,7 +54,6 @@ class Command(BaseCommand):
             foreign_person = ForeignPerson.objects.create(
                 name_foreigner=fake.name(),
                 num_foreigner=fake.uuid4(),
-                id_address_fk=available_addresses.pop(),  # Retira um endereço da lista
             )
             foreign_persons.append(foreign_person)
 
@@ -71,7 +69,6 @@ class Command(BaseCommand):
                 MunicipalRegistration=fake.uuid4(),
                 suframa=fake.uuid4(),
                 Responsible=fake.name(),
-                id_address_fk=available_addresses.pop(),  # Retira um endereço da lista
             )
             legal_persons.append(legal_person)
 
@@ -117,6 +114,8 @@ class Command(BaseCommand):
                 id_FisicPerson_fk=id_FisicPerson_fk,
                 id_LegalPerson_fk=id_LegalPerson_fk,
                 id_ForeignPerson_fk=id_ForeignPerson_fk,
+                id_address_fk=available_addresses.pop(),  # Retira um endereço da lista
+
             )
 
         self.stdout.write(self.style.SUCCESS("Dados fictícios gerados com sucesso!"))
