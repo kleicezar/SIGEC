@@ -119,7 +119,8 @@ def client_list(request):
                 Q(id__startswith=search_query) |
                 Q(nome_cliente__istartswith=search_query)
             ) &
-            Q(isActive = True)
+            Q(isActive = True),
+            Q(isUser = False)
         )
     else:
         clients = Person.objects.annotate(
@@ -130,7 +131,8 @@ def client_list(request):
                 default=Value(''),
                 output_field=CharField()
             )).filter(
-                Q(isActive = True)
+                Q(isActive = True),
+                Q(isUser = False)
             )
        
 

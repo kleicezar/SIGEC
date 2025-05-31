@@ -101,9 +101,37 @@
                         
                     </a>
                     <ul class="sub-menu">
-                        <li><a href="{% url 'Product' %}"><h5>Gerenciar Produtos</h5></a></li>
-                        <li><a href="#"><h5>Relatorio de Produtos</h5></a></li>
-                        <li><a href="{% url 'manageProductDelivery' %}"><h5>Status de Produtos</h5></a></li>
+                        <li>
+                            <a href="{% url 'Product' %}">
+                                <h5>
+                                    Gerenciar Produtos
+                                </h5>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'manageProductDelivery' %}">
+                                <h5>
+                                    Status de Produtos
+                                </h5>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <h5>
+                                    Devolução de Produtos
+                                </h5>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <h5>
+                                    Relatorio de Produtos
+                                </h5>
+                            </a>
+                        </li>
+                        {% comment %}
+                        {% url '' %}
+                        {% endcomment %}
                     </ul>
                 </li>
                 {% endif %}
@@ -234,6 +262,14 @@
                             <li>
                                 <a href="{% url 'permitions_list' %}"><h5>Permissões</h5></a>
                             </li>
+                        {% endif %}
+                        {% if perms.auth.view_users %}
+                            {% comment %}
+                            <li>
+                                <a href="{% url 'user_list' %}"><h5>Permissões</h5></a>
+                            </li>
+                            <a href="{% url 'user_list' %}"><h5>Permissões</h5></a>
+                            {% endcomment %}
                         {% endif %}
                     </ul>
                 </li>

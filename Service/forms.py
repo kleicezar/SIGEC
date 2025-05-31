@@ -4,6 +4,7 @@ from purchase.models import Product
 from .models import *
 
 class VendaserviceForm(forms.ModelForm):
+
     class Meta:
         model = Vendaservice
         fields = ['data_da_venda', 'pessoa', 'situacao', 'observacao_pessoas', 'observacao_sistema', 'total_value','product_total','discount_total','service_total','discount_total_service','total_value_service']
@@ -11,7 +12,6 @@ class VendaserviceForm(forms.ModelForm):
             'pessoa':forms.TextInput(attrs={
                 'class':'form-control row-xl-5',
                 'required':'required'
-                
             }),
             'data_da_venda':forms.DateTimeInput(attrs={
                 'class':'form-control row-xl-2 mb-3 mt-3 ' ,
@@ -173,7 +173,6 @@ class VendaServiceFormUpdate(VendaserviceForm):
             })
     }
 
-
 class PaymentMethodVendaForm(forms.ModelForm):
     class Meta:
         model = PaymentMethod_Vendaservice
@@ -190,4 +189,3 @@ class PaymentMethodVendaForm(forms.ModelForm):
                 'min':0
             })
         }
-

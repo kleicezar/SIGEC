@@ -4,6 +4,9 @@ from django.db import transaction
 from django.contrib.auth.models import User, Group
 from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
+from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth.models import Permission
+
 class PaymentMethod(models.Model):
     # CONSIDERINCASH = [
     #     ('entrada', 'Entrada'),
@@ -125,63 +128,25 @@ class SuperGroup(models.Model):
         verbose_name = 'super grupo'
         verbose_name_plural = 'super grupos'
 
-def sync_user_groups_from_supergroups(user_pk):
-    """
-    Sincroniza os grupos Django de um usuário com base nos SuperGroups aos quais ele pertence.
-    """
-    try:
-        user = User.objects.get(pk=user_pk)
-    except User.DoesNotExist:
-        return
+class GroupSetBackend(ModelBackend):
+    def get_group_permissions(self, user_obj, obj=None):
+        if not user_obj.is_active or user_obj.is_anonymous:
+            return set()
 
-    desired_groups = set()
-    # Garante que a relação 'super_groups' exista no modelo User
-    if hasattr(user, 'super_groups'):
-        for supergroup in user.super_groups.all():
-            desired_groups.update(supergroup.groups.all())
+        permissions = set()
 
-    current_groups = set(user.groups.all())
+        # Permissões dos grupos normais
+        permissions.update(super().get_group_permissions(user_obj, obj))
 
-    # Adiciona grupos que estão nos MetaGroups mas não diretamente no usuário
-    groups_to_add = desired_groups - current_groups
-    if groups_to_add:
-        user.groups.add(*groups_to_add)
+        # Permissões dos grupos agrupados (GroupSet)
+        group_sets = user_obj.groupset_set.all()
+        for group_set in group_sets:
+            for group in group_set.groups.all():
+                perms = group.permissions.values_list(
+                    "content_type__app_label", "codename"
+                ).order_by()
+                permissions.update(
+                    ["%s.%s" % (ct, name) for ct, name in perms]
+                )
 
-    # Remove grupos que estão no usuário mas não são mais justificados por nenhum SuperGroup
-    # ATENÇÃO: Isso significa que os MetaGroups gerenciam completamente os grupos.
-    # Se um grupo for atribuído diretamente ao usuário e não estiver em nenhum SuperGroup do usuário,
-    # ele será removido por esta lógica.
-    groups_to_remove = current_groups - desired_groups
-    if groups_to_remove:
-        user.groups.remove(*groups_to_remove)
-
-@receiver(m2m_changed, sender=SuperGroup.members.through)
-def supergroup_members_changed_handler(sender, instance, action, reverse, pk_set, **kwargs):
-    """
-    Chamado quando a relação many-to-many SuperGroup.members é alterada.
-    (Ex: um usuário é adicionado/removido de um SuperGroup)
-    """
-    if action in ["post_add", "post_remove", "post_clear"]:
-        if reverse:
-            # 'instance' é um User, 'pk_set' contém PKs de SuperGroup
-            # Ex: user_instance.super_groups.add(supergroup_instance)
-            user_instance = instance
-            sync_user_groups_from_supergroups(user_instance.pk)
-        else:
-            # 'instance' é um SuperGroup, 'pk_set' contém PKs de User
-            # Ex: supergroup_instance.members.add(user_instance)
-            for user_pk in pk_set:
-                sync_user_groups_from_supergroups(user_pk)
-
-@receiver(m2m_changed, sender=SuperGroup.groups.through)
-def supergroup_definition_changed_handler(sender, instance, action, pk_set, **kwargs):
-    """
-    Chamado quando a relação many-to-many SuperGroup.groups é alterada.
-    (Ex: um Group é adicionado/removido da definição de um SuperGroup)
-    'instance' é o SuperGroup que foi modificado.
-    """
-    if action in ["post_add", "post_remove", "post_clear"]:
-        # Todos os membros do SuperGroup modificado precisam ter seus grupos recalculados.
-        supergroup = instance
-        for user in supergroup.members.all():
-            sync_user_groups_from_supergroups(user.pk)
+        return permissions

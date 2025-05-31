@@ -136,7 +136,10 @@ class PersonForm(forms.ModelForm):
                   'isFormer_employee', 
                   'isCarrier', 
                   'isDelivery_man', 
-                  'isTechnician'] # 'isActive'
+                  'isTechnician',
+                  'email',
+                  'password',
+                  ] # 'isActive'
 
         widgets = {
             'WorkPhone':forms.TextInput(attrs={
@@ -162,7 +165,9 @@ class PersonForm(forms.ModelForm):
                 'class':'form-check-input'}
             ),
             'isUser':forms.CheckboxInput(attrs={
-                'class':'form-check-input'}
+                'class':'form-check-input',
+                'onchange':"mostrarCampos()"
+                }
             ), 
             'isEmployee':forms.CheckboxInput(attrs={
                 'class':'form-check-input'}
@@ -181,12 +186,20 @@ class PersonForm(forms.ModelForm):
             ), 
             'isTechnician':forms.CheckboxInput(attrs={
                 'class':'form-check-input'}
-            )
+            ),
+            'email':forms.TextInput(attrs={
+                'class':'form-control',
+            }),
+             'password':forms.PasswordInput(attrs={
+                'class' : 'form-control ',
+                # 'minlength' : '8',
+                # 'type' : "password" 
+            }),
         }
 
     
     def __init__(self, *args, **kargs):
         super().__init__(*args, **kargs)
-
+        
 class ClientSearchForm(forms.Form): 
     search = forms.CharField(max_length=100, required=False, label="Pesquisar Cliente")
