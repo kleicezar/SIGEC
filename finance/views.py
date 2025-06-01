@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
 from purchase.forms import CompraFormUpdate
+from registry.models import Credit
 from sale.forms import VendaForm, VendaFormUpdate
 from sale.views import venda_update
 from service.forms import VendaServiceFormUpdate, VendaserviceForm
@@ -606,7 +607,7 @@ def delete_AccountsReceivable(request, id_Accounts):
 def Credit_Update(request,id_client):
     person = Person.objects.get(id=id_client)
     if request.method == "POST":
-        form_creditLimit = CreditForm(request.POST,instance=person)
+        form_creditLimit = CreditLimitForm(request.POST,instance=person)
         if form_creditLimit.is_valid():
             person.creditLimit = form_creditLimit.cleaned_data["creditLimit"]
             person.save()
@@ -615,7 +616,7 @@ def Credit_Update(request,id_client):
         else:
             print("Erro no formulário de Limite de Crédito",form_creditLimit.errors)
     else:
-        form_creditLimit = CreditForm(instance=person)
+        form_creditLimit = CreditLimitForm(instance=person)
 
         context = {
             'form_creditLimit':form_creditLimit
@@ -626,6 +627,19 @@ def Credit_Update(request,id_client):
 def CreditedClients_list(request):
     persons = Person.objects.all()
     return render(request,"finance/CreditedClients.html",{'persons':persons})
+
+def Credit_list(request):
+    credits = Credit.objects.all()
+    colunas = [
+        ('id','ID'),
+        ('pessoa','Pessoa'),
+        ('data_credito','Data do Crédito'),
+        ('credito','Crédito')
+    ]
+    return render (request,"finance/credit_list.html",{
+        'credits':credits,
+        'colunas':colunas
+    })
 
 
 def Accounts_list(request,id_accounts):

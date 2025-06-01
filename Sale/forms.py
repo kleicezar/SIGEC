@@ -1,6 +1,6 @@
 from django import forms
 from .models import *
-
+from django.core.validators import MaxValueValidator, MinValueValidator
 class VendaForm(forms.ModelForm):
     class Meta:
         model = Venda
@@ -132,3 +132,21 @@ class PaymentMethodVendaForm(forms.ModelForm):
         }
 
 
+class VendaItemDevolutedForm(forms.ModelForm):
+    class Meta:
+        model = VendaItem
+        fields = ['product','quantidade','preco_unitario','price_total']
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.instance and self.instance.pk:
+            max_qtd = self.instance.quantidade
+
+            # Aplica a limitação no frontend
+            self.fields['quantidade'].widget.attrs.update({
+                'max': max_qtd,
+                'min': 1,
+                'type': 'number'
+            })
+            max_qtd = self.instance.quantidade
+            self.fields['quantidade'].validators.append(MaxValueValidator(max_qtd))

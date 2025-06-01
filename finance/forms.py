@@ -321,7 +321,7 @@ class RomaneioPaymentMethod_AccountsForm(forms.ModelForm):
             'acc':forms.HiddenInput()
         }
 
-class CreditForm(forms.ModelForm):
+class CreditLimitForm(forms.ModelForm):
     class Meta:
         model = Person
         fields = ["creditLimit"]

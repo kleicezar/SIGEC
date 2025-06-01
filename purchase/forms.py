@@ -215,6 +215,8 @@ class CompraItemForm(forms.ModelForm):
             cleaned_data['total'] = preco_unitario * quantidade
         return cleaned_data
 
+
+
 class CompraFormUpdate(forms.ModelForm):
     class Meta:
         model = Compra

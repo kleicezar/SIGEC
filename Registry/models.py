@@ -75,4 +75,8 @@ class Person(models.Model):
             return self.id_ForeignPerson_fk.name_foreigner
         else:
             return None
- 
+
+class Credit(models.Model):
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, verbose_name="pessoa_creditada")
+    credit_data = models.DateTimeField(verbose_name='Data do Crédito')
+    credit_value = models.IntegerField(default=0)

@@ -1,5 +1,5 @@
 
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from decimal import Decimal, InvalidOperation
 from operator import attrgetter
 from django.shortcuts import render, redirect, get_object_or_404
@@ -10,6 +10,8 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import authenticate, login, logout
 from django.db.models.functions import Coalesce
 from django.db.models import F, Value
+from registry.models import Credit
+from sale.forms import VendaItemDevolutedForm
 from sale.models import Venda, VendaItem
 from service.models import VendaItem as VendaItemWS
 from .forms import *
@@ -41,7 +43,8 @@ def productsWithStatus_list(request):
     # messages.warning(request,'TESTE',extra_tags='delivery_page')
     return render(request, 'purchase/manageDeliveries_list.html', {
         'all_products_with_status': all_products_with_status,
-        "status_options": status_options
+        "status_options": status_options,
+        'type':'Pendente'
 
     })
 
@@ -844,3 +847,66 @@ def get_product_id(request):
  
    
     return JsonResponse({'produto':resultados_json})
+
+def devolutedProduct_list(request):
+    vendasItens = VendaItem.objects.filter(
+        Q(status = 'Entregue')
+    )
+    workOrders = VendaItemWS.objects.filter(
+        Q(status='Entregue')
+    )
+
+    all_products_with_status = [
+        {'idVenda': vendaItem.venda.id,'idProduto':vendaItem.product.id,'idVendaItem':vendaItem.id,'descricao': vendaItem.product.description, 'quantidade': vendaItem.quantidade, 'status': vendaItem.status,'id':vendaItem.id} for vendaItem in vendasItens
+    ] + [
+        {'idOS': workOrder.venda.id, 'idProduto':workOrder.product.id,'idVendaItem':workOrder.id,'descricao': workOrder.product.description, 'quantidade': workOrder.quantidade,'status':workOrder.status,'id':workOrder.id} for workOrder in workOrders
+    ]
+    status_options = ["Pendente", "Entregue"]
+
+    return render(request,'purchase/manageDeliveries_list.html',
+        {
+             'all_products_with_status': all_products_with_status,
+            "status_options": status_options,
+            'type':'Entregue'
+        }
+    )
+
+def devolute_product(request, pk):
+    vendaItem = get_object_or_404(VendaItem, id=pk)
+
+    if request.method == 'POST':
+        vendaItemDevolutedForm = VendaItemDevolutedForm(request.POST, instance=vendaItem)
+        query = request.POST.get('query', 0)
+        direction = request.POST.get('direction', '')
+
+        print("direction:", direction)
+        print("query:", query)
+
+        if vendaItemDevolutedForm.is_valid():
+            print("Formulário válido")
+            if direction == '1':
+                print("Direção = 1")
+                devolvida = vendaItemDevolutedForm.cleaned_data['quantidade']
+                vendaItem.quantidade -= devolvida
+                if vendaItem.quantidade >=1:
+                    vendaItem.save()
+                else:
+                    vendaItem.delete()
+                print(f"Nova quantidade: {vendaItem.quantidade}")
+                
+                pessoa = vendaItem.venda.pessoa
+                Credit.objects.create(
+                    person=pessoa,
+                    credit_data=datetime.now(),
+                    credit_value=float(query)
+                )
+            else:
+                return redirect('Accounts_Create')
+        else:
+            print("Erro no formulário:", vendaItemDevolutedForm.errors)
+    else:
+        vendaItemDevolutedForm = VendaItemDevolutedForm(instance=vendaItem)
+
+    return render(request, 'purchase/devoluteProduct_form.html', {
+        'vendaItemForm': vendaItemDevolutedForm
+    })

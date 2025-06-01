@@ -1,0 +1,103 @@
+{% extends 'login/menu.html' %}
+{% load bootstrap4 %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/Forms.css' %}">
+<link rel="stylesheet" href="{% static 'css/custom-styles.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.min.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="content d-flex align-items-center justify-content-center">
+    <div class="bg-light w-100">
+        <div class="card shadow p-4 mx-auto" style="max-width: 1000px; max-height: 900px;">
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="row mb-3">
+                    <h4 class="text-center">Devolução de Produto</h4>
+                </div>
+
+                <div class="row">
+                    <div class="mb-3 col">
+                        <label class="form-label">
+                            {{ vendaItemForm.product.label }}
+                        </label>
+                        {{ vendaItemForm.product }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="mb-3 col">
+                        <label class="form-label">
+                            {{ vendaItemForm.quantidade.label }}
+                        </label>
+                        {{ vendaItemForm.quantidade }}
+                    </div>
+                    <div class="mb-3 col">
+                        <label class="form-label">
+                            {{ vendaItemForm.preco_unitario.label }}
+                        </label>
+                        {{ vendaItemForm.preco_unitario }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        {{ vendaItemForm.price_total.label }}
+                    </label>
+                    {{ vendaItemForm.price_total }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Valor Abatido</label>
+                    <input type="number" name="query" id="query" value="0" min="0" class="form-control">
+                </div>
+
+                <div class="d-flex justify-content-center gap-3">
+                    <select name="direction" id="">
+                        <option value="1">Usar como Crédito</option>
+                        <option value="2">Conta a Pagar</option>
+                    </select>
+                    <!-- <button type="submit" class="btn bg-adapted w-50">Usar como Crédito</button>
+                    <button type="button" class="btn bg-adapted w-50">Conta A Pagar</button> -->
+                </div>
+                <div>
+                    <button type="submit" class="btn bg-adapted">Enviar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const quantidade = document.getElementById('id_quantidade');
+        const value_total = document.getElementById('id_price_total');
+        const query = document.getElementById('query');
+
+        if (quantidade && value_total && query) {
+            const quantidade_inicial = parseFloat(quantidade.value);
+            const total = parseFloat(value_total.value);
+
+            // Copia valor total inicialmente
+            query.value = total;
+
+            quantidade.addEventListener("input", () => {
+                const novaQuantidade = parseFloat(quantidade.value);
+                if (!isNaN(novaQuantidade) && quantidade_inicial > 0) {
+                    const novoValor = (total / quantidade_inicial) * novaQuantidade;
+                    query.value = novoValor.toFixed(2);
+                }
+            });
+        } else {
+            console.warn("Campos não encontrados no DOM.");
+        }
+    });
+</script>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/devolute_product.js' %}"></script>
+
+{% endblock %}

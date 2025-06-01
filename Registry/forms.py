@@ -190,3 +190,8 @@ class PersonForm(forms.ModelForm):
 
 class ClientSearchForm(forms.Form): 
     search = forms.CharField(max_length=100, required=False, label="Pesquisar Cliente")
+
+class CreditForm(forms.Form):
+    class Meta:
+        model = Credit
+        fields = '__all__'
