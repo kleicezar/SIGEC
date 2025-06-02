@@ -247,6 +247,7 @@ function generateInstallments(){
                 let row_daysCredit = document.createElement('td');                 // coluna
                 let row_valueCredit = document.createElement('td');      
                 let row_idCredit = document.createElement("td");          // coluna     
+                let row_creditCredit = document.createElement("td");
                 let row_DELETECredit = document.createElement('td');
                 let cloneCredit = template.content.cloneNode(true); 
 
@@ -289,6 +290,12 @@ function generateInstallments(){
                         row_idCredit.appendChild(input);
                         parcela_credit.appendChild(row_idCredit)
                     }
+                    else if(input.name.includes("-activeCredit")){
+                        input.checked = true;
+                        row_creditCredit.appendChild(input);
+                        
+                        parcela_credit.appendChild(row_creditCredit);
+                    }
                 
                     await formContainer.appendChild(parcela_credit);
                 })
@@ -301,7 +308,8 @@ function generateInstallments(){
                 let row_expirationDate = document.createElement('td')       // coluna
                 let row_days = document.createElement('td')                 // coluna
                 let row_value = document.createElement('td')      
-                let row_id = document.createElement("td");          // coluna     
+                let row_id = document.createElement("td");          // coluna   
+                let row_credit = document.createElement("td");  
                 let row_DELETE = document.createElement('td')                // coluna     
                 let clone = template.content.cloneNode(true);               // Clonando o template 
                 
@@ -346,6 +354,11 @@ function generateInstallments(){
                         // input.value = id_payments[0];
                         row_id.appendChild(input);
                         parcela.appendChild(row_id)
+                    }
+                    else if(input.name.includes("-activeCredit")){
+    
+                        row_credit.appendChild(input);
+                        parcela.appendChild(row_credit)
                     }
                 
                     await formContainer.appendChild(parcela);

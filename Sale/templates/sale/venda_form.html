@@ -249,13 +249,13 @@
                     <h6 class="mt-5 mb-3">Formas de Pagamento</h6>
                     <div id="credit">
                         <label for="">Crédito</label>
-                        <input type="number" id="credit_value">
+                        <input type="number" id="credit_value" name="credit_value">
                         <button type="button" id="button_credit" >Aplicar Crédito</button>
                     </div>
                     {% include 'parcela.html' %}
                     
                     <h5 class="mt-5 mb-3">Observações</h5>
-                    <div class="row ">
+                    <div class="row ">  
 
                         <div class="col">
                             <label for="">{{venda_form.observacao_pessoas.label}}</label>

@@ -11,5 +11,5 @@ urlpatterns = [
     path('pessoa/deletar/<int:id_client>/', delete_client, name='delete_client'),
     path('pessoa/buscar/<int:id_client>/', get_client, name='get_client'),
 
-    path('b-tech/', search_tech, name='buscar_tech'),
+    path('b-tech/', search_tech, name='buscar_tech')
     ]

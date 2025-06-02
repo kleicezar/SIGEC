@@ -66,9 +66,11 @@
                     <th scope="col">
                         {{form.value.label}}
                     </th>
+                    <th scope="col"> {{form.activeCredit.label}}</th>
                     <th id="th_one" scope="col">
                         {{form.DELETE.label}}
                     </th>
+                    
                 </tr>
             </thead>
             <tbody id="payment-method-container">
@@ -85,6 +87,7 @@
                         </td>
                         <td>{{ form.empty_form.days }}</td>
                         <td>{{ form.empty_form.value }}</td>
+                        <td> {{ form.empty_form.activeCredit }}
                         <td>{{ form.empty_form.DELETE }}</td>
                     </tr> -->
                 {% endfor %}
@@ -113,6 +116,7 @@
         </td>
         <td>{{ form.days }}</td>
         <td>{{ form.value }}</td>
+        <td>{{ form.activeCredit }}</td>
         <td>{{ form.DELETE }}</td>
     </tr>
     {% endfor %}

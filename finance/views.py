@@ -669,3 +669,13 @@ def cashFlow(request):
         'get':algumaCoisa
     }
     return render(request, 'finance/cashFlow.html', context)
+
+
+def credit_total(request):
+    query = request.GET.get('query')
+    total = 0
+
+    if query:
+        credits = Credit.objects.filter(Q(person=query)).values_list('credit_value', flat=True)
+        total = sum(credits)
+    return JsonResponse({'credit_total': total})

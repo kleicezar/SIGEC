@@ -1,3 +1,4 @@
+from decimal import Decimal
 from operator import attrgetter
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -107,6 +108,7 @@ def venda_create(request):
     PaymentMethodAccountsFormSet = inlineformset_factory(Venda,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=1,can_delete=True)
 
     if request.method == 'POST':
+        print(request.POST)
         previous_url = request.session.get('previous_page','/')
 
         venda_form = VendaForm(request.POST)
@@ -123,10 +125,13 @@ def venda_create(request):
 
             PaymentMethod_Accounts_FormSet.instance = venda
             total_payment = 0
-            total_payment_with_credit = 0
-
+            
+            valor_usado = request.POST.get('credit_value')
+            print('credito utilizado',valor_usado)
             for form in PaymentMethod_Accounts_FormSet: 
+                # print(form)
                 if form.cleaned_data:
+                    print("entro entro entro")
                     form.acc = False
                     valor = form.cleaned_data['value']
                     total_payment+=valor
@@ -135,20 +140,38 @@ def venda_create(request):
                     paymentWithCredit = PaymentMethod.objects.filter(
                         name_paymentMethod=name_payment,creditPermission=True
                     )
-                    if paymentWithCredit.exists():
+                    
+                    if form.cleaned_data["activeCredit"]:
+                        creditos = Credit.objects.filter(person=venda.pessoa).order_by('id')
+                        restante_para_descontar = Decimal(valor_usado)
 
-                        total_payment_with_credit+=valor
-                        form.instance.activeCredit = True
+                        for credito in creditos:
+                            if restante_para_descontar <= 0:
+                                break  # nada mais a descontar
+
+                            if credito.credit_value >= restante_para_descontar:
+                                credito.credit_value -= restante_para_descontar
+                                credito.save()
+                                restante_para_descontar = Decimal('0')
+                            else:
+                                restante_para_descontar -= credito.credit_value
+                                credito.credit_value = Decimal('0')
+                                credito.save()
+
+                    # if paymentWithCredit.exists():
+
+                    #     total_payment_with_credit+=valor
+                        # form.instance.activeCredit = True
 
             pessoa = venda_form.cleaned_data["pessoa"]
 
-            creditLimit = pessoa.creditLimit
-            creditLimitAtual = creditLimit
-            creditLimitAtual -= total_payment_with_credit
+            # creditLimit = pessoa.creditLimit
+            # creditLimitAtual = creditLimit
+            # creditLimitAtual -= total_payment_with_credit
 
-            if(total_payment == venda_form.cleaned_data['total_value']) and ( (creditLimitAtual == creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual>=0) ):  
-                pessoa.creditLimit = creditLimitAtual
-                pessoa.save()
+            if(total_payment == venda_form.cleaned_data['total_value']):  
+                # pessoa.creditLimit = creditLimitAtual
+                # pessoa.save()
 
                 venda_form.save()
                 venda_item_formset.save()
@@ -164,8 +187,8 @@ def venda_create(request):
             if total_payment != venda_form.cleaned_data['total_value']:
                 messages.warning(request, "Ação cancelada! O valor não foi salvo completamente.",extra_tags='salecreate_page')
                 
-            if ((creditLimitAtual != creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual<0)):
-                messages.warning(request, "Ação cancelada! O valor acumulado dos pagamentos é menor que o limite de Crédito!",extra_tags='salecreate_page')
+            # if ((creditLimitAtual != creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual<0)):
+            #     messages.warning(request, "Ação cancelada! O valor acumulado dos pagamentos é menor que o limite de Crédito!",extra_tags='salecreate_page')
             
             return redirect('venda_create')
            

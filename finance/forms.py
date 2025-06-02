@@ -150,6 +150,7 @@ class BasePaymentMethodAccountsForm(forms.ModelForm):
             {'class':'form-control row'}
         )
     )   
+    activeCredit = forms.BooleanField(required=False, label='Usar Crédito')
     class Meta:
         model = PaymentMethod_Accounts
         fields = [
@@ -190,7 +191,8 @@ class BasePaymentMethodAccountsForm(forms.ModelForm):
                 'class': 'form-control row',
                 'min': 0
             }),
-            'acc':forms.HiddenInput()
+            'acc':forms.HiddenInput(),
+            # 'activeCredit':forms.HiddenInput()
         }
 class PaymentMethodFormSet(BaseInlineFormSet):
     def clean(self):
@@ -212,6 +214,7 @@ class PaymentMethodAccountsForm(BasePaymentMethodAccountsForm):
         self.fields['fineType'].required = False
         self.fields['value_old'].required = False
         self.fields['value_old'].widget = forms.HiddenInput() 
+
 
     def clean(self):
         cleaned_data = super().clean()

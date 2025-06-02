@@ -25,10 +25,32 @@ function showSuggetions(input){
                             id_client.value = cliente.id;
                             input.value = `${cliente.id} - ${cliente.name}`
                             suggetionsBox.style.display = "none";
-                        }
+                            const credit = document.getElementById('credit');
+                            if (credit){
+                                const query = cliente.id;
+                                fetch(`/credit_total/?query=${encodeURIComponent(query)}`)
+                                .then(response=>{
+                                    if(response.ok && response.headers.get('Content-Type').includes('application/json')){
+                                        return response.json();
+                                    } else{
+                                        throw new Error('Resposta não é JSON')
+                                    }
+                                })
+                                .then(data=>{
+                                    const credit_value = document.getElementById("credit_value");
+                                    console.log(credit_value)
+                                    credit_value.value = data.credit_total;
+                                    credit_value.max = data.credit_total;
+                                    credit_value.min = 0.01;
+                                    console.log(data.credit_total);
+                                })
+                                .catch(error => console.error("Erro ao buscar vendas:",error));
+                            }
+                            
+                            }
+                        });
                     });
-                });
-            
+                                
         }
         else{
             fetch(`/buscar_fornecedores/?query=${encodeURIComponent(query)}`)
