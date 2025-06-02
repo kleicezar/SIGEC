@@ -8,15 +8,34 @@ from django.http import JsonResponse
 from finance.models import Accounts, PaymentMethod_Accounts
 from .forms import *
 from .models import *
+from datetime import datetime
+import os
+
+def create_log():
+    date_now = datetime.now().strftime("%m-%d")
+    if date_now == "01-01" or date_now == "07-01":
+            dir = 'login\log\log_entrada'
+            date_name_now = datetime.now().strftime("%Y-%m-%d")
+            name_arq = f"date_{date_name_now}.json"
+            caminho_completo = os.path.join(dir, name_arq)
+
+            # Cria o arquivo
+            with open(caminho_completo, "w") as f:
+                f.write(f"Arquivo criado em {date_name_now}\n")
+        # if 
 
 def my_login(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
+        
+        
+
         if user is not None:
             login(request, user)
             return redirect('index')
+        
     return render(request, 'login/login.html')
 
 @login_required

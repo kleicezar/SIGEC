@@ -12,11 +12,15 @@ from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Case, When, Value, CharField, F
 from operator import attrgetter
+
+
 ### CLIENT
 
 @login_required
 @transaction.atomic
 def Client_Create(request):
+    # import pdb;  pdb.set_trace()
+
     if request.method == "POST":
         # SALVA O LINK DA PAGINA ANTERIOR
         previous_url = request.session.get('previous_page', '/')
@@ -45,6 +49,12 @@ def Client_Create(request):
                 person.id_FisicPerson_fk = fisicPerson
                 person.isActive = 1
                 person.save()
+                user = [
+                    person.id_FisicPerson_fk.name,
+                    person.email,
+                    person.password,]
+                createUser(user)
+
                 messages.success(request,"Cliente cadastrado com sucesso.",extra_tags="successClient")
                 return redirect(previous_url)
 
@@ -57,6 +67,12 @@ def Client_Create(request):
                 person.id_LegalPerson_fk = legalPerson
                 person.isActive = 1
                 person.save()
+                user = [
+                    person.id_LegalPerson_fk.fantasyName,
+                    person.email,
+                    person.password,]
+                createUser(user)
+
                 messages.success(request,"Cliente cadastrado com sucesso.",extra_tags="successClient")
                 return redirect(previous_url)
 
@@ -64,15 +80,19 @@ def Client_Create(request):
                 foreigner = form_foreigner.save(commit=False)
                 # foreigner.id_address_fk = address
                 foreigner = form_foreigner.save()
-
                 # person = form_Person.save(commit=False)
                 person.id_ForeignPerson_fk = foreigner
                 person.isActive = 1
                 person.save()
+                user = [
+                    person.id_ForeignPerson_fk.name_foreigner,
+                    person.email,
+                    person.password,]
+                createUser(user)
                 messages.success(request,"Cliente cadastrado com sucesso.",extra_tags="successClient")
                 return redirect(previous_url)
-            if not form_legalPerson.is_valid():
-                print("Erros: ",form_legalPerson.errors)
+            # if not form_legalPerson.is_valid() or not form_foreigner.is_valid() or not form_fisicPerson.is_valid():
+            #     print("Erros: ",form_legalPerson.errors)
 
     else: 
         if 'HTTP_REFERER' in request.META:
@@ -95,6 +115,15 @@ def Client_Create(request):
         'form_Person': form_Person
     }
     return render(request, 'registry/Clientform.html', context)
+
+def createUser(user):
+    usuario = User.objects.create_user(
+        username=user[1], 
+        email=user[1],
+        password=user[2],
+        first_name=user[0]
+        )
+    print(usuario)
 
 @login_required
 def client_list(request):

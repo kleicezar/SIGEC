@@ -274,6 +274,44 @@
                     </ul>
                 </li>
                 {% endif %}
+
+                <li>
+                    <a href="#" class="toggle">
+                        <div class="page">
+                            
+                            <h3>Logg</h3>
+                            <i class="fa-solid fa-chevron-down"></i>
+                            
+                        </div>
+                        
+                    </a>
+                    <ul class="sub-menu">
+                            <li>
+                                <a href="{% url 'Situation' %}"><h5>Log de Entrada</h5></a>
+                            </li>
+                            <li>
+                                <a href="{% url 'PaymentMethod' %}"><h5>Log de Compras</h5></a>
+                            </li>
+                            <li>
+                                <a href="{% url 'ChartofAccounts'%}">Log de Vendas</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'ChartofAccounts'%}">Log de Ordens de Serviço</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'ChartofAccounts'%}">Log de Contas</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'ChartofAccounts'%}">Log de Configuração</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'ChartofAccounts'%}">Log de Permissões</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'ChartofAccounts'%}">Log de Logs</a>
+                            </li>
+                    </ul>
+                </li>
             </ul>
         </div>
         <main>
