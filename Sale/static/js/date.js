@@ -21,7 +21,7 @@ $(document).ready(function() {
         format: 'dd/mm/yyyy', // Formato de data
         autoclose: true,     // Fecha o calendário automaticamente após a seleção
         todayHighlight: true, // Destaca o dia atual
-        startDate: '+0d',
+        // startDate: '+0d',
         language: 'pt-BR'
     });
 });
@@ -30,7 +30,7 @@ $(document).ready(function() {
         format: 'dd/mm/yyyy', // Formato de data
         autoclose: true,     // Fecha o calendário automaticamente após a seleção
         todayHighlight: true, // Destaca o dia atual
-        startDate: '+0d',
+        // startDate: '+0d',
         language: 'pt-BR'
     });
 });
@@ -49,7 +49,7 @@ $(document).ready(function() {
         format: 'dd/mm/yyyy', // Formato de data
         autoclose: true,     // Fecha o calendário automaticamente após a seleção
         todayHighlight: true, // Destaca o dia atual
-        startDate: '+0d',
+        // startDate: '+0d',
         language: 'pt-BR'
     });
 });
@@ -59,7 +59,7 @@ $(document).ready(function() {
         format: 'dd/mm/yyyy', // Formato de data
         autoclose: true,     // Fecha o calendário automaticamente após a seleção
         todayHighlight: true, // Destaca o dia atual
-        startDate: '+0d',
+        // startDate: '+0d',
         language: 'pt-BR'
     });
 });
@@ -69,7 +69,7 @@ $(document).ready(function() {
         format: 'dd/mm/yyyy', // Formato de data
         autoclose: true,     // Fecha o calendário automaticamente após a seleção
         todayHighlight: true, // Destaca o dia atual
-        startDate: '+0d',
+        // startDate: '+0d',
         language: 'pt-BR'
     });
 });
@@ -79,7 +79,7 @@ $(document).ready(function() {
         format: 'dd/mm/yyyy', // Formato de data
         autoclose: true,     // Fecha o calendário automaticamente após a seleção
         todayHighlight: true, // Destaca o dia atual
-        startDate: '+0d',
+        // startDate: '+0d',
         language: 'pt-BR'
     });
 });
@@ -89,7 +89,7 @@ $(document).ready(function() {
         format: 'dd/mm/yyyy', // Formato de data
         autoclose: true,     // Fecha o calendário automaticamente após a seleção
         todayHighlight: true, // Destaca o dia atual
-        startDate: '+0d',
+        // startDate: '+0d',
         language: 'pt-BR'
     });
     // convert_date(dateStr.value)
