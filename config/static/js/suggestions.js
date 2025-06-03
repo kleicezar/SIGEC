@@ -25,6 +25,7 @@ function showSuggetions(input){
                             id_client.value = cliente.id;
                             input.value = `${cliente.id} - ${cliente.name}`
                             suggetionsBox.style.display = "none";
+
                             const credit = document.getElementById('credit');
                             if (credit){
                                 const query = cliente.id;
@@ -41,7 +42,7 @@ function showSuggetions(input){
                                     console.log(credit_value)
                                     credit_value.value = data.credit_total;
                                     credit_value.max = data.credit_total;
-                                    credit_value.min = 0.01;
+                                    credit_value.min = 0;
                                     console.log(data.credit_total);
                                 })
                                 .catch(error => console.error("Erro ao buscar vendas:",error));
