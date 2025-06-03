@@ -255,7 +255,22 @@ function generateInstallments(){
                     let final_date = new Date(new_date)
                     input.value = `${final_date.getDate().toString().padStart(2, '0')}/${(final_date.getMonth() + 1).toString().padStart(2, '0')}/${final_date.getFullYear()} `  
                     
-                    row_expirationDate.appendChild(input);
+                    const divExpirationDate  = document.createElement('div');
+                    divExpirationDate.className = 'input-group date';
+                    divExpirationDate.setAttribute('data-provide','datepicker');
+                    divExpirationDate.id= "expiration_date";
+
+                    const inputGroup = document.createElement("div");
+                    inputGroup.classList.add("input-group-addon");
+
+                    const span = document.createElement('span');
+                    span.className = "glyphicon glyphicon-th";
+                    
+                    inputGroup.appendChild(span);
+                    divExpirationDate.appendChild(input);
+                    divExpirationDate.appendChild(inputGroup);
+
+                    row_expirationDate.appendChild(divExpirationDate);
                     parcela.appendChild(row_expirationDate);
                 // CALCULO DE VALOR
                 }else if (input.name.includes("-value")) {
