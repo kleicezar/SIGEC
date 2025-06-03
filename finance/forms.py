@@ -74,7 +74,8 @@ class AccountsForm(BaseAccountsForm):
             'installment_Range',
             'totalValue',
             'date_init',
-            'plannedAccount'
+            'plannedAccount',
+            'description'
         ]
         labels = {
             'chartOfAccounts':'Plano de Contas'
@@ -91,7 +92,7 @@ class AccountsForm(BaseAccountsForm):
                 'min': 0
             }),
             'date_account': forms.TextInput(attrs={
-                'class': 'form-control row mask-date'
+                'class': 'form-control mt-2  mask-date'
             }),
             'numberOfInstallments': forms.NumberInput(attrs={
                 'class': 'form-control row',
@@ -108,7 +109,14 @@ class AccountsForm(BaseAccountsForm):
             'date_init': forms.TextInput(attrs={
                 'class': 'form-control row mask-date'
             }),
-            'plannedAccounts':forms.CheckboxInput(attrs={'class':"form-check-input"})
+            'plannedAccounts':forms.CheckboxInput(attrs={'class':"form-check-input"}),
+            'description':forms.Textarea(
+                attrs={
+                    'class':'form-control',
+                    'rows': 3,
+                    'cols': 40
+                }
+            )
             
         }
 
