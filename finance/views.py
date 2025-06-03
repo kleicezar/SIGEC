@@ -480,16 +480,20 @@ def AccountsReceivable_list(request):
     if search_query:
         account = PaymentMethod_Accounts.objects.filter(
         (   # campo pessoa
-            Q(id__icontains=search_query) | 
-            Q(conta__pessoa_id__id_FisicPerson_fk__name__icontains=search_query) | 
-            Q(conta__pessoa_id__id_LegalPerson_fk__name_foreigner__icontains=search_query) | 
-            Q(conta__pessoa_id__id_ForeignPerson_fk__fantasyName__icontains=search_query) | 
-            Q(documentNumber__icontains=search_query)
+            (
+                Q(id__icontains=search_query) | 
+                Q(conta__pessoa_id__id_FisicPerson_fk__name__icontains=search_query) | 
+                Q(conta__pessoa_id__id_LegalPerson_fk__name_foreigner__icontains=search_query) | 
+                Q(conta__pessoa_id__id_ForeignPerson_fk__fantasyName__icontains=search_query) | 
+                Q(documentNumber__icontains=search_query)
+            ) & (Q(venda__is_active=True) | Q(ordem_servico__is_active=True) | Q(conta__is_active=True))     
         ),
         acc = False 
     ).order_by('id')
     else:
-        account = PaymentMethod_Accounts.objects.filter(acc = False).order_by('id') 
+        account = PaymentMethod_Accounts.objects.filter(
+            (Q(venda__is_active=True) | Q(ordem_servico__is_active=True) | Q(conta__is_active = True)),
+            acc = False).order_by('id') 
 
     # Configure o Paginator com o queryset filtrado
     paginator = Paginator(account, 20) 
