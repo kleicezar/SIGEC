@@ -118,6 +118,7 @@ class AccountsForm(BaseAccountsForm):
                 }
             )
             
+            
         }
 
     def __init__(self, *args, **kwargs):
@@ -172,7 +173,8 @@ class BasePaymentMethodAccountsForm(forms.ModelForm):
             'interestType',
             'fineType',
             'acc',
-            'activeCredit'
+            'activeCredit',
+
         ]
         widgets = { 
            

@@ -144,7 +144,6 @@ def Accounts_Create(request):
     }
     return render(request, 'finance/AccountsPayform.html', context)
 
-
 # funcionando
 @login_required
 def AccountsPayable_list(request):
@@ -501,6 +500,37 @@ def AccountsReceivable_list(request):
     page = paginator.get_page(page_number)
 
     return render(request, 'finance/AccountsPay_list.html', {
+        'accounts': page,
+        'query': search_query,  # Envie o termo de pesquisa para o template
+        'ContasR' : 'Contas a Receber'
+
+    })
+
+@login_required
+def AccountsReceivable_listnovo(request):
+    # Obtenha o termo de pesquisa da requisição
+    search_query = request.GET.get('query', '') 
+    # Filtrar os accountes com base no termo de pesquisa
+    if search_query:
+        account = PaymentMethod_Accounts.objects.filter(
+        (   # campo pessoa
+            Q(id__icontains=search_query) | 
+            Q(conta__pessoa_id__id_FisicPerson_fk__name__icontains=search_query) | 
+            Q(conta__pessoa_id__id_LegalPerson_fk__name_foreigner__icontains=search_query) | 
+            Q(conta__pessoa_id__id_ForeignPerson_fk__fantasyName__icontains=search_query) | 
+            Q(documentNumber__icontains=search_query)
+        ),
+        acc = False 
+    ).order_by('id')
+    else:
+        account = PaymentMethod_Accounts.objects.filter(acc = False).order_by('id') 
+
+    # Configure o Paginator com o queryset filtrado
+    paginator = Paginator(account, 20) 
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+
+    return render(request, 'finance/AccountsPay_listnovo.html', {
         'accounts': page,
         'query': search_query,  # Envie o termo de pesquisa para o template
         'ContasR' : 'Contas a Receber'

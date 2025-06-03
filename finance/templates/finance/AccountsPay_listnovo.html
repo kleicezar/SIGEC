@@ -78,12 +78,12 @@
                 {% for account in accounts.object_list %}
                 <tr>       
                     <td>{{ account.id }}</td>
-                    {% if account.conta.description %}
-                        <td>{{ account.conta.description }}</td>
-                    {% elif account.conta.description %}
-                        <td>{{ account.conta.description }}</td>
-                    {% elif account.conta.description %}
-                        <td>{{ account.conta.description.name_foreigner }}</td>
+                    {% if account.conta.pessoa_id.id_FisicPerson_fk %}
+                        <td>{{ account.conta.pessoa_id.id_FisicPerson_fk.name }}</td>
+                    {% elif account.conta.pessoa_id.id_LegalPerson_fk %}
+                        <td>{{ account.conta.pessoa_id.id_LegalPerson_fk.fantasyName }}</td>
+                    {% elif account.conta.pessoa_id.id_ForeignPerson_fk %}
+                        <td>{{ account.conta.pessoa_id.id_ForeignPerson_fk.name_foreigner }}</td>
                     {% elif account.conta  %}
                         <td>{{ account.conta.name }}</td>
                   

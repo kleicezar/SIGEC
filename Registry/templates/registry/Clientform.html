@@ -245,7 +245,29 @@
                
             <!-- {{ form_Person.as_p }} -->
 
-            <div class="row mb-5 mt-5">
+            <div class="row mb-5 mt-5" >
+                <div id="campos" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                        <label for="email">{{form_Person.email.label}}</label>
+                        {{form_Person.email}}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="senha">{{form_Person.password.label}}</label>
+                            <div class="input-group">
+                                {{ form_Person.password }}
+                                <button type="button" class="btn btn-outline-secondary" onclick="mostrarSenha()">
+                                    <i class="bi bi-eye" id="icone-olho"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-danger">
+                    {% for error in form.email.errors %}
+                    {{ error }}
+                    {% endfor %}
+                </div>
                     <fieldset>
                         <legend>
                             <h6>
@@ -328,8 +350,6 @@
                         </div>
                     </fieldset>
                 </div>
-                       
-
             <br><br>
             <div class="row">
                 <div class="col text-end">
@@ -346,6 +366,7 @@
     <script src="{% static 'js/mask.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/cep_api.js' %}"></script>
     <script src="{% static 'js/registryform.js' %}"></script>
+    <script src="{% static 'js/user.js' %}"></script>
 
     {% endblock %}
 </body>

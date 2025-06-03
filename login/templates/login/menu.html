@@ -101,9 +101,37 @@
                         
                     </a>
                     <ul class="sub-menu">
-                        <li><a href="{% url 'Product' %}"><h5>Gerenciar Produtos</h5></a></li>
-                        <li><a href="#"><h5>Relatorio de Produtos</h5></a></li>
-                        <li><a href="{% url 'manageProductDelivery' %}"><h5>Status de Produtos</h5></a></li>
+                        <li>
+                            <a href="{% url 'Product' %}">
+                                <h5>
+                                    Gerenciar Produtos
+                                </h5>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'manageProductDelivery' %}">
+                                <h5>
+                                    Status de Produtos
+                                </h5>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <h5>
+                                    Devolução de Produtos
+                                </h5>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <h5>
+                                    Relatorio de Produtos
+                                </h5>
+                            </a>
+                        </li>
+                        {% comment %}
+                        {% url '' %}
+                        {% endcomment %}
                     </ul>
                 </li>
                 {% endif %}
@@ -235,9 +263,55 @@
                                 <a href="{% url 'permitions_list' %}"><h5>Permissões</h5></a>
                             </li>
                         {% endif %}
+                        {% if perms.auth.view_users %}
+                            {% comment %}
+                            <li>
+                                <a href="{% url 'user_list' %}"><h5>Permissões</h5></a>
+                            </li>
+                            <a href="{% url 'user_list' %}"><h5>Permissões</h5></a>
+                            {% endcomment %}
+                        {% endif %}
                     </ul>
                 </li>
                 {% endif %}
+
+                <li>
+                    <a href="#" class="toggle">
+                        <div class="page">
+                            
+                            <h3>Logg</h3>
+                            <i class="fa-solid fa-chevron-down"></i>
+                            
+                        </div>
+                        
+                    </a>
+                    <ul class="sub-menu">
+                            <li>
+                                <a href="{% url 'log_entry' %}"><h5>Log de Entrada</h5></a>
+                            </li>
+                            <li>
+                                <a href="{% url 'log_purchase' %}"><h5>Log de Compras</h5></a>
+                            </li>
+                            <li>
+                                <a href="{% url 'log_sale'%}">Log de Vendas</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'log_service'%}">Log de Ordens de Serviço</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'log_accounts'%}">Log de Contas</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'log_config'%}">Log de Configuração</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'log_permitions'%}">Log de Permissões</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'log_dlog'%}">Log de Logs</a>
+                            </li>
+                    </ul>
+                </li>
             </ul>
         </div>
         <main>
