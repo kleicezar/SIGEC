@@ -3,6 +3,14 @@ ANOTAÇÕES.txt
 anotacao.txt
 imprimir.txt
 blocos3.txt
+login/log/log_compras/*
+login/log/log_config/*
+login/log/log_contas/*
+login/log/log_de_log/*
+login/log/log_entrada/*
+login/log/log_ordem_de_servico/*
+login/log/log_permissoes/*
+login/log/log_vendas/*
 
 # Django #
 *.log

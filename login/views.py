@@ -215,7 +215,7 @@ def log_accounts(request):
 def log_config(request):
     
     # Pega todos os arquivos da pasta (ignora subpastas)
-    arquivos = glob.glob(os.path.join(settings.BASE_DIR,'login','log','log_configuracao', '*'))
+    arquivos = glob.glob(os.path.join(settings.BASE_DIR,'login','log','log_config', '*'))
 
     # Filtra apenas arquivos (caso tenha pastas)
     arquivos = [f for f in arquivos if os.path.isfile(f)]
