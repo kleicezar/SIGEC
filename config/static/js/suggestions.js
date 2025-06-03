@@ -4,8 +4,19 @@ function showSuggetions(input){
     let id_client = container_td.querySelector('[name="pessoa"]')
     id_supplier = container_td.querySelector('[name="fornecedor"]');
     suggetionsBox.style.display= "block";
+
+    const credit = document.getElementById('credit');
+    const credit_value = document.getElementById("credit_value");
+    const button_credit = document.getElementById('button_credit');
     if(input.value.length >=1 && input.value.trim() !==""){
         const query = input.value;
+
+        if(credit){
+            credit_value.value = 0;
+            credit_value.disabled = true;
+            button_credit.disabled = true;
+        }
+
         if (id_client){
             fetch(`/buscar_pessoas/?query=${encodeURIComponent(query)}`)
                 .then(response => {
@@ -26,7 +37,6 @@ function showSuggetions(input){
                             input.value = `${cliente.id} - ${cliente.name}`
                             suggetionsBox.style.display = "none";
 
-                            const credit = document.getElementById('credit');
                             if (credit){
                                 const query = cliente.id;
                                 fetch(`/credit_total/?query=${encodeURIComponent(query)}`)
@@ -38,12 +48,12 @@ function showSuggetions(input){
                                     }
                                 })
                                 .then(data=>{
-                                    const credit_value = document.getElementById("credit_value");
-                                    console.log(credit_value)
+                                    
+                                    button_credit.disabled = false;
+                                    credit_value.disabled = false;
                                     credit_value.value = data.credit_total;
                                     credit_value.max = data.credit_total;
                                     credit_value.min = 0;
-                                    console.log(data.credit_total);
                                 })
                                 .catch(error => console.error("Erro ao buscar vendas:",error));
                             }

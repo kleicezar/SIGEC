@@ -1,4 +1,3 @@
-var credito_aplicado = false;
 document.addEventListener('DOMContentLoaded', function () {
 
     const id_plannedAccount = document.getElementById("id_plannedAccount");
@@ -157,19 +156,17 @@ function generateInstallmentsPlannedAccount(){
 function generateInstallments(){
     const credit = document.getElementById("credit");
     let credito_aplicado = false;
+
     if (credit){  
-        // const credit_value = document.getElementById("credit_value");
         const button_credit = document.getElementById("button_credit");
         button_credit.addEventListener("click",()=>{
         credito_aplicado = !credito_aplicado;
-        console.log(credito_aplicado);
         if (credito_aplicado){
             button_credit.textContent = "Desaplicar Crédito";
         }
         else{
             button_credit.textContent = "Aplica Crédito";
-        }
-        });      
+        }});      
     }
 
     const header = document.getElementById('installment');
@@ -186,215 +183,124 @@ function generateInstallments(){
         if (old_payment_method_form){                
             old_payment_method_form.style.display="none";
         }
+
         let TOTAL_FORMS = document.getElementById("id_paymentmethod_accounts_set-TOTAL_FORMS");//TOTAL FORMS
         let days_installment_Range = document.getElementById('id_installment_Range');// intervalo em dias entre parcelas
         let installmentRange = document.getElementById('id_numberOfInstallments');//numero de parcela
         let dateInitsemvalor = document.getElementById("id_date_init"); // Data de início das faturas
+
         click = click + 1;
-        if (credito_aplicado){
-            if (installmentRange.value <= 0) {
-                return 0
-            }
 
-            console.log(formContainer)
-            console.log('quantidade de cliques ate agora: ' + click)
-            if (click > 1){
-                if (isNaN(installmentRange) || isNaN(days_installment_Range)  || isNaN(startDate) || isNaN(totalValue)) {
-                    clean(TOTAL_FORMS.value,formContainer)
-                }
-            }
-            
-            header.style.removeProperty('display')
-            const convertToDate = (dateStr) => { //#FIXME inportante
-                const [day, month, year] = dateStr.split('/').map(num => parseInt(num, 10));
-                return new Date(year, month - 1, day); // Mês no JavaScript é baseado em zero
-            };
-            const inputDate = dateInitsemvalor.value.trim();
-            // Converter a data inicial
-            const startDate = convertToDate(inputDate);
-            // Verifica se a data foi convertida corretamente
-            if (isNaN(startDate.getTime())) {
-                console.error('Data inválida');
-                return;
-            }
-
-            const credit_value = document.getElementById("credit_value");
-            const totalValue = parseFloat(document.getElementById("id_totalValue").value)- credit_value.value ; 
-            // Valor de cada parcela
-            const numberOfInstallments = parseInt(document.getElementById("id_numberOfInstallments").value) - 1; // Número de parcelas
-
-            const valueOfinstallments = compair(numberOfInstallments, totalValue);
-            const template = document.getElementById('empty-payment-method-form');
-
-            for (let index = 0; index < installmentRange.value; index++) {     
-                let parcela = document.createElement('tr')                  // linha
-                parcela.id = `payment-${index}`;
-                let row_payment_Method = document.createElement('td')       // coluna
-                let row_expirationDate = document.createElement('td')       // coluna
-                let row_days = document.createElement('td')                 // coluna
-                let row_value = document.createElement('td')      
-                let row_id = document.createElement("td");          // coluna   
-                let row_credit = document.createElement("td");      // coluna     
-                let clone = template.content.cloneNode(true);               // Clonando o template 
-
-                let counter = 0;
-                clone.querySelectorAll("input, select").forEach(async (input) => { // interando sobre o formulario
-                    input.name = input.name.replace("0", index  );
-                    input.id = input.id.replace("0", index  );
-                
-                    if (input.tagName === "SELECT") {
-                        row_payment_Method.appendChild(input);
-                        parcela.appendChild(row_payment_Method);
-                        
-                    }else if (input.name.includes("-expirationDate")) {
-                        // Calcula a data da parcela
-                        let days = (parseInt(days_installment_Range.value,10))
-                        let new_date = startDate.setDate(startDate.getDate() + days);
-                        let final_date = new Date(new_date)
-                        input.value = `${final_date.getDate().toString().padStart(2, '0')}/${(final_date.getMonth() + 1).toString().padStart(2, '0')}/${final_date.getFullYear()} `  
-                        
-                        row_expirationDate.appendChild(input);
-                        parcela.appendChild(row_expirationDate);
-                    // CALCULO DE VALOR
-                    }else if (input.name.includes("-value")) {
-                        // Define o valor da parcela
-                        if (index == 0){
-                            input.value = credit_value.value;
-                        }
-                        else{
-                            input.value = valueOfinstallments[index-1];
-                        }
-                        
-                        row_value.appendChild(input);
-                        parcela.appendChild(row_value);
-                        
-                        //CALCULO DE DIAS
-                    }else if (input.name.includes("-days")) {
-                            // Define os dias entre as parcelas
-                            input.value = days_installment_Range.value*(index + 1 -counter);
-                            counter+=1;
-                            row_days.appendChild(input)
-                            parcela.appendChild(row_days)
-                                
-                    }
-                    else if(input.name.includes("-id")){
-                        // input.value = id_payments[0];
-                        row_id.appendChild(input);
-                        parcela.appendChild(row_id)
-                    }
-                    else if(input.name.includes("-activeCredit")){
-                        if(index == 0){
-                            input.checked = true;
-                        }
-                        row_credit.appendChild(input);
-                        parcela.appendChild(row_credit)
-                    }
-                
-                    await formContainer.appendChild(parcela);
-                })
-            }    
-            TOTAL_FORMS.value = Number(installmentRange.value)
-            console.log('total forms é igual a: ' + TOTAL_FORMS.value)
-        } 
-        else{
-
-            if (installmentRange.value <= 0) {
-                return 0
-            }
-            console.log('quantidade de cliques ate agora: ' + click)
-            if (click > 1){
-                if (isNaN(installmentRange) || isNaN(days_installment_Range)  || isNaN(startDate) || isNaN(totalValue)) {
-                    clean(TOTAL_FORMS.value,formContainer)
-                }
-            }
-            
-            header.style.removeProperty('display');
-
-            
-            const convertToDate = (dateStr) => { //#FIXME inportante
-                const [day, month, year] = dateStr.split('/').map(num => parseInt(num, 10));
-                return new Date(year, month - 1, day); // Mês no JavaScript é baseado em zero
-            };
-            const inputDate = dateInitsemvalor.value.trim();
-            // Converter a data inicial
-            const startDate = convertToDate(inputDate);
-            // Verifica se a data foi convertida corretamente
-            if (isNaN(startDate.getTime())) {
-                console.error('Data inválida');
-                return;
-            }
-
-            const totalValue = parseFloat(document.getElementById("id_totalValue").value); // Valor de cada parcela
-            const numberOfInstallments = parseInt(document.getElementById("id_numberOfInstallments").value); // Número de parcelas
-
-            let fragmento = document.createDocumentFragment();
-            const valueOfinstallments = compair(numberOfInstallments, totalValue);
-            const template = document.getElementById('empty-payment-method-form');
-            for (let index = 0; index < installmentRange.value; index++) {  
-                let parcela = document.createElement('tr')                  // linha
-                parcela.id = `payment-${index + 1}`;
-                let row_payment_Method = document.createElement('td')       // coluna
-                let row_expirationDate = document.createElement('td')       // coluna
-                let row_days = document.createElement('td')                 // coluna
-                let row_value = document.createElement('td')      
-                let row_id = document.createElement("td");          // coluna     
-                let row_DELETE = document.createElement('td')                // coluna     
-                let clone = template.content.cloneNode(true);               // Clonando o template 
-                
-                
-                let counter = 0;
-                clone.querySelectorAll("input, select").forEach(async (input) => { // interando sobre o formulario
-                    input.name = input.name.replace("0", index  );
-                    input.id = input.id.replace("0", index  );
-
-                    if (input.tagName === "SELECT") {
-
-                        row_payment_Method.appendChild(input);
-                        parcela.appendChild(row_payment_Method);
-
-                    }else if (input.name.includes("-expirationDate")) {
-                        // Calcula a data da parcela
-                        let days = (parseInt(days_installment_Range.value,10))
-                        let new_date = startDate.setDate(startDate.getDate() + days);
-                        let final_date = new Date(new_date)
-                        input.value = `${final_date.getDate().toString().padStart(2, '0')}/${(final_date.getMonth() + 1).toString().padStart(2, '0')}/${final_date.getFullYear()} `  
-                        
-                        row_expirationDate.appendChild(input);
-                        parcela.appendChild(row_expirationDate);
-                    // CALCULO DE VALOR
-                    }else if (input.name.includes("-value")) {
-                        // Define o valor da parcela
-                        input.value = valueOfinstallments[index];
-                        row_value.appendChild(input);
-                        parcela.appendChild(row_value);
-                        
-                        //CALCULO DE DIAS
-                    }else if (input.name.includes("-days")) {
-                        // Define os dias entre as parcelas
-                        input.value = days_installment_Range.value*(index + 1 -counter);
-                        counter+=1;
-                        row_days.appendChild(input);
-                        parcela.appendChild(row_days);
-                                
-                    }
-                    else if(input.name.includes("-id")){
-                        row_id.appendChild(input);
-                        parcela.appendChild(row_id)
-                    }
-                
-                    await formContainer.appendChild(parcela);
-                })
-            }    
-            TOTAL_FORMS.value = Number(installmentRange.value)
-            console.log('total forms é igual a: ' + TOTAL_FORMS.value)
+        if (installmentRange.value <= 0) {
+            return 0
         }
-    
+
+        console.log('quantidade de cliques ate agora: ' + click)
+        if (click > 1){
+            if (isNaN(installmentRange) || isNaN(days_installment_Range)  || isNaN(startDate) || isNaN(totalValue)) {
+                clean(TOTAL_FORMS.value,formContainer)
+            }
+        }
         
+        header.style.removeProperty('display')
+        const convertToDate = (dateStr) => { //#FIXME inportante
+            const [day, month, year] = dateStr.split('/').map(num => parseInt(num, 10));
+            return new Date(year, month - 1, day); // Mês no JavaScript é baseado em zero
+        };
+        const inputDate = dateInitsemvalor.value.trim();
+        // Converter a data inicial
+        const startDate = convertToDate(inputDate);
+        // Verifica se a data foi convertida corretamente
+        if (isNaN(startDate.getTime())) {
+            console.error('Data inválida');
+            return;
+        }
+        let valor_credito = 0;
+        let numberOfInstallments = parseInt(document.getElementById("id_numberOfInstallments").value); // Número de parcelas
+        const credit_value = document.getElementById("credit_value")
+
+        if(credito_aplicado){
+            valor_credito = credit_value.value;
+            numberOfInstallments -= 1;
+        }
+        const totalValue = parseFloat(document.getElementById("id_totalValue").value)-valor_credito;
+        // Valor de cada parcela
+        const valueOfinstallments = compair(numberOfInstallments, totalValue);
+        const template = document.getElementById('empty-payment-method-form');
+
+        for (let index = 0; index < installmentRange.value; index++) {     
+            let parcela = document.createElement('tr')                  // linha
+            parcela.id = `payment-${index}`;
+            let row_payment_Method = document.createElement('td')       // coluna
+            let row_expirationDate = document.createElement('td')       // coluna
+            let row_days = document.createElement('td')                 // coluna
+            let row_value = document.createElement('td')      
+            let row_id = document.createElement("td");          // coluna   
+            let row_credit = document.createElement("td");      // coluna     
+            let clone = template.content.cloneNode(true);               // Clonando o template 
+
+            let counter = 0;
+            clone.querySelectorAll("input, select").forEach(async (input) => { // interando sobre o formulario
+                input.name = input.name.replace("0", index  );
+                input.id = input.id.replace("0", index  );
+            
+                if (input.tagName === "SELECT") {
+                    row_payment_Method.appendChild(input);
+                    parcela.appendChild(row_payment_Method);
+                    
+                }else if (input.name.includes("-expirationDate")) {
+                    // Calcula a data da parcela
+                    let days = (parseInt(days_installment_Range.value,10))
+                    let new_date = startDate.setDate(startDate.getDate() + days);
+                    let final_date = new Date(new_date)
+                    input.value = `${final_date.getDate().toString().padStart(2, '0')}/${(final_date.getMonth() + 1).toString().padStart(2, '0')}/${final_date.getFullYear()} `  
+                    
+                    row_expirationDate.appendChild(input);
+                    parcela.appendChild(row_expirationDate);
+                // CALCULO DE VALOR
+                }else if (input.name.includes("-value")) {
+                    // Define o valor da parcela
+                    if (index == 0 && credito_aplicado){
+                        input.value = credit_value.value;
+                    }
+                    else if(index !=0 && credito_aplicado){
+                        input.value = valueOfinstallments[index-1];
+                    }
+                    else{
+                        input.value = valueOfinstallments[index];
+                    }
+                    
+                    row_value.appendChild(input);
+                    parcela.appendChild(row_value);
+                    
+                //CALCULO DE DIAS
+                }else if (input.name.includes("-days")) {
+                    // Define os dias entre as parcelas
+                    input.value = days_installment_Range.value*(index + 1 -counter);
+                    counter+=1;
+                    row_days.appendChild(input)
+                    parcela.appendChild(row_days)
+                            
+                }
+                else if(input.name.includes("-id")){
+                    row_id.appendChild(input);
+                    parcela.appendChild(row_id)
+                }
+                else if(input.name.includes("-activeCredit")){
+                    if(index == 0 && credito_aplicado){
+                        input.checked = true;
+                    }
+                    row_credit.appendChild(input);
+                    parcela.appendChild(row_credit)
+                }
+            
+                await formContainer.appendChild(parcela);
+            })
+        }    
+        TOTAL_FORMS.value = Number(installmentRange.value);
+        console.log('total forms é igual a: ' + TOTAL_FORMS.value);    
     })
    
-    
-    
-    
 }
 
 export function compair(numero_parcelas, valor_total){

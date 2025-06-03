@@ -44,12 +44,12 @@ class LegalPerson(models.Model):
         return self.fantasyName
     
 class Person(models.Model):
-    WorkPhone = models.CharField('WorkPhone', max_length=100)
-    PersonalPhone = models.CharField('PersonalPhone', max_length=100)
+    WorkPhone = models.CharField('Telefone de Trabalho', max_length=100)
+    PersonalPhone = models.CharField('Telefone Pessoal', max_length=100)
     isActive = models.BooleanField('isActive', max_length=100)
     site = models.CharField('site', max_length=100,null=True, blank=True) 
-    salesman = models.CharField('salesman', max_length=100,null=True, blank=True)
-    creditLimit = models.DecimalField('creditLimit', max_length=100, decimal_places=2, max_digits=10,default=0)
+    salesman = models.CharField('Vendedor', max_length=100,null=True, blank=True)
+    creditLimit = models.DecimalField('Limite de Crédito', max_length=100, decimal_places=2, max_digits=10,default=0)
     isClient = models.BooleanField("Cliente",null=True, blank=True)
     isSupllier = models.BooleanField("Fornecedor",null=True, blank=True)
     isUser = models.BooleanField("Usuario do Sistema",null=True, blank=True)

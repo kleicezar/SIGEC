@@ -54,7 +54,8 @@ class ProductModelForm(forms.ModelForm):
         widget=forms.Select(
             attrs=
             {'class':'form-control row'}
-        )
+        ),
+        label='Fornecedor'
     )
     def __init__(self, *args, **kwargs):
         super(ProductModelForm, self).__init__(*args, **kwargs)
