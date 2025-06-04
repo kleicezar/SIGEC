@@ -300,11 +300,11 @@ class Romaneio_PaymentMethod_Accounts(models.Model):
 
 class CaixaDiario(models.Model): #abertura de caixa
     usuario_responsavel = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    data = models.DateField(default=timezone.now)  # Um registro por dia
     saldo_inicial = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     saldo_final = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
+    is_Active = models.BooleanField()
 
     def __str__(self):
         return f"Caixa {self.data} - Saldo Final: R${self.saldo_final:.2f}"

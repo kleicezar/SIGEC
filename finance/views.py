@@ -672,6 +672,7 @@ def Accounts_list(request,id_accounts):
         'accounts':accounts
     })
 # CreditedClients.html
+
 @login_required
 @transaction.atomic
 def deletePayment_Accounts(request,id):
@@ -685,3 +686,167 @@ def cashFlow(request):
         'get':algumaCoisa
     }
     return render(request, 'finance/cashFlow.html', context)
+
+
+@login_required
+@transaction.atomic 
+def Accounts_Create(request):
+    plannedAccount = request.GET.get("plannedAccount",'false')
+    print(plannedAccount)
+    verify = 0
+    installments = []
+    
+
+    # PaymentMethodAccountsFormSet = inlineformset_factory(Accounts, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
+    PaymentMethodAccountsFormSet = inlineformset_factory(
+        Accounts,
+        PaymentMethod_Accounts,
+        form=PaymentMethodAccountsForm,
+        extra=1, 
+        can_delete=True,
+    )
+    if request.method == "POST":
+        
+        post_data = request.POST.copy()
+        raw_data_planned_account = post_data.get('plannedAccount')
+        if raw_data_planned_account:
+            raw_date = post_data.get('date_init')
+            if raw_date:
+                try:
+                    date_obj = datetime.strptime(raw_date,"%m/%Y")
+                    completed_date = date_obj.replace(day=1).date()
+                    post_data['date_init'] = completed_date.isoformat()
+                    form_Accounts = AccountsFormPlannedAccount(post_data)
+                except ValueError as e:
+                    print("Erro ao tratar date_init",e)
+        else:
+            form_Accounts = AccountsForm(request.POST)
+        
+        PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
+        print(f"Total de formulários no formset: {len(PaymentMethod_Accounts_FormSet)}")
+        print(f"Formulários que foram alterados (has_changed): {[form.has_changed() for form in PaymentMethod_Accounts_FormSet]}")
+        # raw_date_init = post_data.get('date_init')
+        # if raw_date_init:
+        #     # Exemplo: garantir que está no formato YYYY-MM-DD
+        #     treated_date = raw_date_init.strip()  # aqui você pode usar um parser também
+        #     post_data['date_init'] = treated_date
+        
+        if form_Accounts.is_valid():
+            print('oi')
+
+        if form_Accounts.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
+
+            # FIXME adicionar valor antigo e fazer comparação entre antigo, novo e gerar a parcela de desconto 
+
+            account = form_Accounts.save()
+            total_value = account.totalValue
+
+            print(f'\n\nQuantidade de formulários no FormSet: {len(PaymentMethod_Accounts_FormSet)}\n\n')
+
+            for form in PaymentMethod_Accounts_FormSet: 
+                print('\npassou pelo if is_valid()\n')
+                print(f'formulario unitario: {form}')
+                if form.cleaned_data:
+                    print('\npassou pelo if cleaned_data()\n')
+
+                    parcela = form.cleaned_data['value']
+                    form.cleaned_data['value_old'] = parcela
+                    verify += parcela
+                    form_cleaned = form.save(commit=False)
+                    installments.append(form_cleaned)
+                if float(verify) == float(total_value):
+                    for installment in installments:
+                        installment.conta = account
+                        installment.acc = True
+                        installment.save()
+                    messages.success(request,"Conta criada com sucesso.",extra_tags="successAccount")
+                    return redirect('AccountsPayable')
+                else:
+                    print('\npassou pelo else verify()\n')
+
+                    form.add_error('value', f'O valor do somatorio das parcelas ({parcela}) é inferior ao Valor Total ({total_value}).')
+        else:
+            # print("Erros no form_Accounts:", form_Accounts.errors)
+            # print("Erros no PaymentMethod_Accounts_FormSet:", PaymentMethod_Accounts_FormSet.errors)
+            # Aqui, o formset não é válido, vamos imprimir os erros para diagnóstico
+            print(f"Erros no formulario de FormAccounts",form_Accounts.errors)
+            for form in PaymentMethod_Accounts_FormSet:
+                print(f"Erros no formulário {form.instance}: {form.errors}")
+            print()
+            print("Erros do formset (non_field_errors):", PaymentMethod_Accounts_FormSet.non_form_errors())
+
+            # Opcional: Você pode exibir os erros de cada campo individualmente
+            for form in PaymentMethod_Accounts_FormSet:
+                for field in form:
+                    if field.errors:
+                        print(f"Erro no campo {field.name}\t: {field.errors}")
+            
+            # Retorna para o template com os erros
+            context = {
+                'form_payment_account': PaymentMethod_Accounts_FormSet, 
+                'tipo_conta': 'Receber'
+            }
+            return render(request, 'finance/AccountsPayform.html', context)
+    else: 
+        if plannedAccount =='false':
+            form_Accounts = AccountsForm()
+            # form_Accounts.fields['installment_Range'].choices = Accounts.INSTALLMENT_RANGE_CHOICES
+        else:
+            initial_data = {
+            'plannedAccount': plannedAccount,
+            }
+
+            form_Accounts = AccountsFormPlannedAccount(initial=initial_data)
+       
+            # form_Accounts.fields['installment_Range'].choices = Accounts.INSTALLMENT_RANGE_CHOICES_PLANNED_ACCOUNT
+        PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
+
+    context = {
+        'form_Accounts': form_Accounts,
+        'form_payment_account': PaymentMethod_Accounts_FormSet,
+        'Contas' : 'Contas a Pagar',
+        'tipo_conta': 'Pagar'
+    }
+    return render(request, 'finance/AccountsPayform.html', context)
+
+@login_required
+def Cash_list(request):
+    cash = CaixaDiario.objects.all().order_by('-id')
+
+    paginator = Paginator(cash, 20)  
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+
+    context = {
+        'cash': page,
+    }
+
+    return render(request, 'finance/cash_list.html', context)
+
+@login_required
+def Cash_registry(request):
+    if request.method == "POST":
+        cash = CaixaDiarioForm(request.POST)
+        user = CaixaDiario.objects.filter(
+            Q(usuario_responsavel=request.user) & 
+            Q(is_Active=1)
+            )
+        if user.exists():
+            messages.error(request, f"Já Existe um Caixa aberto para {request.user.username}")
+            return redirect('Cash_list')
+        if cash.is_valid():
+            caixa = cash.save(commit=False)
+            caixa.usuario_responsavel = request.user
+            caixa.is_Active = 1
+            caixa.saldo_final = caixa.saldo_inicial
+            cash.save()
+            messages.success(request, 'Caixa Aberto Com Sucesso')
+            return redirect('Cash_list')
+    else:
+        cash = CaixaDiarioForm()
+
+    context = {
+        'cash': cash,
+    }
+
+    return render(request, 'finance/cash_form.html', context)

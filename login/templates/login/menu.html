@@ -211,12 +211,12 @@
                         {% endif %}
                         {% if perms.finance.view_caixadiario  %}
                             <li>
-                                <a href="#"><h5>Caixa</h5></a>
+                                <a href="{% url 'Cash_list' %}"><h5>Caixa</h5></a>
                             </li>
                         {% endif %}
                         {% if perms.finance.view_accounts and perms.registry.view_person  %}
                             <li>
-                                <a href="{% url 'CreditedClients'%}"><h5>Credito</h5></a>
+                                <a href="{% url 'CreditedClients' %}"><h5>Credito</h5></a>
                             </li>
                         {% endif %}
                     </ul>

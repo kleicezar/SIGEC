@@ -130,6 +130,7 @@ class AccountsFormPlannedAccount(AccountsForm):
         widget=forms.Select(attrs={'class': 'form-control row'}),
         label="Intervalo de Parcelas"
     )
+
 class AccountsFormUpdate(BaseAccountsForm):
     
     class Meta(BaseAccountsForm.Meta):
@@ -198,6 +199,7 @@ class BasePaymentMethodAccountsForm(forms.ModelForm):
             }),
             'acc':forms.HiddenInput()
         }
+
 class PaymentMethodFormSet(BaseInlineFormSet):
     def clean(self):
         """Remove formulários vazios antes da validação"""
@@ -229,16 +231,13 @@ class PaymentMethodAccountsForm(BasePaymentMethodAccountsForm):
 
 
         return cleaned_data
-
-    
+   
 class PaymentMethodAccountsFormUpdate(BasePaymentMethodAccountsForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs) 
         self.fields['interestType'].required = False
         self.fields['fineType'].required = False
         self.fields['value_old'].required = False
-
-
 
 class TaxPaymentMethodAccountsForm(forms.ModelForm):
     class Meta:
@@ -335,4 +334,18 @@ class CreditForm(forms.ModelForm):
             'creditLimit':forms.NumberInput(attrs={
                 'class':'form-control row'
             })
+        }
+
+
+class CaixaDiarioForm(forms.ModelForm):
+    class Meta:
+        model = CaixaDiario
+        fields = ['saldo_inicial']
+        widgets = {
+            'saldo_inicial': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            # 'usuario_responsavel': forms.Select(attrs={'class': 'form-control'}),
+        }
+        labels = {
+            # 'usuario_responsavel': 'Responsável',
+            'saldo_inicial': 'Saldo Inicial',
         }
