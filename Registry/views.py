@@ -49,11 +49,12 @@ def Client_Create(request):
                 person.id_FisicPerson_fk = fisicPerson
                 person.isActive = 1
                 person.save()
-                user = [
-                    person.id_FisicPerson_fk.name,
-                    person.email,
-                    person.password,]
-                createUser(user)
+                if person.email and person.password: 
+                    user = [
+                        person.id_FisicPerson_fk.name,
+                        person.email,
+                        person.password,]
+                    createUser(user)
 
                 messages.success(request,"Cliente cadastrado com sucesso.",extra_tags="successClient")
                 return redirect(previous_url)
@@ -67,11 +68,12 @@ def Client_Create(request):
                 person.id_LegalPerson_fk = legalPerson
                 person.isActive = 1
                 person.save()
-                user = [
-                    person.id_LegalPerson_fk.fantasyName,
-                    person.email,
-                    person.password,]
-                createUser(user)
+                if person.email and person.password: 
+                    user = [
+                        person.id_LegalPerson_fk.fantasyName,
+                        person.email,
+                        person.password,]
+                    createUser(user)
 
                 messages.success(request,"Cliente cadastrado com sucesso.",extra_tags="successClient")
                 return redirect(previous_url)
@@ -84,11 +86,12 @@ def Client_Create(request):
                 person.id_ForeignPerson_fk = foreigner
                 person.isActive = 1
                 person.save()
-                user = [
-                    person.id_ForeignPerson_fk.name_foreigner,
-                    person.email,
-                    person.password,]
-                createUser(user)
+                if person.email and person.password: 
+                    user = [
+                        person.id_ForeignPerson_fk.name_foreigner,
+                        person.email,
+                        person.password,]
+                    createUser(user)
                 messages.success(request,"Cliente cadastrado com sucesso.",extra_tags="successClient")
                 return redirect(previous_url)
             # if not form_legalPerson.is_valid() or not form_foreigner.is_valid() or not form_fisicPerson.is_valid():
@@ -149,7 +152,7 @@ def client_list(request):
                 Q(nome_cliente__istartswith=search_query)
             ) &
             Q(isActive = True),
-            Q(isUser = False)
+            Q(isUser = True)
         )
     else:
         clients = Person.objects.annotate(
@@ -161,7 +164,7 @@ def client_list(request):
                 output_field=CharField()
             )).filter(
                 Q(isActive = True),
-                Q(isUser = False)
+                Q(isUser = True)
             )
        
 
@@ -314,23 +317,35 @@ def update_client(request, id_client):
             # Salva novo tipo de pessoa com endereço atualizado
             if tipo_novo == "Pessoa Fisica" and form_fisicPerson.is_valid():
                 fisicPerson = form_fisicPerson.save(commit=False)
-                fisicPerson.id_address_fk = address
+                user = [
+                    person.id_FisicPerson_fk.name,
+                    person.email,
+                    person.password,]
+                createUser(user)
                 fisicPerson.save()
                 person.id_FisicPerson_fk = fisicPerson
 
             elif tipo_novo == "Pessoa Juridica" and form_legalPerson.is_valid():
                 legalPerson = form_legalPerson.save(commit=False)
-                legalPerson.id_address_fk = address
+                user = [
+                    person.id_LegalPerson_fk.fantasyName,
+                    person.email,
+                    person.password,]
+                createUser(user)
                 legalPerson.save()
                 person.id_LegalPerson_fk = legalPerson
 
             elif tipo_novo == "Estrangeiro" and form_foreigner.is_valid():
                 foreigner = form_foreigner.save(commit=False)
-                foreigner.id_address_fk = address
+                user = [
+                    person.id_ForeignPerson_fk.name_foreigner,
+                    person.email,
+                    person.password,]
+                createUser(user)
                 foreigner.save()
                 person.id_ForeignPerson_fk = foreigner
                 ('cadastru estrangeiro')
-
+        
             person.save()
             messages.success(request, "Cliente atualizado com sucesso.", extra_tags="successClient")
             return redirect('Client')

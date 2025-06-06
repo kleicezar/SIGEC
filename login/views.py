@@ -11,11 +11,22 @@ from .models import *
 from datetime import datetime
 from django.conf import settings
 from django.core.paginator import Paginator
+from datetime import date, timedelta
 import os
 import json
 import glob
 
-def create_log(msg,date_time,name):
+def create_log(msg:str ,name:str):
+    """
+    Parâmetros Para Criar o Log no Sistema
+
+    msg: mensagem que voce quer adicionar ao Log
+
+    name: Nome da Pasta para onde o log será inserido
+    """
+
+    date_time = datetime.now().strftime("%d/%m/%Y as %H:%M:%S")
+
     now = datetime.now()
     year = now.year
     month = now.month
@@ -60,23 +71,24 @@ def my_login(request):
         if user is not None:
             login(request, user)
             #DADOS PARA ADICIONAR O LOG JSON
-            date_time = datetime.now().strftime("%d/%m/%Y as %H:%M:%S")
-            msg = f'O Usuario {request.user.username} entrou no sistema no dia {date_time}'
-            create_log(msg,date_time,'log_entrada')
+            
+            create_log(
+                msg = f'O Usuario {request.user.username} entrou no sistema no dia {datetime.now().strftime("%d/%m/%Y as %H:%M:%S")}',
+                name = 'log_entrada'
+                )
             return redirect('index')
         
     return render(request, 'login/login.html')
 
 @login_required
 def my_logout(request):
-    #DADOS PARA ADICIONAR O LOG JSON
-    date_time = datetime.now().strftime("%d/%m/%Y as %H:%M:%S")
-    msg = f'O Usuario {request.user.username} saiu no sistema no dia {date_time}'
-    create_log(msg,date_time,'log_entrada')
+    #DADOS PARA ADICIONAR O LOG JSON FIXME
+    create_log(
+        msg = f'O Usuario {request.user.username} saiu no sistema no dia {datetime.now().strftime("%d/%m/%Y as %H:%M:%S")}',
+        name = 'log_entrada')
     logout(request)
     return redirect('index') 
 
-from datetime import date, timedelta
 @login_required
 def notifications(request):
     today = date.today()
@@ -94,9 +106,12 @@ def notifications(request):
                 'idPayment':pagamento.id
             })
     return JsonResponse({'notifications':results})
+
 @login_required
 def index(request):
     return render(request, 'login/index.html')
+
+#Listagem De Loggs
 
 @login_required
 def log_entry(request):
