@@ -11,7 +11,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.db.models.functions import Coalesce
 from django.db.models import F, Value
 from registry.models import Credit
-from sale.forms import VendaItemDevolutedForm
+from sale.forms import ReturnVendaItemForm
 from sale.models import Venda, VendaItem
 from service.models import VendaItem as VendaItemWS
 from .forms import *
@@ -27,6 +27,7 @@ from django.db import transaction
 
 @login_required
 def productsWithStatus_list(request):
+
     vendasItens = VendaItem.objects.filter(
         Q(status = 'Pendente')
     )
@@ -53,8 +54,6 @@ def productsWithStatus_list(request):
 def update_product_quantity(request,pk):
     if request.method == "POST":
         id_venda = request.POST.get("id_venda")
-        print('venda id')
-        print(id_venda)
         vendaitem = get_object_or_404(VendaItem,pk=id_venda)
         vendaitem.status = "Entregue"
         vendaitem.save()
@@ -72,6 +71,7 @@ def update_product_quantity(request,pk):
 def compras_list(request):
     sort = request.GET.get('sort')
     direction = request.GET.get('dir','asc')
+   
     if not sort:
         compras = Compra.objects.all().order_by()
     else:
@@ -714,6 +714,7 @@ def product(request):
     search_query = request.GET.get('query', '')
     sort = request.GET.get('sort')
     direction = request.GET.get('dir', 'asc')
+   
     if search_query:
         products = Product.objects.filter(
         (
@@ -843,12 +844,11 @@ def get_product_id(request):
         Q(id=query) 
     )
     resultados_json = list(resultados.values("product_code","description"))
-    print(resultados_json)
  
    
     return JsonResponse({'produto':resultados_json})
 
-def devolutedProduct_list(request):
+def returnProducts_list(request):
     vendasItens = VendaItem.objects.filter(
         Q(status = 'Entregue')
     )
@@ -865,17 +865,17 @@ def devolutedProduct_list(request):
 
     return render(request,'purchase/manageDeliveries_list.html',
         {
-             'all_products_with_status': all_products_with_status,
+            'all_products_with_status': all_products_with_status,
             "status_options": status_options,
             'type':'Entregue'
         }
     )
 
-def devolute_product(request, pk):
+def return_product(request, pk):
     vendaItem = get_object_or_404(VendaItem, id=pk)
 
     if request.method == 'POST':
-        vendaItemDevolutedForm = VendaItemDevolutedForm(request.POST, instance=vendaItem)
+        vendaItemDevolutedForm = ReturnVendaItemForm(request.POST, instance=vendaItem)
         query = request.POST.get('query', 0)
         direction = request.POST.get('direction', '')
 
@@ -883,15 +883,17 @@ def devolute_product(request, pk):
         print("query:", query)
 
         if vendaItemDevolutedForm.is_valid():
+            devolvida = vendaItemDevolutedForm.cleaned_data['quantidade']
+            # vendaItem.quantidade -= devolvida
+            # if vendaItem.quantidade >=1:
+            #     vendaItem.save()
+            # else:
+            #     vendaItem.delete()
+
             print("Formulário válido")
             if direction == '1':
                 print("Direção = 1")
-                devolvida = vendaItemDevolutedForm.cleaned_data['quantidade']
-                vendaItem.quantidade -= devolvida
-                if vendaItem.quantidade >=1:
-                    vendaItem.save()
-                else:
-                    vendaItem.delete()
+                
                 print(f"Nova quantidade: {vendaItem.quantidade}")
                 
                 pessoa = vendaItem.venda.pessoa
@@ -901,11 +903,17 @@ def devolute_product(request, pk):
                     credit_value=float(query)
                 )
             else:
+                # 'Devolução do Produto {product.name} com o valor {product.value} da venda {sale.id}'
+                request.session['dados_temp'] = {
+                'description': f'Devolução do Produto "{vendaItem.product.description}" de quantidade {vendaItem.quantidade} com o valor total R$ {vendaItem.price_total} da venda de id {vendaItem.venda.id}',
+                'person': f'{vendaItem.venda.pessoa}',
+                'totalValue':query
+                }
                 return redirect('Accounts_Create')
         else:
             print("Erro no formulário:", vendaItemDevolutedForm.errors)
     else:
-        vendaItemDevolutedForm = VendaItemDevolutedForm(instance=vendaItem)
+        vendaItemDevolutedForm = ReturnVendaItemForm(instance=vendaItem)
 
     return render(request, 'purchase/devoluteProduct_form.html', {
         'vendaItemForm': vendaItemDevolutedForm

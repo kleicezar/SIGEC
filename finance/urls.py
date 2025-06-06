@@ -11,7 +11,7 @@ urlpatterns = [
     path('AccountsPayable/get/<int:id_Accounts>/', get_Accounts, name='get_Accounts'),
 
 
-    path('AccountsReceivable/', AccountsReceivable_listnovo, name='AccountsReceivable'),
+    path('AccountsReceivable/', AccountsReceivable_list, name='AccountsReceivable'),
     # path('AccountsReceivable/', AccountsReceivable_list, name='AccountsReceivable'),
     path('c/AccountsReceivable/', AccountsReceivable_Create, name='AccountsReceivable_Create'),
     # path('b-AccountsReceivable/', buscar_AccountsReceivable, name='buscar_AccountsReceivable'),

@@ -160,7 +160,6 @@ def deletePosition(request, id_position):
 
 @login_required
 def situation(request):
-  
     context = {
         'Situations': Situation.objects.filter(is_Active=True)
     }
@@ -313,7 +312,6 @@ def ActiveChartOfAccounts(request, id_chartOfAccounts):
 
 @login_required
 def Service(request):
-    print('----------------')
     context = {
         'services':service.objects.all()
     }

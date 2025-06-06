@@ -26,12 +26,12 @@ from django.db import transaction
 @login_required
 @transaction.atomic 
 def Accounts_Create(request):
+    dados = request.session.get('dados_temp')
     plannedAccount = request.GET.get("plannedAccount",'false')
+    
     print(plannedAccount)
     verify = 0
     installments = []
-    
-
     # PaymentMethodAccountsFormSet = inlineformset_factory(Accounts, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
     PaymentMethodAccountsFormSet = inlineformset_factory(
         Accounts,
@@ -123,15 +123,38 @@ def Accounts_Create(request):
             }
             return render(request, 'finance/AccountsPayform.html', context)
     else: 
-        if plannedAccount =='false':
-            form_Accounts = AccountsForm()
-            # form_Accounts.fields['installment_Range'].choices = Accounts.INSTALLMENT_RANGE_CHOICES
+        referer = request.META.get('HTTP_REFERER', '')
+        if dados and 'return_product' in referer:
+            description = dados.get('description')
+            person = dados.get('person')
+            totalValue = dados.get('totalValue')
+            if plannedAccount == 'false':
+                initial_data = {
+                'description':description,
+                'pessoa_id':person,
+                'totalValue':totalValue
+                }
+                form_Accounts = AccountsForm(initial_data)
+            else:
+                initial_data = {
+                'plannedAccount': plannedAccount,
+                'description':description,
+                'pessoa_id':person,
+                'totalValue':totalValue
+                }
+                form_Accounts = AccountsFormPlannedAccount(initial=initial_data)
+            
         else:
-            initial_data = {
-            'plannedAccount': plannedAccount,
-            }
+            if plannedAccount =='false':
+                form_Accounts = AccountsForm()
+                # form_Accounts.fields['installment_Range'].choices = Accounts.INSTALLMENT_RANGE_CHOICES
+            else:
 
-            form_Accounts = AccountsFormPlannedAccount(initial=initial_data)
+                initial_data = {
+                'plannedAccount': plannedAccount,
+                }
+
+                form_Accounts = AccountsFormPlannedAccount(initial=initial_data)
        
             # form_Accounts.fields['installment_Range'].choices = Accounts.INSTALLMENT_RANGE_CHOICES_PLANNED_ACCOUNT
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
@@ -148,7 +171,8 @@ def Accounts_Create(request):
 @login_required
 def AccountsPayable_list(request):
     # Obtenha o termo de pesquisa da requisição
-    search_query = request.GET.get('query', '') 
+    search_query = request.GET.get('query', '')
+ 
 
     # Filtrar os clientes com base no termo de pesquisa
     if search_query:
@@ -475,6 +499,7 @@ def AccountsReceivable_Create(request):
 def AccountsReceivable_list(request):
     # Obtenha o termo de pesquisa da requisição
     search_query = request.GET.get('query', '') 
+
     # Filtrar os accountes com base no termo de pesquisa
     if search_query:
         account = PaymentMethod_Accounts.objects.filter(
@@ -659,6 +684,7 @@ def Credit_Update(request,id_client):
 
 
 def CreditedClients_list(request):
+    
     persons = Person.objects.all()
     return render(request,"finance/CreditedClients.html",{'persons':persons})
 
@@ -697,6 +723,7 @@ def deletePayment_Accounts(request,id):
     return JsonResponse({"message": "Pagamento deletado com sucesso!"}, status=200)
 
 def cashFlow(request):
+    dados = request.session.pop('dados_temp')
     algumaCoisa = 10
     algumaCoisa = 10
     context = {

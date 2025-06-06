@@ -132,10 +132,29 @@ class PaymentMethodVendaForm(forms.ModelForm):
         }
 
 
-class VendaItemDevolutedForm(forms.ModelForm):
+class ReturnVendaItemForm(forms.ModelForm):
     class Meta:
         model = VendaItem
         fields = ['product','quantidade','preco_unitario','price_total']
+        widgets = { 
+            'product':forms.Select(attrs={
+                'class':'form-select row',
+            }),
+            'quantidade':forms.NumberInput(attrs={
+                'class':'form-control row-xl-2'
+            }),
+            'preco_unitario':forms.NumberInput(attrs={
+                'class':'form-control row',
+                'readonly':'readonly'
+            }),
+            'price_total':forms.NumberInput(
+                attrs={
+                    'class':'form-control row',
+                    'readonly':'readonly'
+                }
+            )
+        }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
