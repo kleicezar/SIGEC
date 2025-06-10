@@ -25,6 +25,9 @@ function mostrarSenha() {
     icone.classList.add('bi-eye');
     }
 }
-window.onload = function () {
-    // mostrarCampos();
-};
+
+// AVISO: VAI CAUSAR PROBLEMAS NA PAGINA,
+// SE HOUVER OUTRO SCRIPT COM A FUNCAO Window.onload
+// window.onload = function () {
+//     // mostrarCampos();
+// };

@@ -317,33 +317,40 @@ def update_client(request, id_client):
             # Salva novo tipo de pessoa com endereço atualizado
             if tipo_novo == "Pessoa Fisica" and form_fisicPerson.is_valid():
                 fisicPerson = form_fisicPerson.save(commit=False)
-                user = [
-                    person.id_FisicPerson_fk.name,
-                    person.email,
-                    person.password,]
-                createUser(user)
-                fisicPerson.save()
                 person.id_FisicPerson_fk = fisicPerson
+                if person.email and person.password:
+                    user = [
+                        person.id_FisicPerson_fk.name,
+                        person.email,
+                        person.password,]
+                    createUser(user)
+                fisicPerson.save()
+                
 
             elif tipo_novo == "Pessoa Juridica" and form_legalPerson.is_valid():
                 legalPerson = form_legalPerson.save(commit=False)
-                user = [
-                    person.id_LegalPerson_fk.fantasyName,
-                    person.email,
-                    person.password,]
-                createUser(user)
-                legalPerson.save()
                 person.id_LegalPerson_fk = legalPerson
+                if person.email and person.password:
+                    user = [
+                        person.id_LegalPerson_fk.fantasyName,
+                        person.email,
+                        person.password,]
+                    createUser(user)
+                legalPerson.save()
+               
 
             elif tipo_novo == "Estrangeiro" and form_foreigner.is_valid():
-                foreigner = form_foreigner.save(commit=False)
-                user = [
-                    person.id_ForeignPerson_fk.name_foreigner,
-                    person.email,
-                    person.password,]
-                createUser(user)
-                foreigner.save()
                 person.id_ForeignPerson_fk = foreigner
+                foreigner = form_foreigner.save(commit=False)
+                if person.email and person.password:
+                    user = [
+                        person.id_ForeignPerson_fk.name_foreigner,
+                        person.email,
+                        person.password
+                    ]
+                    createUser(user)
+                foreigner.save()
+               
                 ('cadastru estrangeiro')
         
             person.save()

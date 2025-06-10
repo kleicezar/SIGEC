@@ -273,61 +273,63 @@ def venda_update(request, pk):
             total_payment_with_credit = 0
             
             onlyOldPayments = False 
-            # try:
-            #     for form in PaymentMethod_Accounts_FormSet:
-            #         name_payment = form.cleaned_data["forma_pagamento"]
-            #         paymentWithCredit = PaymentMethod.objects.filter(
-            #             name_paymentMethod = name_payment,creditPermission=True
-            #         )
+            valor_usado = request.POST.get('credit_value')
+            try:
+                for form in PaymentMethod_Accounts_FormSet:
+                    name_payment = form.cleaned_data["forma_pagamento"]
+                    # paymentWithCredit = PaymentMethod.objects.filter(
+                    #     name_paymentMethod = name_payment,creditPermission=True
+                    # )
                     
-            #         if form.cleaned_data:
-            #             valor = form.cleaned_data['value']
-            #             if not form.cleaned_data["DELETE"] :
-            #                 total_payment += valor
-            #             if form.cleaned_data["activeCredit"]:
-            #                 creditos = Credit.objects.filter(person=venda.pessoa).order_by('id')
-            #                 restante_para_descontar = Decimal(valor_usado)
+                    if form.cleaned_data:
+                        valor = form.cleaned_data['value']
+                        if not form.cleaned_data["DELETE"] :
+                            total_payment += valor
+                        if form.cleaned_data["activeCredit"]:
+                            creditos = Credit.objects.filter(person=venda.pessoa).order_by('id')
+                            restante_para_descontar = Decimal(valor_usado)
 
-            #                 for credito in creditos:
-            #                 if restante_para_descontar <= 0:
-            #                     break  # nada mais a descontar
+                            for credito in creditos:
+                                if restante_para_descontar <= 0:
+                                    break  # nada mais a descontar
 
-            #                 if credito.credit_value >= restante_para_descontar:
-            #                     credito.credit_value -= restante_para_descontar
-            #                     credito.save()
-            #                     restante_para_descontar = Decimal('0')
-            #                 else:
-            #                     restante_para_descontar -= credito.credit_value
-            #                     credito.credit_value = Decimal('0')
-            #                     credito.save()
-            # except TypeError:
-            #     onlyOldPayments = True
-            #     for form in Older_PaymentMethod_Accounts_FormSet:
-            #         name_payment = form.cleaned_data["forma_pagamento"]
-            #         paymentWithCredit = PaymentMethod.objects.filter(
-            #             name_paymentMethod = name_payment,creditPermission=True
-            #         )
+                                if credito.credit_value >= restante_para_descontar:
+                                    credito.credit_value -= restante_para_descontar
+                                    credito.save()
+                                    restante_para_descontar = Decimal('0')
+                                else:
+                                    restante_para_descontar -= credito.credit_value
+                                    credito.credit_value = Decimal('0')
+                                    credito.save()
+            except TypeError:
+                onlyOldPayments = True
+                for form in Older_PaymentMethod_Accounts_FormSet:
+                    name_payment = form.cleaned_data["forma_pagamento"]
+                    # paymentWithCredit = PaymentMethod.objects.filter(
+                    #     name_paymentMethod = name_payment,creditPermission=True
+                    # )
                     
-            #         if form.cleaned_data:
-            #             valor = form.cleaned_data['value']
-            #             if not form.cleaned_data["DELETE"] :
-            #                 total_payment += valor
-            #             if form.cleaned_data["activeCredit"]:
-            #                 creditos = Credit.objects.filter(person=venda.pessoa).order_by('id')
-            #                 restante_para_descontar = Decimal(valor_usado)
+                    if form.cleaned_data:
+                        valor = form.cleaned_data['value']
+                        if not form.cleaned_data["DELETE"] :
+                            total_payment += valor
 
-            #                 for credito in creditos:
-            #                     if restante_para_descontar <= 0:
-            #                         break  # nada mais a descontar
+                        if form.cleaned_data["activeCredit"]:
+                            creditos = Credit.objects.filter(person=venda.pessoa).order_by('id')
+                            restante_para_descontar = Decimal(valor_usado)
 
-            #                     if credito.credit_value >= restante_para_descontar:
-            #                         credito.credit_value -= restante_para_descontar
-            #                         credito.save()
-            #                         restante_para_descontar = Decimal('0')
-            #                     else:
-            #                         restante_para_descontar -= credito.credit_value
-            #                         credito.credit_value = Decimal('0')
-            #                         credito.save()
+                            for credito in creditos:
+                                if restante_para_descontar <= 0:
+                                    break  # nada mais a descontar
+
+                                if credito.credit_value >= restante_para_descontar:
+                                    credito.credit_value -= restante_para_descontar
+                                    credito.save()
+                                    restante_para_descontar = Decimal('0')
+                                else:
+                                    restante_para_descontar -= credito.credit_value
+                                    credito.credit_value = Decimal('0')
+                                    credito.save()
 
             creditLimit = pessoa.creditLimit
             creditLimitAtual = creditLimit
