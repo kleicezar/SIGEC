@@ -118,8 +118,8 @@ class FisicPersonForm(forms.ModelForm):
     
     def __init__(self, *args, **kargs):
         super().__init__(*args, **kargs)
-        self.fields['dateOfBirth'].widget.attrs.update({'class': 'mask-date'})
-        self.fields['cpf'].widget.attrs.update({'class': 'mask-cpf'})
+        self.fields['dateOfBirth'].widget.attrs.update({'class': 'form-control row mask-date'})
+        self.fields['cpf'].widget.attrs.update({'class': 'form-control row mask-cpf '})
 
 class PersonForm(forms.ModelForm):
     class Meta:

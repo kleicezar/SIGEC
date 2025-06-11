@@ -535,7 +535,7 @@ def supplier_search(request):
             'name': (
                     supplier.id_FisicPerson_fk.name if supplier.id_FisicPerson_fk else 
                     (supplier.id_ForeignPerson_fk.name_foreigner if supplier.id_ForeignPerson_fk else 
-                    (supplier.id_LegalPerson_fk.fantasyName if cliente.id_LegalPerson_fk else 'Nome não disponível')))
+                    (supplier.id_LegalPerson_fk.fantasyName if supplier.id_LegalPerson_fk else 'Nome não disponível')))
         }
         for supplier in resultados
     ]
