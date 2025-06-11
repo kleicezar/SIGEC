@@ -145,6 +145,7 @@ body {
 
 .sidebar ul li a {
     color: white;
+    /* background-color: red; */
     text-decoration: none;
     display: flex;
     padding: 10px;
@@ -158,11 +159,12 @@ body {
     margin-left: end;
     /* z-index: 0; */
 }
-.sidebar ul li a:hover {
+.sidebar ul li a:hover,.sub-menu li:hover {
     background-color:#0b0433;
     opacity: 0.5;
     transition: transform 0.3s ease;
 }
+
 
 .sidebar ul li a h3{
     font-weight: normal;
@@ -172,9 +174,15 @@ body {
 
 
 .sub-menu {
+    /* background-color: red; */
     display: none; /* Esconde as subopções por padrão */
-    padding-left: 20px; /* Indenta as subopções */
-    margin-left: 20px; /* Logan : Move o submenu para a direita*/
+    /* padding-left: 20px; */
+     /* Indenta as subopções */
+    /* margin-left: 20px; */
+     /* Logan : Move o submenu para a direita*/
+}
+.sub-menu li a{
+    margin-left: 20px;
 }
 .sub-menu li a h5{
     font-size: 15px;
