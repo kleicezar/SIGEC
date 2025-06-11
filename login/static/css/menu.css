@@ -196,11 +196,6 @@ body {
     margin-bottom: 5%;
 }
 
-.sub-menu li a:hover{
-    text-decoration: underline;
-}
-
-
 /* Estilo do menu suspenso */
 .user-dropdown-menu {
     display: none;  /* Inicialmente escondido */
@@ -304,3 +299,4 @@ body {
 .notification:hover{
     background-color: #f4f4f4;
 }
+

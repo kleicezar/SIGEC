@@ -109,3 +109,9 @@ tr:hover {
     animation: desaparecer 4s forwards;
     opacity: 1;
 }
+
+#messageContainer{
+    margin: 10px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+}
