@@ -133,8 +133,6 @@ function generateInstallmentsPlannedAccount(){
                         input.value = mounths_installment_Range.value*(index + 1 -counter);
 
                         counter+=1;
-                        // console.log(typeof(mounths_installment_Range))
-                        // console.log(days_installment_Range.value*(index + 1 -value_initial.value))
                         row_mounths.appendChild(input)
                         parcela.appendChild(row_mounths)
                             
@@ -228,92 +226,193 @@ function generateInstallments(){
         const valueOfinstallments = compair(numberOfInstallments, totalValue);
         const template = document.getElementById('empty-payment-method-form');
 
-        for (let index = 0; index < installmentRange.value; index++) {     
-            let parcela = document.createElement('tr')                  // linha
-            parcela.id = `payment-${index}`;
-            let row_payment_Method = document.createElement('td')       // coluna
-            let row_expirationDate = document.createElement('td')       // coluna
-            let row_days = document.createElement('td')                 // coluna
-            let row_value = document.createElement('td')      
-            let row_id = document.createElement("td");          // coluna   
-            let row_credit = document.createElement("td");      // coluna     
-            let clone = template.content.cloneNode(true);               // Clonando o template 
+        let quantInstallments = [
+            {
+                numeroParcelas:installmentRange.value,
+                valorParcelas:valueOfinstallments,
+                purpose:'Produto'
+            }
+        ]
 
-            let counter = 0;
-            clone.querySelectorAll("input, select").forEach(async (input) => { // interando sobre o formulario
-                input.name = input.name.replace("0", index  );
-                input.id = input.id.replace("0", index  );
+        const id_freightExists = document.getElementById("id_freightExists");
+        const id_numberOfInstallmentsFreight = document.getElementById("id_numberOfInstallmentsFreight");
+        
+        if (id_freightExists){
+            const id_freight_type = document.getElementById("id_freight_type");
+            const id_valueFreight = document.getElementById("id_valueFreight");
             
-                if (input.tagName === "SELECT") {
-                    row_payment_Method.appendChild(input);
-                    parcela.appendChild(row_payment_Method);
-                    
-                }else if (input.name.includes("-expirationDate")) {
-                    // Calcula a data da parcela
-                    let days = (parseInt(days_installment_Range.value,10))
-                    let new_date = startDate.setDate(startDate.getDate() + days);
-                    let final_date = new Date(new_date)
-                    input.value = `${final_date.getDate().toString().padStart(2, '0')}/${(final_date.getMonth() + 1).toString().padStart(2, '0')}/${final_date.getFullYear()} `  
-                    
-                    const divExpirationDate  = document.createElement('div');
-                    divExpirationDate.className = 'input-group date';
-                    divExpirationDate.setAttribute('data-provide','datepicker');
-                    divExpirationDate.id= "expiration_date";
-
-                    const inputGroup = document.createElement("div");
-                    inputGroup.classList.add("input-group-addon");
-
-                    const span = document.createElement('span');
-                    span.className = "glyphicon glyphicon-th";
-                    
-                    inputGroup.appendChild(span);
-                    divExpirationDate.appendChild(input);
-                    divExpirationDate.appendChild(inputGroup);
-
-                    row_expirationDate.appendChild(divExpirationDate);
-                    parcela.appendChild(row_expirationDate);
-                // CALCULO DE VALOR
-                }else if (input.name.includes("-value")) {
-                    // Define o valor da parcela
-                    if (index == 0 && credito_aplicado){
-                        input.value = credit_value.value;
-                    }
-                    else if(index !=0 && credito_aplicado){
-                        input.value = valueOfinstallments[index-1];
-                    }
-                    else{
-                        input.value = valueOfinstallments[index];
-                    }
-                    
-                    row_value.appendChild(input);
-                    parcela.appendChild(row_value);
-                    
-                //CALCULO DE DIAS
-                }else if (input.name.includes("-days")) {
-                    // Define os dias entre as parcelas
-                    input.value = days_installment_Range.value*(index + 1 -counter);
-                    counter+=1;
-                    row_days.appendChild(input)
-                    parcela.appendChild(row_days)
-                            
+            if(
+                id_freightExists.checked && 
+                id_freight_type.value=="FOB" && 
+                id_valueFreight.value > 0 && 
+                id_numberOfInstallmentsFreight.value > 0){
+                    const valueOfinstallmentsFreight = compair(id_numberOfInstallmentsFreight.value,id_valueFreight.value);
+                    quantInstallments.push({
+                        numeroParcelas: id_numberOfInstallmentsFreight.value,
+                        valorParcelas: valueOfinstallmentsFreight,
+                        purpose:'Frete'
+                    });
                 }
-                else if(input.name.includes("-id")){
-                    row_id.appendChild(input);
-                    parcela.appendChild(row_id)
-                }
-                else if(input.name.includes("-activeCredit")){
-                    if(index == 0 && credito_aplicado){
-                        input.checked = true;
+        }
+
+        const id_rmnExists = document.getElementById("id_rmnExists");
+        const id_numberOfInstallmentsRMN = document.getElementById("id_numberOfInstallmentsRMN");
+        if(id_rmnExists){
+            const id_valuePickingList = document.getElementById("id_valuePickingList");
+           
+            if(id_rmnExists.checked && 
+                id_valuePickingList.value > 0 &&
+                id_numberOfInstallmentsRMN.value > 0
+            ){
+                const valueOfinstallmentsRMN = compair(id_numberOfInstallmentsRMN.value,id_valuePickingList.value)
+                    quantInstallments.push({
+                        numeroParcelas: id_numberOfInstallmentsRMN.value,
+                        valorParcelas: valueOfinstallmentsRMN,
+                        purpose:'Romaneio'
+                    });
+            }
+        }
+
+        const id_taxExists = document.getElementById("id_taxExists");
+        const id_numberOfInstallmentsTax = document.getElementById('id_numberOfInstallmentsTax');
+        if(id_taxExists){
+            const id_valueTax = document.getElementById("id_valueTax");
+           
+            if (
+                id_taxExists.checked &&
+                id_valueTax.value > 0 &&
+                id_numberOfInstallmentsTax.value > 0
+            ){
+                const valueOfinstallmentsTax = compair(id_numberOfInstallmentsTax.value,id_valueTax.value);
+                quantInstallments.push({
+                    numeroParcelas: id_numberOfInstallmentsTax.value,
+                    valorParcelas: valueOfinstallmentsTax,
+                    purpose:'Imposto'
+                })
+            }
+        }
+
+        
+        let counterId = 0;
+        quantInstallments.forEach((item,index)=>{
+            for (let index = 0; index < item.numeroParcelas; index++) {     
+                let parcela = document.createElement('tr')                  // linha
+                parcela.id = `payment-${counterId}`;
+                let row_payment_puropose = document.createElement('td')
+                let row_payment_Method = document.createElement('td')       // coluna
+                let row_expirationDate = document.createElement('td')       // coluna
+                let row_days = document.createElement('td')                 // coluna
+                let row_value = document.createElement('td')      
+                let row_id = document.createElement("td");          // coluna   
+                let row_credit = document.createElement("td");      // coluna     
+                let clone = template.content.cloneNode(true);               // Clonando o template 
+
+                let counter = 0;
+                clone.querySelectorAll("input, select").forEach(async (input) => { // interando sobre o formulario
+                    input.name = input.name.replace("0", counterId  );
+                    input.id = input.id.replace("0", counterId  );
+                
+                    if (input.name.includes("-forma_pagamento")) {
+                        row_payment_Method.appendChild(input);
+                        parcela.appendChild(row_payment_Method);
+                        
+                    } else if (input.name.includes('-paymentPurpose')){
+                        input.value = item.purpose;
+                        row_payment_puropose.appendChild(input);
+                        parcela.appendChild(row_payment_puropose);
                     }
-                    row_credit.appendChild(input);
-                    parcela.appendChild(row_credit)
-                }
+                    else if (input.name.includes("-expirationDate")) {
+                        // Calcula a data da parcela
+                        let days = (parseInt(days_installment_Range.value,10))
+                        let new_date = startDate.setDate(startDate.getDate() + days);
+                        let final_date = new Date(new_date)
+                        input.value = `${final_date.getDate().toString().padStart(2, '0')}/${(final_date.getMonth() + 1).toString().padStart(2, '0')}/${final_date.getFullYear()} `  
+                        
+                        const divExpirationDate  = document.createElement('div');
+                        divExpirationDate.className = 'input-group date';
+                        divExpirationDate.setAttribute('data-provide','datepicker');
+                        divExpirationDate.id= "expiration_date";
+
+                        const inputGroup = document.createElement("div");
+                        inputGroup.classList.add("input-group-addon");
+
+                        const span = document.createElement('span');
+                        span.className = "glyphicon glyphicon-th";
+                        
+                        inputGroup.appendChild(span);
+                        divExpirationDate.appendChild(input);
+                        divExpirationDate.appendChild(inputGroup);
+
+                        row_expirationDate.appendChild(divExpirationDate);
+                        parcela.appendChild(row_expirationDate);
+                    // CALCULO DE VALOR
+                    }else if (input.name.includes("-value")) {
+                        // Define o valor da parcela
+                        if (index == 0 && credito_aplicado){
+                            input.value = credit_value.value;
+                        }
+                        else if(index !=0 && credito_aplicado){
+                            input.value = item.valorParcelas[index-1];
+                        }
+                        else{
+                            input.value = item.valorParcelas[index];
+                        }
+                        
+                        row_value.appendChild(input);
+                        parcela.appendChild(row_value);
+                        
+                    //CALCULO DE DIAS
+                    }else if (input.name.includes("-days")) {
+                        // Define os dias entre as parcelas
+                        input.value = days_installment_Range.value*(counterId + 1 -counter);
+                        counter+=1;
+                        row_days.appendChild(input)
+                        parcela.appendChild(row_days)
+                                
+                    }
+                    else if(input.name.includes("-id")){
+                        row_id.appendChild(input);
+                        parcela.appendChild(row_id)
+                    }
+                    else if(input.name.includes("-activeCredit")){
+                        if(index == 0 && credito_aplicado){
+                            input.checked = true;
+                        }
+                        row_credit.appendChild(input);
+                        parcela.appendChild(row_credit)
+                       
+                    }
+                   
+                    await formContainer.appendChild(parcela);
+                })
+                counterId+=1;
+            }   
+        })
             
-                await formContainer.appendChild(parcela);
-            })
-        }    
-        TOTAL_FORMS.value = Number(installmentRange.value);
-        console.log('total forms é igual a: ' + TOTAL_FORMS.value);    
+             
+        if(id_freightExists && id_rmnExists && id_taxExists){
+            let installmentRangeFreightValue = 0;
+            let installmentRangeTaxValue = 0;
+            let installmentRangeRMNValue = 0;
+
+            if (id_freightExists.checked){
+                installmentRangeFreightValue = id_numberOfInstallmentsFreight.value || 0;
+            }
+            if(id_taxExists.checked){
+                installmentRangeTaxValue = id_numberOfInstallmentsTax.value || 0;
+            }
+            if(id_rmnExists.checked){
+                 installmentRangeRMNValue = id_numberOfInstallmentsRMN.value || 0;
+            }
+           
+            
+            TOTAL_FORMS.value = Number(installmentRange.value) + Number(installmentRangeFreightValue) + Number(installmentRangeRMNValue) + Number(installmentRangeTaxValue);
+            console.log('total forms é igual a: ' + TOTAL_FORMS.value);    
+        }
+       else{
+            TOTAL_FORMS.value = Number(installmentRange.value);
+            console.log('total forms é igual a: ' + TOTAL_FORMS.value);    
+       }
     })
    
 }

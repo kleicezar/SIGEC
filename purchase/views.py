@@ -19,8 +19,8 @@ from .models import *
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponse
-from finance.models import Freight_PaymentMethod_Accounts, PaymentMethod_Accounts, Romaneio_PaymentMethod_Accounts, Tax_PaymentMethod_Accounts
-from finance.forms import FreightPaymentMethod_AccountsForm, PaymentMethodAccountsForm, AccountsForm, RomaneioPaymentMethod_AccountsForm, TaxPaymentMethodAccountsForm
+from finance.models import  PaymentMethod_Accounts
+from finance.forms import  PaymentMethodAccountsForm, AccountsForm
 from django.db import transaction
 
 ### PURCHASE
@@ -126,61 +126,61 @@ def compras_list(request):
 def compras_create(request):
 
     def calculateValuePayments(paymentForm):
-        total_payment = 0   
+        total_by_purpose = {} 
         for form in paymentForm:
             if form.cleaned_data:
-                form.instance.acc = True
-                valor = form.cleaned_data['value']
-                total_payment+=valor
-        return total_payment
+                purpose = form.cleaned_data.get('paymentPurpose')
+                value = form.cleaned_data.get('value', 0)
+                if purpose:  # Só processa se tiver propósito
+                    total_by_purpose[purpose] = total_by_purpose.get(purpose, 0) + value
+
+                form.instance.acc = True  # Atualiza o campo acc
+
+        return total_by_purpose
     
     def savePayments(paymentForm):
         for form in paymentForm:
             conta = form.save(commit=False)  # cria o objeto sem salvar ainda
             conta.compra = compra            # agora sim associa corretamente
             conta.acc = True
+            print("Opa")
+            print(conta.expirationDate)
+            # print(conta.)
             conta.save()  
     
     CompraItemFormSet = inlineformset_factory(Compra, CompraItem, form=CompraItemForm, extra=1, can_delete=True)
     PaymentMethodAccountsFormSet = inlineformset_factory(Compra, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
-    TaxPaymentMethodAccountsFormSet = inlineformset_factory(Compra,Tax_PaymentMethod_Accounts,form=TaxPaymentMethodAccountsForm,extra=1,can_delete=True)
-    FreightPaymentMethodAccountsFormSet = inlineformset_factory(Compra,Freight_PaymentMethod_Accounts,form=FreightPaymentMethod_AccountsForm,extra=1,can_delete=True)
-    RomaneioPaymentMethodAccountsFormSet = inlineformset_factory(Compra,Romaneio_PaymentMethod_Accounts,form=RomaneioPaymentMethod_AccountsForm,extra=1,can_delete=True)
 
     if request.method == 'POST':
-        
+        print(request.POST)
         compra_form = CompraForm(request.POST)
 
         form_Accounts = AccountsForm(request.POST)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST)
 
-        tax_form_Accounts = AccountsForm(request.POST,prefix='tax_form_accounts')
-        TaxPaymentMethod_Accounts_FormSet = TaxPaymentMethodAccountsFormSet(request.POST)
 
-        freight_form_Accounts = AccountsForm(request.POST,prefix='freight_form_accounts')
-        FreightPaymentMethod_Accounts_FormSet = FreightPaymentMethodAccountsFormSet(request.POST)
-
-        romaneio_form_Accounts = AccountsForm(request.POST,prefix='romaneio_form_accounts')
-        RomaneioPaymentMethod_Accounts_FormSet = RomaneioPaymentMethodAccountsFormSet(request.POST)
+        frete_form = FreteForm(request.POST)
+        rmn_form = RomaneioForm(request.POST)
+        imposto_form = TaxForm(request.POST)
 
         compra_item_formset = CompraItemFormSet(request.POST)
         
         if (
             compra_form.is_valid() and 
             compra_item_formset.is_valid() and 
-            PaymentMethod_Accounts_FormSet.is_valid() and 
-            TaxPaymentMethod_Accounts_FormSet.is_valid() and 
-            FreightPaymentMethod_Accounts_FormSet.is_valid() and
-            RomaneioPaymentMethod_Accounts_FormSet.is_valid()
+            frete_form.is_valid() and
+            rmn_form.is_valid() and
+            imposto_form.is_valid() and
+            PaymentMethod_Accounts_FormSet.is_valid()
             ):
             
             compra = compra_form.save(commit=False)
             compra_item_formset.instance = compra
             compra_item_formset.save(commit=False) 
 
-            print(f"Total de formulários processados: {compra_item_formset.total_form_count()}")
-                # Atualizar estoque
 
+            print(f"Total de formulários processados: {compra_item_formset.total_form_count()}")
+            # Atualizar estoque
             for form in compra_item_formset:
                 if form.cleaned_data:
                     produto = form.cleaned_data['produto']
@@ -191,117 +191,74 @@ def compras_create(request):
 
             
             PaymentMethod_Accounts_FormSet.instance = compra
-            total_payment = calculateValuePayments(PaymentMethod_Accounts_FormSet)
+            total_by_purpose = calculateValuePayments(PaymentMethod_Accounts_FormSet)
 
-            TaxPaymentMethod_Accounts_FormSet.instance = compra
-            taxTotal_payment = calculateValuePayments(TaxPaymentMethod_Accounts_FormSet)
-            tax_totalValue = compra.total_value - compra.total_value * (Decimal(compra.tax_value) / Decimal('100'))
+            valueTotalProduct = total_by_purpose['Produto']
 
-            freightFOB = False
-            equalValueFreight = False
-            if compra.freight_type == "FOB":
-                freightFOB = True
-                FreightPaymentMethod_Accounts_FormSet.instance = compra
-                freightTotal_payment = calculateValuePayments(FreightPaymentMethod_Accounts_FormSet)
-                if compra.freight_value == freightTotal_payment:
-                    equalValueFreight = True
-            else:
-                compra.freight_value = 0
-            
-            RomaneioPaymentMethod_Accounts_FormSet.instance = compra
-            romaneioTotal_payment = calculateValuePayments(RomaneioPaymentMethod_Accounts_FormSet)
-            # Verificar se os pagamentos somam corretamente antes de salvar
-            if total_payment == compra.total_value and taxTotal_payment == tax_totalValue and romaneioTotal_payment == compra.value_picking_list:
-                if freightFOB and equalValueFreight:
-                    compra_form.save()
-                    compra_item_formset.save()
-                    savePayments(PaymentMethod_Accounts_FormSet)
-                    savePayments(TaxPaymentMethod_Accounts_FormSet)
-                    savePayments(FreightPaymentMethod_Accounts_FormSet)
-                    savePayments(RomaneioPaymentMethod_Accounts_FormSet)
+            if valueTotalProduct == compra.total_value:
+    
+                if compra_form.cleaned_data['taxExists']:
+                    valueTotalTax = total_by_purpose['Imposto']
+                    if valueTotalTax == imposto_form.cleaned_data['valueTax']:
+                        imposto_form.instance = compra
+                        imposto_form.save()
 
-                    messages.success(request,"Compra cadastrada com sucesso.",extra_tags='successShopping')
-                    return redirect('compras_list')
-                
-                elif not freightFOB and not equalValueFreight:
-                    compra_form.save()
-                    compra_item_formset.save()
+                if compra_form.cleaned_data['rmnExists']:
+                    valueTotalRMN = total_by_purpose['Romaneio']
+                    if valueTotalRMN == rmn_form.cleaned_data['valuePickingList']:
+                        rmn_form.instance = compra
+                        rmn_form.save()
+
+                if compra_form.cleaned_data['taxExists']:
+                    valueTotalFreight = total_by_purpose['Frete']
+                    if valueTotalFreight == frete_form.cleaned_data['valueFreight']:
+                        frete_form.instance = compra
+                        frete_form.save()
+
+                compra_form.save()
+                compra_item_formset.save()
+                savePayments(PaymentMethod_Accounts_FormSet)
+                return redirect('compras_list')
                     
-                    savePayments(PaymentMethod_Accounts_FormSet)
-                    savePayments(TaxPaymentMethod_Accounts_FormSet)
-                    savePayments(RomaneioPaymentMethod_Accounts_FormSet)
-
-                    messages.success(request,"Compra cadastrada com sucesso.",extra_tags='successShopping')
-                    return redirect('compras_list')
-                else:
-                    # messages.warning(request,"Ação cancelada! O valor total de pagamentos sobre frete FOB não corresponde ao total do frete",extra_tags='shoppingcreate_page')
-                    messages.warning(
-                        request,
-                        "Ação cancelada: o valor total pago pelo frete não corresponde ao valor de frete da compra.",
-                        extra_tags='shoppingcreate_page'
-                    )
-            if total_payment != compra.total_value:
-                messages.warning(
-                    request,
-                    "Ação cancelada: o valor total pago pelos produtos não corresponde ao valor total da compra.",
-                    extra_tags='shoppingcreate_page'
-                )
-
-            if taxTotal_payment != tax_totalValue:
-                messages.warning(
-                    request,
-                    "Ação cancelada: o valor pago de imposto está incorreto com base na porcentagem aplicada.",
-                    extra_tags='shoppingupdate_page'
-                )
-
-            # elif romaneioTotal_payment != compra.value_picking_list:
-                # messages.warning(request, "Ação cancelada! O valor total dos pagamentos não corresponde ao total da compra.",extra_tags='shoppingcreate_page')
         if not compra_form.is_valid():
             print("Erro no CompraForm",compra_form.errors)
 
         if not compra_item_formset.is_valid():
             print("Erro no CompraItem",compra_item_formset.errors)
 
+        if not frete_form.is_valid():
+            print('Erro no Frete',frete_form.errors)
+
+        if not rmn_form.is_valid():
+            print('Erro no Romaneio',rmn_form.errors)
+
+        if not imposto_form.is_valid():
+            print('Erro no Imposto',imposto_form.errors)
+
         if not PaymentMethod_Accounts_FormSet.is_valid():
             print("Erro no PaymentMethod",PaymentMethod_Accounts_FormSet.errors)
         
-        if not TaxPaymentMethod_Accounts_FormSet.is_valid():
-            print("Erro no TaxPaymentMethod",TaxPaymentMethod_Accounts_FormSet.errors)
-
-        if not FreightPaymentMethod_Accounts_FormSet.is_valid():
-            print("Erro no FreightPaymentMethod",FreightPaymentMethod_Accounts_FormSet.errors)
-
-        if not RomaneioPaymentMethod_Accounts_FormSet.is_valid():
-            print("Erro no RomaneioPaymentMethod",RomaneioPaymentMethod_Accounts_FormSet.errors)
 
     else:
         form_Accounts = AccountsForm()
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
 
-        tax_form_Accounts = AccountsForm(prefix='tax_form_accounts')
-        TaxPaymentMethod_Accounts_FormSet = TaxPaymentMethodAccountsFormSet(queryset=Tax_PaymentMethod_Accounts.objects.none())
-
-        freight_form_Accounts = AccountsForm(prefix='freight_form_accounts')
-        FreightPaymentMethod_Accounts_FormSet = FreightPaymentMethodAccountsFormSet(queryset=Freight_PaymentMethod_Accounts.objects.none())
-
-        RomaneioPaymentMethod_Accounts_FormSet = RomaneioPaymentMethodAccountsFormSet(queryset=Romaneio_PaymentMethod_Accounts.objects.none())
-        romaneio_form_Accounts =AccountsForm(prefix='romaneio_form_accounts')
-        
+        frete = FreteForm()
+        romaneio = RomaneioForm()
+        imposto = TaxForm()
         compra_form = CompraForm()
+        # print("compra",compra_form)
         compra_item_formset = CompraItemFormSet(queryset=CompraItem.objects.none())
        
 
     context = {
         'form_Accounts': form_Accounts,
         'form_payment_account': PaymentMethod_Accounts_FormSet,
-        'taxform_Accounts':tax_form_Accounts,
-        'form_tax_payment_account':TaxPaymentMethod_Accounts_FormSet,
-        'freightform_Accounts':freight_form_Accounts,
-        'form_freight_payment_account':FreightPaymentMethod_Accounts_FormSet,
-        'romaneioform_Accounts':romaneio_form_Accounts,
-        'form_romaneio_payment_account':RomaneioPaymentMethod_Accounts_FormSet,
         'compra_form': compra_form,
-        'compra_item_formset': compra_item_formset
+        'compra_item_formset': compra_item_formset,
+        'frete_form':frete,
+        'rmn_form':romaneio,
+        'tax_form':imposto
     }
     return render(request, 'purchase/compras_form.html', context)
 

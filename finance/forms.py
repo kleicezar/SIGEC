@@ -160,6 +160,15 @@ class BasePaymentMethodAccountsForm(forms.ModelForm):
             {'class':'form-control row'}
         )
     )   
+    paymentPurpose = forms.ChoiceField(
+        required=False,
+        choices=PaymentMethod_Accounts.PAYMENT_PURPOSE_CHOICES,
+        widget=forms.Select(
+            attrs={
+                'class':'form-control row'
+            }
+        )
+    )
     activeCredit = forms.BooleanField(required=False, label='Usar Crédito')
     class Meta:
         model = PaymentMethod_Accounts
@@ -175,6 +184,7 @@ class BasePaymentMethodAccountsForm(forms.ModelForm):
             'fineType',
             'acc',
             'activeCredit',
+            'paymentPurpose'
 
         ]
         widgets = { 
@@ -246,92 +256,92 @@ class PaymentMethodAccountsFormUpdate(BasePaymentMethodAccountsForm):
         self.fields['fineType'].required = False
         self.fields['value_old'].required = False
 
-class TaxPaymentMethodAccountsForm(forms.ModelForm):
-    class Meta:
-        model = Tax_PaymentMethod_Accounts
-        fields = [
-            'forma_pagamento',  
-            'expirationDate', 
-            'days', 
-            'value', 
-            'acc',
-            'activeCredit'
-        ]
-        widgets = { 
-            'forma_pagamento': forms.Select(attrs={ 
-                'class': 'form-select row'
-            }),
-            'expirationDate': forms.DateInput(format='%d/%m/%Y', attrs={
-                'class': 'form-control row mask-date', 
-            }),
-            'days': forms.NumberInput(attrs={
-                'class': 'form-control row',
-                'min': 0
-            }),
-            'value': forms.NumberInput(attrs={
-                'class': 'form-control row',
-                'min': 0
-            }),
-            'acc':forms.HiddenInput()
-        }
+# class TaxPaymentMethodAccountsForm(forms.ModelForm):
+#     class Meta:
+#         model = Tax_PaymentMethod_Accounts
+#         fields = [
+#             'forma_pagamento',  
+#             'expirationDate', 
+#             'days', 
+#             'value', 
+#             'acc',
+#             'activeCredit'
+#         ]
+#         widgets = { 
+#             'forma_pagamento': forms.Select(attrs={ 
+#                 'class': 'form-select row'
+#             }),
+#             'expirationDate': forms.DateInput(format='%d/%m/%Y', attrs={
+#                 'class': 'form-control row mask-date', 
+#             }),
+#             'days': forms.NumberInput(attrs={
+#                 'class': 'form-control row',
+#                 'min': 0
+#             }),
+#             'value': forms.NumberInput(attrs={
+#                 'class': 'form-control row',
+#                 'min': 0
+#             }),
+#             'acc':forms.HiddenInput()
+#         }
 
-class FreightPaymentMethod_AccountsForm(forms.ModelForm):
-    class Meta:
-        model = Freight_PaymentMethod_Accounts
-        fields = [
-            'forma_pagamento',  
-            'expirationDate', 
-            'days', 
-            'value', 
-            'acc',
-            'activeCredit'
-        ]
-        widgets = { 
-            'forma_pagamento': forms.Select(attrs={ 
-                'class': 'form-select row'
-            }),
-            'expirationDate': forms.DateInput(format='%d/%m/%Y', attrs={
-                'class': 'form-control row mask-date', 
-            }),
-            'days': forms.NumberInput(attrs={
-                'class': 'form-control row',
-                'min': 0
-            }),
-            'value': forms.NumberInput(attrs={
-                'class': 'form-control row',
-                'min': 0
-            }),
-            'acc':forms.HiddenInput()
-        }
+# class FreightPaymentMethod_AccountsForm(forms.ModelForm):
+#     class Meta:
+#         model = Freight_PaymentMethod_Accounts
+#         fields = [
+#             'forma_pagamento',  
+#             'expirationDate', 
+#             'days', 
+#             'value', 
+#             'acc',
+#             'activeCredit'
+#         ]
+#         widgets = { 
+#             'forma_pagamento': forms.Select(attrs={ 
+#                 'class': 'form-select row'
+#             }),
+#             'expirationDate': forms.DateInput(format='%d/%m/%Y', attrs={
+#                 'class': 'form-control row mask-date', 
+#             }),
+#             'days': forms.NumberInput(attrs={
+#                 'class': 'form-control row',
+#                 'min': 0
+#             }),
+#             'value': forms.NumberInput(attrs={
+#                 'class': 'form-control row',
+#                 'min': 0
+#             }),
+#             'acc':forms.HiddenInput()
+#         }
 
-class RomaneioPaymentMethod_AccountsForm(forms.ModelForm):
-    class Meta:
-        model = Romaneio_PaymentMethod_Accounts
-        fields = [
-            'forma_pagamento',  
-            'expirationDate', 
-            'days', 
-            'value', 
-            'acc',
-            'activeCredit'
-        ]
-        widgets = { 
-            'forma_pagamento': forms.Select(attrs={ 
-                'class': 'form-select row'
-            }),
-            'expirationDate': forms.DateInput(format='%d/%m/%Y', attrs={
-                'class': 'form-control row mask-date', 
-            }),
-            'days': forms.NumberInput(attrs={
-                'class': 'form-control row',
-                'min': 0
-            }),
-            'value': forms.NumberInput(attrs={
-                'class': 'form-control row',
-                'min': 0
-            }),
-            'acc':forms.HiddenInput()
-        }
+# class RomaneioPaymentMethod_AccountsForm(forms.ModelForm):
+#     class Meta:
+#         model = Romaneio_PaymentMethod_Accounts
+#         fields = [
+#             'forma_pagamento',  
+#             'expirationDate', 
+#             'days', 
+#             'value', 
+#             'acc',
+#             'activeCredit'
+#         ]
+#         widgets = { 
+#             'forma_pagamento': forms.Select(attrs={ 
+#                 'class': 'form-select row'
+#             }),
+#             'expirationDate': forms.DateInput(format='%d/%m/%Y', attrs={
+#                 'class': 'form-control row mask-date', 
+#             }),
+#             'days': forms.NumberInput(attrs={
+#                 'class': 'form-control row',
+#                 'min': 0
+#             }),
+#             'value': forms.NumberInput(attrs={
+#                 'class': 'form-control row',
+#                 'min': 0
+#             }),
+#             'acc':forms.HiddenInput()
+#         }
 
 class CreditLimitForm(forms.ModelForm):
     class Meta:

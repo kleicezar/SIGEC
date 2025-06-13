@@ -23,10 +23,6 @@ class Product(models.Model):
         return self.description  # retorna a descrição
 
 class Compra(models.Model):
-    FREIGHT_CHOICES = [
-        ('FOB','FOB'),
-        ('CIF','CIF')
-    ]
     data_da_compra = models.DateTimeField(verbose_name='Data da Compra')
     total_value = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Total", blank=True, null=True)
     product_total =  models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Total de Produtos")
@@ -36,24 +32,39 @@ class Compra(models.Model):
     is_active = models.BooleanField(default=True, verbose_name='Está Ativo')  # está ativo
 
     observation_product =  models.TextField(verbose_name='Observação sobre Produtos',null=True,blank=True)
-    # CAMPOS IMPOSTO
-    tax_value = models.IntegerField(verbose_name='Valor do Imposto(%)')
-    observation_tax = models.TextField(verbose_name='Observação sobre Imposto',null=True,blank=True)
-    
-    # CAMPOS FRETE
-    freight_type = models.CharField(choices=FREIGHT_CHOICES,max_length=3,verbose_name='Tipo de Frete',null=True, blank=True)
-    freight_value = models.IntegerField(verbose_name='Valor do Frete',null=True)
-    observation_freight = models.TextField(verbose_name='Observação sobre Frete',null=True,blank=True)
 
-    # CAMPOS ROMANEIO
-    observation_picking_list = models.TextField(verbose_name='Observação sobre Romaneio',null=True,blank=True)
-    value_picking_list = models.IntegerField(verbose_name='Valor do Romaneio')
-
+    rmnExists = models.BooleanField(default=False,verbose_name='Romaneio')
+    freightExists = models.BooleanField(default=False,verbose_name='Frete')
+    taxExists = models.BooleanField(default=False,verbose_name='Imposto')
 
     def __str__(self):
         ...
         # return f"Compra {self.id} por }"
-    
+class Frete(models.Model):
+    FREIGHT_CHOICES = [
+        ('FOB','FOB'),
+        ('CIF','CIF')
+    ]
+    compra = models.ForeignKey(Compra,on_delete=models.SET_NULL, null=True, blank=True)
+    freight_type = models.CharField(choices=FREIGHT_CHOICES,max_length=3,verbose_name='Tipo de Frete',null=True, blank=True)
+    valueFreight = models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor do Frete')
+    numberOfInstallmentsFreight = models.IntegerField(verbose_name='Número de Parcelas')
+    observation_freight = models.TextField(verbose_name='Observação sobre Frete',null=True,blank=True)
+  
+
+class Tax(models.Model):
+    compra = models.ForeignKey(Compra,on_delete=models.SET_NULL, null=True, blank=True)
+    valueTax =  models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor do Imposto')
+    numberOfInstallmentsTax = models.IntegerField(verbose_name='Número de Parcelas')
+    observation_tax = models.TextField(verbose_name='Observação sobre Imposto',null=True,blank=True)
+
+
+class PickingList(models.Model):
+    compra = models.ForeignKey(Compra,on_delete=models.SET_NULL, null=True, blank=True)
+    valuePickingList = models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor do RMN')
+    numberOfInstallmentsRMN = models.IntegerField(verbose_name='Número de Parcelas')
+    observation_picking_list = models.TextField(verbose_name='Observação sobre Romaneio',null=True,blank=True)
+
 class CompraItem(models.Model):
     compra = models.ForeignKey(Compra, on_delete=models.SET_NULL, null=True, verbose_name="Compra")
     produto = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, verbose_name="Produto")

@@ -70,26 +70,26 @@ class CompraForm(forms.ModelForm):
         ('CIF','CIF')
     ]
     
-    freight_type = forms.ChoiceField(
-        label='Tipo de Frete',
-        choices=FREIGHT_CHOICES,
-        initial='FOB',
-        widget=forms.Select(attrs={
-            'class': 'form-select mb-3 mt-3'
-        })
-    )
-    freight_value = forms.DecimalField(
-    label='Valor do Frete',
-    required=False,
-    widget=forms.NumberInput(
-        attrs={
-            'class': 'form-control w-25 mb-3 mt-3',
-            'placeholder': '0.00',
-            'step': '0.01',  # permite decimais
-            'min':0
-        }
-    )
-)
+    # freight_type = forms.ChoiceField(
+    #     label='Tipo de Frete',
+    #     choices=FREIGHT_CHOICES,
+    #     initial='FOB',
+    #     widget=forms.Select(attrs={
+    #         'class': 'form-select mb-3 mt-3'
+    #     })
+    # )
+#     freight_value = forms.DecimalField(
+#     label='Valor do Frete',
+#     required=False,
+#     widget=forms.NumberInput(
+#         attrs={
+#             'class': 'form-control w-25 mb-3 mt-3',
+#             'placeholder': '0.00',
+#             'step': '0.01',  # permite decimais
+#             'min':0
+#         }
+#     )
+# )
     class Meta:
         model = Compra
         fields = [
@@ -100,13 +100,9 @@ class CompraForm(forms.ModelForm):
             'product_total',
             'discount_total',
             'observation_product',
-            'tax_value',
-            'observation_tax',
-            'freight_type',
-            'freight_value',
-            'observation_freight',
-            'observation_picking_list',
-            'value_picking_list'
+            'rmnExists',
+            'freightExists',
+            'taxExists'
             ] 
         widgets = {
                 'fornecedor':forms.TextInput(attrs={
@@ -132,30 +128,13 @@ class CompraForm(forms.ModelForm):
                     'class':'form-control mb-3 mt-3 row-5',
                     'readonly': 'readonly'
                 }),
-                'tax_value':forms.NumberInput(attrs={
-                    'class': 'form-control w-25 mb-3 mt-3',
-                    # 'step':1,
-                    'min':0,
-                    'max':100,
-                    'required':'required'
+                'rmnExists':forms.CheckboxInput(attrs={
+                    'class':'form-check-input'
                 }),
-                'observation_product':forms.Textarea(attrs={
-                    'class':'form-control mb-3 mt-3 row'
+                'taxExists':forms.CheckboxInput(attrs={
+                    'class':'form-check-input'
                 }),
-                'observation_tax':forms.Textarea(attrs={
-                    'class':'form-control mb-3 mt-3 row'
-                }),
-                'observation_freight':forms.Textarea(attrs={
-                    'class':'form-control mb-3 mt-3 row'
-                }),
-                'observation_picking_list':forms.Textarea(attrs={
-                    'class':'form-control mb-3 mt-3 row'
-                }),
-                'value_picking_list':forms.NumberInput(attrs={
-                    'class': 'form-control w-25 mb-3 mt-3',
-                    'step':1,
-                    'min':0
-                })
+             
 
             }
     def __init__(self, *args, **kwargs):
@@ -163,7 +142,6 @@ class CompraForm(forms.ModelForm):
         if self.instance and self.instance.pk:
             self.fields['data_da_compra'].initial = self.instance.data_da_compra
             self.fields['data_da_compra'].widget.attrs['readonly'] = True
-            self.fields['freight_value'].required = False
 
 class CompraItemForm(forms.ModelForm):
     STATUS_CHOICES = [
@@ -234,6 +212,105 @@ class CompraFormUpdate(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # self.fields['freightType'].required = False
+
+class FreteForm(forms.ModelForm):
+    class Meta:
+        model=Frete
+        fields = [
+            'freight_type','valueFreight','numberOfInstallmentsFreight','observation_freight'
+            ]
+        widgets = {
+            'freight_type':forms.Select(attrs={
+                'class':'form-control mb-3',
+                'disabled':'disabled'
+            }),
+            'valueFreight':forms.NumberInput(attrs={
+                'class':'form-control mb-3',
+                'disabled':'disabled'
+            }),
+            'numberOfInstallmentsFreight':forms.NumberInput(attrs={
+                'class':'form-control',
+                'disabled':'disabled'
+            })
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.compra = kwargs.pop('compra', None)
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        valueFreight = cleaned_data.get('valueFreight')
+        installments = cleaned_data.get('numberOfInstallmentsFreight')
+
+        if self.compra and self.compra.freightExists:
+            if valueFreight <= 0 or installments <= 0:
+                raise forms.ValidationError("Para FRETE, os valores devem ser maiores que zero.")
+# class FreteForm(forms.ModelForm):
+#     class Meta:
+#         model=Frete
+#         fields = [
+#             'freight_type','valueFreight','numberOfInstallments','observation_freight'
+#             ]
+#         widgets = {
+#             'freight_type':forms.Select()
+#         }
+class RomaneioForm(forms.ModelForm):
+    class Meta:
+        model=PickingList
+        fields = [
+            'valuePickingList','numberOfInstallmentsRMN','observation_picking_list'
+            ]
+        widgets = {
+            'valuePickingList':forms.NumberInput(attrs={
+                'class':'form-control mb-3'
+            }),
+            'numberOfInstallmentsRMN':forms.NumberInput(attrs={
+                'class':'form-control'
+            })
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.compra = kwargs.pop('compra', None)
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        value_picking = cleaned_data.get('valuePickingList')
+        installments = cleaned_data.get('numberOfInstallmentsRMN')
+
+        if self.compra and self.compra.rmnExists:
+            if value_picking <= 0 or installments <= 0:
+                raise forms.ValidationError("Para RMN, os valores devem ser maiores que zero.")
+        return cleaned_data
+    
+class TaxForm(forms.ModelForm):
+    class Meta:
+        model = Tax
+        fields = [
+            'valueTax','numberOfInstallmentsTax','observation_tax'
+        ]
+        widgets = {
+            'valueTax':forms.NumberInput(attrs={
+                'class':'form-control mb-3'
+            }),
+            'numberOfInstallmentsTax':forms.NumberInput(attrs={
+                'class':'form-control mb-3'
+            })
+        }
+    def __init__(self, *args, **kwargs):
+        self.compra = kwargs.pop('compra', None)
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        value_tax = cleaned_data.get('valueTax')
+        installments = cleaned_data.get('numberOfInstallmentsTax')
+
+        if self.compra and self.compra.taxExists:
+            if value_tax <= 0 or installments <= 0:
+                raise forms.ValidationError("Para Imposto, os valores devem ser maiores que zero.")
+        return cleaned_data
 class ProductSearchForm(forms.Form):
     search = forms.CharField(max_length=100,required=False,label='Pesquisar Produto')
 

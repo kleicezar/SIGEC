@@ -55,6 +55,9 @@
             <thead>
                 <tr>
                     <th scope="col">
+                        {{form.paymentPurpose.label}}
+                    </th>
+                    <th scope="col">
                         {{form.forma_pagamento.label}}
                     </th>
                     <th scope="col">
@@ -104,7 +107,7 @@
     <!-- {{ form_payment_account.management_form }} -->
     {% for form in form_payment_account %}
     <tr>
-        <!-- <td>{{ form.id }}</td> -->
+        <td>{{ form.paymentPurpose }}</td>
         <td>{{ form.forma_pagamento }}</td>
         <td>
             <div class="input-group date" data-provide="datepicker" id="empty-payment-method-form">
@@ -116,7 +119,7 @@
         </td>
         <td>{{ form.days }}</td>
         <td>{{ form.value }}</td>
-        <td style="display: none;">{{ form.activeCredit }}</td>
+        <td style="display: none;">{{ form.activeCredit.as_hidden }}</td>
         <td style="display: none;">{{ form.DELETE }}</td>
     </tr>
     {% endfor %}
