@@ -7,6 +7,9 @@
                 <thead>
                     <tr>
                         <th scope="col">
+                            {{older_form_payment_account.paymentPurpose.label}}
+                        </th>
+                        <th scope="col">
                             {{older_form_payment_account.forma_pagamento.label}}
                         </th>
                         <th scope="col">
@@ -25,6 +28,7 @@
                         {% if form.instance.pk %}
                             <input type="hidden" name="{{ form.prefix }}-id" value="{{ form.instance.id }}">
                             <tr>
+                                <td>{{form.paymentPurpose}}</td>
                                 <td class="field_type_payment">{{form.forma_pagamento}}</td>
                                 <td style="width: 200px;">
                                     <div class="input-group date" data-provide="datepicker">

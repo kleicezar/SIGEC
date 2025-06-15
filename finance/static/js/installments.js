@@ -79,7 +79,9 @@ function generateInstallmentsPlannedAccount(){
             return;
         }
 
+     
         
+
         const totalValue = parseFloat(document.getElementById("id_totalValue").value); // Valor de cada parcela
         const numberOfInstallments = parseInt(document.getElementById("id_numberOfInstallments").value); // Número de parcelas
 
@@ -171,6 +173,8 @@ function generateInstallments(){
     const formContainer = document.getElementById("payment-method-container");
 
     header.style = 'display:none;'
+
+   
     //escondendo campos de template base e opção de remoção
     const old_payment_method_form = document.getElementById("old-payment-method-form");
     let click = 0 // variavel para verificar quantidade de cliques
@@ -182,6 +186,9 @@ function generateInstallments(){
             old_payment_method_form.style.display="none";
         }
 
+        const new_form = document.getElementById('new_form');
+        new_form.value = 1;
+        
         let TOTAL_FORMS = document.getElementById("id_paymentmethod_accounts_set-TOTAL_FORMS");//TOTAL FORMS
         let days_installment_Range = document.getElementById('id_installment_Range');// intervalo em dias entre parcelas
         let installmentRange = document.getElementById('id_numberOfInstallments');//numero de parcela

@@ -170,6 +170,7 @@ class BasePaymentMethodAccountsForm(forms.ModelForm):
         )
     )
     activeCredit = forms.BooleanField(required=False, label='Usar Crédito')
+    # is_new = forms.BooleanField(required=False, initial=False, widget=forms.HiddenInput())
     class Meta:
         model = PaymentMethod_Accounts
         fields = [
@@ -185,6 +186,8 @@ class BasePaymentMethodAccountsForm(forms.ModelForm):
             'acc',
             'activeCredit',
             'paymentPurpose'
+            # ,
+            # 'is_new'
 
         ]
         widgets = { 
@@ -249,6 +252,43 @@ class PaymentMethodAccountsForm(BasePaymentMethodAccountsForm):
 
         return cleaned_data
    
+class PaymentMethodAccountsPurchaseFormSet(BaseInlineFormSet):
+    # class Meta(BasePaymentMethodAccountsForm.Meta):
+    def clean(self):
+        print("\n\n🚨 LIMPEZA SENDO EXECUTADA 🚨\n\n")
+        cleaned_data = super().clean()
+
+        payment_formset = self.new_payment_formset if self.new_form_flag else self.old_payment_formset
+
+        if not payment_formset or not hasattr(payment_formset, 'forms'):
+            return cleaned_data
+
+        # Filtra apenas formulários válidos
+        payment_forms = [form for form in payment_formset.forms if form.cleaned_data and not form.cleaned_data.get('DELETE')]
+
+
+        purposes = [form.cleaned_data.get('paymentPurpose') for form in payment_forms]
+
+        # Valida cada flag com os propósitos
+        if cleaned_data.get('rmnExists') and 'Romaneio' not in purposes:
+            print("Marcado Romaneio")
+            raise forms.ValidationError("Você marcou 'Romaneio' como existente, mas nenhum pagamento com essa finalidade foi informado.")
+        elif not cleaned_data.get('rmnExists') and 'Romaneio' in purposes:    
+            print('Não esta marcado')
+            raise forms.ValidationError("Você não marcou 'Romaneio' como existente, mas pagamentos com essa finalidade foi informado.")
+
+        if cleaned_data.get('freightExists') and 'Frete' not in purposes:
+            raise forms.ValidationError("Você marcou 'Frete' como existente, mas nenhum pagamento com essa finalidade foi informado.")
+        elif not cleaned_data.get('freightExists') and 'Frete' in purposes:
+            raise forms.ValidationError("Você não marcou 'Frete' como existente, mas pagamentos com essa finalidade foi informado.")
+        
+        if cleaned_data.get('taxExists') and 'Imposto' not in purposes:
+            raise forms.ValidationError("Você marcou 'Imposto' como existente, mas nenhum pagamento com essa finalidade foi informado.")
+        elif not cleaned_data.get('taxExists') and 'Imposto' in purposes:
+            raise forms.ValidationError("Você não marcou 'Imposto' como existente, mas pagamentos com essa finalidade foi informado.")
+        
+        return cleaned_data
+    
 class PaymentMethodAccountsFormUpdate(BasePaymentMethodAccountsForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs) 

@@ -70,26 +70,10 @@ class CompraForm(forms.ModelForm):
         ('CIF','CIF')
     ]
     
-    # freight_type = forms.ChoiceField(
-    #     label='Tipo de Frete',
-    #     choices=FREIGHT_CHOICES,
-    #     initial='FOB',
-    #     widget=forms.Select(attrs={
-    #         'class': 'form-select mb-3 mt-3'
-    #     })
-    # )
-#     freight_value = forms.DecimalField(
-#     label='Valor do Frete',
-#     required=False,
-#     widget=forms.NumberInput(
-#         attrs={
-#             'class': 'form-control w-25 mb-3 mt-3',
-#             'placeholder': '0.00',
-#             'step': '0.01',  # permite decimais
-#             'min':0
-#         }
-#     )
-# )
+    new_form_flag = None
+    new_payment_formset = None
+    old_payment_formset = None
+
     class Meta:
         model = Compra
         fields = [
@@ -133,16 +117,18 @@ class CompraForm(forms.ModelForm):
                 }),
                 'taxExists':forms.CheckboxInput(attrs={
                     'class':'form-check-input'
-                }),
-             
+                }),   
 
             }
+        
     def __init__(self, *args, **kwargs):
         super(CompraForm, self).__init__(*args, **kwargs)
         if self.instance and self.instance.pk:
             self.fields['data_da_compra'].initial = self.instance.data_da_compra
             self.fields['data_da_compra'].widget.attrs['readonly'] = True
 
+   
+    
 class CompraItemForm(forms.ModelForm):
     STATUS_CHOICES = [
         ('Pendente', 'Pendente'),
@@ -221,16 +207,14 @@ class FreteForm(forms.ModelForm):
             ]
         widgets = {
             'freight_type':forms.Select(attrs={
-                'class':'form-control mb-3',
-                'disabled':'disabled'
+                'class':'form-control mb-3'
             }),
             'valueFreight':forms.NumberInput(attrs={
-                'class':'form-control mb-3',
-                'disabled':'disabled'
+                'class':'form-control mb-3'
             }),
             'numberOfInstallmentsFreight':forms.NumberInput(attrs={
                 'class':'form-control',
-                'disabled':'disabled'
+            
             })
         }
 

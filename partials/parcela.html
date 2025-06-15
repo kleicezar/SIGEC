@@ -49,6 +49,7 @@
 <!-- <form method="POST"> 
     {% csrf_token %}   -->
 {{ form_payment_account.management_form }}
+<input type="hidden" name="new_form" value="0" id="new_form"/>
 <div> <!-- style="display: none;" -->
     <div class="form-row">
         <table class="table" id="installment">

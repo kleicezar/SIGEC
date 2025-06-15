@@ -243,50 +243,103 @@
                 
 
                     <!-- Formas de Pagamento -->
+                      <div class="row">
+                        <div class="col">
+                            <h6 class="mt-5 mb-3">
+                                Frete
+                            </h6>
+
+                            <div class="row">
+                                <div class="col">
+                                    {{compra_form.freightExists.label}}
+                                    {{compra_form.freightExists}} 
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    {{frete_form.freight_type.label}}
+                                    {{frete_form.freight_type}}
+                                </div>          
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    {{frete_form.valueFreight.label}}
+                                    {{frete_form.valueFreight}}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    {{frete_form.numberOfInstallmentsFreight.label}}
+                                    {{frete_form.numberOfInstallmentsFreight}}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <h6 class="mt-5 mb-3">
+                                RMN
+                            </h6>
+
+                            <div class="row">
+                                <div class="col">
+                                    {{compra_form.rmnExists.label}}
+                                    {{compra_form.rmnExists}}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    {{rmn_form.valuePickingList.label}}
+                                    {{rmn_form.valuePickingList}}
+                                </div>          
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col">
+                                    {{rmn_form.numberOfInstallmentsRMN.label}}
+                                    {{rmn_form.numberOfInstallmentsRMN}}
+                                </div>
+                            </div>
+    
+                        </div>
+
+                        <div class="col">
+                            <h6 class="mt-5 mb-3">
+                                Imposto
+                            </h6>
+
+                            <div class="row">
+                                <div class="col">
+                                    {{compra_form.taxExists.label}}
+                                    {{compra_form.taxExists}} 
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    {{tax_form.valueTax.label}}
+                                    {{tax_form.valueTax}}
+                                </div>          
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    {{tax_form.numberOfInstallmentsTax.label}}
+                                    {{tax_form.numberOfInstallmentsTax}}
+                                </div>
+                            </div>
+                        </div>
+                     </div>
+                     
                     <h6 class="mt-5 mb-3">Formas de Pagamento</h6>
 
                     {% include 'parcela.html' %}
                     {% include 'parcelaUpdate.html' %}
 
-                    {{compra_form.observation_product.label}}
-                    {{compra_form.observation_product}}
-                    <h6 class="mt-5 mb-3">Geração de Parcelas - Imposto </h6>
-                    {{compra_form.tax_value.label}}
-                    {{compra_form.tax_value}}
-
-                   
-
-                    {% include 'parcelaImposto.html' %}
-                    {% include 'parcelaImpostoUpdate.html' %}
-
-                    {{compra_form.observation_tax.label}}
-                    {{compra_form.observation_tax}}
-
-                    <h6 class="mt-5 mb-3">Frete</h6>
-                    {{compra_form.freight_type.label}}
-                    {{compra_form.freight_type}}
-
-                    <div id="labelFreight">
-                        {{compra_form.freight_value.label}}
-                    </div>
                     
-                    {{compra_form.freight_value}}
-
-                    {% include 'parcelaFrete.html' %}
-                    {% include 'parcelaFreteUpdate.html' %}
-
-                    {{compra_form.observation_freight.label}}
-                    {{compra_form.observation_freight}}
-
-                    <h6 class="mt-5 mb-3">Romaneio</h6>
-                    {{compra_form.value_picking_list.label}}
-                    {{compra_form.value_picking_list}}
-
-                    {% include 'parcelaRomaneio.html' %}
-                    {% include 'parcelaRomaneioUpdate.html' %}
-
-                    {{compra_form.observation_picking_list.label}}
-                    {{compra_form.observation_picking_list}}
 
                     <div class="row">
                         <div class="col mt-5 text-end">
@@ -300,6 +353,41 @@
         
         <!-- {% include 'script.html' %} -->
         <script src="{% static 'js/addItem.js' %}" defer></script>
+        <script>
+            document.addEventListener("DOMContentLoaded",()=>{
+                id_freightExists = document.getElementById("id_freightExists");
+                id_valueFreight = document.getElementById("id_valueFreight");
+                id_numberOfInstallmentsFreight = document.getElementById("id_numberOfInstallmentsFreight");
+                if (id_freightExists.checked){
+                    id_freight_type = document.getElementById("id_freight_type");
+                    id_freight_type.disabled = false;
+
+                }
+
+                id_freightExists.addEventListener("change",()=>{
+                    if (id_freightExists.checked){
+                        id_freight_type.disabled = false;
+                        id_freight_type.addEventListener("change",()=>{
+
+                            if(id_freight_type.value = "FOB"){
+                                id_valueFreight.disabled = false;
+                                id_numberOfInstallmentsFreight.disabled = false;
+                            }
+                            else{
+                                id_valueFreight.disabled = true;
+                                id_numberOfInstallmentsFreight.disabled = true;
+                            }
+                        })
+                        
+                    }
+                    else{
+                        id_freight_type.disabled = true;
+                        id_valueFreight.disabled = true;
+                        id_numberOfInstallmentsFreight.disabled = true;
+                    }
+                })
+            })
+        </script>
         <!-- <script src="{% static 'js/clientSearch.js' %}"></script> -->
          <!-- pesquisa clientes -->
         <!-- <script src="{% static 'js/venda_item.js' %}"></script> -->
@@ -307,7 +395,7 @@
         <script src="{% static 'js/suggestions.js' %}"></script><!-- pesquisa clientes -->
         <script src="{% static 'js/suggestionsUpdate.js' %}"></script> 
         <script src="{% static 'js/error.js' %}"></script>
-        <script src="{% static 'js/tax.js' %}"></script> 
+        <!-- <script src="{% static 'js/tax.js' %}"></script>  -->
         {% endblock %}     
     </main>
 </body>
