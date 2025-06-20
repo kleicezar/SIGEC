@@ -1,4 +1,4 @@
-{% extends 'login/menu.html' %}
+    {% extends 'login/menu.html' %}
 {% load bootstrap4 %}
 {% load static %}
 <!DOCTYPE html>
@@ -32,13 +32,29 @@
             <h6>
                 Informações Pessoais
             </h6>
-            <select id="formSelect" name="form_choice" onchange="updateForm()" class="form-select form-select-lg mb-3 ">
-                <!-- <option value="">Selecione um formulário</option> -->
-                <option selected value="Pessoa Fisica" {% if 'form_choice' in request.POST and request.POST.form_choice == 'Pessoa Fisica' %}selected{% endif %}>Pessoa Fisica</option>
-                <option value="Pessoa Juridica" {% if 'form_choice' in request.POST and request.POST.form_choice == 'Pessoa Juridica' %}selected{% endif %}>Pessoa Juridica</option>
-                <option value="Estrangeiro" {% if 'form_choice' in request.POST and request.POST.form_choice == 'Estrangeiro' %}selected{% endif %}>Estrangeiro</option>
-            </select>
+            {% with form_value=request.POST.form_choice|default:selected_form %}
+            <select id="formSelect" name="form_choice" onchange="updateForm()" class="form-select form-select-lg mb-3">
+                
+                <option value="Pessoa Fisica"
+                    {% if form_value == 'Pessoa Fisica' or form_value == 'Pessoa Física' %}selected{% endif %}
+                >
+                    Pessoa Fisica
+                </option>
 
+                <option value="Pessoa Juridica"
+                    {% if form_value == 'Pessoa Juridica' %}selected{% endif %}
+                >
+                    Pessoa Juridica
+                </option>
+
+                <option value="Estrangeiro"
+                    {% if form_value == 'Estrangeiro' %}selected{% endif %}
+                >
+                    Estrangeiro
+                </option>
+
+            </select>
+            {% endwith %}
 
             <div class="form-margin row">
 

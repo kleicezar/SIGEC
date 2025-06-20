@@ -4,6 +4,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const fineType = document.getElementById('fine_type');
     const interest = document.getElementById('id_interest');    // juros
     const fine = document.getElementById('id_fine');            // multa
+    if (interest.value == ""){
+        interest.value = '0.00';
+    }
+    if (fine.value == ""){
+        fine.value = '0.00';
+    }
+
     let TotalValue = document.getElementById('id_value');       // html de valor pago
     let value_edit = TotalValue.value;                          // valor pago
     let ValueOLD = document.getElementById('id_value_old');     // html valor bruto
@@ -33,15 +40,6 @@ document.addEventListener('DOMContentLoaded', function () {
                  `${(final_date.getMonth() + 1).toString().padStart(2, '0')}/` +
                  `${final_date.getFullYear()}`;
     } 
-
-    interest.addEventListener('change', function(){
-        const format = format_value(interest.value)
-        if (format === 'NaN'){
-            interest.value = '0.00'
-        }else interest.value = format
-        const edit = compair_interest_fine(ValueOLD.value)
-        TotalValue.value = edit
-    })
     fine.addEventListener('change', function(){
         const format = format_value(fine.value)
         if (format === 'NaN'){
@@ -51,6 +49,18 @@ document.addEventListener('DOMContentLoaded', function () {
         TotalValue.value = edit
     })
 
+    interest.addEventListener('change', function(){
+        const format = format_value(interest.value)
+        if (format === 'NaN'){
+            interest.value = '0.00'
+        }else interest.value = format
+        const edit = compair_interest_fine(ValueOLD.value)
+
+        console.log('Este é o edit');
+        console.log(edit);
+        TotalValue.value = edit;
+    })
+    
     interestType.addEventListener('change',function() {
         if (interestType.value === 'percent') {
             interest.value = '0.00'

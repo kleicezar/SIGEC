@@ -340,6 +340,7 @@ def updateAccounts_Sale(request,id_Accounts):
     payment_instance = get_object_or_404(PaymentMethod_Accounts, id=id_Accounts)
 
     if request.method == "POST":
+        print('DADOS DO REQUEST.POST',request.POST)
         payment_form_instance = PaymentMethodAccountsForm(request.POST,instance=payment_instance)
         if payment_instance.venda:
             accounts_instance = get_object_or_404(Venda, id=payment_instance.venda.id)
@@ -350,6 +351,7 @@ def updateAccounts_Sale(request,id_Accounts):
             accounts_form_instance = VendaServiceFormUpdate(request.POST,instance=accounts_instance)
         
         if payment_form_instance.is_valid() and accounts_form_instance.is_valid():
+            
             accounts_form_instance.save()
 
             payment_instance = payment_form_instance.save(commit=False)
@@ -359,7 +361,7 @@ def updateAccounts_Sale(request,id_Accounts):
             if not payment_instance.fine:
                 payment_instance.fine = None
 
-            payment_instance.save()
+            payment_instance.save() 
             messages.success(request,"Conta atualizada com sucesso.",extra_tags="successAccount")
             return redirect('AccountsReceivable') 
     else:

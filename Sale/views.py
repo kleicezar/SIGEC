@@ -157,18 +157,7 @@ def venda_create(request):
                                 restante_para_descontar -= credito.credit_value
                                 credito.credit_value = Decimal('0')
                                 credito.save()
-
-                    # if paymentWithCredit.exists():
-
-                    #     total_payment_with_credit+=valor
-                        # form.instance.activeCredit = True
-
-            pessoa = venda_form.cleaned_data["pessoa"]
-
-            # creditLimit = pessoa.creditLimit
-            # creditLimitAtual = creditLimit
-            # creditLimitAtual -= total_payment_with_credit
-
+                                
             if(total_payment == venda_form.cleaned_data['total_value']):  
                 # pessoa.creditLimit = creditLimitAtual
                 # pessoa.save()
@@ -186,9 +175,6 @@ def venda_create(request):
 
             if total_payment != venda_form.cleaned_data['total_value']:
                 messages.warning(request, "Ação cancelada! O valor não foi salvo completamente.",extra_tags='salecreate_page')
-                
-            # if ((creditLimitAtual != creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual<0)):
-            #     messages.warning(request, "Ação cancelada! O valor acumulado dos pagamentos é menor que o limite de Crédito!",extra_tags='salecreate_page')
             
             return redirect('venda_create')
            

@@ -7,7 +7,7 @@ class VendaForm(forms.ModelForm):
         fields = ['data_da_venda', 'pessoa', 'situacao','observacao_pessoas', 'observacao_sistema', 'total_value', 'product_total', 'discount_total']
         widgets = {
             'pessoa':forms.TextInput(attrs={
-                'class':'form-control  row-xl-5 mb-3 mt-3' ,
+                'class':'form-control  row-xl-5 mb-3 mt-3',
                 'required':'required'
             }),
             'data_da_venda':forms.DateTimeInput(attrs={

@@ -245,25 +245,30 @@
                             </div>
 
                             <div class="row">
-                                <div class="col">
+                                <div class="col" id="field_freight_type">
                                     {{frete_form.freight_type.label}}
                                     {{frete_form.freight_type}}
                                 </div>          
                             </div>
 
-                            <div class="row">
-                                <div class="col">
-                                    {{frete_form.valueFreight.label}}
-                                    {{frete_form.valueFreight}}
-                                </div>
-                            </div>
 
-                            <div class="row">
-                                <div class="col">
-                                    {{frete_form.numberOfInstallmentsFreight.label}}
-                                    {{frete_form.numberOfInstallmentsFreight}}
+                            <div id="fields_freight" >
+                                <div class="row">
+                                    <div class="col">
+                                        {{frete_form.valueFreight.label}}
+                                        {{frete_form.valueFreight}}
+                                    </div>
                                 </div>
+
+                                <div class="row">
+                                    <div class="col">
+                                        {{frete_form.numberOfInstallmentsFreight.label}}
+                                        {{frete_form.numberOfInstallmentsFreight}}
+                                    </div>
+                                </div>
+
                             </div>
+                            
                         </div>
 
                         <div class="col">
@@ -278,19 +283,23 @@
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col">
-                                    {{rmn_form.valuePickingList.label}}
-                                    {{rmn_form.valuePickingList}}
-                                </div>          
+                            <div id="fieldsRMN">
+                                    <div class="row">
+                                    <div class="col" >
+                                        {{rmn_form.valuePickingList.label}}
+                                        {{rmn_form.valuePickingList}}
+                                    </div>          
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col">
+                                        {{rmn_form.numberOfInstallmentsRMN.label}}
+                                        {{rmn_form.numberOfInstallmentsRMN}}
+                                    </div>
+                                </div>
+
                             </div>
                             
-                            <div class="row">
-                                <div class="col">
-                                    {{rmn_form.numberOfInstallmentsRMN.label}}
-                                    {{rmn_form.numberOfInstallmentsRMN}}
-                                </div>
-                            </div>
     
                         </div>
 
@@ -306,19 +315,23 @@
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col">
-                                    {{tax_form.valueTax.label}}
-                                    {{tax_form.valueTax}}
-                                </div>          
-                            </div>
-
-                            <div class="row">
-                                <div class="col">
-                                    {{tax_form.numberOfInstallmentsTax.label}}
-                                    {{tax_form.numberOfInstallmentsTax}}
+                            <div id="fieldsTax">
+                                <div class="row">
+                                    <div class="col">
+                                        {{tax_form.valueTax.label}}
+                                        {{tax_form.valueTax}}
+                                    </div>          
                                 </div>
+
+                                <div class="row">
+                                    <div class="col">
+                                        {{tax_form.numberOfInstallmentsTax.label}}
+                                        {{tax_form.numberOfInstallmentsTax}}
+                                    </div>
+                                </div>
+
                             </div>
+                            
                         </div>
                      </div>
                     
@@ -333,7 +346,7 @@
 
                     <div class="row">
                         <div class="col mt-5 text-end">
-                            <button  type="submit" class="btn bg-adapted">Enviar</button>
+                            <button  type="submit" class="btn bg-adapted" id="submitButton">Enviar</button>
                         </div>
                     </div>
                 </form>
@@ -345,43 +358,167 @@
         <!-- {% include 'script.html' %} -->
         <script>
             document.addEventListener("DOMContentLoaded",()=>{
-                id_freightExists = document.getElementById("id_freightExists");
-                id_valueFreight = document.getElementById("id_valueFreight");
-                id_numberOfInstallmentsFreight = document.getElementById("id_numberOfInstallmentsFreight");
-                if (id_freightExists.checked){
-                    id_freight_type = document.getElementById("id_freight_type");
-                    id_freight_type.disabled = false;
+                const id_freightExists = document.getElementById("id_freightExists");
+                const id_valueFreight = document.getElementById("id_valueFreight");
+                const id_numberOfInstallmentsFreight = document.getElementById("id_numberOfInstallmentsFreight");
+                const fields_freight = document.getElementById("fields_freight");
+                const field_freight_type = document.getElementById("field_freight_type");
+
+                const id_rmnExists = document.getElementById("id_rmnExists");
+                const fieldsRMN = document.getElementById("fieldsRMN");
+
+                const id_freight_type = document.getElementById("id_freight_type");
+                
+                if(!id_rmnExists.checked){
+                    fieldsRMN.style.display = "none";
+
+                    fieldsRMN.querySelectorAll("input").forEach((input) => {
+                        input.required = false;
+                    });
 
                 }
 
-                id_freightExists.addEventListener("change",()=>{
-                    if (id_freightExists.checked){
-                        id_freight_type.disabled = false;
-                        id_freight_type.addEventListener("change",()=>{
+                id_rmnExists.addEventListener("change",()=>{
 
-                            if(id_freight_type.value = "FOB"){
-                                id_valueFreight.disabled = false;
-                                id_numberOfInstallmentsFreight.disabled = false;
+                    if(id_rmnExists.checked){
+                        fieldsRMN.style.display = "block";
+
+                        fieldsRMN.querySelectorAll("input").forEach((input) => {
+                            input.required = true;
+                        });
+                        
+                    }
+                    else{
+                        fieldsRMN.style.display = "none";
+                        fieldsRMN.querySelectorAll("input").forEach((input) => {
+                            input.required = false;
+                        });
+                    }
+                })
+
+
+                if (!id_freightExists.checked){
+                    field_freight_type.style.display = 'none';
+                    fields_freight.style.display="none";
+
+                    fields_freight.querySelectorAll("input").forEach((input) => {
+                        input.required = false;
+                    });
+                }
+
+                id_freightExists.addEventListener("change",()=>{
+                    const fields_freight = document.getElementById("fields_freight");
+                    const field_freight_type = document.getElementById("field_freight_type");
+                    if (id_freightExists.checked){
+                        field_freight_type.style.display = 'block';
+                        id_freight_type.addEventListener("change",()=>{
+    
+                            if(id_freight_type.value == "FOB"){
+
+                                fields_freight.style.display='block';
+                                fields_freight.querySelectorAll("input").forEach((input) => {
+                                    input.required = true;
+                                });
+
                             }
                             else{
-                                id_valueFreight.disabled = true;
-                                id_numberOfInstallmentsFreight.disabled = true;
+                                fields_freight.style.display='none';
+                                fields_freight.querySelectorAll("input").forEach((input) => {
+
+                                    input.required = false;
+
+                                });
                             }
                         })
                         
                     }
                     else{
-                        id_freight_type.disabled = true;
-                        id_valueFreight.disabled = true;
-                        id_numberOfInstallmentsFreight.disabled = true;
+                        field_freight_type.style.display='none';
+                        fields_freight.style.display='none';
+                        
+                        fields_freight.querySelectorAll("input").forEach((input) => {
+                            input.required = false;
+                        });
+                    }
+                    })
+                })
+
+                const id_taxExists = document.getElementById('id_taxExists');
+                const fieldsTax = document.getElementById("fieldsTax");
+
+                if(!id_taxExists.checked){
+                    fieldsTax.style.display="none";
+
+                    fieldsTax.querySelectorAll("input").forEach((input) => {
+                        input.required = false;
+                    });
+                }
+
+                id_taxExists.addEventListener("change",()=>{
+                    if(id_taxExists.checked){
+                        fieldsTax.style.display="block";
+
+                        fieldsTax.querySelectorAll("input").forEach((input) => {
+                            input.required = true;
+                        });
+                    }
+                    else{
+                        fieldsTax.style.display="none";
+
+                        fieldsTax.querySelectorAll("input").forEach((input) => {
+                            input.required = false;
+                        });
                     }
                 })
-            })
+
+                const installment = document.getElementById("installment");
+                
+
+                const form = document.getElementById("form");
+
+                form.addEventListener("submit", function(event) {
+                    const othersPaymentPurpose = new Set();
+                    console.log('opa neymar');
+
+                    const id_freight_type = document.getElementById("id_freight_type");
+                    const id_rmnExists = document.getElementById("id_rmnExists");
+                    const id_taxExists = document.getElementById("id_taxExists");
+                    const installment = document.getElementById("installment"); // <-- Faltava definir isso
+
+                    // CORRIGIDO: querySelectorAll precisa de colchetes e ^=/$= para atributos
+                    const elements = installment.querySelectorAll("[id$='paymentPurpose']");
+
+                    elements.forEach((element) => {
+                        if (element.value === "Frete" || element.value === "Romaneio" || element.value === "Imposto") {
+                            othersPaymentPurpose.add(element.value);
+                        }
+                    });
+
+                    const hasFreight = othersPaymentPurpose.has('Frete');
+                    const hasRMN = othersPaymentPurpose.has('Romaneio');
+                    const hasTax = othersPaymentPurpose.has('Imposto');
+
+                    // CORRIGIDO: comparar o valor do SELECT (não o elemento)
+                    if (id_freight_type.value === "FOB" && !hasFreight) {
+                        alert('Frete foi selecionado, mas não foi gerado nas parcelas');
+                        event.preventDefault();
+                    }
+
+                    if (id_rmnExists.checked && !hasRMN) {
+                        alert('Romaneio foi selecionado, mas não foi gerado nas parcelas');
+                        event.preventDefault();
+                    }
+
+                    if (id_taxExists.checked && !hasTax) {
+                        alert('Imposto foi selecionado, mas não foi gerado nas parcelas');
+                        event.preventDefault();
+                    }
+                });
+
+
         </script>
         <script src="{% static 'js/addItem.js' %}" defer></script>
         <script src="{% static 'js/suggestions.js' %}"></script><!-- pesquisa clientes -->
-        <!-- <script src="{% static 'js/tax.js' %}"></script>  -->
-    
         <script src="{% static 'js/error.js' %}"></script>
         <!-- <script src="{% static 'js/alertInstallments.js' %}"></script> -->
         <!-- <script src="{% static 'js/clientSearch.js' %}"></script>  pesquisa clientes -->

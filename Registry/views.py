@@ -115,7 +115,8 @@ def Client_Create(request):
         'form_fisicPerson': form_fisicPerson,
         'form_legalPerson': form_legalPerson,
         'form_foreigner': form_foreigner,
-        'form_Person': form_Person
+        'form_Person': form_Person,
+        'selected_form':'Pessoa Física'
     }
     return render(request, 'registry/Clientform.html', context)
 
@@ -340,8 +341,9 @@ def update_client(request, id_client):
                
 
             elif tipo_novo == "Estrangeiro" and form_foreigner.is_valid():
-                person.id_ForeignPerson_fk = foreigner
                 foreigner = form_foreigner.save(commit=False)
+                person.id_ForeignPerson_fk = foreigner
+               
                 if person.email and person.password:
                     user = [
                         person.id_ForeignPerson_fk.name_foreigner,
@@ -371,6 +373,7 @@ def update_client(request, id_client):
         'form_foreigner': form_foreigner,
         'form_Person': form_Person,
         'selected_form': selected_form,
+        'type':'update'
     }
 
     return render(request, 'registry/Clientform.html', context)

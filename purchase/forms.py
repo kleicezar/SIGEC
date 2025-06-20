@@ -222,6 +222,22 @@ class FreteForm(forms.ModelForm):
         self.compra = kwargs.pop('compra', None)
         super().__init__(*args, **kwargs)
 
+        if self.compra:
+            if self.compra.rmnExists:
+                if self.initial.get('freight_type') == 'FOB' or self.data.get('freight_type') == 'FOB':
+                    self.fields['valueFreight'].required = True
+                    self.fields['numberOfInstallmentsFreight'].required = True
+                else:
+                    self.fields['valueFreight'].required = False
+                    self.fields['numberOfInstallmentsFreight'].required = False
+
+                
+            else:
+                self.fields['valueFreight'].required = False
+                self.fields['numberOfInstallmentsFreight'].required = False
+
+            self.fields['freight_type'].required = False
+
     def clean(self):
         cleaned_data = super().clean()
         valueFreight = cleaned_data.get('valueFreight')
@@ -230,15 +246,7 @@ class FreteForm(forms.ModelForm):
         if self.compra and self.compra.freightExists:
             if valueFreight <= 0 or installments <= 0:
                 raise forms.ValidationError("Para FRETE, os valores devem ser maiores que zero.")
-# class FreteForm(forms.ModelForm):
-#     class Meta:
-#         model=Frete
-#         fields = [
-#             'freight_type','valueFreight','numberOfInstallments','observation_freight'
-#             ]
-#         widgets = {
-#             'freight_type':forms.Select()
-#         }
+
 class RomaneioForm(forms.ModelForm):
     class Meta:
         model=PickingList
@@ -257,6 +265,13 @@ class RomaneioForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.compra = kwargs.pop('compra', None)
         super().__init__(*args, **kwargs)
+        if self.compra and getattr(self.compra, 'rmnExists', False):
+            self.fields['valuePickingList'].required = True
+            self.fields['numberOfInstallmentsRMN'].required = True
+        else:
+            self.fields['valuePickingList'].required = False
+            self.fields['numberOfInstallmentsRMN'].required = False
+                
 
     def clean(self):
         cleaned_data = super().clean()
@@ -285,6 +300,12 @@ class TaxForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.compra = kwargs.pop('compra', None)
         super().__init__(*args, **kwargs)
+        if self.compra and getattr(self.compra, 'taxExists', False):
+            self.fields['valueTax'].required = True
+            self.fields['numberOfInstallmentsTax'].required = True
+        else:
+            self.fields['valueTax'].required = False
+            self.fields['numberOfInstallmentsTax'].required = False
 
     def clean(self):
         cleaned_data = super().clean()

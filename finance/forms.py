@@ -245,9 +245,10 @@ class PaymentMethodAccountsForm(BasePaymentMethodAccountsForm):
         cleaned_data = super().clean()
 
         # Atualize 'value_old' com o valor de 'value' antes de salvar
-        value = cleaned_data.get('value')
-        if value is not None:
-            cleaned_data['value_old'] = value
+        # CORRIGIR, VALOR PAGO FICA IGUAL AO VALOR DA CONTA
+        # value = cleaned_data.get('value')
+        # if value is not None:
+        #     cleaned_data['value_old'] = value
 
 
         return cleaned_data

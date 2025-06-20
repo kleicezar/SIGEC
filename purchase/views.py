@@ -241,17 +241,16 @@ def compras_create(request):
 
         if not PaymentMethod_Accounts_FormSet.is_valid():
             print("Erro no PaymentMethod",PaymentMethod_Accounts_FormSet.errors)
-        
+
+        return redirect('compras_create')
 
     else:
         form_Accounts = AccountsForm()
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
-
         frete = FreteForm()
         romaneio = RomaneioForm()
         imposto = TaxForm()
         compra_form = CompraForm()
-        # print("compra",compra_form)
         compra_item_formset = CompraItemFormSet(queryset=CompraItem.objects.none())
        
 
