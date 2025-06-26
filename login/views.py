@@ -8,13 +8,19 @@ from django.http import JsonResponse
 from finance.models import Accounts, PaymentMethod_Accounts
 from .forms import *
 from .models import *
+from config.models import Log, Info_logs
 from datetime import datetime
+from django.utils  import timezone
 from django.conf import settings
 from django.core.paginator import Paginator
 from datetime import date, timedelta
+from django.db import transaction
+from django.forms.models import model_to_dict
+from django import forms
 import os
 import json
 import glob
+import logging
 
 def create_log(msg:str ,name:str):
     """
@@ -62,6 +68,174 @@ def create_log(msg:str ,name:str):
     with open(caminho_completo, 'w', encoding='utf-8') as f:
         json.dump(dados, f, indent=4, ensure_ascii=False)
 
+def log_db(request, action:str ,type:str):
+    """
+    type: tipo de modulo ou ação usada numerado entre 1 a 13
+
+    01 : pessoa
+
+    02 : produtos
+
+    03 : compras
+
+    04 : vendas
+
+    05 : ordem de serviço
+
+    06 : contas a pagar
+
+    07 : contas a receber
+
+    08 : formas de pagamento
+
+    09 : situação
+
+    10 : plano de contas
+
+    11 : serviços
+
+    12 : Login
+
+    13 : logout
+
+    action: conjunto de caracteres descrevendo o que foi feito no log
+
+    e : Login
+
+    s : Logout
+
+    c : Create
+
+    r : Read
+    
+    u : Update
+    
+    d : Delete
+    """
+    try:
+        with transaction.atomic():
+            log = Log.objects.create(
+                user=request.user,
+                date=timezone.now(),
+                action=action,
+                type=type
+            )
+            return log
+            
+    except Exception as e:
+        logger = logging.getLogger(__name__)
+        logger.error("Erro ao salvar log de auditoria", exc_info=True)
+
+def log_create_db(log, info_old:str=''):
+    """
+    Realiza o registro de atualização de informações no sistema de logs.
+     
+    É estritamente necessário informar os campos abaixo na ordem correta.
+
+    Args:
+        log (Log): Objeto principal do log.null=False
+        info_old (str): Informação antiga cadastrada. null=False
+    Returns:
+        None
+    """
+    try:
+        with transaction.atomic():
+            log_info = Info_logs.objects.create(
+                log_principal=log,
+                info_old=info_old
+            )
+        return log_info
+    except Exception as e:
+        logger = logging.getLogger(__name__)
+        logger.error("Erro ao salvar log de auditoria", exc_info=True)
+
+def log_upd_db(log, **kwargs:dict):
+    """
+    Realiza o registro de atualização de informações no sistema de logs.
+     
+    É estritamente necessário informar os campos abaixo na ordem correta.
+
+    dicionario contendo as informações abaixo na seguinte estrutura 
+    
+    { field: {'antes': info_old, 'depois': info_now} }
+
+    Args:
+        log (Log): Objeto principal do log.null=False
+        info_old (str): Informação antiga cadastrada. null=False
+        info_now (str): Informação nova para update. null=True
+        field (str or list): Nome do campo (ou campos) que foi modificado. null=False
+
+    Returns:
+        None
+    """
+    try:
+        with transaction.atomic():
+            for chave, valor in kwargs.items():
+                print(f"\n\n\n\n{kwargs}\n\n\n\n")
+                
+                if kwargs[valor]['depois']:
+                    log_info = Info_logs.objects.create(
+                        log_principal=log,
+                        info_old=kwargs[valor]['antes'],
+                        info_now=kwargs[valor]['depois'],
+                        field=chave,
+                )
+                else:
+                    log_info = Info_logs.objects.create(
+                        log_principal=log,
+                        info_old=kwargs[chave]['antes'],
+                    )
+        return log_info
+    except Exception as e:
+        logger = logging.getLogger(__name__)
+        logger.error("Erro ao salvar log de auditoria", exc_info=True)
+
+def compair(obj_antigo, obj_novo):
+    """
+    Compara os campos de dois objetos Django (um antigo e um novo)
+    e retorna um dicionário com os campos que foram alterados.
+
+    Args:
+        obj_antigo: O objeto Django antes da alteração (estado original do banco de dados).
+        obj_novo: O objeto Django com as alterações propostas (ex: vindo de um formulário).
+
+    Returns:
+        Um dicionário onde as chaves são os nomes dos campos alterados
+        e os valores são dicionários contendo o valor 'antes' e 'depois' da alteração.
+        Ex: {'nome_campo': {'antes': 'valor_antigo', 'depois': 'valor_novo'}}
+        Retorna um dicionário vazio se não houver alterações.
+    """
+    # Transforma o objeto antigo em dicionário
+    antigo_dict = model_to_dict(obj_antigo)
+
+    # if obj is not None:
+    #     pass
+
+    # Detecta o tipo do segundo argumento
+    if isinstance(obj_novo, forms.ModelForm):
+        novo_dict = obj_novo.cleaned_data           # 👍
+    else:
+        novo_dict = model_to_dict(obj_novo)         # instância do modelo
+
+    campos_alterados = {}
+
+    for campo, valor_antigo in antigo_dict.items():
+        if campo == "id":
+            continue
+
+        if campo in novo_dict and valor_antigo != novo_dict[campo]:
+            campos_alterados[campo] = {
+                "antes": valor_antigo,
+                "depois": novo_dict[campo],
+            }
+        elif campo not in novo_dict:
+            campos_alterados[campo] = {
+                "antes": valor_antigo,
+                "depois": "Campo removido",
+            }
+
+    return campos_alterados
+
 def my_login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -70,12 +244,9 @@ def my_login(request):
 
         if user is not None:
             login(request, user)
-            #DADOS PARA ADICIONAR O LOG JSON
-            
-            create_log(
-                msg = f'O Usuario {request.user.username} entrou no sistema no dia {datetime.now().strftime("%d/%m/%Y as %H:%M:%S")}',
-                name = 'log_entrada'
-                )
+            #DADOS PARA ADICIONAR O LOG JONSON
+            log = log_db(request, action='e', type='12')
+            log_create_db(log, info_old='Entrou no Sistema',)
             return redirect('index')
         
     return render(request, 'login/login.html')
@@ -86,6 +257,8 @@ def my_logout(request):
     create_log(
         msg = f'O Usuario {request.user.username} saiu no sistema no dia {datetime.now().strftime("%d/%m/%Y as %H:%M:%S")}',
         name = 'log_entrada')
+    log = log_db(request, action='s', type='13')
+    log_create_db(log, info_old='Saiu do Sistema',)
     logout(request)
     return redirect('index') 
 
@@ -116,22 +289,28 @@ def index(request):
 @login_required
 def log_entry(request):
     
-    # Pega todos os arquivos da pasta (ignora subpastas)
-    arquivos = glob.glob(os.path.join(settings.BASE_DIR,'login','log','log_entrada', '*'))
+    # # Pega todos os arquivos da pasta (ignora subpastas)
+    # arquivos = glob.glob(os.path.join(settings.BASE_DIR,'login','log','log_entrada', '*'))
 
-    # Filtra apenas arquivos (caso tenha pastas)
-    arquivos = [f for f in arquivos if os.path.isfile(f)]
-    logs = {} 
-    if arquivos:
-        ultimo_arquivo = max(arquivos, key=os.path.getctime)
-        print("Último arquivo criado:", os.path.basename(ultimo_arquivo))
+    # # Filtra apenas arquivos (caso tenha pastas)
+    # arquivos = [f for f in arquivos if os.path.isfile(f)]
+    # logs = {} 
+    # if arquivos:
+    #     ultimo_arquivo = max(arquivos, key=os.path.getctime)
+    #     print("Último arquivo criado:", os.path.basename(ultimo_arquivo))
 
-        with open(ultimo_arquivo, 'r', encoding='utf-8') as arquivo_json:
-            logs = json.load(arquivo_json)
+    #     with open(ultimo_arquivo, 'r', encoding='utf-8') as arquivo_json:
+    #         logs = json.load(arquivo_json)
+    # else:
+    #     print("Nenhum arquivo encontrado.")
+
+    # page_obj = page(request,logs)
+    terms = "alguma coisa"
+    if request.method == "POST":
+        page_obj = Info_logs.objects.filter(user__icontains=terms)
+        pass
     else:
-        print("Nenhum arquivo encontrado.")
-
-    page_obj = page(request,logs)
+        page_obj = Info_logs.objects.all()
     
     context = {
     'page_obj': page_obj,

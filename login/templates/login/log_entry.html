@@ -44,12 +44,18 @@
                     </tr>
                 </thead>
                 <tbody id="results">
-                {% for id, descricao in page_obj %}
-                <tr>       
-                    <td>{{ id }}</td>
-                    <td>{{ descricao }}</td>
+                {% for log in page_obj %}
+                <tr>
+                    <td>{{ log.log_principal.id }}</td>
+                    {% if page_obj.info_now %}
+
+                    <td>O Usuario {{ log.log_principal.user }} editou o campo {{ log.field }} {{ log.info_old }} para {{ log.info_now }} as {{ log.log_principal.date|date:"H:i:s \d\i\a d/m/Y" }}</td>
+
+                    {% endif %}
+                    <td>O Usuario {{ log.log_principal.user }} {{ log.info_old }} as {{ log.log_principal.date|date:"H:i:s \d\i\a d/m/Y" }}</td>
                 </tr>
                 {% endfor %}
+                
                 </tbody>
             </table>
             <nav>

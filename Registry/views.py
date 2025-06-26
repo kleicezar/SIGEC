@@ -4,6 +4,7 @@ from django.forms import inlineformset_factory
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.hashers import make_password
 from .forms import *
 from .models import *
 from django.http import JsonResponse, HttpResponse
@@ -12,6 +13,10 @@ from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Case, When, Value, CharField, F
 from operator import attrgetter
+from config.models import Log, Info_logs
+from datetime import datetime
+from login.views import compair, log_db, log_upd_db, log_create_db
+
 
 
 ### CLIENT
@@ -37,8 +42,12 @@ def Client_Create(request):
 
         #verificação se o cadastro é valido 
         if form_Person.is_valid():
+            log = log_db(request, action='c' ,type='01')
+
             person = form_Person.save(commit=False)
             person.id_address_fk = address
+            person.isActive = 1
+
             # verificação em qual cadastro foi feito    
             if form_fisicPerson.is_valid():
                 fisicPerson = form_fisicPerson.save(commit=False)
@@ -47,14 +56,15 @@ def Client_Create(request):
 
                 # person = form_Person.save(commit=False)
                 person.id_FisicPerson_fk = fisicPerson
-                person.isActive = 1
-                person.save()
+                
                 if person.email and person.password: 
-                    user = [
-                        person.id_FisicPerson_fk.name,
-                        person.email,
-                        person.password,]
-                    createUser(user)
+                    person.id_user_fk = u
+                    u = createUser(person.id_FisicPerson_fk.name, person.email, person.password)
+                    log_create_db(log, info_old=f'Cadastrou o Usuario {person.id_FisicPerson_fk.name}')
+                else:
+                    log_create_db(log, info_old=f'Cadastrou a Pessoa {person.id_FisicPerson_fk.name}')
+                
+                person.save()
 
                 messages.success(request,"Cliente cadastrado com sucesso.",extra_tags="successClient")
                 return redirect(previous_url)
@@ -66,14 +76,13 @@ def Client_Create(request):
 
                 # person = form_Person.save(commit=False)
                 person.id_LegalPerson_fk = legalPerson
-                person.isActive = 1
-                person.save()
                 if person.email and person.password: 
-                    user = [
-                        person.id_LegalPerson_fk.fantasyName,
-                        person.email,
-                        person.password,]
-                    createUser(user)
+                    u = createUser(person.id_LegalPerson_fk.fantasyName, person.email, person.password)
+                    person.id_user_fk = u
+                    log_create_db(log, info_old=f'Cadastrou o Usuario {person.id_LegalPerson_fk.fantasyName}')
+                else:
+                    log_create_db(log, info_old=f'Cadastrou a Pessoa {person.id_LegalPerson_fk.fantasyName}')
+                person.save()
 
                 messages.success(request,"Cliente cadastrado com sucesso.",extra_tags="successClient")
                 return redirect(previous_url)
@@ -84,19 +93,18 @@ def Client_Create(request):
                 foreigner = form_foreigner.save()
                 # person = form_Person.save(commit=False)
                 person.id_ForeignPerson_fk = foreigner
-                person.isActive = 1
-                person.save()
                 if person.email and person.password: 
-                    user = [
-                        person.id_ForeignPerson_fk.name_foreigner,
-                        person.email,
-                        person.password,]
-                    createUser(user)
+                    create = createUser(person.id_ForeignPerson_fk.name_foreigner, person.email, person.password,)
+                    
+                    person.id_user_fk = create
+                    log_create_db(log, info_old=f'Cadastrou o Usuario {person.id_ForeignPerson_fk.name_foreigner}')
+                else:
+                    log_create_db(log, info_old=f'Cadastrou a Pessoa {person.id_ForeignPerson_fk.name_foreigner}')
+                    
+                person.save()
+                    
                 messages.success(request,"Cliente cadastrado com sucesso.",extra_tags="successClient")
                 return redirect(previous_url)
-            # if not form_legalPerson.is_valid() or not form_foreigner.is_valid() or not form_fisicPerson.is_valid():
-            #     print("Erros: ",form_legalPerson.errors)
-
     else: 
         if 'HTTP_REFERER' in request.META:
             # SALVA A PAGINA ANTERIOR
@@ -120,14 +128,19 @@ def Client_Create(request):
     }
     return render(request, 'registry/Clientform.html', context)
 
-def createUser(user):
+def createUser(*user):
     usuario = User.objects.create_user(
-        username=user[1], 
+        username=user[0], 
         email=user[1],
         password=user[2],
         first_name=user[0]
         )
-    print(usuario)
+    return usuario
+
+def updateUser(user, **form_user): #revisar
+    if user:user_compair = compair(user,form_user)
+    else:user_compair = {}
+    return user_compair
 
 @login_required
 def client_list(request):
@@ -153,7 +166,6 @@ def client_list(request):
                 Q(nome_cliente__istartswith=search_query)
             ) &
             Q(isActive = True),
-            Q(isUser = False)
         )
     else:
         clients = Person.objects.annotate(
@@ -165,10 +177,8 @@ def client_list(request):
                 output_field=CharField()
             )).filter(
                 Q(isActive = True),
-                Q(isUser = False)
             )
-       
-
+        
     # Configure o Paginator com o queryset filtrado
     paginator = Paginator(clients, 20)  # 20 itens por página
     page_number = request.GET.get('page')
@@ -258,14 +268,14 @@ def buscar_clientes(request):
 @transaction.atomic
 def update_client(request, id_client):
     # Buscar o cliente e os dados relacionados
-
+    
     try:
         person = Person.objects.get(id=id_client)
         fisicPerson = person.id_FisicPerson_fk
         legalPerson = person.id_LegalPerson_fk
         foreigner = person.id_ForeignPerson_fk
         address = person.id_address_fk
-
+        usuario = person.id_user_fk
         # Identifica o tipo atual e o endereço
         if fisicPerson:
             selected_form = "Pessoa Fisica"
@@ -280,26 +290,11 @@ def update_client(request, id_client):
     except Person.DoesNotExist:
         return redirect('Client')
     if request.method == "POST":
+        log = log_db(request, action='u' ,type='01')
+        print('\n\n\n passou pelo log principal\n\n\n')
         # Tipo novo informado no formulário
         tipo_novo = request.POST.get("form_choice")
 
-        # Detecta troca de tipo e deleta os registros antigos
-        if selected_form != tipo_novo:
-            if fisicPerson:
-                fisicPerson.delete()
-                person.id_FisicPerson_fk = None
-            if legalPerson:
-                legalPerson.delete()
-                person.id_LegalPerson_fk = None
-            if foreigner:
-                foreigner.delete()
-                person.id_ForeignPerson_fk = None
-            person.save()
-
-            # Reseta variáveis para reconstrução
-            fisicPerson = None
-            legalPerson = None
-            foreigner = None
 
         # Recria os formulários com base no novo tipo
         form_address = AddressForm(request.POST, instance=address)
@@ -309,7 +304,37 @@ def update_client(request, id_client):
         form_legalPerson = LegalPersonModelForm(request.POST)
         form_foreigner = ForeignerModelForm(request.POST)
 
+        # Detecta troca de tipo e deleta os registros antigos
+        if selected_form != tipo_novo:
+            if fisicPerson:
+                updt = compair(fisicPerson, form_fisicPerson)
+                log = log_db(request, 'Deletou todos os dados de Pessoa Fisica', type='01')
+                log_upd_db(log, updt)
+                fisicPerson.delete()
+                person.id_FisicPerson_fk = None
+            if legalPerson:
+                updt = compair(legalPerson, form_legalPerson)
+                log = log_db(request, 'Deletou todos os dados de Pessoa Juridica', type='01')
+                log_upd_db(log, updt)
+                legalPerson.delete()
+                person.id_LegalPerson_fk = None
+            if foreigner:
+                updt = compair(foreigner, form_foreigner)
+                log = log_db(request, 'Deletou todos os dados de Estrangeiro', type='01')
+                log_upd_db(log, updt)
+                print('\n\n\n passou pelo log de deleção\n\n\n')
+                foreigner.delete()
+                person.id_ForeignPerson_fk = None
+            person.save()
+
+            # Reseta variáveis para reconstrução
+            fisicPerson = None
+            legalPerson = None
+            foreigner = None
+
         if form_address.is_valid():
+            updt = compair(address, form_address)
+            if updt: log_upd_db(log, updt)
             address = form_address.save()
 
         if form_Person.is_valid():
@@ -318,6 +343,14 @@ def update_client(request, id_client):
             # Salva novo tipo de pessoa com endereço atualizado
             if tipo_novo == "Pessoa Fisica" and form_fisicPerson.is_valid():
                 fisicPerson = form_fisicPerson.save(commit=False)
+<<<<<<< Updated upstream
+=======
+                if person.email and person.password: 
+                    updateUser(usuario,person.id_FisicPerson_fk.name, person.email, person.password)
+                    
+                    log_upd_db(log, info_old=f'editou o Usuario {person.id_FisicPerson_fk.name}')
+                fisicPerson.save()
+>>>>>>> Stashed changes
                 person.id_FisicPerson_fk = fisicPerson
                 if person.email and person.password:
                     user = [
@@ -330,6 +363,7 @@ def update_client(request, id_client):
 
             elif tipo_novo == "Pessoa Juridica" and form_legalPerson.is_valid():
                 legalPerson = form_legalPerson.save(commit=False)
+<<<<<<< Updated upstream
                 person.id_LegalPerson_fk = legalPerson
                 if person.email and person.password:
                     user = [
@@ -354,6 +388,24 @@ def update_client(request, id_client):
                 foreigner.save()
                
                 ('cadastru estrangeiro')
+=======
+                if person.email and person.password: 
+                    new_user = updateUser(usuario,person.id_LegalPerson_fk.fantasyName, person.email, person.password)
+
+                    log_upd_db(log, new_user)
+                else:
+                    legalPerson.save()
+                    person.id_LegalPerson_fk = legalPerson
+
+            elif tipo_novo == "Estrangeiro" and form_foreigner.is_valid():
+                foreigner = form_foreigner.save(commit=False)
+                if updateUser(usuario, username=person.id_ForeignPerson_fk.name_foreigner, email=person.email, password=person.password):
+                    new_user=updateUser(usuario, username=person.id_ForeignPerson_fk.name_foreigner, email=person.email, password=person.password)
+                    log_upd_db(log, new_user)
+                foreigner.save()
+                person.id_ForeignPerson_fk = foreigner
+                
+>>>>>>> Stashed changes
         
             person.save()
             messages.success(request, "Cliente atualizado com sucesso.", extra_tags="successClient")
@@ -386,12 +438,28 @@ def delete_client(request, id_client):
     client = get_object_or_404(Person, id=id_client)
     client.isActive = False
     client.save()
+    log = Log.objects.create(
+                user=request.user,
+                date=datetime.now(),
+                action='d',
+                type='01'
+            )
+    if client.id_FisicPerson_fk:log_info = Info_logs.objects.create(log_principal=log, info_old=f'Inativou a Pessoa {client.id_FisicPerson_fk.name}')
+    if client.id_ForeignPerson_fk:log_info = Info_logs.objects.create(log_principal=log, info_old=f'Inativou a Pessoa {client.id_ForeignPerson_fk.name_foreigner}')
+    if client.id_LegalPerson_fk:log_info = Info_logs.objects.create(log_principal=log, info_old=f'Inativou a Pessoa {client.id_LegalPerson_fk.fantasyName}')
+    log.save() ,log_info.save()
     messages.success(request,"Cliente deletado com sucesso.",extra_tags="successClient")
     return redirect('Client')
 
 @login_required
 def get_client(request, id_client):
     person = Person.objects.get(id=id_client)
+    log = Log.objects.create(
+            user=request.user,
+            date=datetime.now(),
+            action='r',
+            type='01'
+        )
     if person.id_FisicPerson_fk:
         client = {
                 'id': person.id,
@@ -406,6 +474,8 @@ def get_client(request, id_client):
                 'CreditLimit': person.creditLimit if person.creditLimit else 'Não Informado',
                 'id_FisicPerson_fk': 1,
                 }
+        log_info = Info_logs.objects.create(log_principal=log, info_old=f'Visualizou a Pessoa {person.id_FisicPerson_fk.name}')
+        
     if person.id_LegalPerson_fk:
         client = {
                 'id': person.id,
@@ -424,7 +494,8 @@ def get_client(request, id_client):
                 'CreditLimit': person.creditLimit if person.creditLimit else 'Não Informado',
                 'id_LegalPerson_fk': 1,
             }
-        
+        log_info = Info_logs.objects.create(log_principal=log, info_old=f'Visualizou a Pessoa {person.id_LegalPerson_fk.fantasyName}')
+               
     if person.id_ForeignPerson_fk:
         client = {
                 'id': person.id,
@@ -437,6 +508,10 @@ def get_client(request, id_client):
                 'CreditLimit': person.creditLimit if person.creditLimit else 'Não Informado',
                 'id_ForeignPerson_fk': 1,
             }
+        log_info = Info_logs.objects.create(log_principal=log, info_old=f'Visualizou a Pessoa {person.id_ForeignPerson_fk.name_foreigner}')
+        
+    
+    log.save() ,log_info.save()
         
     return render(request, 'registry/Client_Get.html', {'client': client})
 
