@@ -36,11 +36,15 @@
         {% block content %}
         <div class='content'>
             <div class="container-fluid justify-content-center align-items-center">
-                <a href="{% url 'venda_list' %}">
-                    <button class="btn btn-voltar mb-4">Voltar</button>
-                </a>    
-                <h4 class="c-adapted mt-5 mb-5">Editar Venda</h4>
-                <form method="post">
+                <div class="col d-flex mb-5 gap-4 mt-5">
+                        <a href="{% url 'venda_list' %}">
+                            <button type="button" class="btn btn-voltar">
+                                <i class="fas fa-arrow-left"></i> 
+                            </button>
+                        </a>    
+                        <h4 class="c-adapted">Editar Venda</h4>
+                </div>
+                <form method="post" id="form">
                     {% csrf_token %}
                 
                     <!-- Formulário de Venda -->
@@ -169,7 +173,6 @@
 
                     <button id="item" type="button" onclick="addItem()" class="btn btn-outline-success mb-5 z-2">Adicionar Item</button>
                     <template id="empty-form-template">
-                            <!-- {{ venda_item_formset.empty_form.as_p }} -->
                             <tr>
                                 <td>
                                     <input type="hidden" name="{{ venda_item_formset.empty_form.prefix }}-id" id="{{venda_item_formset.empty_form.prefix }}-id">
@@ -243,7 +246,24 @@
 
                     <!-- Formas de Pagamento -->
                     <h6 class="mt-5 mb-3">Formas de Pagamento</h6>
+
+                    {{venda_form.apply_credit.label}}
+                    {{venda_form.apply_credit}}
                     
+                    {% if venda_form.apply_credit.value %}
+                        <div id="credit">
+                            {{venda_form.value_apply_credit.label}}
+                            <br>
+                            {{venda_form.value_apply_credit}}
+                        </div>  
+                    {% else %} 
+                        <div id="credit" style="display: none;">
+                            {{venda_form.value_apply_credit.label}}
+                            <br>
+                            {{venda_form.value_apply_credit}}
+                        </div>    
+                    {% endif %}
+
                     {% include 'parcela.html' %}
 
                     {% include 'parcelaUpdate.html' %}
@@ -277,6 +297,40 @@
         <script src="{% static 'js/suggestionsUpdate.js' %}"></script> 
         <script src="{% static 'js/venda_item.js' %}"></script> <!-- pesquisa produtos em vendas-->
         <script src="{% static 'js/error.js' %}"></script>
+        <script>
+            const credit_apply = document.getElementById("id_apply_credit");
+            const credit = document.getElementById("credit");
+            credit_apply.addEventListener("click",()=>{
+                if(credit_apply.onclick == null && credit_apply.checked){
+                credit.style.display = "block";
+                }
+                else{
+                    credit.style.display = "none";
+                }
+            })
+
+            const form = document.getElementById("form");
+            form.addEventListener("submit", function(event) {
+                    const activeCredit = new Set();
+                    const id_apply_credit = document.getElementById("id_apply_credit");
+                    const installment = document.getElementById("installment"); // <-- Faltava definir isso
+        
+                    const elements = installment.querySelectorAll("[id$='activeCredit']");
+                    let has_credit = false;
+                    elements.forEach((element) => {
+                        if (element.checked){
+                            has_credit = true;
+                        }
+                    });
+
+                    if (id_apply_credit.checked && !has_credit) {
+                        alert('Crédito foi selecionado, mas não foi gerado nas parcelas');
+                        event.preventDefault();
+                    }
+                  
+                });
+            
+        </script>
         {% endblock %}     
     </main>
 </body>

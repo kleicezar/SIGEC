@@ -247,11 +247,15 @@
 
                     <!-- Formas de Pagamento -->
                     <h6 class="mt-5 mb-3">Formas de Pagamento</h6>
-                    <div id="credit">
-                        <label for="">Crédito</label>
-                        <input type="number" id="credit_value" name="credit_value" min="0" disabled>
-                        <button type="button" id="button_credit" class="btn bg-adapted" disabled>Aplicar Crédito</button>
+                    {{venda_form.apply_credit.label}}
+                    {{venda_form.apply_credit}}
+
+                    <div id="credit" style="display: none;">
+                        {{venda_form.value_apply_credit.label}}
+                        <!-- <br> -->
+                        {{venda_form.value_apply_credit}}
                     </div>
+                    
                     {% include 'parcela.html' %}
                     
                     <h6 class="mt-5 mb-3">Observações</h6>
@@ -279,6 +283,40 @@
         </div>
         
         <script src="{% static 'js/addItem.js' %}" defer></script>
+        <script>
+            const credit_apply = document.getElementById("id_apply_credit");
+            const credit = document.getElementById("credit");
+            credit_apply.addEventListener("click",()=>{
+                if(credit_apply.onclick == null && credit_apply.checked){
+                credit.style.display = "block";
+                }
+                else{
+                    credit.style.display = "none";
+                }
+            });
+
+            const form = document.getElementById("form");
+            form.addEventListener("submit", function(event) {
+                    const activeCredit = new Set();
+                    const id_apply_credit = document.getElementById("id_apply_credit");
+                    const installment = document.getElementById("installment"); // <-- Faltava definir isso
+        
+                    const elements = installment.querySelectorAll("[id$='activeCredit']");
+                    let has_credit = false;
+                    elements.forEach((element) => {
+                        if (element.checked){
+                            has_credit = true;
+                        }
+                    });
+
+                    if (id_apply_credit.checked && !has_credit) {
+                        alert('Crédito foi selecionado, mas não foi gerado nas parcelas');
+                        event.preventDefault();
+                    }
+                  
+                });
+            
+        </script>
         <!-- <script>
             let botaoClicado = false;
 
@@ -295,7 +333,7 @@
             });
 
         </script> -->
-        <script src="{% static 'js/alertInstallments.js' %}"></script>
+        <!-- <script src="{% static 'js/alertInstallments.js' %}"></script> -->
         <script src="{% static 'js/suggestions.js' %}"></script><!-- pesquisa clientes -->
         <!-- <script src="{% static 'js/clientSearch.js' %}"></script>  pesquisa clientes -->
         <script src="{% static 'js/venda_item.js' %}"></script> <!-- pesquisa produtos em vendas-->

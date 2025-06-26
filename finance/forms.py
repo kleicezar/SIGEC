@@ -96,7 +96,7 @@ class AccountsForm(BaseAccountsForm):
             }),
             'numberOfInstallments': forms.NumberInput(attrs={
                 'class': 'form-control row',
-                'min': 0
+                'min': 1
             }),
             'installment_Range': forms.Select(attrs={
                 'class': 'form-control row',
@@ -158,14 +158,16 @@ class BasePaymentMethodAccountsForm(forms.ModelForm):
         widget=forms.Select(
             attrs=
             {'class':'form-control row'}
-        )
+        ),
+        initial=PaymentMethod.objects.order_by('id').first()
     )   
     paymentPurpose = forms.ChoiceField(
         required=False,
         choices=PaymentMethod_Accounts.PAYMENT_PURPOSE_CHOICES,
         widget=forms.Select(
             attrs={
-                'class':'form-control row'
+                'class':'form-control row',
+                'readonly':'readonly'
             }
         )
     )
@@ -256,7 +258,6 @@ class PaymentMethodAccountsForm(BasePaymentMethodAccountsForm):
 class PaymentMethodAccountsPurchaseFormSet(BaseInlineFormSet):
     # class Meta(BasePaymentMethodAccountsForm.Meta):
     def clean(self):
-        print("\n\n🚨 LIMPEZA SENDO EXECUTADA 🚨\n\n")
         cleaned_data = super().clean()
 
         payment_formset = self.new_payment_formset if self.new_form_flag else self.old_payment_formset
@@ -270,7 +271,6 @@ class PaymentMethodAccountsPurchaseFormSet(BaseInlineFormSet):
 
         purposes = [form.cleaned_data.get('paymentPurpose') for form in payment_forms]
 
-        # Valida cada flag com os propósitos
         if cleaned_data.get('rmnExists') and 'Romaneio' not in purposes:
             print("Marcado Romaneio")
             raise forms.ValidationError("Você marcou 'Romaneio' como existente, mas nenhum pagamento com essa finalidade foi informado.")

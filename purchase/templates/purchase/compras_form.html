@@ -478,7 +478,6 @@
 
                 form.addEventListener("submit", function(event) {
                     const othersPaymentPurpose = new Set();
-                    console.log('opa neymar');
 
                     const id_freight_type = document.getElementById("id_freight_type");
                     const id_rmnExists = document.getElementById("id_rmnExists");
@@ -498,7 +497,6 @@
                     const hasRMN = othersPaymentPurpose.has('Romaneio');
                     const hasTax = othersPaymentPurpose.has('Imposto');
 
-                    // CORRIGIDO: comparar o valor do SELECT (não o elemento)
                     if (id_freight_type.value === "FOB" && !hasFreight) {
                         alert('Frete foi selecionado, mas não foi gerado nas parcelas');
                         event.preventDefault();

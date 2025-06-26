@@ -2,6 +2,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Obter o valor do campo
     let id_client = document.getElementById('id_pessoa')
     let id_supplier = document.getElementById('id_fornecedor');
+
+    const credit = document.getElementById('credit');
+    const credit_value = document.getElementById("id_value_apply_credit");
+    const checkbox_credit = document.getElementById('id_apply_credit');
+
     if (id_client){
         var inputField = id_client.closest('td').querySelector('.idSearch');
         const query = id_client.value;
@@ -14,10 +19,30 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .then(data => {
-            console.log(data);
             data.clientes.forEach(cliente=>{
-                inputField.value = `${cliente.id} - ${cliente.name}`
-            })
+                inputField.value = `${cliente.id} - ${cliente.name}`;
+                if (credit){
+                    const query = cliente.id;
+                    fetch(`/credit_total/?query=${encodeURIComponent(query)}`)
+                    .then(response=>{
+                        if(response.ok && response.headers.get('Content-Type').includes('application/json')){
+                            return response.json();
+                        } else{
+                            throw new Error('Resposta não é JSON')
+                        }
+                    })
+                    .then(data=>{
+                        console.log("oiii")
+                        checkbox_credit.onclick = null;
+                        credit_value.disabled = false;
+                        // credit_value.value = data.credit_total;
+                        credit_value.max = data.credit_total;
+                        credit_value.min = 0;
+                    })
+                    .catch(error => console.error("Erro ao buscar vendas:",error));
+                }
+            });
+            
         });
     }
     else{

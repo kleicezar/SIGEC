@@ -158,15 +158,23 @@ function generateInstallments(){
     let credito_aplicado = false;
 
     if (credit){  
-        const button_credit = document.getElementById("button_credit");
+        const button_credit = document.getElementById("id_apply_credit");
         button_credit.addEventListener("click",()=>{
-        credito_aplicado = !credito_aplicado;
-        if (credito_aplicado){
-            button_credit.textContent = "Desaplicar Crédito";
+        console.log('estou em crédito ou não');
+        console.log('fazuelly')
+        if(button_credit.onclick == null){
+            if(button_credit.checked){
+                credito_aplicado = true;
+            }
+            else{
+                credito_aplicado = false;
+            }
         }
         else{
-            button_credit.textContent = "Aplica Crédito";
-        }});      
+            credito_aplicado = false;
+        }
+       
+    });      
     }
 
     const header = document.getElementById('installment');
@@ -222,7 +230,7 @@ function generateInstallments(){
         }
         let valor_credito = 0;
         let numberOfInstallments = parseInt(document.getElementById("id_numberOfInstallments").value); // Número de parcelas
-        const credit_value = document.getElementById("credit_value")
+        const credit_value = document.getElementById("id_value_apply_credit")
 
         if(credito_aplicado){
             valor_credito = credit_value.value;

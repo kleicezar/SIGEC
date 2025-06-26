@@ -1,3 +1,27 @@
+document.addEventListener('DOMContentLoaded',()=>{
+    const idSearch = document.getElementById("idSearch");
+    const suggestions = document.getElementById("suggestions");
+
+    if (!idSearch || !suggestions) return;
+    // PESSOA
+    window.addEventListener("click", function (event) {
+        if (!suggestions.contains(event.target) && event.target !== idSearch && suggestions.style.display != "none") {
+            suggestions.style.display = "none";
+            idSearch.value = "";
+        }
+    });
+
+    window.addEventListener("keydown", function (event) {
+        if (event.key === "Tab" && suggestions.style.display != "none") {
+            suggestions.style.display = "none";
+            idSearch.value = "";
+        }
+    });
+
+    // PRODUTOS
+    attachSuggestionListeners();
+});
+
 const emptyFormTemplate = document.getElementById('empty-form-template');
 const emptyServiceTemplate = document.getElementById("empty-service-template");
 const emptyPaymentMethodTemplate = document.getElementById('empty-payment-method-form');
@@ -18,6 +42,8 @@ function addItem() {
 
         itens.appendChild(newForm);
     }
+    // PRODUTO
+    attachSuggestionListeners();
 }
 
 function addItemService(){
@@ -33,6 +59,8 @@ function addItemService(){
         itensService.appendChild(newForm);
         
     }
+    // SERVICOS
+    attachSuggestionListeners();
 }
 
 function clone(formCountElem,template){
@@ -91,6 +119,7 @@ function removeItem(button){
     const itensContainerProduct = document.getElementById("itens-container");
     const itemForms = itensContainerProduct.querySelectorAll("table tbody tr");
     atualizarTotalProduto(itemForms);
+    attachSuggestionListeners();
 }
 
 function updateId(deleteButton, itensForms) {
@@ -291,4 +320,33 @@ function atualizarTotal(itemForms) {
 
 
     totalValue.value = Number(totalValueField.value) + Number(totalValueInput.value);
+}
+
+function attachSuggestionListeners() {
+    const suggestionsProducts = document.querySelectorAll(".suggetions");
+    suggestionsProducts.forEach((suggestionProduct) => {
+        const td = suggestionProduct.closest("td");
+        if (!td) return;
+        const input = td.querySelector('input[type="text"]');
+
+        // Evita múltiplos listeners
+        if (input.dataset.listenerAttached === "true") return;
+        input.dataset.listenerAttached = "true";
+
+        window.addEventListener("click", function(event){
+            const isVisible = window.getComputedStyle(suggestionProduct).display !== "none";
+            if (isVisible && !suggestionProduct.contains(event.target)) {
+                suggestionProduct.style.display = "none";
+                input.value = "";
+            }
+        });
+
+        input.addEventListener("keydown", function (event) {
+            const isVisible = window.getComputedStyle(suggestionProduct).display !== "none";
+            if (event.key === "Tab" && isVisible) {
+                suggestionProduct.style.display = "none";
+                input.value = "";
+            }
+        });
+    });
 }

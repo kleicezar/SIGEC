@@ -2,12 +2,30 @@ from django import forms
 from .models import *
 from django.core.validators import MaxValueValidator, MinValueValidator
 class VendaForm(forms.ModelForm):
+    apply_credit = forms.BooleanField(
+        required=False,
+        label='Aplicar Crédito',
+        widget=forms.CheckboxInput(attrs={
+            'onclick':'return false;'
+        })
+    )
     class Meta:
         model = Venda
-        fields = ['data_da_venda', 'pessoa', 'situacao','observacao_pessoas', 'observacao_sistema', 'total_value', 'product_total', 'discount_total']
+        fields = [
+            'data_da_venda', 
+            'pessoa', 
+            'situacao',
+            'observacao_pessoas', 
+            'observacao_sistema',
+            'total_value',
+            'product_total', 
+            'discount_total',
+            'apply_credit',
+            'value_apply_credit'
+        ]
         widgets = {
             'pessoa':forms.TextInput(attrs={
-                'class':'form-control  row-xl-5 mb-3 mt-3',
+                'class':'form-control row-xl-5 mb-3 mt-3',
                 'required':'required'
             }),
             'data_da_venda':forms.DateTimeInput(attrs={
@@ -35,6 +53,13 @@ class VendaForm(forms.ModelForm):
                 'class':'form-control mb-3 mt-3 row-5',
                 'readonly': 'readonly',
             })
+            # 'apply_credit':forms.CheckboxInput(attrs={
+            #     'class':'form-check-input'
+            # }),
+            # 'value_apply_credit':forms.NumberInput(attrs={
+            #     'class':'form-control'
+            # })
+
         }
 
     def __init__(self, *args, **kwargs):
@@ -43,7 +68,7 @@ class VendaForm(forms.ModelForm):
             # self.fields['data_da_venda'].initial = self.instance.data_da_venda.strftime('%Y-%m-%d %H:%M')
             self.fields['data_da_venda'].widget.attrs['readonly'] = True
             self.fields['pessoa'].queryset = Person.objects.filter(isClient=True)
-
+    
 
 class VendaFormUpdate(VendaForm):
     class Meta:

@@ -85,7 +85,6 @@ document.addEventListener("DOMContentLoaded", function () {
             notificationExists = true;
         }
         data.notifications.forEach(notification=>{
-            console.log("entro")
             const newNotification = document.createElement("div");
             const dateFormated = new Date(notification.date).toLocaleDateString('pt-BR');
             newNotification.innerHTML = `${dateFormated}: Pagamento ${notification.idPayment} precisa ser pago em ${notification.remainsDays} dias!`

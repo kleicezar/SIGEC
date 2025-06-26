@@ -1,3 +1,4 @@
+
 function showSuggetions(input){
     let container_td = input.closest('td');
     let suggetionsBox = container_td.querySelector('.suggetions');
@@ -6,15 +7,14 @@ function showSuggetions(input){
     suggetionsBox.style.display= "block";
 
     const credit = document.getElementById('credit');
-    const credit_value = document.getElementById("credit_value");
-    const button_credit = document.getElementById('button_credit');
+    const credit_value = document.getElementById("id_value_apply_credit");
+    const checkbox_credit = document.getElementById('id_apply_credit');
     if(input.value.length >=1 && input.value.trim() !==""){
         const query = input.value;
 
         if(credit){
             credit_value.value = 0;
-            credit_value.disabled = true;
-            button_credit.disabled = true;
+            credit.style.display = "none";
         }
 
         if (id_client){
@@ -48,8 +48,7 @@ function showSuggetions(input){
                                     }
                                 })
                                 .then(data=>{
-                                    
-                                    button_credit.disabled = false;
+                                    checkbox_credit.onclick = null;
                                     credit_value.disabled = false;
                                     credit_value.value = data.credit_total;
                                     credit_value.max = data.credit_total;
@@ -90,6 +89,10 @@ function showSuggetions(input){
     }
     else{
         suggetionsBox.style.display = "none";
+        if(credit){
+            credit_value.value = 0;
+            credit.style.display = "none";
+        }
     }
 }
 
@@ -99,6 +102,7 @@ function showSuggetionsProducts(input){
     let row = input.closest('tr');
     let container_td = input.closest('td');
     let price = row.cells[2].querySelector('input');
+    let discount = row.cells[3].querySelector('input');
     let suggetionsBox = container_td.querySelector('.suggetions');
     let id_product = container_td.querySelector("[name$=product]") || container_td.querySelector("[name$=produto]");
     suggetionsBox.style.display= "block";
@@ -124,6 +128,7 @@ function showSuggetionsProducts(input){
                             input.value = `${produto.product_code} - ${produto.description}`;
                             price.value = produto.selling_price;
                             suggetionsBox.style.display = "none";
+                            discount.value = 0;
                     }
                 });
             });

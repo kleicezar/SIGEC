@@ -13,13 +13,16 @@ class Venda(models.Model):
     total_value = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Total", blank=True, null=True)
     product_total = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Total de Produtos")
     discount_total = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Total de Descontos")
-     
-
+    apply_credit = models.BooleanField(default=False,verbose_name='Crédito Aplicado')
+    value_apply_credit = models.DecimalField(max_digits=10,decimal_places=2,verbose_name='Valor do Crédito Aplicado',null=True,blank=True,default=0)
 
     def __str__(self):
         return f"Venda {self.id} - {self.pessoa}"
     
-
+    def save(self, *args, **kwargs):
+        if not self.apply_credit:
+            self.value_apply_credit = 0.00
+        super().save(*args, **kwargs)
            
 
 class VendaItem(models.Model):

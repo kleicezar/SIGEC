@@ -127,11 +127,8 @@ def venda_create(request):
             total_payment = 0
             
             valor_usado = request.POST.get('credit_value')
-            print('credito utilizado',valor_usado)
             for form in PaymentMethod_Accounts_FormSet: 
-                # print(form)
                 if form.cleaned_data:
-                    print("entro entro entro")
                     form.acc = False
                     valor = form.cleaned_data['value']
                     total_payment+=valor
@@ -159,8 +156,6 @@ def venda_create(request):
                                 credito.save()
                                 
             if(total_payment == venda_form.cleaned_data['total_value']):  
-                # pessoa.creditLimit = creditLimitAtual
-                # pessoa.save()
 
                 venda_form.save()
                 venda_item_formset.save()
@@ -221,6 +216,7 @@ def venda_update(request, pk):
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST,instance=venda,prefix="paymentmethod_accounts_set")
         Older_PaymentMethod_Accounts_FormSet = OlderPaymentMethodAccountsFormSet(request.POST,instance=venda,prefix="older_paymentmethod_accounts_set")
         form_Accounts = AccountsForm(request.POST,instance=venda)
+
         # # APAGANDO ITENS QUE NAO FORAM SUBMETIDOS NO FORMS (FORAM DELETADOS VISUALMENTE) - VENDA ITENS
         venda_item = VendaItem.objects.filter(venda=venda)
         ids_existentes_venda_itens = set(venda_item.values_list('id',flat=True))
@@ -232,8 +228,6 @@ def venda_update(request, pk):
         
         ids_para_excluir_venda_itens = ids_existentes_venda_itens - ids_enviados_venda_itens
         VendaItem.objects.filter(id__in=ids_para_excluir_venda_itens).delete()
-        print('ids para excluir')
-        print(ids_para_excluir_venda_itens)
 
         if venda_form.is_valid() and venda_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid() and Older_PaymentMethod_Accounts_FormSet.is_valid():
             venda_form.save(commit=False)
@@ -248,7 +242,7 @@ def venda_update(request, pk):
                     itens_para_deletar.append(form.instance)
 
             pessoa = venda_form.cleaned_data["pessoa"]
-            credit = Credit.objects.get(person = pessoa).latest()
+            credit = Credit.objects.filter(person=pessoa).order_by('-id').first()
             value_payments = PaymentMethod_Accounts.objects.filter(venda = venda.id,activeCredit=True)
 
             for value_payment in value_payments:
@@ -256,17 +250,16 @@ def venda_update(request, pk):
 
             credit.save()
             total_payment = 0
-            total_payment_with_credit = 0
             
             onlyOldPayments = False 
             valor_usado = request.POST.get('credit_value')
-            try:
+            
+            value_new_form = request.POST.get('new_form','').lower()
+            has_new_form = value_new_form in ['true', '1', 'on', 'yes']
+
+            if has_new_form:
+                onlyOldPayments = False
                 for form in PaymentMethod_Accounts_FormSet:
-                    name_payment = form.cleaned_data["forma_pagamento"]
-                    # paymentWithCredit = PaymentMethod.objects.filter(
-                    #     name_paymentMethod = name_payment,creditPermission=True
-                    # )
-                    
                     if form.cleaned_data:
                         valor = form.cleaned_data['value']
                         if not form.cleaned_data["DELETE"] :
@@ -277,7 +270,7 @@ def venda_update(request, pk):
 
                             for credito in creditos:
                                 if restante_para_descontar <= 0:
-                                    break  # nada mais a descontar
+                                    break
 
                                 if credito.credit_value >= restante_para_descontar:
                                     credito.credit_value -= restante_para_descontar
@@ -287,14 +280,9 @@ def venda_update(request, pk):
                                     restante_para_descontar -= credito.credit_value
                                     credito.credit_value = Decimal('0')
                                     credito.save()
-            except TypeError:
+            else:
                 onlyOldPayments = True
                 for form in Older_PaymentMethod_Accounts_FormSet:
-                    name_payment = form.cleaned_data["forma_pagamento"]
-                    # paymentWithCredit = PaymentMethod.objects.filter(
-                    #     name_paymentMethod = name_payment,creditPermission=True
-                    # )
-                    
                     if form.cleaned_data:
                         valor = form.cleaned_data['value']
                         if not form.cleaned_data["DELETE"] :
@@ -316,19 +304,11 @@ def venda_update(request, pk):
                                     restante_para_descontar -= credito.credit_value
                                     credito.credit_value = Decimal('0')
                                     credito.save()
-
-            creditLimit = pessoa.creditLimit
-            creditLimitAtual = creditLimit
-            creditLimitAtual -= total_payment_with_credit
           
 
-            if (total_payment == venda_form.cleaned_data['total_value']) and( (creditLimitAtual == creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual>=0) ):
-            # PaymentMethod_Accounts_FormSet.save_m2m()
-                pessoa.creditLimit = creditLimitAtual
-                pessoa.save()
-           
-                venda_form.save()
+            if (total_payment == venda_form.cleaned_data['total_value']):
 
+                venda_form.save()
                 for instance in venda_item_instances:
                     instance.save() 
 
@@ -356,7 +336,6 @@ def venda_update(request, pk):
                         PaymentMethod_Accounts_FormSet.save() 
             
                     else:
-                    # FALTA VERIFICAR ESSA
                     # atualizar os formulários existentes
                         for old_form, new_form in zip(Older_PaymentMethod_Accounts_FormSet, PaymentMethod_Accounts_FormSet):
                             old_instance = old_form.instance
@@ -382,11 +361,9 @@ def venda_update(request, pk):
             
             if total_payment != venda_form.cleaned_data['total_value']:
                 messages.warning(request,"Ação cancelada! O valor acumalado dos pagamentos é menor do que o valor acumulado dos prudutos.",extra_tags='vendaupdate_page')
-            
-            if ((creditLimitAtual != creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual<0)):
-                messages.warning(request,"Ação Cancelada! O valor acumulado dos pagamentos é menor que o limite de crédito. ",extra_tags='vendaupdate_page')
 
             return redirect('venda_update',pk=pk)
+        
         if not venda_form.is_valid():
             print('Erros no venda_form: ',venda_form.errors)
 
@@ -398,10 +375,7 @@ def venda_update(request, pk):
         
         if not Older_PaymentMethod_Accounts_FormSet.is_valid():
             print("Erros no Older_PaymentMethod_Accounts_Formset: ", Older_PaymentMethod_Accounts_FormSet.errors)
-       
-        # return redirect('venda_list')
- 
-        
+            
     form_Accounts = AccountsForm(instance=venda)
     Older_PaymentMethod_Accounts_FormSet = OlderPaymentMethodAccountsFormSet(queryset=venda.paymentmethod_accounts_set.all(),instance=venda,prefix='older_paymentmethod_accounts_set')
     PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
@@ -420,10 +394,6 @@ def venda_update(request, pk):
     form_Accounts.initial["date_init"] = data_modificada
     form_Accounts.initial["totalValue"] = venda_form.initial['total_value']
     form_Accounts.initial["numberOfInstallments"] = count_payment 
-
-    # if 'HTTP_REFERER' in request.META:
-    #     request.session['previous_page'] = request.META['HTTP_REFERER']
-
 
     context = {
             'form_Accounts': form_Accounts,
