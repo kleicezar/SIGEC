@@ -212,8 +212,11 @@ def compair(obj_antigo, obj_novo):
     #     pass
 
     # Detecta o tipo do segundo argumento
-    if isinstance(obj_novo, forms.ModelForm):
-        novo_dict = obj_novo.cleaned_data           # 👍
+    if isinstance(obj_novo, forms.ModelForm) :
+        if obj_novo.is_valid():
+            novo_dict = obj_novo.cleaned_data
+        else:
+            raise ValueError(f"Formulário inválido: {obj_novo.errors}")
     else:
         novo_dict = model_to_dict(obj_novo)         # instância do modelo
 

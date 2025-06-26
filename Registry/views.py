@@ -307,21 +307,23 @@ def update_client(request, id_client):
         # Detecta troca de tipo e deleta os registros antigos
         if selected_form != tipo_novo:
             if fisicPerson:
-                updt = compair(fisicPerson, form_fisicPerson)
+                # updt = compair(fisicPerson, form_fisicPerson)
                 log = log_db(request, 'Deletou todos os dados de Pessoa Fisica', type='01')
-                log_upd_db(log, updt)
+                # log_upd_db(log, updt)
                 fisicPerson.delete()
                 person.id_FisicPerson_fk = None
             if legalPerson:
-                updt = compair(legalPerson, form_legalPerson)
+                # updt = compair(legalPerson, form_legalPerson)
                 log = log_db(request, 'Deletou todos os dados de Pessoa Juridica', type='01')
-                log_upd_db(log, updt)
+                # log_upd_db(log, updt)
                 legalPerson.delete()
                 person.id_LegalPerson_fk = None
             if foreigner:
-                updt = compair(foreigner, form_foreigner)
+                print("POST recebido:", request.POST)
+
+                # updt = compair(foreigner, form_foreigner)
                 log = log_db(request, 'Deletou todos os dados de Estrangeiro', type='01')
-                log_upd_db(log, updt)
+                # log_upd_db(log, updt)
                 print('\n\n\n passou pelo log de deleção\n\n\n')
                 foreigner.delete()
                 person.id_ForeignPerson_fk = None
@@ -395,7 +397,7 @@ def update_client(request, id_client):
 
 @login_required
 @transaction.atomic
-def delete_client(request, id_client):
+def delete_client(request, id_client): #(FUNCIONANDO)
     # Recupera o cliente com o id fornecido
     client = get_object_or_404(Person, id=id_client)
     client.isActive = False
@@ -406,10 +408,12 @@ def delete_client(request, id_client):
                 action='d',
                 type='01'
             )
-    if client.id_FisicPerson_fk:log_info = Info_logs.objects.create(log_principal=log, info_old=f'Inativou a Pessoa {client.id_FisicPerson_fk.name}')
-    if client.id_ForeignPerson_fk:log_info = Info_logs.objects.create(log_principal=log, info_old=f'Inativou a Pessoa {client.id_ForeignPerson_fk.name_foreigner}')
-    if client.id_LegalPerson_fk:log_info = Info_logs.objects.create(log_principal=log, info_old=f'Inativou a Pessoa {client.id_LegalPerson_fk.fantasyName}')
-    log.save() ,log_info.save()
+    if client.id_FisicPerson_fk:
+        Info_logs.objects.create(log_principal=log, info_old=f'Inativou a Pessoa {client.id_FisicPerson_fk.name}')
+    if client.id_ForeignPerson_fk:
+        Info_logs.objects.create(log_principal=log, info_old=f'Inativou a Pessoa {client.id_ForeignPerson_fk.name_foreigner}')
+    if client.id_LegalPerson_fk:
+        Info_logs.objects.create(log_principal=log, info_old=f'Inativou a Pessoa {client.id_LegalPerson_fk.fantasyName}')
     messages.success(request,"Cliente deletado com sucesso.",extra_tags="successClient")
     return redirect('Client')
 
