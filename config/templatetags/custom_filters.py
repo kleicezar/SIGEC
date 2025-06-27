@@ -118,3 +118,12 @@ def cont_type(value):
 
     }
     return NOME_AMIGAVEL_CAMPOS.get(str(value), f"Desconhecido (ID {value})")  # Retorna nome amigável, ou o próprio valor se não encontrar
+
+@register.filter(name='action')
+def cont_type(value):
+    NOME_AMIGAVEL_CAMPOS = {
+        '0' : 'Criou',
+        1 : 'Editou',
+        2 : 'Deletou',
+    }
+    return NOME_AMIGAVEL_CAMPOS.get(str(value), f"Desconhecido (ID {value})")  # Retorna nome amigável, ou o próprio valor se não encontrar

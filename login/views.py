@@ -301,7 +301,7 @@ def log_entry(request):
         page_obj = Info_logs.objects.all()
     
     context = {
-    'page_obj': page_obj,
+    'page_obj': page_obj, 
     }
     return render(request, 'login/log_entry.html',context)
 
@@ -332,11 +332,11 @@ def log(request):
 
 @login_required
 def log_detailed(request, log_id):
-    page_obj = LogEntry.objects.filter(id=log_id)
+    page_obj = LogEntry.objects.get(id=log_id)
     context = {
     'page_obj': page_obj,
     }
-    return render(request, 'login/log_entry.html',context)
+    return render(request, 'login/log_detailed.html',context)
 
 @login_required
 def log_service(request):
