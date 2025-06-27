@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const id_plannedAccount = document.getElementById("id_plannedAccount");
     if (id_plannedAccount){
         if (id_plannedAccount.checked){
-            console.log('entrei aqui na verdade');
             const date_init = document.getElementById("id_date_init");
             date_init.id = "date_init_planned_account";
             generateInstallmentsPlannedAccount();
@@ -85,11 +84,9 @@ function generateInstallmentsPlannedAccount(){
         const totalValue = parseFloat(document.getElementById("id_totalValue").value); // Valor de cada parcela
         const numberOfInstallments = parseInt(document.getElementById("id_numberOfInstallments").value); // Número de parcelas
 
-        let fragmento = document.createDocumentFragment()
+        let fragmento = document.createDocumentFragment();
         const valueOfinstallments = compair(numberOfInstallments, totalValue);
         const template = document.getElementById('empty-payment-method-form');
-        let cont=0;
-        let counter2 = 0;
         for (let index = 0; index < installmentRange.value; index++) { 
             let parcela = document.createElement('tr')                  // linha
             parcela.id = `payment-${index + 1}`;
@@ -97,20 +94,19 @@ function generateInstallmentsPlannedAccount(){
             let row_expirationDate = document.createElement('td')       // coluna
             let row_mounths = document.createElement('td')                 // coluna
             let row_value = document.createElement('td')      
-            let row_id = document.createElement("td");          // coluna     
-            let row_DELETE = document.createElement('td')                // coluna     
+            let row_id = document.createElement("td");                  // coluna                    
             let clone = template.content.cloneNode(true);               // Clonando o template 
             
             
             let counter = 0;
-           
+            let counter2 = 0;
             clone.querySelectorAll("input, select").forEach(async (input) => { // interando sobre o formulario
                 input.name = input.name.replace("0", index  );
                 input.id = input.id.replace("0", index  );
                
 
-                if (input.tagName === "SELECT") {
-                    row_payment_Method.appendChild(input)
+                if (input.name.includes("-forma_pagamento")) {
+                    row_payment_Method.appendChild(input);
                     parcela.appendChild(row_payment_Method)
                 }else if (input.name.includes("-expirationDate")) {
                     // Calcula a data da parcela
@@ -160,8 +156,6 @@ function generateInstallments(){
     if (credit){  
         const button_credit = document.getElementById("id_apply_credit");
         button_credit.addEventListener("click",()=>{
-        console.log('estou em crédito ou não');
-        console.log('fazuelly')
         if(button_credit.onclick == null){
             if(button_credit.checked){
                 credito_aplicado = true;
