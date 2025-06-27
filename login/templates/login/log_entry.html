@@ -1,5 +1,6 @@
 {% extends 'login/menu.html' %}
 {% load static %}
+{% load custom_filters %}
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>  
@@ -41,18 +42,32 @@
                     <tr>
                         <th>ID</th>
                         <th>Atividade Realizada</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody id="results">
                 {% for log in page_obj %}
                 <tr>
-                    <td>{{ log.log_principal.id }}</td>
-                    {% if page_obj.info_now %}
+                    <td>{{ log.id }}</td>
+                    
+                    {% if log.action == 0 %}
+                        <td>O Usuario {{ log.actor }} Criou os registros de {{ log.content_type_id|cont_type  }}as {{ log.timestamp|date:"H:i:s \d\o \d\i\a d/m/Y" }} usando o IP {{ log.remote_addr}}</td>
 
-                    <td>O Usuario {{ log.log_principal.user }} editou o campo {{ log.field }} {{ log.info_old }} para {{ log.info_now }} as {{ log.log_principal.date|date:"H:i:s \d\i\a d/m/Y" }}</td>
+                    {% elif log.action == 1 %}
+                        <td>O Usuario {{ log.actor }} Editou os registros de {{ log.content_type_id|cont_type  }}as {{ log.timestamp|date:"H:i:s \d\o \d\i\a d/m/Y" }} usando o IP {{ log.remote_addr}}</td>
 
+                    {% elif log.action == 2 %}
+                        <td>O Usuario {{ log.actor }} Deletou os registros de {{ log.content_type_id|cont_type  }} as {{ log.timestamp|date:"H:i:s \d\o \d\i\a d/m/Y" }} usando o IP {{ log.remote_addr}}</td>
                     {% endif %}
-                    <td>O Usuario {{ log.log_principal.user }} {{ log.info_old }} as {{ log.log_principal.date|date:"H:i:s \d\i\a d/m/Y" }}</td>
+                    <td>
+                        <form action="{% url 'log_detailed' log_id=log.id %}" method="GET" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: #117027;color: white;">Visualizar</button>
+                        </form>
+                    </td>
+                        
+                    
+                    
                 </tr>
                 {% endfor %}
                 

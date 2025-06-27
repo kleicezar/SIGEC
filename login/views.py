@@ -17,6 +17,8 @@ from datetime import date, timedelta
 from django.db import transaction
 from django.forms.models import model_to_dict
 from django import forms
+from auditlog.models import LogEntry
+from django.contrib.contenttypes.models import ContentType
 import os
 import json
 import glob
@@ -291,23 +293,6 @@ def index(request):
 
 @login_required
 def log_entry(request):
-    
-    # # Pega todos os arquivos da pasta (ignora subpastas)
-    # arquivos = glob.glob(os.path.join(settings.BASE_DIR,'login','log','log_entrada', '*'))
-
-    # # Filtra apenas arquivos (caso tenha pastas)
-    # arquivos = [f for f in arquivos if os.path.isfile(f)]
-    # logs = {} 
-    # if arquivos:
-    #     ultimo_arquivo = max(arquivos, key=os.path.getctime)
-    #     print("Último arquivo criado:", os.path.basename(ultimo_arquivo))
-
-    #     with open(ultimo_arquivo, 'r', encoding='utf-8') as arquivo_json:
-    #         logs = json.load(arquivo_json)
-    # else:
-    #     print("Nenhum arquivo encontrado.")
-
-    # page_obj = page(request,logs)
     terms = "alguma coisa"
     if request.method == "POST":
         page_obj = Info_logs.objects.filter(user__icontains=terms)
@@ -321,44 +306,33 @@ def log_entry(request):
     return render(request, 'login/log_entry.html',context)
 
 @login_required
-def log_purchase(request):
+def log(request):
+    terms = ""
+    if request.method == "POST":
+        page_obj = LogEntry.objects.filter(user__icontains=terms)
+        pass
+    else:
+        page_obj = LogEntry.objects.all()
     
-    # Pega todos os arquivos da pasta (ignora subpastas)
-    arquivos = glob.glob(os.path.join(settings.BASE_DIR,'login','log','log_compras', '*'))
-
-    # Filtra apenas arquivos (caso tenha pastas)
-    arquivos = [f for f in arquivos if os.path.isfile(f)]
-    logs = {} 
-    if arquivos:
-        ultimo_arquivo = max(arquivos, key=os.path.getctime)
-
-        with open(ultimo_arquivo, 'r', encoding='utf-8') as arquivo_json:
-            logs = json.load(arquivo_json)
-
-    page_obj = page(request,logs)
+    paginator = Paginator(page_obj, 20)  # 20 itens por página
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+    for log in LogEntry.objects.all():
+        content_type = ContentType.objects.get(id=log.content_type_id)
+        print(content_type.model)         # Ex: "cliente"
+        print(content_type.app_label)    # Ex: "meu_app"
+        print(content_type.model_class())  # Ex: <class 'meu_app.models.Cliente'>
+            
+    # page_obj = page(request,page_obj)
     
     context = {
-    'page_obj': page_obj,
+    'page_obj': page,
     }
     return render(request, 'login/log_entry.html',context)
 
 @login_required
-def log_sale(request):
-    
-    # Pega todos os arquivos da pasta (ignora subpastas)
-    arquivos = glob.glob(os.path.join(settings.BASE_DIR,'login','log','log_vendas', '*'))
-
-    # Filtra apenas arquivos (caso tenha pastas)
-    arquivos = [f for f in arquivos if os.path.isfile(f)]
-    logs = {} 
-    if arquivos:
-        ultimo_arquivo = max(arquivos, key=os.path.getctime)
-
-        with open(ultimo_arquivo, 'r', encoding='utf-8') as arquivo_json:
-            logs = json.load(arquivo_json)
-
-    page_obj = page(request,logs)
-    
+def log_detailed(request, log_id):
+    page_obj = LogEntry.objects.filter(id=log_id)
     context = {
     'page_obj': page_obj,
     }

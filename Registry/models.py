@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from auditlog.registry import auditlog
+from functools import partial
 
 class Address(models.Model):
     cep = models.CharField('CEP', max_length=10)
@@ -23,14 +25,14 @@ class FisicPerson(models.Model):
 
     def __str__(self):
         return self.name
-    
+
 class ForeignPerson(models.Model):
     name_foreigner = models.CharField('Nome', max_length=100)
     num_foreigner = models.CharField('Numero do Documento', max_length=100)
 
     def __str__(self):
         return self.name_foreigner
-    
+
 class LegalPerson(models.Model):
     fantasyName = models.CharField('Nome Fantasia', max_length=100)
     cnpj = models.CharField('CNPJ', max_length=100)
@@ -84,3 +86,23 @@ class Credit(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE, verbose_name="pessoa_creditada")
     credit_data = models.DateTimeField(verbose_name='Data do Crédito')
     credit_value = models.IntegerField(default=0)
+
+def custom_field_formatter(field_name, old_value, new_value, nome_amigavel_map):
+    """
+    Função personalizada para renomear atributos no campo 'changes',
+    recebendo o mapa de nomes amigáveis.
+    """
+    formatted_field_name = nome_amigavel_map.get(field_name, field_name)
+
+    if field_name == 'preco_venda':
+        old_value = f"R$ {old_value:.2f}" if old_value is not None else old_value
+        new_value = f"R$ {new_value:.2f}" if new_value is not None else new_value
+    
+    return formatted_field_name, old_value, new_value
+
+auditlog.register(Address)
+auditlog.register(FisicPerson)
+auditlog.register(ForeignPerson)
+auditlog.register(LegalPerson)
+auditlog.register(Person)
+auditlog.register(Credit)
