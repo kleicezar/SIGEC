@@ -6,7 +6,7 @@ from purchase.models import Product
 
     
 class Vendaservice(models.Model):
-    pessoa = models.ForeignKey(Person,on_delete=models.CASCADE,verbose_name="Pessoa",related_name="vendaservice")
+    pessoa = models.ForeignKey(Person,on_delete=models.CASCADE,verbose_name="Pessoa")
     data_da_venda = models.DateTimeField(verbose_name="Data da Venda" )
     observacao_pessoas = models.TextField(verbose_name="Observações sobre as Pessoas",blank=True,null=True)
     observacao_sistema = models.TextField(verbose_name="Observações do Sistema",blank=True,null=True)

@@ -726,7 +726,7 @@ def deletePayment_Accounts(request,id):
     return JsonResponse({"message": "Pagamento deletado com sucesso!"}, status=200)
 
 def cashFlow(request):
-    dados = request.session.pop('dados_temp')
+    # dados = request.session.pop('dados_temp')
     algumaCoisa = 10
     algumaCoisa = 10
     context = {

@@ -534,7 +534,6 @@ def editperms(request, id=id):
         'grouped_permissions': grouped_permissions
     })
 
-
 ### TESTE
 
 # View para listar os MetaGroups (Supergrupos)

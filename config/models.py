@@ -150,3 +150,89 @@ class GroupSetBackend(ModelBackend):
                 )
 
         return permissions
+
+class Log(models.Model):
+    """
+    user: usuario presente na requisição " request.user "
+
+    date: data atual do log " datetime.now().strftime("%d/%m/%Y as %H:%M:%S") "
+
+    type: tipo de modulo ou ação usada numerado entre 1 a 13
+    
+    01 : pessoa 
+
+    02 : produtos 
+
+    03 : compras 
+
+    04 : vendas 
+
+    05 : ordem de serviço 
+
+    06 : contas a pagar 
+
+    07 : contas a receber 
+
+    08 : formas de pagamento 
+
+    09 : situação 
+
+    10 : plano de contas 
+
+    11 : serviços 
+
+    12 : Login 
+
+    13 : logout
+
+    action: conjunto de caracteres descrevendo o que foi feito no log
+    """
+    CHOICES_LOG_TYPE = {
+        ('01','pessoa'),
+        ('02','produtos'),
+        ('03','compras'),
+        ('04','vendas'),
+        ('05','ordem de serviço'),
+        ('06','contas a pagar'),
+        ('07','contas a receber'),
+        ('08','formas de pagamento'),
+        ('09','situação'),
+        ('10','plano de contas'),
+        ('11','serviços'),
+        ('12','Login'),
+        ('13','logout'),
+
+    }
+    CHOICES_LOG = {
+        ('e','login'),
+        ('s','logout'),
+        ('c','create'),
+        ('r','read'),
+        ('u','update'),
+        ('d','delete')
+    }
+
+    user = models.ForeignKey(User, verbose_name='Usuario', on_delete=models.CASCADE)
+    date = models.DateTimeField( auto_created=True, verbose_name="data e hora do log")
+    # action = models.CharField(max_length=255, null=False, blank=False, verbose_name="Ação feita pelo usuario")
+
+    type = models.CharField(max_length=2, choices=CHOICES_LOG_TYPE, verbose_name='tipo de transação')
+    action = models.CharField(max_length=1, choices=CHOICES_LOG, verbose_name='tipo de transação')
+
+class Info_logs(models.Model):
+    """
+    log_principal: id do log principal
+
+    info_old: informação antiga cadastrada
+
+    info_now: Informação nova para update
+
+    field: nome do campo que foi modificado
+    """
+
+    log_principal = models.ForeignKey(Log, verbose_name='log principal', on_delete=models.CASCADE)
+
+    info_old = models.CharField(max_length=255, null=False, blank=False, verbose_name="Informação antiga")
+    info_now = models.CharField(max_length=255, null=True, blank=False, verbose_name="Informação atual")
+    field = models.CharField(max_length=255, null=True, blank=False, verbose_name="nome do campo")
+   

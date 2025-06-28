@@ -286,9 +286,10 @@
                         
                     </a>
                     <ul class="sub-menu">
-                            <li>
-                                <a href="{% url 'log_entry' %}"><h5>Log de Entrada</h5></a>
-                            </li>
+                        <li>
+                            <a href="{% url 'log' %}"><h5>Log de Entrada</h5></a>
+                        </li>
+                        {% comment %}
                             <li>
                                 <a href="{% url 'log_purchase' %}"><h5>Log de Compras</h5></a>
                             </li>
@@ -310,6 +311,7 @@
                             <li>
                                 <a href="{% url 'log_dlog'%}">Log de Logs</a>
                             </li>
+                        {% endcomment %}
                     </ul>
                 </li>
             </ul>
