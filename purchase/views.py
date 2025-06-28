@@ -11,7 +11,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.db.models.functions import Coalesce
 from django.db.models import F, Value
 from registry.models import Credit
-from sale.forms import ReturnVendaItemForm
+from sale.forms import ReturnVendaItemForm, VendaItemForm, VendaItemFormExpedition
 from sale.models import Venda, VendaItem
 from service.models import VendaItem as VendaItemWS
 from .forms import *
@@ -771,6 +771,38 @@ def returnProducts_list(request):
             'type':'Entregue'
         }
     )
+
+def expedition_product(request, pk):
+    vendaItem = get_object_or_404(VendaItem, id=pk)
+    old_quantity_vendaItem = vendaItem.current_quantity  
+
+    if request.method == "POST":
+        vendaItemExpeditionForm = VendaItemFormExpedition(request.POST, instance=vendaItem)
+
+        if vendaItemExpeditionForm.is_valid():
+            new_quantity_vendaItem = vendaItemExpeditionForm.cleaned_data['current_quantity']
+            product = get_object_or_404(Product, pk=vendaItemExpeditionForm.instance.product.id)
+
+            if new_quantity_vendaItem == old_quantity_vendaItem:
+                vendaItem.status = 'Entregue'
+
+            vendaItem.current_quantity = old_quantity_vendaItem - int(new_quantity_vendaItem)
+            product.current_quantity -= int(new_quantity_vendaItem)
+
+            vendaItem.save()
+            product.save()
+
+        else:
+            print('Erro no VendaItemExpeditionForm', vendaItemExpeditionForm.errors)
+
+        return redirect('manageProductDelivery')
+
+    else:
+        vendaItemExpeditionForm = VendaItemFormExpedition(instance=vendaItem)
+        return render(request, "purchase/expeditionProduct_form.html", {
+            'vendaItemForm': vendaItemExpeditionForm
+        })
+
 
 def return_product(request, pk):
     vendaItem = get_object_or_404(VendaItem, id=pk)

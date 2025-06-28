@@ -53,13 +53,6 @@ class VendaForm(forms.ModelForm):
                 'class':'form-control mb-3 mt-3 row-5',
                 'readonly': 'readonly',
             })
-            # 'apply_credit':forms.CheckboxInput(attrs={
-            #     'class':'form-check-input'
-            # }),
-            # 'value_apply_credit':forms.NumberInput(attrs={
-            #     'class':'form-control'
-            # })
-
         }
 
     def __init__(self, *args, **kwargs):
@@ -89,7 +82,53 @@ class VendaFormUpdate(VendaForm):
                 'class':'form-control mb-3 mt-3 row'
             }),
     }
+
+class VendaItemFormExpedition(forms.ModelForm):
+    product_name = forms.CharField(
+        label='Produto',
+        required=False,
+        disabled=True
+    )
+    # venda = forms.IntegerField(
+    #     required=False,
+    #     widget=forms.TextInput(
+    #         attrs=
+    #         {
+    #             'readonly': 'readonly'
+    #         }
+    #     )
+    # )
+    class Meta:
+        model = VendaItem
+        fields = ['product','venda','current_quantity']
+        widgets = {
+            'current_quantity': forms.NumberInput(attrs={
+                'class': 'form-control row mt-3 mb-3',
+                'required':'required',
+                'min':1
+                }),
+            'product':forms.HiddenInput(),
+            'venda':forms.TextInput(
+                attrs={
+                    'class':'form-control row',
+                    'readonly':'readonly'
+                }
+            )
+            
+            
+        }
     
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            max_value = self.instance.quantidade
+            self.fields['current_quantity'].max_value = max_value
+            self.fields['current_quantity'].widget.attrs['max'] = max_value
+            self.fields['current_quantity'].min_value = 1
+            self.fields['current_quantity'].widget.attrs['min'] = 1
+            self.fields['product_name'].initial = str(self.instance.product)
+    def clean(self):
+        return super().clean()
 class VendaItemForm(forms.ModelForm):
     
     STATUS_CHOICES = [
@@ -126,6 +165,13 @@ class VendaItemForm(forms.ModelForm):
         if preco_unitario and quantidade:
             cleaned_data['total'] = preco_unitario * quantidade
         return cleaned_data
+    
+    def save(self, commit = ...):
+        vendaItem = super().save(commit=False)
+        vendaItem.current_quantity = vendaItem.quantidade
+        if commit:
+            vendaItem.save()
+        return vendaItem
     
 class VendaFormSet(forms.BaseFormSet):
     def clean(self):

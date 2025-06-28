@@ -18,5 +18,6 @@ urlpatterns = [
     path('mng/manage_product_delivery',productsWithStatus_list,name='manageProductDelivery'),
     path('returnProducts_list/',returnProducts_list,name='returnProducts_list'),
     path('return_product/<int:pk>',return_product,name='return_product'),
+    path('expedition_product/<int:pk>/',expedition_product,name='expedition_product'),
     path('update_product_quantity/<int:pk>',update_product_quantity,name="update_product_quantity")
 ]

@@ -1,0 +1,86 @@
+{% extends 'login/menu.html' %}
+{% load bootstrap4 %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block css %}
+            <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
+            <link rel="stylesheet" href="{% static 'css/custom-styles.css' %}">
+        {% endblock %}
+        <title>Formulário</title>
+        {% bootstrap_css %}
+    </head>
+    <body>
+        <main>
+            {% bootstrap_messages %}
+            {% block content %}
+            <div class='content'>
+                <div class='center col'>
+
+                    <form action="." method='post' autocomplete='off' class="row">
+                        {% csrf_token %}
+                        <div class="col d-flex gap-4">
+                            <a href="{% url 'PaymentMethod' %}">
+                                <button type="button" class="btn btn-voltar">
+                                    <i class="fas fa-arrow-left"></i> 
+                                </button>
+                            </a> 
+                        </div>
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-4 col-md-6 col-sm-8 col-10">
+                                    <div class="card text-center">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Expedição de Produto</h5>
+                                            {{vendaItemForm.product.as_hidden}}
+                                            {% if vendaItemForm.venda %}
+                                            <div class="mt-4">
+                                                <label for="" class="p-2">
+                                                    {{vendaItemForm.venda.label_tag}}
+                                                </label>
+                                                <div class="p-2 ">
+                                                    {{vendaItemForm.venda}}
+                                                </div> 
+                                            </div>
+                                            {% endif %}
+                                            <div class="">
+                                                <label for="" class="">
+                                                    {{vendaItemForm.product_name.label_tag}}
+                                                </label>
+                                                <div class="">
+                                                    {{vendaItemForm.product_name}}
+                                                </div>
+                                                
+                                                
+                                            </div>
+                                            <div class="">
+                                                <label for="" class="">
+                                                    {{vendaItemForm.current_quantity.label_tag}}
+                                                </label>
+                                                <div class="">
+                                                    {{vendaItemForm.current_quantity}}
+                                                </div>
+                                             
+                                            </div>
+                        
+                                            <div class="p-4">
+                                                <button type="submit" class="btn  bg-adapted w-50">Expedir</button>   
+                                            </div>
+                        
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>          
+                    </form>
+                </div>
+            </div>
+            {% endblock %}
+        </main>
+        
+        <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+    </body>
+</html>

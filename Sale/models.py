@@ -30,13 +30,15 @@ class VendaItem(models.Model):
     venda = models.ForeignKey(Venda, on_delete=models.CASCADE, verbose_name="Venda")
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Produto",related_name='VendaProduto')
     quantidade = models.PositiveIntegerField(verbose_name="Quantidade do Produto")
+    current_quantity = models.PositiveIntegerField(verbose_name="Quantidade atual de Produtos",default=0)
     preco_unitario = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Preço Unitário")
     discount = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Desconto(%)")
     price_total = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Valor Total")
     status = models.CharField(max_length=50,default='Pendente')
     # Calcula o total automaticamente ao salvar a instância
     def save(self, *args, **kwargs):    
-        self.total = self.quantidade * self.preco_unitario  # Calcula o total
+        if self.quantidade is not None and self.preco_unitario is not None:
+            self.total = self.quantidade * self.preco_unitario
         super().save(*args, **kwargs)
 
     def __str__(self):

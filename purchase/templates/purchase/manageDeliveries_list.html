@@ -68,17 +68,10 @@
                             <td>{{ product.quantidade }}</td>
                             <td id="idProduct">{{product.idProduto}}</td>
                             <td>
-                                <form action="{% url 'update_product_quantity' pk=product.idProduto %}" method="POST" class="delete-form">
-
-                                    {% csrf_token %}
-                                    <input type="hidden" name="id_venda" value="{{ product.idVendaItem }}">
-                                    <select class="status-select" data-venda-id="{{ product.idVendaItem }}">
-                                        {% for status in status_options %}
-                                            <option value="{{ status }}" {% if status == product.status %}selected{% endif %}>{{ status }}</option>
-                                        {% endfor %}
-                                    </select>
-                                    
-                                </form>
+                                <a href="{% url 'expedition_product' pk=product.idVendaItem %}">
+                                    <button class="btn" style="background-color: #117027;color: white;" >Expedir</button>
+                                </a>
+                               
                                 
                             </td>
                             
@@ -129,7 +122,7 @@
                             <th>Id da VendaVenda</th>
                             <th>Descrição</th>
                             <th>Quantidade</th>
-                            <th >Id do Produto</th>
+                            <th>Id do Produto</th>
                             <th>Status</th>
                         
                         </tr>
