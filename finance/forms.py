@@ -159,7 +159,7 @@ class BasePaymentMethodAccountsForm(forms.ModelForm):
             attrs=
             {'class':'form-control row'}
         ),
-        initial=PaymentMethod.objects.order_by('id').first()
+        # initial=PaymentMethod.objects.order_by('id').first()
     )   
     paymentPurpose = forms.ChoiceField(
         required=False,

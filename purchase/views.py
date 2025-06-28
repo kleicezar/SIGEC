@@ -13,7 +13,7 @@ from django.db.models import F, Value
 from registry.models import Credit
 from sale.forms import ReturnVendaItemForm, VendaItemForm, VendaItemFormExpedition
 from sale.models import Venda, VendaItem
-from service.models import VendaItem as VendaItemWS
+# from service.models import VendaItem as VendaItemWS
 from .forms import *
 from .models import *
 from django.db.models import Q
@@ -31,15 +31,21 @@ def productsWithStatus_list(request):
     vendasItens = VendaItem.objects.filter(
         Q(status = 'Pendente')
     )
-    workOrders = VendaItemWS.objects.filter(
-        Q(status = 'Pendente')
-    )
+    # workOrders = VendaItemWS.objects.filter(
+    #     Q(status = 'Pendente')
+    # )
     status_options = ["Pendente", "Entregue"]
 
     all_products_with_status = [
-        {'idVenda': vendaItem.venda.id,'idProduto':vendaItem.product.id,'idVendaItem':vendaItem.id,'descricao': vendaItem.product.description, 'quantidade': vendaItem.quantidade, 'status': vendaItem.status} for vendaItem in vendasItens
-    ] + [
-        {'idOS': workOrder.venda.id, 'idProduto':workOrder.product.id,'idVendaItem':workOrder.id,'descricao': workOrder.product.description, 'quantidade': workOrder.quantidade,'status':workOrder.status} for workOrder in workOrders
+        {
+            'idVenda': vendaItem.venda.id if vendaItem.venda else None,
+            'idVendaServico':vendaItem.servico.id if vendaItem.servico else None,
+            'idProduto':vendaItem.product.id,
+            'idVendaItem':vendaItem.id,
+            'descricao': vendaItem.product.description, 
+            'quantidade': vendaItem.quantidade, 
+            'status': vendaItem.status
+        } for vendaItem in vendasItens
     ]
     # messages.warning(request,'TESTE',extra_tags='delivery_page')
     return render(request, 'purchase/manageDeliveries_list.html', {

@@ -1,6 +1,7 @@
 from django import forms
 
 from purchase.models import Product
+from sale.models import VendaItem
 from .models import *
 
 class VendaserviceForm(forms.ModelForm):

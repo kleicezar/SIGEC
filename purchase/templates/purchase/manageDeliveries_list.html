@@ -62,8 +62,17 @@
                     <tbody>
                         {% for product in all_products_with_status %}
                         <tr>
-                            <td>{{ product.idOS }}</td>
+                            {% if product.idVendaServico %}
+                            <td>{{ product.idVendaServico }}</td>
+                            {% else %}
+                            <td></td>
+                            {% endif %}
+
+                            {% if product.idVenda %}
                             <td>{{ product.idVenda }}</td>
+                            {% else %}
+                            <td></td>
+                            {% endif %}
                             <td>{{ product.descricao }}</td>
                             <td>{{ product.quantidade }}</td>
                             <td id="idProduct">{{product.idProduto}}</td>

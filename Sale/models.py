@@ -2,6 +2,7 @@ from django.db import models
 from registry.models import *
 from config.models import Situation, PaymentMethod
 from purchase.models import Product
+from service.models import Vendaservice
 
 class Venda(models.Model):
     pessoa = models.ForeignKey(Person,on_delete=models.CASCADE,verbose_name="Pessoa",related_name="vendas")
@@ -27,7 +28,8 @@ class Venda(models.Model):
 
 class VendaItem(models.Model):
     
-    venda = models.ForeignKey(Venda, on_delete=models.CASCADE, verbose_name="Venda")
+    venda = models.ForeignKey(Venda, on_delete=models.CASCADE, verbose_name="Venda",null=True,blank=True)
+    servico =  models.ForeignKey(Vendaservice, on_delete=models.CASCADE, verbose_name="Ordem de Serviço",null=True,blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Produto",related_name='VendaProduto')
     quantidade = models.PositiveIntegerField(verbose_name="Quantidade do Produto")
     current_quantity = models.PositiveIntegerField(verbose_name="Quantidade atual de Produtos",default=0)
