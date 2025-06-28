@@ -51,13 +51,13 @@
                     <td>{{ log.id }}</td>
                     
                     {% if log.action == 0 %}
-                        <td>O Usuario {{ log.actor }} Criou os registros de {{ log.content_type_id|cont_type  }}as {{ log.timestamp|date:"H:i:s \d\o \d\i\a d/m/Y" }} usando o IP {{ log.remote_addr}}</td>
+                        <td>O Usuario {{ log.actor }} Criou os registros da {{ log.content_type_id|cont_type }} {{ page_obj.changes.id.1}} as {{ log.timestamp|date:"H:i:s \d\o \d\i\a d/m/Y" }} usando o IP {{ log.remote_addr}}</td>
 
                     {% elif log.action == 1 %}
-                        <td>O Usuario {{ log.actor }} Editou os registros de {{ log.content_type_id|cont_type  }}as {{ log.timestamp|date:"H:i:s \d\o \d\i\a d/m/Y" }} usando o IP {{ log.remote_addr}}</td>
+                        <td>O Usuario {{ log.actor }} Editou os registros da {{ log.content_type_id|cont_type }} {{ page_obj.changes.id.1}} as {{ log.timestamp|date:"H:i:s \d\o \d\i\a d/m/Y" }} usando o IP {{ log.remote_addr}}</td>
 
                     {% elif log.action == 2 %}
-                        <td>O Usuario {{ log.actor }} Deletou os registros de {{ log.content_type_id|cont_type  }} as {{ log.timestamp|date:"H:i:s \d\o \d\i\a d/m/Y" }} usando o IP {{ log.remote_addr}}</td>
+                        <td>O Usuario {{ log.actor }} Deletou os registros da {{ log.content_type_id|cont_type }} {{ page_obj.changes.id.1}} as {{ log.timestamp|date:"H:i:s \d\o \d\i\a d/m/Y" }} usando o IP {{ log.remote_addr}}</td>
                     {% endif %}
                     <td>
                         <form action="{% url 'log_detailed' log_id=log.id %}" method="GET" style="display:inline-block;">

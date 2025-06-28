@@ -271,12 +271,12 @@ def update_client(request, id_client):
     
     try:
         person = Person.objects.get(id=id_client)
-        fisicPerson = person.id_FisicPerson_fk
-        legalPerson = person.id_LegalPerson_fk
-        foreigner = person.id_ForeignPerson_fk
-        address = person.id_address_fk
-        usuario = person.id_user_fk
-        # Identifica o tipo atual e o endereço
+        fisicPerson = FisicPerson.objects.get(id=person.id_FisicPerson_fk)
+        legalPerson = LegalPerson.objects.get(id=person.id_LegalPerson_fk)
+        foreigner = ForeignPerson.objects.get(id=person.id_ForeignPerson_fk)
+        address = Address.objects.get(id=person.id_address_fk)
+        usuario = User.objects.get(id=person.id_user_fk)
+        # Identifica o tipo atual e o endereço 
         if fisicPerson:
             selected_form = "Pessoa Fisica"
         elif legalPerson:

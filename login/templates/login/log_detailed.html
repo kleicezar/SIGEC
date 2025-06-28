@@ -22,97 +22,56 @@
                 </a>
                 <table>
                     <tbody id="results">
-                        {% comment %}
-                        {% for log in page_obj %}
-                        {% endfor %}
-                        {% endcomment %}
                         <tr>
                             <td>Usuario que {{ page_obj.action|action }} a {{ page_obj.content_type_id|cont_type  }}:</td>
                             <td>{{ page_obj.actor }}</td>
                         </tr>
-                        {% if client.id_FisicPerson_fk %}
                         <tr>
-                            <td>Nome</td>
-                            <td>{{ client.name }}</td>
+                            <td>data</td>
+                            <td>{{ page_obj.timestamp|date:"d/m/Y" }}</td>
                         </tr>
                         <tr>
-                            <td>CPF</td>
-                            <td>{{ client.cpf }}</td>
+                            <td>Hora</td>
+                            <td>{{ page_obj.timestamp|date:"H:i:s" }}</td>
                         </tr>
                         <tr>
-                            <td>Registro Geral - RG</td>
-                            <td>{{ client.rg }}</td>
+                            <td>IP de Acesso</td>
+                            <td>{{ page_obj.remote_addr }}</td>
                         </tr>
                         <tr>
-                            <td>Data de Nascimento</td>
-                            <td>{{ client.dateOfBirth }}</td>
-                        </tr>
-
-
-                        {% elif client.id_LegalPerson_fk %}
-                        <tr>
-                            <td>Nome</td>
-                            <td>{{ client.name }}</td>
+                            <td>Dados Cadastrais</td>
+                            <td></td>
                         </tr>
                         <tr>
-                            <td>CNPJ</td>
-                            <td>{{ client.cnpj }}</td>
+                            <td></td>
+                            <td></td>
                         </tr>
                         <tr>
-                            <td>Razão Social</td>
-                            <td>{{ client.socialReason }}</td>
+                            <td>Campo</td>
+                            <td>Informação</td>
                         </tr>
-                        <tr>
-                            <td>Inscrição Estadual</td>
-                            <td>{{ client.StateRegistration }}</td>
-                        </tr>
-                        <tr>
-                            <td>Tipo de Contribuinte</td>
-                            <td>{{ client.typeOfTaxpayer }}</td>
-                        </tr>
-                        <tr>
-                            <td>Inscrição Municipal</td>
-                            <td>{{ client.MunicipalRegistration }}</td>
-                        </tr>
-                        <tr>
-                            <td>SUFRAMA</td>
-                            <td>{{ client.suframa }}</td>
-                        </tr>
-                        <tr>
-                            <td>Nome do Responsavel</td>
-                            <td>{{ client.Responsible }}</td>
-                        </tr>
-
-                        {% elif client.id_ForeignPerson_fk %}
-                        <tr>
-                            <td>Nome</td>
-                            <td>{{ client.name_foreigner }}</td>
-                        </tr>
-                        <tr>
-                            <td>Numero do Documento Estrangeiro</td>
-                            <td>{{ client.num_foreigner }}</td>
-                        </tr>
-                        {% endif %}
-                        <tr>
-                            <td>Telefone Pessoal</td>
-                            <td>{{ client.WorkPhone }}</td>
-                        </tr>
-                        <tr>
-                            <td>Telefone de Trabalho</td>
-                            <td>{{ client.PersonalPhone }}</td>
-                        </tr>
-                        <tr>
-                            <td>Site</td>
-                            <td>{{ client.Site }}</td>
-                        </tr>
-                        <tr>
-                            <td>Vendedor Encarregado</td>
-                            <td>{{ client.salesman }}</td>
-                        </tr>
-                        <tr>
-                            <td>Limite de Credito</td>
-                            <td>{{ client.CreditLimit }}</td>
-                        </tr>
+                        {% for field, values in page_obj.changes.items %}
+                            <tr>
+                                {% if field|slice:":2" != 'is' and field|slice:":2" != 'id' %}
+                                    {% if field != 'email' and field != 'password' %}
+                                        <td>
+                                            <strong>{{ field }}</strong> 
+                                        </td>
+                                        
+                                        {% if values.0 != 'None'  %}
+                                        <td>
+                                            alterado de <em>{{ values.0 }}</em> para <em>{{ values.1 }}</em>
+                                        </td>
+                                        {% else %}
+                                        <td>
+                                            Adicionado <em>{{ values.1 }}</em>
+                                        </td>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        
                     </tbody>
                 </table>
             </div> 

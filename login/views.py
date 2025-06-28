@@ -317,14 +317,17 @@ def log(request):
     paginator = Paginator(page_obj, 20)  # 20 itens por página
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    for log in LogEntry.objects.all():
-        content_type = ContentType.objects.get(id=log.content_type_id)
-        print(content_type.model)         # Ex: "cliente"
-        print(content_type.app_label)    # Ex: "meu_app"
-        print(content_type.model_class())  # Ex: <class 'meu_app.models.Cliente'>
+    # changeId = page_obj.changes['id'][1]
+    # print(changeId)
+    # for log in LogEntry.objects.all():
+    #     content_type = ContentType.objects.get(id=log.content_type_id)
+    #     print(content_type.model)         # Ex: "cliente"
+    #     print(content_type.app_label)    # Ex: "meu_app"
+    #     print(content_type.model_class())  # Ex: <class 'meu_app.models.Cliente'>
             
     # page_obj = page(request,page_obj)
     
+    # 'changes':changeId,
     context = {
     'page_obj': page,
     }
@@ -334,6 +337,7 @@ def log(request):
 def log_detailed(request, log_id):
     page_obj = LogEntry.objects.get(id=log_id)
     context = {
+
     'page_obj': page_obj,
     }
     return render(request, 'login/log_detailed.html',context)
