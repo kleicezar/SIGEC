@@ -29,7 +29,7 @@
                             <td>Codigo do Cliente</td>
                             <td>{{ client.id }}</td>
                         </tr>
-                        {% if client.id_FisicPerson_fk %}
+                        {% if client.content_object %}
                         <tr>
                             <td>Nome</td>
                             <td>{{ client.name }}</td>
@@ -82,10 +82,10 @@
                             <td>{{ client.Responsible }}</td>
                         </tr>
 
-                        {% elif client.id_ForeignPerson_fk %}
+                        {% elif client == 'foreignperson' %}
                         <tr>
                             <td>Nome</td>
-                            <td>{{ client.name_foreigner }}</td>
+                            <td>{{ client.name }}</td>
                         </tr>
                         <tr>
                             <td>Numero do Documento Estrangeiro</td>

@@ -1,4 +1,12 @@
 from django.db import models
+<<<<<<< Updated upstream
+=======
+from django.contrib.auth.models import User
+from auditlog.registry import auditlog
+from functools import partial
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
+>>>>>>> Stashed changes
 
 class Address(models.Model):
     cep = models.CharField('CEP', max_length=10)
@@ -25,15 +33,20 @@ class FisicPerson(models.Model):
         return self.name
     
 class ForeignPerson(models.Model):
-    name_foreigner = models.CharField('Nome', max_length=100)
+    name = models.CharField('Nome', max_length=100)
     num_foreigner = models.CharField('Numero do Documento', max_length=100)
     id_address_fk = models.OneToOneField ('Address', on_delete=models.CASCADE, db_column='id_address_fk')
 
     def __str__(self):
+<<<<<<< Updated upstream
         return self.name_foreigner
     
+=======
+        return self.name
+
+>>>>>>> Stashed changes
 class LegalPerson(models.Model):
-    fantasyName = models.CharField('Nome Fantasia', max_length=100)
+    name = models.CharField('Nome Fantasia', max_length=100)
     cnpj = models.CharField('CNPJ', max_length=100)
     socialReason = models.CharField('Razão Social', max_length=100)
     StateRegistration = models.CharField('Inscrição Estadual', max_length=100)
@@ -44,7 +57,7 @@ class LegalPerson(models.Model):
     id_address_fk = models.OneToOneField ('Address', on_delete=models.CASCADE, db_column='id_address_fk')
 
     def __str__(self):
-        return self.fantasyName
+        return self.name
     
 class Person(models.Model):
     WorkPhone = models.CharField('WorkPhone', max_length=100)
@@ -62,6 +75,7 @@ class Person(models.Model):
     isCarrier = models.BooleanField("Transportadora",null=True, blank=True)
     isDelivery_man = models.BooleanField("Entregador",null=True, blank=True)
     isTechnician = models.BooleanField("Tecnico",null=True, blank=True)
+<<<<<<< Updated upstream
  
     id_FisicPerson_fk = models.OneToOneField ('FisicPerson', on_delete=models.CASCADE,null=True, blank=True, db_column='id_FisicPerson_fk')
     id_LegalPerson_fk = models.OneToOneField ('LegalPerson', on_delete=models.CASCADE,null=True, blank=True, db_column='id_LegalPerson_fk')
@@ -77,3 +91,43 @@ class Person(models.Model):
         else:
             return None
  
+=======
+    
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, db_column='person_type')
+    object_id = models.PositiveIntegerField() 
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    # id_FisicPerson_fk = models.OneToOneField ('FisicPerson', on_delete=models.SET_NULL,null=True, blank=True, db_column='id_FisicPerson_fk')
+    # id_LegalPerson_fk = models.OneToOneField ('LegalPerson', on_delete=models.SET_NULL,null=True, blank=True, db_column='id_LegalPerson_fk')
+    # id_ForeignPerson_fk = models.OneToOneField ('ForeignPerson', on_delete=models.SET_NULL,null=True, blank=True, db_column='id_ForeignPerson_fk')
+    id_address_fk = models.OneToOneField ('Address', on_delete=models.CASCADE, db_column='id_address_fk')
+    id_user_fk = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, db_column='id_user_fk')
+
+    def __str__(self):
+        return self.content_object.name
+
+class Credit(models.Model):
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, verbose_name="pessoa_creditada")
+    credit_data = models.DateTimeField(verbose_name='Data do Crédito')
+    credit_value = models.IntegerField(default=0)
+
+def custom_field_formatter(field_name, old_value, new_value, nome_amigavel_map):
+    """
+    Função personalizada para renomear atributos no campo 'changes',
+    recebendo o mapa de nomes amigáveis.
+    """
+    formatted_field_name = nome_amigavel_map.get(field_name, field_name)
+
+    if field_name == 'preco_venda':
+        old_value = f"R$ {old_value:.2f}" if old_value is not None else old_value
+        new_value = f"R$ {new_value:.2f}" if new_value is not None else new_value
+    
+    return formatted_field_name, old_value, new_value
+
+auditlog.register(Address)
+auditlog.register(FisicPerson)
+auditlog.register(ForeignPerson)
+auditlog.register(LegalPerson)
+auditlog.register(Person)
+auditlog.register(Credit)
+>>>>>>> Stashed changes

@@ -73,14 +73,8 @@
                 {% for client in clients.object_list %}
                 <tr>       
                     <td>{{ client.id }}</td>
-                    {% if client.id_FisicPerson_fk %}
-                        <td>{{ client.id_FisicPerson_fk.name }}</td>
-                    {% elif client.id_LegalPerson_fk %}
-                        <td>{{ client.id_LegalPerson_fk.fantasyName }}</td>
-                    {% elif client.id_ForeignPerson_fk %}
-                        <td>{{ client.id_ForeignPerson_fk.name_foreigner }}</td>
-                    {% else  %}
-                        <td>{{ client.name }}</td>
+                    {% if client.content_object.name %}
+                        <td>{{ client.content_object.name }}</td>
                     {% endif %}
                     <td>{{ client.WorkPhone }}</td>
                     <td>{{ client.PersonalPhone }}</td>

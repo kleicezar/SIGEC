@@ -50,9 +50,9 @@ class AddressForm(forms.ModelForm):
 class LegalPersonModelForm(forms.ModelForm):
     class Meta:
         model = LegalPerson
-        fields = ["fantasyName","cnpj","socialReason","StateRegistration","typeOfTaxpayer","MunicipalRegistration","suframa","Responsible"]
+        fields = ["name","cnpj","socialReason","StateRegistration","typeOfTaxpayer","MunicipalRegistration","suframa","Responsible"]
         widgets = {
-            'fantasyName':forms.TextInput(attrs={
+            'name':forms.TextInput(attrs={
                 'class':'form-control row'
             }),
             'cnpj':forms.TextInput(attrs={
@@ -76,16 +76,14 @@ class LegalPersonModelForm(forms.ModelForm):
             'Responsible':forms.TextInput(attrs={
                 'class':'form-control row'
             })
-
-
         }
 
 class ForeignerModelForm(forms.ModelForm):
     class Meta:
         model = ForeignPerson
-        fields = ["name_foreigner","num_foreigner"]
+        fields = ["name","num_foreigner"]
         widgets = {
-            'name_foreigner':forms.TextInput(attrs={
+            'name':forms.TextInput(attrs={
                 'class':'form-control row'
             }),
             'num_foreigner':forms.TextInput(attrs={

@@ -31,6 +31,14 @@ def Client_Create(request):
 
         #verificação se o cadastro é valido 
         if form_Person.is_valid():
+<<<<<<< Updated upstream
+=======
+            # log = log_db(request, action='c' ,type='01')
+
+            person = form_Person.save(commit=False)
+            person.id_address_fk = address
+            person.isActive = 1
+>>>>>>> Stashed changes
 
             # verificação em qual cadastro foi feito    
             if form_fisicPerson.is_valid():
@@ -38,9 +46,22 @@ def Client_Create(request):
                 fisicPerson.id_address_fk = address
                 fisicPerson = form_fisicPerson.save()
 
+<<<<<<< Updated upstream
                 person = form_Person.save(commit=False)
                 person.id_FisicPerson_fk = fisicPerson
                 person.isActive = 1
+=======
+                # person = form_Person.save(commit=False)
+                person.content_object = fisicPerson
+                
+                if person.email and person.password: 
+                    person.id_user_fk = u
+                    u = createUser(person.content_type.name, person.email, person.password)
+                #     log_create_db(log, info_old=f'Cadastrou o Usuario {person.id_FisicPerson_fk.name}')
+                # else:
+                #     log_create_db(log, info_old=f'Cadastrou a Pessoa {person.id_FisicPerson_fk.name}')
+                
+>>>>>>> Stashed changes
                 person.save()
                 messages.success(request,"Cliente cadastrado com sucesso.",extra_tags="successClient")
                 return redirect(previous_url)
@@ -50,21 +71,46 @@ def Client_Create(request):
                 legalPerson.id_address_fk = address
                 legalPerson = form_legalPerson.save()
 
+<<<<<<< Updated upstream
                 person = form_Person.save(commit=False)
                 person.id_LegalPerson_fk = legalPerson
                 person.isActive = 1
+=======
+                # person = form_Person.save(commit=False)
+                person.content_object = legalPerson
+                if person.email and person.password: 
+                    u = createUser(person.content_type.name, person.email, person.password)
+                    person.id_user_fk = u
+                #     log_create_db(log, info_old=f'Cadastrou o Usuario {person.id_LegalPerson_fk.fantasyName}')
+                # else:
+                #     log_create_db(log, info_old=f'Cadastrou a Pessoa {person.id_LegalPerson_fk.fantasyName}')
+>>>>>>> Stashed changes
                 person.save()
                 messages.success(request,"Cliente cadastrado com sucesso.",extra_tags="successClient")
                 return redirect(previous_url)
 
             if form_foreigner.is_valid():
                 foreigner = form_foreigner.save(commit=False)
+<<<<<<< Updated upstream
                 foreigner.id_address_fk = address
                 foreigner = form_foreigner.save()
 
                 person = form_Person.save(commit=False)
                 person.id_ForeignPerson_fk = foreigner
                 person.isActive = 1
+=======
+                foreigner = form_foreigner.save()
+                # person = form_Person.save(commit=False)
+                person.content_object = foreigner
+                if person.email and person.password: 
+                    create = createUser(person.content_type.name, person.email, person.password,)
+                    
+                    person.id_user_fk = create
+                    # log_create_db(log, info_old=f'Cadastrou o Usuario {person.id_ForeignPerson_fk.name_foreigner}')
+                # else:
+                    # log_create_db(log, info_old=f'Cadastrou a Pessoa {person.id_ForeignPerson_fk.name_foreigner}')
+                    
+>>>>>>> Stashed changes
                 person.save()
                 messages.success(request,"Cliente cadastrado com sucesso.",extra_tags="successClient")
                 return redirect(previous_url)
@@ -101,6 +147,7 @@ def client_list(request):
     # Filtrar os clientes com base no termo de pesquisa
     if search_query:
         clients = Person.objects.filter(
+<<<<<<< Updated upstream
 
         (
             Q(id__icontains=search_query) | 
@@ -110,6 +157,18 @@ def client_list(request):
             
         ) 
         & Q(isActive = False)
+=======
+            (
+                Q(id__startswith=search_query) |
+                Q(nome_cliente__istartswith=search_query)
+            ) &
+            Q(isActive = True),
+        )
+    else:
+        clients = Person.objects.filter(
+                Q(isActive = True),
+            ).select_related('content_type')
+>>>>>>> Stashed changes
         
         ).order_by('id')
     
@@ -139,9 +198,7 @@ def buscar_clientes(request):
     resultados = Person.objects.filter(
         (
             Q(id__istartswith=query) | 
-            Q(id_FisicPerson_fk__name__istartswith=query) | 
-            Q(id_ForeignPerson_fk__name_foreigner__istartswith=query) | 
-            Q(id_LegalPerson_fk__fantasyName__istartswith=query)
+            Q(content_object__name__istartswith=query)
         )
         & Q(isActive = True)
     ).order_by('id')
@@ -150,10 +207,7 @@ def buscar_clientes(request):
     clients = [
         {
             'id': cliente.id,
-            'name': (
-                cliente.id_FisicPerson_fk.name if cliente.id_FisicPerson_fk else 
-                (cliente.id_ForeignPerson_fk.name_foreigner if cliente.id_ForeignPerson_fk else 
-                (cliente.id_LegalPerson_fk.fantasyName if cliente.id_LegalPerson_fk else 'Nome não disponível'))),
+            'name': cliente.content_object.name,
             'WorkPhone': cliente.WorkPhone,
             'PersonalPhone': cliente.PersonalPhone,
         }
@@ -282,57 +336,104 @@ def delete_client(request, id_client):
     client = get_object_or_404(Person, id=id_client)
     client.isActive = False
     client.save()
+<<<<<<< Updated upstream
+=======
+    # log = Log.objects.create(
+    #             user=request.user,
+    #             date=datetime.now(),
+    #             action='d',
+    #             type='01'
+    #         )
+    # if client.id_FisicPerson_fk:
+    #     Info_logs.objects.create(log_principal=log, info_old=f'Inativou a Pessoa {client.id_FisicPerson_fk.name}')
+    # if client.id_ForeignPerson_fk:
+    #     Info_logs.objects.create(log_principal=log, info_old=f'Inativou a Pessoa {client.id_ForeignPerson_fk.name_foreigner}')
+    # if client.id_LegalPerson_fk:
+    #     Info_logs.objects.create(log_principal=log, info_old=f'Inativou a Pessoa {client.id_LegalPerson_fk.fantasyName}')
+>>>>>>> Stashed changes
     messages.success(request,"Cliente deletado com sucesso.",extra_tags="successClient")
     return redirect('Client')
 
 @login_required
 def get_client(request, id_client):
+<<<<<<< Updated upstream
     person = Person.objects.get(id=id_client)
     if person.id_FisicPerson_fk:
+=======
+    log = Log.objects.create(
+            user=request.user,
+            date=datetime.now(),
+            action='r',
+            type='01'
+        )
+    person = Person.objects.get(id=id_client)
+    if person.content_object == 'fisicperson':
+>>>>>>> Stashed changes
         client = {
                 'id': person.id,
-                'name': ( person.id_FisicPerson_fk.name if person.id_FisicPerson_fk else 'Nome não disponível' ),
-                'cpf': ( person.id_FisicPerson_fk.cpf if person.id_FisicPerson_fk else 'Cadastro de Pessoa Fisica - CPF indisponível'),
-                'rg': ( person.id_FisicPerson_fk.rg if person.id_FisicPerson_fk else 'Registro Geral - RG indisponível'),
-                'dateOfBirth': ( person.id_FisicPerson_fk.dateOfBirth if person.id_FisicPerson_fk else 'Data de Aniversario indisponível'),
+                'name': ( person.content_object.name if person.content_object else 'Nome não disponível' ),
+                'cpf': ( person.content_object.cpf if person.content_object else 'Cadastro de Pessoa Fisica - CPF indisponível'),
+                'rg': ( person.content_object.rg if person.content_object else 'Registro Geral - RG indisponível'),
+                'dateOfBirth': ( person.content_object.dateOfBirth if person.content_object else 'Data de Aniversario indisponível'),
                 'WorkPhone': person.WorkPhone,
                 'PersonalPhone': person.PersonalPhone,
                 'Site': person.site if person.site else 'Não Informado',
                 'Salesman': person.salesman if person.salesman else 'Não Informado',
                 'CreditLimit': person.creditLimit if person.creditLimit else 'Não Informado',
-                'id_FisicPerson_fk': 1,
                 }
+<<<<<<< Updated upstream
     if person.id_LegalPerson_fk:
+=======
+        # log_info = Info_logs.objects.create(log_principal=log, info_old=f'Visualizou a Pessoa {person.id_FisicPerson_fk.name}')
+        
+    if person.content_object == 'legalperson':
+>>>>>>> Stashed changes
         client = {
                 'id': person.id,
-                'name': ( person.id_LegalPerson_fk.fantasyName if person.id_LegalPerson_fk else 'Nome indisponível'),
-                'cnpj':( person.id_LegalPerson_fk.cnpj if person.id_LegalPerson_fk else 'CNPJ indisponível'),
-                'socialReason':( person.id_LegalPerson_fk.socialReason if person.id_LegalPerson_fk else 'Razão Social indisponível'),
-                'StateRegistration':( person.id_LegalPerson_fk.StateRegistration if person.id_LegalPerson_fk else 'Inscrição Estadual indisponível'),
-                'typeOfTaxpayer':( person.id_LegalPerson_fk.typeOfTaxpayer if person.id_LegalPerson_fk else 'Tipo de Contribuinte indisponível'),
-                'MunicipalRegistration':( person.id_LegalPerson_fk.MunicipalRegistration if person.id_LegalPerson_fk else 'Inscrição Municipal indisponível'),
-                'suframa':( person.id_LegalPerson_fk.suframa if person.id_LegalPerson_fk else 'Numero da Suframa indisponível'),
-                'Responsible':( person.id_LegalPerson_fk.Responsible if person.id_LegalPerson_fk else 'Nome do Responsavel indisponível'),
+                'name': ( person.content_object.name if person.content_object else 'Nome indisponível'),
+                'cnpj':( person.content_object.cnpj if person.content_object else 'CNPJ indisponível'),
+                'socialReason':( person.content_object.socialReason if person.content_object else 'Razão Social indisponível'),
+                'StateRegistration':( person.content_object.StateRegistration if person.content_object else 'Inscrição Estadual indisponível'),
+                'typeOfTaxpayer':( person.content_object.typeOfTaxpayer if person.content_object else 'Tipo de Contribuinte indisponível'),
+                'MunicipalRegistration':( person.content_object.MunicipalRegistration if person.content_object else 'Inscrição Municipal indisponível'),
+                'suframa':( person.content_object.suframa if person.content_object else 'Numero da Suframa indisponível'),
+                'Responsible':( person.content_object.Responsible if person.content_object else 'Nome do Responsavel indisponível'),
                 'WorkPhone': person.WorkPhone,
                 'PersonalPhone': person.PersonalPhone,
                 'Site': person.site if person.site else 'Não Informado',
                 'Salesman': person.salesman if person.salesman else 'Não Informado',
                 'CreditLimit': person.creditLimit if person.creditLimit else 'Não Informado',
-                'id_LegalPerson_fk': 1,
             }
+<<<<<<< Updated upstream
         
     if person.id_ForeignPerson_fk:
+=======
+        log_info = Info_logs.objects.create(log_principal=log, info_old=f'Visualizou a Pessoa {person.content_object.fantasyName}')
+               
+
+    if isinstance(person.content_object, ForeignPerson):
+>>>>>>> Stashed changes
         client = {
                 'id': person.id,
-                'name_foreigner': ( person.id_ForeignPerson_fk.name_foreigner if person.id_ForeignPerson_fk else 'Nome não disponível'),
-                'num_foreigner': ( person.id_ForeignPerson_fk.num_foreigner if person.id_ForeignPerson_fk else 'Numero do Documento Estrangeiro não disponível'),
+                'name': getattr(person.content_object, 'name', 'Nome não disponível'),
+                'num_foreigner': getattr(person.content_object, 'num_foreigner', 'Documento estrangeiro não disponível'),
                 'WorkPhone': person.WorkPhone,
                 'PersonalPhone': person.PersonalPhone,
                 'Site': person.site if person.site else 'Não Informado',
                 'Salesman': person.salesman if person.salesman else 'Não Informado',
                 'CreditLimit': person.creditLimit if person.creditLimit else 'Não Informado',
-                'id_ForeignPerson_fk': 1,
+                'client': 'foreignperson'
             }
+<<<<<<< Updated upstream
+=======
+    #     log_info = Info_logs.objects.create(log_principal=log, info_old=f'Visualizou a Pessoa {person.id_ForeignPerson_fk.name_foreigner}')
+    # for chave, valor in client.items():
+    #     print(f'chave:{chave} valor:{valor}')
+    # print(f'valor id :{client[id]}') 
+    print(f"Tipo do objeto relacionado: {(client['name'])}")
+    print(f"Valor: {client['num_foreigner']}")
+    # log.save() ,log_info.save()
+>>>>>>> Stashed changes
         
     return render(request, 'registry/Client_Get.html', {'client': client})
 
