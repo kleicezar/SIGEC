@@ -24,7 +24,6 @@ class FisicPerson(models.Model):
     cpf = models.CharField('Cadastro de Pessoa Fisica - CPF', max_length=100)
     rg = models.CharField('Registro Geral - RG', max_length=100)
     dateOfBirth = models.CharField('Data de Aniversario', max_length=14)
-    id_address_fk = models.OneToOneField ('Address', on_delete=models.CASCADE, db_column='id_address_fk')
 
     def __str__(self):
         return self.name
@@ -32,7 +31,6 @@ class FisicPerson(models.Model):
 class ForeignPerson(models.Model):
     name = models.CharField('Nome', max_length=100)
     num_foreigner = models.CharField('Numero do Documento', max_length=100)
-    id_address_fk = models.OneToOneField ('Address', on_delete=models.CASCADE, db_column='id_address_fk')
 
     def __str__(self):
         return self.name
@@ -46,7 +44,6 @@ class LegalPerson(models.Model):
     MunicipalRegistration = models.CharField('Inscrição Municipal', max_length=100)
     suframa = models.CharField('SUFRAMA', max_length=100)
     Responsible = models.CharField('Responsavel', max_length=100)
-    id_address_fk = models.OneToOneField ('Address', on_delete=models.CASCADE, db_column='id_address_fk')
 
     def __str__(self):
         return self.name
@@ -58,6 +55,10 @@ class Person(models.Model):
     site = models.CharField('site', max_length=100,null=True, blank=True) 
     salesman = models.CharField('salesman', max_length=100,null=True, blank=True)
     creditLimit = models.DecimalField('creditLimit', max_length=100, decimal_places=2, max_digits=10,default=0)
+    
+    email = models.EmailField('email',null=True, blank=True)
+    password = models.CharField('password', max_length=255, null=True, blank=True)
+
     isClient = models.BooleanField("Cliente",null=True, blank=True)
     isSupllier = models.BooleanField("Fornecedor",null=True, blank=True)
     isUser = models.BooleanField("Usuario do Sistema",null=True, blank=True)
@@ -75,7 +76,7 @@ class Person(models.Model):
     # id_FisicPerson_fk = models.OneToOneField ('FisicPerson', on_delete=models.SET_NULL,null=True, blank=True, db_column='id_FisicPerson_fk')
     # id_LegalPerson_fk = models.OneToOneField ('LegalPerson', on_delete=models.SET_NULL,null=True, blank=True, db_column='id_LegalPerson_fk')
     # id_ForeignPerson_fk = models.OneToOneField ('ForeignPerson', on_delete=models.SET_NULL,null=True, blank=True, db_column='id_ForeignPerson_fk')
-    id_address_fk = models.OneToOneField ('Address', on_delete=models.CASCADE, db_column='id_address_fk')
+    id_address_fk = models.OneToOneField('Address', on_delete=models.CASCADE, db_column='id_address_fk')
     id_user_fk = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, db_column='id_user_fk')
 
     def __str__(self):
