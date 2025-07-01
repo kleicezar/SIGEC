@@ -4,18 +4,28 @@ from django.forms import inlineformset_factory
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.hashers import make_password
 from .forms import *
 from .models import *
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.db import transaction
-from config.views import 
+from django.db.models import Case, When, Value, CharField, F
+from operator import attrgetter
+# from config.models import Log, Info_logs
+from datetime import datetime
+# from login.views import compair, log_db, log_upd_db, log_create_db
+
+
+
 ### CLIENT
 
 @login_required
-@transaction.atomic 
+@transaction.atomic
 def Client_Create(request):
+    # import pdb;  pdb.set_trace()
+
     if request.method == "POST":
         # SALVA O LINK DA PAGINA ANTERIOR
         previous_url = request.session.get('previous_page', '/')
@@ -29,8 +39,7 @@ def Client_Create(request):
         # verificação e validação de endereço
         if form_address.is_valid():
             address = form_address.save()
-        else: 
-            print(form_address.errors)
+
         #verificação se o cadastro é valido 
         if form_Person.is_valid():
             # log = log_db(request, action='c' ,type='01')
@@ -42,57 +51,60 @@ def Client_Create(request):
             # verificação em qual cadastro foi feito    
             if form_fisicPerson.is_valid():
                 fisicPerson = form_fisicPerson.save(commit=False)
+                # fisicPerson.id_address_fk = address
                 fisicPerson = form_fisicPerson.save()
 
                 # person = form_Person.save(commit=False)
-                person.content_object = fisicPerson
+                person.id_FisicPerson_fk = fisicPerson
                 
                 if person.email and person.password: 
                     person.id_user_fk = u
-                    u = createUser(person.content_type.name, person.email, person.password)
-                #     log_create_db(log, info_old=f'Cadastrou o Usuario {person.id_FisicPerson_fk.name}')
+                    u = createUser(person.id_FisicPerson_fk.name, person.email, person.password)
+                    # log_create_db(log, info_old=f'Cadastrou o Usuario {person.id_FisicPerson_fk.name}')
                 # else:
-                #     log_create_db(log, info_old=f'Cadastrou a Pessoa {person.id_FisicPerson_fk.name}')
+                    # log_create_db(log, info_old=f'Cadastrou a Pessoa {person.id_FisicPerson_fk.name}')
                 
                 person.save()
+
                 messages.success(request,"Cliente cadastrado com sucesso.",extra_tags="successClient")
                 return redirect(previous_url)
 
             if form_legalPerson.is_valid():
                 legalPerson = form_legalPerson.save(commit=False)
+                # legalPerson.id_address_fk = address
                 legalPerson = form_legalPerson.save()
 
                 # person = form_Person.save(commit=False)
-                person.content_object = legalPerson
+                person.id_LegalPerson_fk = legalPerson
                 if person.email and person.password: 
-                    u = createUser(person.content_type.name, person.email, person.password)
+                    u = createUser(person.id_LegalPerson_fk.fantasyName, person.email, person.password)
                     person.id_user_fk = u
                 #     log_create_db(log, info_old=f'Cadastrou o Usuario {person.id_LegalPerson_fk.fantasyName}')
                 # else:
                 #     log_create_db(log, info_old=f'Cadastrou a Pessoa {person.id_LegalPerson_fk.fantasyName}')
                 person.save()
+
                 messages.success(request,"Cliente cadastrado com sucesso.",extra_tags="successClient")
                 return redirect(previous_url)
 
             if form_foreigner.is_valid():
                 foreigner = form_foreigner.save(commit=False)
+                # foreigner.id_address_fk = address
                 foreigner = form_foreigner.save()
                 # person = form_Person.save(commit=False)
-                person.content_object = foreigner
+                person.id_ForeignPerson_fk = foreigner
                 if person.email and person.password: 
-                    create = createUser(person.content_type.name, person.email, person.password,)
+                    create = createUser(person.id_ForeignPerson_fk.name_foreigner, person.email, person.password,)
                     
                     person.id_user_fk = create
-                    # log_create_db(log, info_old=f'Cadastrou o Usuario {person.id_ForeignPerson_fk.name_foreigner}')
+                #     log_create_db(log, info_old=f'Cadastrou o Usuario {person.id_ForeignPerson_fk.name_foreigner}')
                 # else:
-                    # log_create_db(log, info_old=f'Cadastrou a Pessoa {person.id_ForeignPerson_fk.name_foreigner}')
+                #     log_create_db(log, info_old=f'Cadastrou a Pessoa {person.id_ForeignPerson_fk.name_foreigner}')
                     
                 person.save()
+                    
                 messages.success(request,"Cliente cadastrado com sucesso.",extra_tags="successClient")
                 return redirect(previous_url)
-            if not form_legalPerson.is_valid():
-                print("Erros: ",form_legalPerson.errors)
-
     else: 
         if 'HTTP_REFERER' in request.META:
             # SALVA A PAGINA ANTERIOR
@@ -111,9 +123,24 @@ def Client_Create(request):
         'form_fisicPerson': form_fisicPerson,
         'form_legalPerson': form_legalPerson,
         'form_foreigner': form_foreigner,
-        'form_Person': form_Person
+        'form_Person': form_Person,
+        'selected_form':'Pessoa Física'
     }
     return render(request, 'registry/Clientform.html', context)
+
+def createUser(*user):
+    usuario = User.objects.create_user(
+        username=user[0], 
+        email=user[1],
+        password=user[2],
+        first_name=user[0]
+        )
+    return usuario
+
+def updateUser(user, **form_user): #revisar
+    if user:user_compair = compair(user,form_user)
+    else:user_compair = {}
+    return user_compair
 
 @login_required
 def client_list(request):
