@@ -1,12 +1,9 @@
 from django.db import models
-<<<<<<< Updated upstream
-=======
 from django.contrib.auth.models import User
 from auditlog.registry import auditlog
 from functools import partial
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
->>>>>>> Stashed changes
 
 class Address(models.Model):
     cep = models.CharField('CEP', max_length=10)
@@ -38,13 +35,8 @@ class ForeignPerson(models.Model):
     id_address_fk = models.OneToOneField ('Address', on_delete=models.CASCADE, db_column='id_address_fk')
 
     def __str__(self):
-<<<<<<< Updated upstream
-        return self.name_foreigner
-    
-=======
         return self.name
 
->>>>>>> Stashed changes
 class LegalPerson(models.Model):
     name = models.CharField('Nome Fantasia', max_length=100)
     cnpj = models.CharField('CNPJ', max_length=100)
@@ -75,23 +67,6 @@ class Person(models.Model):
     isCarrier = models.BooleanField("Transportadora",null=True, blank=True)
     isDelivery_man = models.BooleanField("Entregador",null=True, blank=True)
     isTechnician = models.BooleanField("Tecnico",null=True, blank=True)
-<<<<<<< Updated upstream
- 
-    id_FisicPerson_fk = models.OneToOneField ('FisicPerson', on_delete=models.CASCADE,null=True, blank=True, db_column='id_FisicPerson_fk')
-    id_LegalPerson_fk = models.OneToOneField ('LegalPerson', on_delete=models.CASCADE,null=True, blank=True, db_column='id_LegalPerson_fk')
-    id_ForeignPerson_fk = models.OneToOneField ('ForeignPerson', on_delete=models.CASCADE,null=True, blank=True, db_column='id_ForeignPerson_fk')
-
-    def __str__(self):
-        if self.id_FisicPerson_fk != None:
-            return self.id_FisicPerson_fk.name
-        elif self.id_LegalPerson_fk != None:
-            return self.id_LegalPerson_fk.fantasyName
-        elif self.id_ForeignPerson_fk != None:
-            return self.id_ForeignPerson_fk.name_foreigner
-        else:
-            return None
- 
-=======
     
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, db_column='person_type')
     object_id = models.PositiveIntegerField() 
@@ -130,4 +105,3 @@ auditlog.register(ForeignPerson)
 auditlog.register(LegalPerson)
 auditlog.register(Person)
 auditlog.register(Credit)
->>>>>>> Stashed changes

@@ -62,7 +62,7 @@ class PositionModelForm(forms.ModelForm):
 
 class ServiceModelForm(forms.ModelForm):
     class Meta:
-        model = Service
+        model = service
         fields = ['name_Service','value_Service']
         widgets = {
             'name_Service':forms.TextInput(attrs={
@@ -72,4 +72,3 @@ class ServiceModelForm(forms.ModelForm):
                 'class':'form-control row'
             })
         }   
-        self.fields['name_position'].widget.attrs.update({'class': 'label-text'})

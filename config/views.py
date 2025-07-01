@@ -290,9 +290,9 @@ def deleteChartOfAccounts(request, id_chartOfAccounts):
 def service(request):
     print('----------------')
     context = {
-        'Services':Service.objects.all()
+        'Services':service.objects.all()
     }
-    return render(request,'config/Service.html',context)
+    return render(request,'config/service.html',context)
     # return HttpResponse("Olá, esta é a minha nova app Django!")
 
 @login_required
@@ -305,7 +305,7 @@ def ServiceForm(request):
         if service_form.is_valid():
             service_form.save() 
             messages.success(request, "Tipo de serviço cadastrado com sucesso.",extra_tags='successService')
-            return redirect('Service')
+            return redirect('service')
         else: 
             return render(request, 'config/serviceForm.html', {'form': service_form})
     else:
@@ -318,14 +318,14 @@ def ServiceForm(request):
 @login_required
 @transaction.atomic      
 def updateService(request,pk):
-    servico = get_object_or_404(Service,pk=pk)
+    servico = get_object_or_404(service,pk=pk)
     if request.method == "POST":
         service_form = ServiceModelForm(request.POST,instance=servico)
         if service_form.is_valid():
             service_form.save()
             messages.success(request, "Tipo de serviço atualizado com sucesso.",extra_tags='successService')
             # return redirect('orderServiceForm')
-            return redirect('Service')
+            return redirect('service')
 
         print(service_form.errors)
     else:
@@ -338,16 +338,16 @@ def updateService(request,pk):
 @login_required
 @transaction.atomic
 def deleteService(request,pk):
-    servico = get_object_or_404(Service, pk=pk)
+    servico = get_object_or_404(service, pk=pk)
     if request.method == "POST":
         servico.is_Active = False
         servico.save()
         messages.success(request, "Tipo de serviço deletado com sucesso.",extra_tags='successService')
-        return redirect('config/Service')
+        return redirect('config/service')
     context ={
         'service':servico
     }
-    return render(request,'config/Service',context)
+    return render(request,'config/service',context)
 @login_required
 def buscar_situacao(request):
     query = request.GET.get('query','').strip()

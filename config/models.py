@@ -1,5 +1,5 @@
 from django.db import models
-from Registry.models import Person
+from registry.models import Person
 
 class PaymentMethod(models.Model):
     # CONSIDERINCASH = [
@@ -38,7 +38,7 @@ class Position(models.Model):
     def __str__(self):
         return self.name_position
  
-class Service(models.Model):
+class service(models.Model):
     name_Service = models.CharField('Nome do Serviço',max_length=500)
     is_Active = models.BooleanField('ativo',default=True)
     value_Service = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor do Serviço", blank=True, null=True)

@@ -371,7 +371,7 @@ def workOrders_delete(request,pk):
 def service_search(request):
    
     query = request.GET.get('query', '') 
-    resultados = Service.objects.filter(
+    resultados = service.objects.filter(
         (
             Q(id__icontains=query) |
             Q(name_Service__icontains=query)
@@ -391,7 +391,7 @@ def service_search(request):
 
 def get_service_id(request):
     query = request.GET.get('query','')
-    resultados = Service.objects.filter(
+    resultados = service.objects.filter(
         Q(id=query)
     )
     resultados_json = list(resultados.values('id','name_Service'))

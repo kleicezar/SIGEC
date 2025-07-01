@@ -10,10 +10,11 @@ from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.db import transaction
+from config.views import 
 ### CLIENT
 
 @login_required
-@transaction.atomic
+@transaction.atomic 
 def Client_Create(request):
     if request.method == "POST":
         # SALVA O LINK DA PAGINA ANTERIOR
@@ -28,29 +29,21 @@ def Client_Create(request):
         # verificação e validação de endereço
         if form_address.is_valid():
             address = form_address.save()
-
+        else: 
+            print(form_address.errors)
         #verificação se o cadastro é valido 
         if form_Person.is_valid():
-<<<<<<< Updated upstream
-=======
             # log = log_db(request, action='c' ,type='01')
 
             person = form_Person.save(commit=False)
             person.id_address_fk = address
             person.isActive = 1
->>>>>>> Stashed changes
 
             # verificação em qual cadastro foi feito    
             if form_fisicPerson.is_valid():
                 fisicPerson = form_fisicPerson.save(commit=False)
-                fisicPerson.id_address_fk = address
                 fisicPerson = form_fisicPerson.save()
 
-<<<<<<< Updated upstream
-                person = form_Person.save(commit=False)
-                person.id_FisicPerson_fk = fisicPerson
-                person.isActive = 1
-=======
                 # person = form_Person.save(commit=False)
                 person.content_object = fisicPerson
                 
@@ -61,21 +54,14 @@ def Client_Create(request):
                 # else:
                 #     log_create_db(log, info_old=f'Cadastrou a Pessoa {person.id_FisicPerson_fk.name}')
                 
->>>>>>> Stashed changes
                 person.save()
                 messages.success(request,"Cliente cadastrado com sucesso.",extra_tags="successClient")
                 return redirect(previous_url)
 
             if form_legalPerson.is_valid():
                 legalPerson = form_legalPerson.save(commit=False)
-                legalPerson.id_address_fk = address
                 legalPerson = form_legalPerson.save()
 
-<<<<<<< Updated upstream
-                person = form_Person.save(commit=False)
-                person.id_LegalPerson_fk = legalPerson
-                person.isActive = 1
-=======
                 # person = form_Person.save(commit=False)
                 person.content_object = legalPerson
                 if person.email and person.password: 
@@ -84,21 +70,12 @@ def Client_Create(request):
                 #     log_create_db(log, info_old=f'Cadastrou o Usuario {person.id_LegalPerson_fk.fantasyName}')
                 # else:
                 #     log_create_db(log, info_old=f'Cadastrou a Pessoa {person.id_LegalPerson_fk.fantasyName}')
->>>>>>> Stashed changes
                 person.save()
                 messages.success(request,"Cliente cadastrado com sucesso.",extra_tags="successClient")
                 return redirect(previous_url)
 
             if form_foreigner.is_valid():
                 foreigner = form_foreigner.save(commit=False)
-<<<<<<< Updated upstream
-                foreigner.id_address_fk = address
-                foreigner = form_foreigner.save()
-
-                person = form_Person.save(commit=False)
-                person.id_ForeignPerson_fk = foreigner
-                person.isActive = 1
-=======
                 foreigner = form_foreigner.save()
                 # person = form_Person.save(commit=False)
                 person.content_object = foreigner
@@ -110,7 +87,6 @@ def Client_Create(request):
                 # else:
                     # log_create_db(log, info_old=f'Cadastrou a Pessoa {person.id_ForeignPerson_fk.name_foreigner}')
                     
->>>>>>> Stashed changes
                 person.save()
                 messages.success(request,"Cliente cadastrado com sucesso.",extra_tags="successClient")
                 return redirect(previous_url)
@@ -147,17 +123,6 @@ def client_list(request):
     # Filtrar os clientes com base no termo de pesquisa
     if search_query:
         clients = Person.objects.filter(
-<<<<<<< Updated upstream
-
-        (
-            Q(id__icontains=search_query) | 
-            Q(id_FisicPerson_fk__name__icontains=search_query) | 
-            Q(id_ForeignPerson_fk__name_foreigner__icontains=search_query) | 
-            Q(id_LegalPerson_fk__fantasyName__icontains=search_query) 
-            
-        ) 
-        & Q(isActive = False)
-=======
             (
                 Q(id__startswith=search_query) |
                 Q(nome_cliente__istartswith=search_query)
@@ -168,14 +133,6 @@ def client_list(request):
         clients = Person.objects.filter(
                 Q(isActive = True),
             ).select_related('content_type')
->>>>>>> Stashed changes
-        
-        ).order_by('id')
-    
-    else:
-        clients = Person.objects.filter(
-            isActive = True
-        )
 
     # Configure o Paginator com o queryset filtrado
     paginator = Paginator(clients, 20)  # 5 itens por página
@@ -336,8 +293,6 @@ def delete_client(request, id_client):
     client = get_object_or_404(Person, id=id_client)
     client.isActive = False
     client.save()
-<<<<<<< Updated upstream
-=======
     # log = Log.objects.create(
     #             user=request.user,
     #             date=datetime.now(),
@@ -350,16 +305,11 @@ def delete_client(request, id_client):
     #     Info_logs.objects.create(log_principal=log, info_old=f'Inativou a Pessoa {client.id_ForeignPerson_fk.name_foreigner}')
     # if client.id_LegalPerson_fk:
     #     Info_logs.objects.create(log_principal=log, info_old=f'Inativou a Pessoa {client.id_LegalPerson_fk.fantasyName}')
->>>>>>> Stashed changes
     messages.success(request,"Cliente deletado com sucesso.",extra_tags="successClient")
     return redirect('Client')
 
 @login_required
 def get_client(request, id_client):
-<<<<<<< Updated upstream
-    person = Person.objects.get(id=id_client)
-    if person.id_FisicPerson_fk:
-=======
     log = Log.objects.create(
             user=request.user,
             date=datetime.now(),
@@ -368,7 +318,6 @@ def get_client(request, id_client):
         )
     person = Person.objects.get(id=id_client)
     if person.content_object == 'fisicperson':
->>>>>>> Stashed changes
         client = {
                 'id': person.id,
                 'name': ( person.content_object.name if person.content_object else 'Nome não disponível' ),
@@ -381,13 +330,9 @@ def get_client(request, id_client):
                 'Salesman': person.salesman if person.salesman else 'Não Informado',
                 'CreditLimit': person.creditLimit if person.creditLimit else 'Não Informado',
                 }
-<<<<<<< Updated upstream
-    if person.id_LegalPerson_fk:
-=======
         # log_info = Info_logs.objects.create(log_principal=log, info_old=f'Visualizou a Pessoa {person.id_FisicPerson_fk.name}')
         
     if person.content_object == 'legalperson':
->>>>>>> Stashed changes
         client = {
                 'id': person.id,
                 'name': ( person.content_object.name if person.content_object else 'Nome indisponível'),
@@ -404,15 +349,10 @@ def get_client(request, id_client):
                 'Salesman': person.salesman if person.salesman else 'Não Informado',
                 'CreditLimit': person.creditLimit if person.creditLimit else 'Não Informado',
             }
-<<<<<<< Updated upstream
-        
-    if person.id_ForeignPerson_fk:
-=======
         log_info = Info_logs.objects.create(log_principal=log, info_old=f'Visualizou a Pessoa {person.content_object.fantasyName}')
                
 
     if isinstance(person.content_object, ForeignPerson):
->>>>>>> Stashed changes
         client = {
                 'id': person.id,
                 'name': getattr(person.content_object, 'name', 'Nome não disponível'),
@@ -424,8 +364,6 @@ def get_client(request, id_client):
                 'CreditLimit': person.creditLimit if person.creditLimit else 'Não Informado',
                 'client': 'foreignperson'
             }
-<<<<<<< Updated upstream
-=======
     #     log_info = Info_logs.objects.create(log_principal=log, info_old=f'Visualizou a Pessoa {person.id_ForeignPerson_fk.name_foreigner}')
     # for chave, valor in client.items():
     #     print(f'chave:{chave} valor:{valor}')
@@ -433,7 +371,6 @@ def get_client(request, id_client):
     print(f"Tipo do objeto relacionado: {(client['name'])}")
     print(f"Valor: {client['num_foreigner']}")
     # log.save() ,log_info.save()
->>>>>>> Stashed changes
         
     return render(request, 'registry/Client_Get.html', {'client': client})
 

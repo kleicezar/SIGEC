@@ -1,7 +1,7 @@
 from django.db import models
-from Registry.models import Person
-from Sale.models import Venda
-from Service.models import VendaService
+from registry.models import Person
+from sale.models import Venda
+from service.models import VendaService
 from purchase.models import Compra
 from config.models import ChartOfAccounts, PaymentMethod, Situation
 from django.utils import timezone
@@ -210,7 +210,7 @@ class CashMovement(models.Model):  # transações do caixa diario
         PaymentMethod_Accounts,
         null=True,
         on_delete=models.SET_NULL, 
-        related_name="conta"
+        related_name="cash_movement"
     )
     # tipo_movimentacao = models.CharField(max_length=10, choices=TIPO_MOVIMENTACAO) 
     #FIXME a movimentação de caixa se deve pelo campo acc presente em contas

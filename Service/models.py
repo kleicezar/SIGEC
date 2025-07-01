@@ -1,6 +1,6 @@
 from django.db import models
-from Registry.models import *
-from config.models import Service, Situation, PaymentMethod
+from registry.models import *
+from config.models import service, Situation, PaymentMethod
 from purchase.models import Product
 # Create your models here.
 
@@ -22,7 +22,7 @@ class VendaService(models.Model):
 
 class VendaItemService(models.Model):
     venda = models.ForeignKey(VendaService, on_delete=models.CASCADE, verbose_name="vendaService")
-    service = models.ForeignKey(Service, on_delete=models.CASCADE, verbose_name="Servico")
+    service = models.ForeignKey(service, on_delete=models.CASCADE, verbose_name="Servico")
     preco = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Preço Unitário")
     discount = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Desconto(%)")
     technician = models.ForeignKey(Person,on_delete = models.CASCADE, verbose_name='Técnico')

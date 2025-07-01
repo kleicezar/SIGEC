@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import *
 
-@admin.register(Service)
+@admin.register(service)
 class ServiceAdmin(admin.ModelAdmin):
     list_display = ('id','name_Service','is_Active','value_Service')
     list_filter = ('name_Service','is_Active','value_Service')

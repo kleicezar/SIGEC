@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from faker import Faker
 from random import randint, choice
 from decimal import Decimal
-from Registry.models import Person
+from registry.models import Person
 from purchase.models import Product
 
 class Command(BaseCommand):
