@@ -18,6 +18,8 @@ class Product(models.Model):
     minimum_quantity = models.IntegerField(verbose_name='Quantidade Mínima')  # quantidade mínima
     is_active = models.BooleanField(default=True, verbose_name='Está Ativo')  # está ativo
     supplier = models.ForeignKey(Person, on_delete=models.CASCADE, verbose_name='Fornecedor')  # fornecedor
+    # product = models.ForeignKey(ProductGroup, on_delete=models.SET_NULL, verbose_name='Grupo de Produtos')
+
 
     def __str__(self):
         return self.description  # retorna a descrição
@@ -50,15 +52,11 @@ class Frete(models.Model):
     valueFreight = models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor do Frete')
     numberOfInstallmentsFreight = models.IntegerField(verbose_name='Número de Parcelas')
     observation_freight = models.TextField(verbose_name='Observação sobre Frete',null=True,blank=True)
-  
-
 class Tax(models.Model):
     compra = models.ForeignKey(Compra,on_delete=models.SET_NULL, null=True, blank=True)
     valueTax =  models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor do Imposto')
     numberOfInstallmentsTax = models.IntegerField(verbose_name='Número de Parcelas')
     observation_tax = models.TextField(verbose_name='Observação sobre Imposto',null=True,blank=True)
-
-
 class PickingList(models.Model):
     compra = models.ForeignKey(Compra,on_delete=models.SET_NULL, null=True, blank=True)
     valuePickingList = models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor do RMN')
@@ -88,3 +86,52 @@ class CompraItem(models.Model):
 #     expirationDate = models.CharField(max_length=50, verbose_name='Data de Vencimento')
 #     valor = models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor Pago:')
 
+class PersonGroup(models.Model):
+    name_group = models.CharField(max_length=255, verbose_name='Nome do Grupo')
+
+class PersonGroupMembership(models.Model):
+    group = models.ForeignKey(PersonGroup, on_delete=models.CASCADE, verbose_name='memberships')
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, verbose_name='Pessoa')
+
+class ProductGroup(models.Model):
+    # person = models.ForeignKey(Person, on_delete=models.SET_NULL, verbose_name='Pessoa')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Produtos')
+    name_group = models.CharField(max_length=255, verbose_name='Nome do Grupo')
+    customized_price = models.IntegerField( verbose_name='Preço Customizado')
+
+class ProductPrice(models.Model):
+    person_group = models.ForeignKey(PersonGroup, on_delete=models.SET_NULL, null=True, verbose_name='Pessoa')
+    product_group = models.ForeignKey(ProductGroup, on_delete=models.CASCADE, verbose_name='Produtos')
+
+
+#     RESTO DE CODIGO PARA USO FUTURO (DELETAREI EM BREVE)
+#     # person = models.ForeignKey(Person, on_delete=models.SET_NULL, verbose_name='Pessoa')
+#     product = models.ForeignKey(Person, on_delete=models.CASCADE, verbose_name='Produtos')
+#     customized_price = models.CharField(max_length=255, verbose_name='Preço Customizado')
+
+# Como fazer o cálculo para análise da curva
+
+# No caso da elaboração da Curva ABC, tanto planilhas de excel quanto softwares ERP podem elaborá-la automaticamente a partir do envio dos dados.
+
+# Grande parte das empresas já utilizam sistemas de informação integrados (ERP) em seu dia a dia, o que facilita a organização destas informações e assertividade nos dados. Os sistemas ERP têm a inteligência de ranquear todos os produtos da empresa (conforme volume de vendas) e fornecer dados para que o gestor compreenda quais são mais importantes e têm mais valor.
+
+# Já em relação às planilhas no Excel, essa é uma ferramenta menos completa porém acessível para quase todas as empresas. No excel, por exemplo, é possível elaborar uma Curva ABC listando os produtos e as informações de cada um. Com a planilha em mãos, é necessário completar com todos os produtos disponíveis para venda, indicando o valor por unidade e o valor total de acordo com a quantidade vendida naquela semana, mês ou trimestre – o período que a organização definir.
+
+# Após alocar esses dados na planilha, o segundo passo é dividir o valor total de cada produto pelo valor de vendas da loja no período determinado. O resultado será uma porcentagem, que deverá ser colocado em uma nova coluna.
+
+# As colunas serão, respectivamente:
+
+#     Nome do produto;
+#     Quantidade vendida;
+#     Valor por unidade;
+#     Valor total por quantidade vendida;
+#     Porcentagem do produto (valor total por quantidade dividido por quantidade vendida, em %);
+#     Porcentagem acumulada (soma das porcentagens dos produtos, até chegar a 100%, que representa todas as vendas da empresa); e
+#     Classificação ABC (a partir da porcentagem do produto).
+
+# Portanto, vale relembrar:
+
+#     A = produtos que representam até 80% das vendas;
+#     B = produtos que representam até 15% das vendas; e
+#     C = produtos que representam até 5% das vendas.
+#

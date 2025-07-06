@@ -126,8 +126,6 @@ class CompraForm(forms.ModelForm):
         if self.instance and self.instance.pk:
             self.fields['data_da_compra'].initial = self.instance.data_da_compra
             self.fields['data_da_compra'].widget.attrs['readonly'] = True
-
-   
     
 class CompraItemForm(forms.ModelForm):
     STATUS_CHOICES = [
@@ -179,8 +177,6 @@ class CompraItemForm(forms.ModelForm):
         if preco_unitario and quantidade:
             cleaned_data['total'] = preco_unitario * quantidade
         return cleaned_data
-
-
 
 class CompraFormUpdate(forms.ModelForm):
     class Meta:
@@ -316,7 +312,64 @@ class TaxForm(forms.ModelForm):
             if value_tax <= 0 or installments <= 0:
                 raise forms.ValidationError("Para Imposto, os valores devem ser maiores que zero.")
         return cleaned_data
+
 class ProductSearchForm(forms.Form):
     search = forms.CharField(max_length=100,required=False,label='Pesquisar Produto')
+ 
 
+class PersonGroupForm(forms.ModelForm):
+    class Meta:
+        model = PersonGroup
+        fields= ['name_group']
+        widget= {
+        'name_group' :forms.TextInput(attrs={
+                'class':'form-control row-2',
+                'required':'required'
+            })
+        }
+     
+class PersonGroupMembershipForm(forms.ModelForm):
+    class Meta:
+        model = PersonGroupMembership
+        fields= ['person']
+        widget= {
+        'person' :forms.Select(attrs={
+                'class':'form-control row-2',
+                'required':'required'
+            }),
+        }
+     
+class ProductGroupForm(forms.ModelForm):
+    class Meta:
+        model = ProductGroup
+        fields= ['product', 'name_group', 'customized_price']
+        widget= {
+            'product': forms.TextInput(attrs={
+                'class':'form-control row-2',
+                'required':'required'
+            }),
+            'name_group':forms.TextInput(attrs={
+                'class':'form-control row-2',
+                'required':'required'
+            }),
+            'customized_price':forms.NumberInput(attrs={
+                'class':'form-control row-2',
+                'required':'required'
+            }),
+        }
 
+class ProductPriceForm(forms.ModelForm):
+    class Meta:
+        model = ProductPrice
+        fields= ['person_group', 'product_group']
+        widget= {
+            'person_group':forms.Select(attrs={
+                'class':'form-control row-2',
+                'required':'required'
+            }), 
+            'product_group':forms.Select(attrs={
+                'class':'form-control row-2',
+                'required':'required'
+            }),
+        }
+    
