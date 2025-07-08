@@ -46,7 +46,12 @@
                 </div>
                 <form method="post" id="form">
                     {% csrf_token %}
-                
+                    <!-- Para verificar se é editável ou não - ver block_fields.js -->
+                    <input id="permition_sale" type="hidden" value="{{permition_edit_sale}}">
+                    <input id="permition_saleItem" type="hidden" value="{{permition_edit_saleItem}}">
+                    <input id="permition_payment" type="hidden" value="{{permition_edit_payments}}">
+
+ 
                     <!-- Formulário de Venda -->
                     <h6 class="mt-5 mb-3">Dados da Venda</h6>
                     <!-- {{ venda_form.as_p }} -->
@@ -81,9 +86,9 @@
                                 <th scope="col">
                                     Data da Venda
                                 </th>
-                                <th scope="col">
+                                <!-- <th scope="col">
                                     Situação
-                                </th>
+                                </th> -->
                             </tr>
                         </thead>
 
@@ -106,7 +111,7 @@
                                         required id="id_data_da_venda" readonly>
                                         
                                 </td>
-                                <td>{{venda_form.situacao}}</td>
+                                <td>{{venda_form.situacao.as_hidden}}</td>
                             </tr>
                            
                         </tbody>
@@ -297,12 +302,13 @@
         <script src="{% static 'js/suggestionsUpdate.js' %}"></script> 
         <script src="{% static 'js/venda_item.js' %}"></script> <!-- pesquisa produtos em vendas-->
         <script src="{% static 'js/error.js' %}"></script>
+        <script src="{% static 'js/block_fields.js' %}"></script>
         <script>
             const credit_apply = document.getElementById("id_apply_credit");
             const credit = document.getElementById("credit");
             credit_apply.addEventListener("click",()=>{
                 if(credit_apply.onclick == null && credit_apply.checked){
-                credit.style.display = "block";
+                    credit.style.display = "block";
                 }
                 else{
                     credit.style.display = "none";
@@ -330,6 +336,12 @@
                   
                 });
             
+            // const id_situacao = document.getElementById("id_situacao");
+            // id_situacao.addEventListener("change",()=>{
+            //     const url = new URL(window.location.href);
+            //     url.searchParams.set('situation',id_situacao.value);
+            //     window.location.href = url.toString();
+            // })
         </script>
         {% endblock %}     
     </main>

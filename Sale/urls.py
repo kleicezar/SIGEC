@@ -14,6 +14,7 @@ urlpatterns = [
     path('buscar_produtos/',product_search,name='buscar_produtos'),
     path('get_product_id/',get_product_id,name='buscar_idprodutos'),
     path('venda/<int:venda_pk>/print', printsale, name='printsale'),
+    path('venda/mudar_situacao/<int:pk>/',mudar_situacao,name='buscar_situacao')
     ]
 
  

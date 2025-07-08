@@ -7,13 +7,14 @@ from django.contrib.auth.models import Permission, User, Group
 class SituationModelForm(forms.ModelForm):
     class Meta:
         model = Situation
-        fields = ['name_Situation']
+        fields = ['name_Situation','closure_level']
         widgets = {
             'name_Situation' : forms.TextInput(
                 attrs = {
                     'class':'form-control row'
                 }
-            )
+            ),
+            'closure_level':forms.Select()
         }
 
 

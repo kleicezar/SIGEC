@@ -8,8 +8,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from datetime import datetime, timedelta
 # from registry.forms import SearchForm
-from finance.forms import AccountsForm, PaymentMethodAccountsForm
-from finance.models import PaymentMethod_Accounts
+from finance.forms import AccountsForm, PaymentMethodAccountsForm, PaymentMethodAccountsReadOnlyForm
+from finance.models import CaixaDiario, PaymentMethod_Accounts
+from sale.services.sale_service import VendaService
 from .forms import *
 from .models import *
 from django.http import JsonResponse
@@ -92,14 +93,45 @@ def venda_list(request):
         ('data_da_venda','Data da Venda'),
         ('situacao','Situação'),
     ]
+    situations = Situation.objects.filter(is_Active = True)
+    options_situations = Situation.CLOSURE_LEVEL_OPTIONS
     return render(request, 'sale/venda_list.html', {
         'colunas':colunas,
         'vendas': page,
         'query':search_query,
         'current_sort':sort,
-        'current_dir':direction
+        'current_dir':direction,
+        'situations':situations,
+        'options_situations':options_situations
         # 'form':form
         })
+
+def mudar_situacao(request,pk):
+    nova_situacao = request.POST.get('opcao')
+    situationObject = get_object_or_404(Situation,pk=nova_situacao)
+    venda = get_object_or_404(Venda,pk=pk)
+    venda.situacao = situationObject
+    if situationObject.closure_level == Situation.CLOSURE_LEVEL_OPTIONS[1][0] or situationObject.closure_level[3][0]:
+        user = CaixaDiario.objects.filter(
+            Q(usuario_responsavel=request.user) & 
+            Q(is_Active=1)
+            )
+        
+        if user.exists():
+            messages.error(request, f"Já Existe um Caixa aberto para {request.user.username}")
+            return redirect('Cash_list')
+        else:
+            payment_value = PaymentMethod_Accounts.objects.filter(venda=venda.id).first()
+            
+            caixa = CaixaDiario.save(commit=False)
+            caixa.usuario_responsavel = request.user
+            caixa.is_Active = 1
+            caixa.saldo_inicial = payment_value
+            caixa.saldo_final = caixa.saldo_inicial
+            caixa.save()
+            messages.success(request, 'Caixa Aberto Com Sucesso')
+    venda.save()    
+    return redirect('venda_list')
 
 @login_required
 @transaction.atomic 
@@ -108,7 +140,6 @@ def venda_create(request):
     PaymentMethodAccountsFormSet = inlineformset_factory(Venda,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=1,can_delete=True)
 
     if request.method == 'POST':
-        print(request.POST)
         previous_url = request.session.get('previous_page','/')
 
         venda_form = VendaForm(request.POST)
@@ -119,6 +150,7 @@ def venda_create(request):
         if venda_form.is_valid() and venda_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
 
             venda = venda_form.save(commit=False)
+           
 
             venda_item_formset.instance = venda
             venda_item_formset.save(commit=False)
@@ -141,23 +173,25 @@ def venda_create(request):
                     if form.cleaned_data["activeCredit"]:
                         creditos = Credit.objects.filter(person=venda.pessoa).order_by('id')
                         restante_para_descontar = Decimal(valor_usado)
+                        if creditos:
+                            for credito in creditos:
+                                if restante_para_descontar <= 0:
+                                    break  # nada mais a descontar
 
-                        for credito in creditos:
-                            if restante_para_descontar <= 0:
-                                break  # nada mais a descontar
-
-                            if credito.credit_value >= restante_para_descontar:
-                                credito.credit_value -= restante_para_descontar
-                                credito.save()
-                                restante_para_descontar = Decimal('0')
-                            else:
-                                restante_para_descontar -= credito.credit_value
-                                credito.credit_value = Decimal('0')
-                                credito.save()
+                                if credito.credit_value >= restante_para_descontar:
+                                    credito.credit_value -= restante_para_descontar
+                                    credito.save()
+                                    restante_para_descontar = Decimal('0')
+                                else:
+                                    restante_para_descontar -= credito.credit_value
+                                    credito.credit_value = Decimal('0')
+                                    credito.save()
                                 
             if(total_payment == venda_form.cleaned_data['total_value']):  
-
-                venda_form.save()
+                venda.situacao = Situation.objects.filter(
+                    closure_level=Situation.CLOSURE_LEVEL_OPTIONS[0][0]
+                ).first()
+                venda.save()
                 venda_item_formset.save()
                 PaymentMethod_Accounts_FormSet.save()
 
@@ -204,10 +238,27 @@ def venda_create(request):
 def venda_update(request, pk):
     # Carregar a venda existente
     venda = get_object_or_404(Venda, pk=pk)
+    
     # Criar formsets para itens de venda e formas de pagamento
-    VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=VendaItemForm, extra=0, can_delete=True)
-    PaymentMethodAccountsFormSet = inlineformset_factory(Venda, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
-    OlderPaymentMethodAccountsFormSet = inlineformset_factory(Venda, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=0, can_delete=True)
+    sale,saleItem,payments=VendaService().disabled_fields_based_on_situation(venda.situacao.pk,venda)
+
+    form_class_sale = sale[0]
+    permit_edition_sale = sale[1]
+
+    form_class_saleItem = saleItem[0]
+    permit_edition_saleItem = saleItem[1]
+
+    form_class_payments = payments[0]
+    permit_edition_payment = payments[1]
+
+    VendaItemFormSet = inlineformset_factory(Venda, VendaItem, form=form_class_saleItem, extra=0, can_delete=True)
+    PaymentMethodAccountsFormSet = inlineformset_factory(
+        Venda, 
+        PaymentMethod_Accounts, 
+        form=form_class_payments, 
+        extra=1, 
+        can_delete=True)
+    OlderPaymentMethodAccountsFormSet = inlineformset_factory(Venda, PaymentMethod_Accounts,form=form_class_payments, extra=0, can_delete=True)
 
     if request.method == 'POST':
         # previous_url = request.session.get('previous_page','/')
@@ -215,19 +266,7 @@ def venda_update(request, pk):
         venda_item_formset = VendaItemFormSet(request.POST, instance=venda)
         PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(request.POST,instance=venda,prefix="paymentmethod_accounts_set")
         Older_PaymentMethod_Accounts_FormSet = OlderPaymentMethodAccountsFormSet(request.POST,instance=venda,prefix="older_paymentmethod_accounts_set")
-        form_Accounts = AccountsForm(request.POST,instance=venda)
-
-        # # APAGANDO ITENS QUE NAO FORAM SUBMETIDOS NO FORMS (FORAM DELETADOS VISUALMENTE) - VENDA ITENS
-        venda_item = VendaItem.objects.filter(venda=venda)
-        ids_existentes_venda_itens = set(venda_item.values_list('id',flat=True))
-
-        ids_enviados_venda_itens = set(
-            int(value) for key, value in request.POST.items() 
-            if key.startswith("vendaitem_set-") and key.endswith("-id") and value.isdigit()
-            )
-        
-        ids_para_excluir_venda_itens = ids_existentes_venda_itens - ids_enviados_venda_itens
-        VendaItem.objects.filter(id__in=ids_para_excluir_venda_itens).delete()
+        form_Accounts = AccountsForm(request.POST,instance=venda)   
 
         if venda_form.is_valid() and venda_item_formset.is_valid() and PaymentMethod_Accounts_FormSet.is_valid() and Older_PaymentMethod_Accounts_FormSet.is_valid():
             venda_form.save(commit=False)
@@ -248,7 +287,8 @@ def venda_update(request, pk):
             for value_payment in value_payments:
                 credit.credit_value += value_payment.value
 
-            credit.save()
+            if credit:
+                credit.save()
             total_payment = 0
             
             onlyOldPayments = False 
@@ -374,16 +414,17 @@ def venda_update(request, pk):
             print('Erros no PaymentMethod_Accounts_FormSet: ',PaymentMethod_Accounts_FormSet.errors)
         
         if not Older_PaymentMethod_Accounts_FormSet.is_valid():
-            print("Erros no Older_PaymentMethod_Accounts_Formset: ", Older_PaymentMethod_Accounts_FormSet.errors)
-            
+            print("Erros no Older_PaymentMethod_Accounts_Formset: ",Older_PaymentMethod_Accounts_FormSet.errors)
+
+
+    venda_form = form_class_sale(instance=venda)
     form_Accounts = AccountsForm(instance=venda)
     Older_PaymentMethod_Accounts_FormSet = OlderPaymentMethodAccountsFormSet(queryset=venda.paymentmethod_accounts_set.all(),instance=venda,prefix='older_paymentmethod_accounts_set')
     PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
-    venda_form = VendaForm(instance=venda)
     venda_item_formset = VendaItemFormSet(queryset=venda.vendaitem_set.all(),instance=venda)
     
     count_payment = 0
-    
+
     for i,form in enumerate(Older_PaymentMethod_Accounts_FormSet):
         if i == 0:
             data_obj = form.initial["expirationDate"]  
@@ -400,7 +441,10 @@ def venda_update(request, pk):
             'form_payment_account':PaymentMethod_Accounts_FormSet,
             'venda_form': venda_form,
             'venda_item_formset': venda_item_formset,
-            'older_form_payment_account':Older_PaymentMethod_Accounts_FormSet
+            'older_form_payment_account':Older_PaymentMethod_Accounts_FormSet,
+            'permition_edit_sale':permit_edition_sale,
+            'permition_edit_saleItem':permit_edition_saleItem,
+            'permition_edit_payments':permit_edition_payment
     }
 
     return render(request, 'sale/venda_formUpdate.html', context)

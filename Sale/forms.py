@@ -1,6 +1,7 @@
 from django import forms
 from .models import *
 from django.core.validators import MaxValueValidator, MinValueValidator
+
 class VendaForm(forms.ModelForm):
     apply_credit = forms.BooleanField(
         required=False,
@@ -60,8 +61,17 @@ class VendaForm(forms.ModelForm):
         if self.instance and self.instance.pk:
             # self.fields['data_da_venda'].initial = self.instance.data_da_venda.strftime('%Y-%m-%d %H:%M')
             self.fields['data_da_venda'].widget.attrs['readonly'] = True
-            self.fields['pessoa'].queryset = Person.objects.filter(isClient=True)
     
+        self.fields['pessoa'].queryset = Person.objects.filter(isClient=True)
+        # self.fields['situacao'].queryset = Situation.objects.filter(is_Active=True)
+
+        closure_level = Situation.CLOSURE_LEVEL_OPTIONS[1][0]
+
+        if self.instance.pk and self.instance.situacao == closure_level:
+            self.fields['situacao'].choices = [
+                choice for choice in self.fields['situacao'].choices
+                if choice[0] == closure_level
+        ]
 
 class VendaFormUpdate(VendaForm):
     class Meta:
@@ -240,3 +250,18 @@ class ReturnVendaItemForm(forms.ModelForm):
             })
             max_qtd = self.instance.quantidade
             self.fields['quantidade'].validators.append(MaxValueValidator(max_qtd))
+
+
+class VendaReadOnlyForm(VendaForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name in self.fields:
+            if field_name != "situacao":
+                self.fields[field_name].widget.attrs['readonly'] = True
+
+class VendaItemReadOnlyForm(VendaItemForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['readonly'] = True
+

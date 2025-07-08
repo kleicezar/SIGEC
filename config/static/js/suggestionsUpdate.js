@@ -3,6 +3,13 @@ document.addEventListener('DOMContentLoaded', function() {
     let id_client = document.getElementById('id_pessoa')
     let id_supplier = document.getElementById('id_fornecedor');
 
+    const suggestions = document.querySelectorAll(".suggetions");
+    suggestions.forEach(suggetion=>{
+        suggetion.style.display = "none";
+    }
+    )
+
+
     const credit = document.getElementById('credit');
     const credit_value = document.getElementById("id_value_apply_credit");
     const checkbox_credit = document.getElementById('id_apply_credit');
@@ -32,7 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     })
                     .then(data=>{
-                        console.log("oiii")
                         checkbox_credit.onclick = null;
                         credit_value.disabled = false;
                         // credit_value.value = data.credit_total;

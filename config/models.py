@@ -78,7 +78,18 @@ class ChartOfAccounts(models.Model):
         return f'{self.code} - {self.name_ChartOfAccounts}'
     
 class Situation(models.Model):
+    CLOSURE_LEVEL_OPTIONS = [
+        ('Situação Aberta','Situação Aberta'),
+        ('Situação Concluída','Situação Concluída'),
+        ('Trancamento Parcial','Trancamento Parcial'),
+        ('Trancamento Total','Trancamento Total')
+    ]
     name_Situation = models.CharField('Nome da Situação', max_length=50)
+    closure_level = models.CharField(
+        max_length=50,
+        choices=CLOSURE_LEVEL_OPTIONS,
+        default='Situação Concluída'
+    )
     is_Active = models.BooleanField('ativo',default=True)
 
     def __str__(self):

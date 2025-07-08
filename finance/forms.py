@@ -226,7 +226,6 @@ class PaymentMethodFormSet(BaseInlineFormSet):
         """Remove formulários vazios antes da validação"""
         if any(self.errors):
             return
-        print("oooo")
         for form in self.forms:
             if not form.cleaned_data:
                 self.forms.remove(form)
@@ -254,7 +253,35 @@ class PaymentMethodAccountsForm(BasePaymentMethodAccountsForm):
 
 
         return cleaned_data
-   
+    
+class PaymentMethodAccountsReadOnlyForm(BasePaymentMethodAccountsForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['interestType'].required = False
+        self.fields['fineType'].required = False
+        self.fields['value_old'].required = False
+        self.fields['value_old'].widget = forms.HiddenInput() 
+        for name, field in list(self.fields.items()):
+            # Usar list() porque vamos modificar o dicionário
+            if isinstance(field.widget, forms.Select):
+                value = self.initial.get(name, self.data.get(name, ''))
+                display = dict(field.choices).get(value, '')
+
+                field.widget = forms.TextInput(attrs={'readonly': True})
+                field.initial = display
+                
+                self.fields[f'{name}_hidden'] = forms.CharField(
+                    widget=forms.HiddenInput(),
+                    initial=value
+                )
+            else:
+                field.widget.attrs['readonly'] = True
+           # Torna todos os campos opcionais
+        for field in self.fields.values():
+            field.required = False
+        # for field in self.fields.values():
+        #     field.widget.attrs['readonly'] = True
+
 class PaymentMethodAccountsPurchaseFormSet(BaseInlineFormSet):
     # class Meta(BasePaymentMethodAccountsForm.Meta):
     def clean(self):

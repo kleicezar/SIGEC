@@ -65,9 +65,6 @@ def Accounts_Create(request):
         #     # Exemplo: garantir que está no formato YYYY-MM-DD
         #     treated_date = raw_date_init.strip()  # aqui você pode usar um parser também
         #     post_data['date_init'] = treated_date
-        
-        if form_Accounts.is_valid():
-            print('oi')
 
         if form_Accounts.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
 

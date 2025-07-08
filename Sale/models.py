@@ -4,7 +4,7 @@ from config.models import Situation, PaymentMethod
 from purchase.models import Product
 from service.models import Vendaservice
 
-class Venda(models.Model):
+class   Venda(models.Model):
     pessoa = models.ForeignKey(Person,on_delete=models.CASCADE,verbose_name="Pessoa")
     data_da_venda = models.DateTimeField(verbose_name="Data da Venda" )
     observacao_pessoas = models.TextField(verbose_name="Observações sobre as Pessoas",blank=True,null=True)

@@ -65,7 +65,7 @@ class Accounts(models.Model):
     is_active = models.BooleanField(default=True,verbose_name='Está Ativo')
     plannedAccount = models.BooleanField(default=False,verbose_name='Conta Prevista')
 
-class   PaymentMethod_Accounts(models.Model):
+class PaymentMethod_Accounts(models.Model):
     INTEREST_CHOICES = [
         ('percent', '(%)'),
         ('value', '(R$)'),

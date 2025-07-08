@@ -757,17 +757,16 @@ def get_product_id(request):
 
 def returnProducts_list(request):
     vendasItens = VendaItem.objects.filter(
-        Q(status = 'Entregue')
+        Q(status = 'Entregue') &
+        Q(current_quantity__gt = 0)
     )
-    workOrders = VendaItemWS.objects.filter(
-        Q(status='Entregue')
-    )
+    # workOrders = VendaItemWS.objects.filter(
+    #     Q(status='Entregue')
+    # )
 
     all_products_with_status = [
         {'idVenda': vendaItem.venda.id,'idProduto':vendaItem.product.id,'idVendaItem':vendaItem.id,'descricao': vendaItem.product.description, 'quantidade': vendaItem.quantidade, 'status': vendaItem.status,'id':vendaItem.id} for vendaItem in vendasItens
-    ] + [
-        {'idOS': workOrder.venda.id, 'idProduto':workOrder.product.id,'idVendaItem':workOrder.id,'descricao': workOrder.product.description, 'quantidade': workOrder.quantidade,'status':workOrder.status,'id':workOrder.id} for workOrder in workOrders
-    ]
+    ] 
     status_options = ["Pendente", "Entregue"]
 
     return render(request,'purchase/manageDeliveries_list.html',
