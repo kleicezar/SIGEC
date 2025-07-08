@@ -79,7 +79,7 @@ class PositionModelForm(forms.ModelForm):
 
 class serviceModelForm(forms.ModelForm): 
     class Meta:
-        model = service
+        model = Service
         fields = ['name_service','value_service']
         widgets = {
             'name_service':forms.TextInput(attrs={
