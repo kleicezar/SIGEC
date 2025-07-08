@@ -6,6 +6,7 @@ from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import Permission
+from auditlog.registry import auditlog
 
 class PaymentMethod(models.Model):
     # CONSIDERINCASH = [
@@ -91,7 +92,7 @@ class Position(models.Model): #desativado
     def __str__(self):
         return self.name_position
  
-class service(models.Model):
+class Service(models.Model):
     name_service = models.CharField('Nome do Serviço',max_length=500)
     is_Active = models.BooleanField('ativo',default=True)
     value_service = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor do Serviço", blank=True, null=True)
@@ -236,3 +237,10 @@ class Info_logs(models.Model):
     info_now = models.CharField(max_length=255, null=True, blank=False, verbose_name="Informação atual")
     field = models.CharField(max_length=255, null=True, blank=False, verbose_name="nome do campo")
    
+auditlog.register(PaymentMethod)
+auditlog.register(ChartOfAccounts)
+auditlog.register(Situation)
+auditlog.register(Service)
+auditlog.register(SuperGroup)
+
+

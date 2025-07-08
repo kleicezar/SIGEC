@@ -1,6 +1,7 @@
 from django.db import models
 from registry.models import Person
 from config.models import Situation, PaymentMethod
+from auditlog.registry import auditlog
 
 class Product(models.Model):
     description = models.CharField(max_length=255, verbose_name='Descrição')  # descrição
@@ -80,28 +81,24 @@ class CompraItem(models.Model):
     def __str__(self):
         return f"{self.produto.description} - {self.quantidade} unidades"
 
-# class PaymentMethod_Compra(models.Model):
-#     compra = models.ForeignKey(Compra, on_delete=models.SET_NULL, null=True, verbose_name='id_compra')
-#     forma_pagamento = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True, verbose_name='id_forma_de_pagamento')
-#     expirationDate = models.CharField(max_length=50, verbose_name='Data de Vencimento')
-#     valor = models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor Pago:')
-
-class PersonGroup(models.Model):
+class NomeGrupoPessoas(models.Model):
     name_group = models.CharField(max_length=255, verbose_name='Nome do Grupo')
 
-class PersonGroupMembership(models.Model):
-    group = models.ForeignKey(PersonGroup, on_delete=models.CASCADE, verbose_name='memberships')
+class NomeGrupoPessoasQuantidade(models.Model):
+    group = models.ForeignKey(NomeGrupoPessoas, on_delete=models.CASCADE, verbose_name='NomeGrupoPessoasQuantidades')
     person = models.ForeignKey(Person, on_delete=models.CASCADE, verbose_name='Pessoa')
 
 class ProductGroup(models.Model):
-    # person = models.ForeignKey(Person, on_delete=models.SET_NULL, verbose_name='Pessoa')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Produtos')
     name_group = models.CharField(max_length=255, verbose_name='Nome do Grupo')
+
+class AllProductGroup(models.Model):
+    group_name = models.ForeignKey(ProductGroup, on_delete=models.CASCADE, verbose_name='NomeGrupoPessoasQuantidades')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Produtos')
     customized_price = models.IntegerField( verbose_name='Preço Customizado')
 
 class ProductPrice(models.Model):
-    person_group = models.ForeignKey(PersonGroup, on_delete=models.SET_NULL, null=True, verbose_name='Pessoa')
-    product_group = models.ForeignKey(ProductGroup, on_delete=models.CASCADE, verbose_name='Produtos')
+    person_group = models.ForeignKey(NomeGrupoPessoasQuantidade, on_delete=models.SET_NULL, null=True, verbose_name='Pessoa')
+    product_group = models.ForeignKey(AllProductGroup, on_delete=models.CASCADE, verbose_name='Produtos')
 
 
 #     RESTO DE CODIGO PARA USO FUTURO (DELETAREI EM BREVE)
@@ -135,3 +132,14 @@ class ProductPrice(models.Model):
 #     B = produtos que representam até 15% das vendas; e
 #     C = produtos que representam até 5% das vendas.
 #
+auditlog.register(Compra)
+auditlog.register(Product)
+auditlog.register(Frete)
+auditlog.register(Tax)
+auditlog.register(PickingList)
+auditlog.register(CompraItem)
+auditlog.register(NomeGrupoPessoas)
+auditlog.register(NomeGrupoPessoasQuantidade)
+auditlog.register(ProductGroup)
+auditlog.register(AllProductGroup)
+auditlog.register(ProductPrice)

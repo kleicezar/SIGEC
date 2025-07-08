@@ -41,3 +41,7 @@ class PaymentMethod_Vendaservice(models.Model):
     forma_pagamento = models.ForeignKey(PaymentMethod,on_delete=models.SET_NULL, null=True, verbose_name='id_forma_de_pagamento')
     expirationDate = models.CharField(max_length=50, verbose_name='Data de Vencimento')
     valor = models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor Pago:')
+
+auditlog.register(Vendaservice)
+auditlog.register(VendaItemservice)
+auditlog.register(PaymentMethod_Vendaservice)

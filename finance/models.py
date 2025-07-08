@@ -6,6 +6,7 @@ from purchase.models import Compra
 from config.models import ChartOfAccounts, PaymentMethod, Situation
 from django.utils import timezone
 from django.contrib.auth.models import User 
+from auditlog.registry import auditlog
 
 class Accounts(models.Model):
     INSTALLMENT_RANGE_CHOICES = [
@@ -65,7 +66,7 @@ class Accounts(models.Model):
     is_active = models.BooleanField(default=True,verbose_name='Está Ativo')
     plannedAccount = models.BooleanField(default=False,verbose_name='Conta Prevista')
 
-class   PaymentMethod_Accounts(models.Model):
+class PaymentMethod_Accounts(models.Model):
     INTEREST_CHOICES = [
         ('percent', '(%)'),
         ('value', '(R$)'),
@@ -181,140 +182,6 @@ class   PaymentMethod_Accounts(models.Model):
         blank=True
     )
 
-
-# class Tax_PaymentMethod_Accounts(models.Model):
-#     compra = models.ForeignKey(Compra,
-#         on_delete=models.SET_NULL,
-#         null=True,
-#         blank=True,
-#         verbose_name='id_compra'
-#     )
-#     forma_pagamento = models.ForeignKey(PaymentMethod,
-#         on_delete=models.SET_NULL,
-#         null=True,
-#         blank=True,
-#         verbose_name='Forma de Pagamento'
-#     )
-#     expirationDate = models.DateField(
-#         max_length=50,
-#         verbose_name='Data de Vencimento',
-#         blank=True
-#     )
-#     days = models.IntegerField(             #dias entre as parcelas
-#         verbose_name='Dias',
-#         blank=True
-#     )
-#     value = models.DecimalField(decimal_places=2,
-#         max_digits=8,
-#         verbose_name='Valor Pago:',
-#         blank=True
-#     )
-#     acc = models.BooleanField(
-#         verbose_name='Tipo de Conta'
-#     )
-#     activeCredit = models.BooleanField(
-#         default=False,
-#         blank=True
-#     )
-
-# class Freight_PaymentMethod_Accounts(models.Model):
-#     compra = models.ForeignKey(Compra,
-#         on_delete=models.SET_NULL,
-#         null=True,
-#         blank=True,
-#         verbose_name='id_compra'
-#     )
-#     forma_pagamento = models.ForeignKey(PaymentMethod,
-#         on_delete=models.SET_NULL,
-#         null=True,
-#         blank=True,
-#         verbose_name='Forma de Pagamento'
-#     )
-#     expirationDate = models.DateField(
-#         max_length=50,
-#         verbose_name='Data de Vencimento',
-#         blank=True
-#     )
-#     days = models.IntegerField(             #dias entre as parcelas
-#         verbose_name='Dias',
-#         blank=True
-#     )
-#     value = models.DecimalField(decimal_places=2,
-#         max_digits=8,
-#         verbose_name='Valor Pago:',
-#         blank=True
-#     )
-#     acc = models.BooleanField(
-#         verbose_name='Tipo de Conta'
-#     )
-#     activeCredit = models.BooleanField(
-#         default=False,
-#         blank=True
-#     )
-
-# class Romaneio_PaymentMethod_Accounts(models.Model):
-#     compra = models.ForeignKey(Compra,
-#         on_delete=models.SET_NULL,
-#         null=True,
-#         blank=True,
-#         verbose_name='id_compra'
-#     )
-#     forma_pagamento = models.ForeignKey(PaymentMethod,
-#         on_delete=models.SET_NULL,
-#         null=True,
-#         blank=True,
-#         verbose_name='Forma de Pagamento'
-#     )
-#     expirationDate = models.DateField(
-#         max_length=50,
-#         verbose_name='Data de Vencimento',
-#         blank=True
-#     )
-#     days = models.IntegerField(             #dias entre as parcelas
-#         verbose_name='Dias',
-#         blank=True
-#     )
-#     value = models.DecimalField(decimal_places=2,
-#         max_digits=8,
-#         verbose_name='Valor Pago:',
-#         blank=True
-#     )
-#     acc = models.BooleanField(
-#         verbose_name='Tipo de Conta'
-#     )
-#     activeCredit = models.BooleanField(
-#         default=False,
-#         blank=True
-#     )
-#     # interestPercent = models.DecimalField(
-#     #     decimal_places=2, 
-#     #     max_digits=8, 
-#     #     verbose_name='Juros (%)',
-#     #     null=True,
-#     #     blank=True
-#     # )
-#     # interestValue = models.DecimalField(
-#     #     decimal_places=2, 
-#     #     max_digits=8, 
-#     #     verbose_name='juros R$',
-#     #     null=True,
-#     #     blank=True
-#     # )
-#     # finePercent = models.DecimalField(
-#     #     decimal_places=2, 
-#     #     max_digits=8, 
-#     #     verbose_name='multa (%)',
-#     #     null=True,
-#     #     blank=True
-#     # )
-#     # fineValue = models.DecimalField(
-#     #     decimal_places=2, 
-#     #     max_digits=8, 
-#     #     verbose_name='multa R$',
-#     #     null=True,
-#     #     blank=True
-#     # )
-
 class CaixaDiario(models.Model): #abertura de caixa
     usuario_responsavel = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     saldo_inicial = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
@@ -368,3 +235,10 @@ class FechamentoCaixa(models.Model):  # fechamento do caixa
 
     def __str__(self):
         return f"Fechamento {self.caixa.data} - Responsável: {self.caixa.usuario_responsavel}"
+
+
+auditlog.register(Accounts)
+auditlog.register(PaymentMethod_Accounts)
+auditlog.register(CaixaDiario)
+auditlog.register(CashMovement)
+auditlog.register(FechamentoCaixa)
