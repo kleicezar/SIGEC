@@ -5,7 +5,7 @@ const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
 input.addEventListener("input",()=>{
     const query = input.value;
-    fetch(`/Sdct/buscar_produtos/?query=${encodeURIComponent(query)}`)
+    fetch(`/product/buscar_produtos/?query=${encodeURIComponent(query)}`)
     .then(response=>{
         if(response.ok && response.headers.get('Content-Type').includes('application/json')){
             return response.json();
@@ -29,11 +29,11 @@ input.addEventListener("input",()=>{
                     <td>${produto.product_code}</td>
                     <td>${produto.selling_price}</td>
                     <td>
-                           <a href="/Sdct/upt/${produto.id}">
+                           <a href="/product/upt/${produto.id}">
                                 <button class="btn" style="background-color: #117027;color: white;" >Editar</button>
                             </a>
 
-                            <form action="/Sdct/dlt/${produto.id}/" method="POST" style="display:inline-block;">
+                            <form action="/product/dlt/${produto.id}/" method="POST" style="display:inline-block;">
                                 <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
                                 <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
                             </form>
@@ -57,7 +57,7 @@ input.addEventListener("input",()=>{
             if (has_previous){
                 const prevLink = document.createElement("a");
 
-                prevLink.href=`/Sdct/?page=${previous_page}&query=${encodeURIComponent(query)}`;
+                prevLink.href=`/product/?page=${previous_page}&query=${encodeURIComponent(query)}`;
                 prevLink.className="pagination-link me-5";
 
                 const span = document.createElement('span');
@@ -91,7 +91,7 @@ input.addEventListener("input",()=>{
 
             if(has_next){
                 const nextLink = document.createElement("a");
-                nextLink.href = `/Sdct/?page=${next_page}&query=${encodeURIComponent(query)}`;
+                nextLink.href = `/product/?page=${next_page}&query=${encodeURIComponent(query)}`;
                 nextLink.className = "pagination-link me-5";
 
                 const span = document.createElement('span');

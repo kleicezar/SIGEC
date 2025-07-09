@@ -74,6 +74,7 @@ def update_product_quantity(request,pk):
             print("QUANTIDADE DE PRODUTOS MENOR QUE A SOLICITADA")
         
     return redirect('manageProductDelivery')
+
 @login_required
 def compras_list(request):
     sort = request.GET.get('sort')
@@ -689,6 +690,7 @@ def product(request):
             'current_dir':direction
          }
     )
+
 @login_required
 @transaction.atomic
 @permission_required('purchase.add_product', raise_exception=True)
@@ -833,7 +835,6 @@ def expedition_product(request, pk):
             'vendaItemForm': vendaItemExpeditionForm
         })
 
-
 def return_product(request, pk):
     vendaItem = get_object_or_404(VendaItem, id=pk)
 
@@ -881,6 +882,95 @@ def return_product(request, pk):
     return render(request, 'purchase/devoluteProduct_form.html', {
         'vendaItemForm': vendaItemDevolutedForm
     })
+
+# def listTables(request):
+
+#     tables = ProductGroup.objects.all()
+
+#     context = {
+#         'tables': tables
+#     }
+
+#     return render(request, 'purchase/table_list.html', context)
+
+
+# @permission_required('purchase.view_product', raise_exception=True)
+@login_required
+def listTables(request):
+    sort = request.GET.get('sort')
+    direction = request.GET.get('dir', 'asc')
+   
+    productgroup = PersonGroup.objects.all()
+    
+    paginator = Paginator(productgroup,20)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+
+    page_items = list(page.object_list)
+
+    colunas = [
+        ('id','ID'),
+        ('name_group','Nome do Grupo'),
+    ]
+    if sort:
+        reverse = (direction == 'desc')
+        page_items = sorted(page_items,key=attrgetter(sort),reverse=reverse)
+
+    page.object_list = page_items
+
+    # products = Product.objects.filter(is_active=True)
+    return render(request, 'purchase/table_list.html', 
+        {
+            'colunas':colunas,
+            'tables': page,
+            'current_sort':sort,
+            'current_dir':direction
+         }
+    )
+
+@login_required
+def tableForm(request):
+    PersonGroupMembershipFormSet = inlineformset_factory(PersonGroup, PersonGroupMembership, fields=['person'], extra=1, can_delete=True)
+
+    if request.method == "POST":
+        form = PersonGroupForm(request.POST)
+        formset = PersonGroupMembershipFormSet(request.POST)
+        if form.is_valid() and formset.is_valid():
+            grupo = form.save()
+            membros = formset.save(commit=False)
+            for membro in membros:
+                membro.group = grupo
+                membro.save()
+            return redirect('listTables')  # redirecione como desejar
+    else:
+        form = PersonGroupForm()
+        formset = PersonGroupMembershipFormSet()
+
+    return render(request, 'purchase/tableForm.html', context={'form':form,'formset':formset})
+
+""" preciso que tenha uma tela para cadastrar a tabela, essa tabela tera o nome e o """
+
+@login_required
+def updateTable(request, id_table):
+    # form = 
+
+    if request.method == "POST":
+        pass
+    else:
+        pass        #coloca os formularios aq 
+    return render(request, 'purchase/tableForm.html', context={'form':form})
+
+@login_required
+def deleteTable(request, id_table):
+    table = get_object_or_404(ProductGroup, id_table)
+    table.delete()
+    redirect('listTables')
+
+@login_required
+def InactiveTable(request, id_table):
+    table = ProductGroup.objects.filter(id=id_table)
+    table.is_active = 0
+    redirect('listTables')
 
 def mudar_situacao_compra(request,pk):
     nova_situacao = request.POST.get('opcao')

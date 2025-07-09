@@ -28,7 +28,7 @@ const emptyPaymentMethodTemplate = document.getElementById('empty-payment-method
 
 const itensIndex  = [0];
 
-function addItem() {
+function addItem() { 
     const formset = document.getElementById('itens-container');
     const formCountProduts = document.getElementById("id_compraitem_set-TOTAL_FORMS") || document.getElementById('id_vendaitem_set-TOTAL_FORMS');
     if(formCountProduts){
@@ -349,4 +349,28 @@ function attachSuggestionListeners() {
             }
         });
     });
+}
+
+function addPerson() {
+  const container = document.getElementById('itens-container'); // onde os forms vão ser inseridos
+  const totalInput = document.querySelector('input[name$="-TOTAL_FORMS"]'); // input gerado por {{ formset.management_form }}
+  const totalForms = parseInt(totalInput.value, 10);
+  const template = document.getElementById('empty-form-template');
+  const clone = template.content.cloneNode(true); // clona o conteúdo do <template>
+
+  // Atualiza todos os name/id no clone (campos hidden + inputs) com o novo índice
+  clone.querySelectorAll('[name], [id]').forEach(el => {
+    if (el.name) {
+      el.name = el.name.replace(/form-\d+-/, `form-${totalForms}-`);
+    }
+    if (el.id) {
+      el.id = el.id.replace(/form-\d+-/, `form-${totalForms}-`);
+    }
+  });
+
+  // Adiciona o novo formulário clonado ao container
+  container.appendChild(clone);
+
+  // Atualiza o TOTAL_FORMS para avisar o Django que tem mais um form
+  totalInput.value = totalForms + 1;
 }
