@@ -181,9 +181,6 @@ class PaymentMethod_Accounts(models.Model):
         null=True,
         blank=True
     )
-    
-    def __str__(self):
-        return f'{self.forma_pagamento}-{self.value}'
 
 class CaixaDiario(models.Model): #abertura de caixa
     usuario_responsavel = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)

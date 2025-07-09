@@ -373,19 +373,3 @@ class ProductPriceForm(forms.ModelForm):
             }),
         }
     
-
-
-class CompraReadOnlyForm(CompraForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field_name in self.fields:
-            if field_name != "situacao":
-                self.fields[field_name].widget.attrs['readonly'] = True
-
-class CompraItemReadOnlyForm(CompraItemForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field_name in self.fields:
-            if field_name != "situacao":
-                self.fields[field_name].widget.attrs['readonly'] = True
-

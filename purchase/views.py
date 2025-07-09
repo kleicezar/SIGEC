@@ -971,30 +971,3 @@ def InactiveTable(request, id_table):
     table = ProductGroup.objects.filter(id=id_table)
     table.is_active = 0
     redirect('listTables')
-
-def mudar_situacao_compra(request,pk):
-    nova_situacao = request.POST.get('opcao')
-    situationObject = get_object_or_404(Situation,pk=nova_situacao)
-    compra = get_object_or_404(Compra,pk=pk)
-    compra.situacao = situationObject
-    if situationObject.closure_level == Situation.CLOSURE_LEVEL_OPTIONS[1][0] or situationObject.closure_level[3][0]:
-        user = CaixaDiario.objects.filter(
-            Q(usuario_responsavel=request.user) & 
-            Q(is_Active=1)
-            )
-        
-        if user.exists():
-            messages.error(request, f"Já Existe um Caixa aberto para {request.user.username}")
-
-        else:
-            payment_value = PaymentMethod_Accounts.objects.filter(compra=compra.id).first()
-            
-            caixa = CaixaDiario.save(commit=False)
-            caixa.usuario_responsavel = request.user
-            caixa.is_Active = 1
-            caixa.saldo_inicial = payment_value
-            caixa.saldo_final = caixa.saldo_inicial
-            caixa.save()
-            messages.success(request, 'Caixa Aberto Com Sucesso')
-    compra.save()    
-    return redirect('venda_list')
