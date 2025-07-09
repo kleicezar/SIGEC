@@ -22,10 +22,8 @@ document.addEventListener("DOMContentLoaded",()=>{
             // suggestionSale.disabled = true;
             suggestionSale.readOnly = true; // <- Corrigido aqui
         });
-
-
     }
-
+    
     if(permition_payment == "False"){
         const generate = document.getElementById("generate");
         generate.disabled = true;

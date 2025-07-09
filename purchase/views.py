@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import authenticate, login, logout
 from django.db.models.functions import Coalesce
 from django.db.models import F, Value
+from purchase.services.compra_service import CompraService
 from registry.models import Credit
 from sale.forms import ReturnVendaItemForm, VendaItemForm, VendaItemFormExpedition
 from sale.models import Venda, VendaItem
@@ -19,7 +20,7 @@ from .models import *
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponse
-from finance.models import  PaymentMethod_Accounts
+from finance.models import  CaixaDiario, PaymentMethod_Accounts
 from finance.forms import  PaymentMethodAccountsForm, AccountsForm
 from django.db import transaction
 
@@ -117,12 +118,16 @@ def compras_list(request):
     ('fornecedor', 'Pessoa'),
     ('situacao', 'Situação')
     ]
+    situations = Situation.objects.filter(is_Active = True)
+    options_situations = Situation.CLOSURE_LEVEL_OPTIONS
     # compras = Compra.objects.all()
     context = {
         'colunas':colunas,
         'compras':compras,
         'current_sort':sort,
-        'current_dir':direction
+        'current_dir':direction,
+        'situations':situations,
+        'options_situations':options_situations
     }
    
     return render(request, 'purchase/compras_list.html', context)
@@ -168,6 +173,7 @@ def compras_create(request):
         compra_form.new_form_flag = request.POST.get('new_form', '').lower() in ['true', '1', 'yes', 'on']
 
         compra_item_formset = CompraItemFormSet(request.POST)
+        
         
         if (
             PaymentMethod_Accounts_FormSet.is_valid() and
@@ -369,11 +375,21 @@ def compras_update(request, pk):
         return form_Payment_Accounts
     # Recupera a instância da Compra existente
     compra = get_object_or_404(Compra, pk=pk)
+    compra_list,compraItem,payments = CompraService().disabled_fields_based_on_situation(compra.situacao.pk,compra)
+    form_class_compra = compra_list[0]
+    permit_edition_compra = compra_list[1]
 
-    CompraItemFormSet = inlineformset_factory(Compra, CompraItem, form=CompraItemForm, extra=0, can_delete=True)
+    form_class_compraItem = compraItem[0]
+    permit_edition_compraItem = compraItem[1]
 
-    PaymentMethodAccountsFormSet = inlineformset_factory(Compra, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=1, can_delete=True)
-    Older_PaymentMethod_Accounts_Formset = inlineformset_factory(Compra,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=0,can_delete=True)
+
+    form_class_payments = payments[0]
+    permit_edition_payment = payments[1]
+
+    CompraItemFormSet = inlineformset_factory(Compra, CompraItem, form=form_class_compraItem, extra=0, can_delete=True)
+
+    PaymentMethodAccountsFormSet = inlineformset_factory(Compra, PaymentMethod_Accounts, form=form_class_payments, extra=1, can_delete=True)
+    Older_PaymentMethod_Accounts_Formset = inlineformset_factory(Compra,PaymentMethod_Accounts,form=form_class_payments,extra=0,can_delete=True)
 
     if request.method == 'POST':
         # Recupera os dados do formulário de compra e formsets de itens e métodos de pagamento
@@ -544,7 +560,7 @@ def compras_update(request, pk):
         tax_instance = compra.tax_set.first()
         tax_form = TaxForm(instance=tax_instance)
 
-        compra_form = CompraForm(instance=compra)
+        compra_form = form_class_compra(instance=compra)
         compra_item_formset = CompraItemFormSet(queryset=compra.compraitem_set.all(), instance=compra)
         
         form_Accounts = populate_account_form(Older_PaymentMethod_Accounts_Formset,form_Accounts)
@@ -559,7 +575,10 @@ def compras_update(request, pk):
             'rmn_form':rmn_form,
             'tax_form':tax_form,
             'compra_form': compra_form,
-            'compra_item_formset': compra_item_formset
+            'compra_item_formset': compra_item_formset,
+            'permition_edit_sale':permit_edition_compra,
+            'permition_edit_saleItem':permit_edition_compraItem,
+            'permition_edit_payments':permit_edition_payment
         }
         return render(request, 'purchase/compras_formUpdate.html', context)
 
@@ -862,3 +881,30 @@ def return_product(request, pk):
     return render(request, 'purchase/devoluteProduct_form.html', {
         'vendaItemForm': vendaItemDevolutedForm
     })
+
+def mudar_situacao_compra(request,pk):
+    nova_situacao = request.POST.get('opcao')
+    situationObject = get_object_or_404(Situation,pk=nova_situacao)
+    compra = get_object_or_404(Compra,pk=pk)
+    compra.situacao = situationObject
+    if situationObject.closure_level == Situation.CLOSURE_LEVEL_OPTIONS[1][0] or situationObject.closure_level[3][0]:
+        user = CaixaDiario.objects.filter(
+            Q(usuario_responsavel=request.user) & 
+            Q(is_Active=1)
+            )
+        
+        if user.exists():
+            messages.error(request, f"Já Existe um Caixa aberto para {request.user.username}")
+
+        else:
+            payment_value = PaymentMethod_Accounts.objects.filter(compra=compra.id).first()
+            
+            caixa = CaixaDiario.save(commit=False)
+            caixa.usuario_responsavel = request.user
+            caixa.is_Active = 1
+            caixa.saldo_inicial = payment_value
+            caixa.saldo_final = caixa.saldo_inicial
+            caixa.save()
+            messages.success(request, 'Caixa Aberto Com Sucesso')
+    compra.save()    
+    return redirect('venda_list')

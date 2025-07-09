@@ -38,8 +38,7 @@ class Compra(models.Model):
     taxExists = models.BooleanField(default=False,verbose_name='Imposto')
 
     def __str__(self):
-        ...
-        # return f"Compra {self.id} por }"
+        return f"Compra {self.id} por "
 class Frete(models.Model):
     FREIGHT_CHOICES = [
         ('FOB','FOB'),

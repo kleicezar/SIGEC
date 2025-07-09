@@ -14,7 +14,7 @@ urlpatterns = [
     path('compras/delete/<int:pk>/', compras_delete, name='compras_delete'),
     path('compras/<int:compras_pk>/item/create/', compras_item_create, name='compras_item_create'),
     path('get_product_id/',get_product_id,name='buscar_idprodutos'),
-
+    path('compra/mudar_situacao_compra/<int:pk>/',mudar_situacao_compra,name='buscar_situacao_compra'),
     path('mng/manage_product_delivery',productsWithStatus_list,name='manageProductDelivery'),
     path('returnProducts_list/',returnProducts_list,name='returnProducts_list'),
     path('return_product/<int:pk>',return_product,name='return_product'),

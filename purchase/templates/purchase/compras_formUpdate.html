@@ -37,8 +37,12 @@
         <div class='content'>
             <div class='container-fluid justify-content-center align-items-center'>
                 
-                <form method="post">
+                <form method="post" id="form">
                     {% csrf_token %}
+
+                    <input id="permition_sale" type="hidden" value="{{permition_edit_sale}}">
+                    <input id="permition_saleItem" type="hidden" value="{{permition_edit_saleItem}}">
+                    <input id="permition_payment" type="hidden" value="{{permition_edit_payments}}">
                     <div class="col d-flex mb-5 gap-4 mt-5">
                         <a href="{% url 'compras_list' %}">
                             <button type="button" class="btn btn-voltar">
@@ -364,120 +368,131 @@
         <!-- {% include 'script.html' %} -->
         <script src="{% static 'js/addItem.js' %}" defer></script>
         <script>
-            document.addEventListener("DOMContentLoaded",()=>{
-                console.log('NA FESTA DO FIM DE SEMANA')
-                const id_freightExists = document.getElementById("id_freightExists");
-                const id_valueFreight = document.getElementById("id_valueFreight");
-                const id_numberOfInstallmentsFreight = document.getElementById("id_numberOfInstallmentsFreight");
-                const fields_freight = document.getElementById("fields_freight");
-                const field_freight_type = document.getElementById("field_freight_type");
+        document.addEventListener("DOMContentLoaded", () => {
+            const id_freightExists = document.getElementById("id_freightExists");
+            const id_valueFreight = document.getElementById("id_valueFreight");
+            const id_numberOfInstallmentsFreight = document.getElementById("id_numberOfInstallmentsFreight");
+            const fields_freight = document.getElementById("fields_freight");
+            const field_freight_type = document.getElementById("field_freight_type");
+            const id_freight_type = document.getElementById("id_freight_type");
 
-                const id_rmnExists = document.getElementById("id_rmnExists");
-                const fieldsRMN = document.getElementById("fieldsRMN");
+            const id_rmnExists = document.getElementById("id_rmnExists");
+            const fieldsRMN = document.getElementById("fieldsRMN");
 
-                if(!id_rmnExists.checked){
-                    fieldsRMN.style.display = "none";
+            const id_taxExists = document.getElementById("id_taxExists");
+            const fieldsTax = document.getElementById("fieldsTax");
 
-                    fieldsRMN.querySelectorAll("input").forEach((input) => {
-                        input.required = false;
-                    });
+            const permition_payment = document.getElementById("permition_payment").value;
+            const permition_sale = document.getElementById("permition_sale").value;
 
-                }
+            // Inicializações
+            if (!id_rmnExists.checked) {
+                fieldsRMN.style.display = "none";
+                fieldsRMN.querySelectorAll("input").forEach(input => input.required = false);
+            }
 
-                id_rmnExists.addEventListener("change",()=>{
+            if (!id_freightExists.checked) {
+                field_freight_type.style.display = 'none';
+                fields_freight.style.display = "none";
+                fields_freight.querySelectorAll("input").forEach(input => input.required = false);
+            }
 
-                    if(id_rmnExists.checked){
+            if (!id_taxExists.checked) {
+                fieldsTax.style.display = "none";
+                fieldsTax.querySelectorAll("input").forEach(input => input.required = false);
+            }
+
+            // Só adiciona os listeners se permition_payment for diferente de 'False'
+            if (permition_payment !== 'False') {
+
+                id_rmnExists.addEventListener("change", () => {
+                    if (id_rmnExists.checked) {
                         fieldsRMN.style.display = "block";
-
-                        fieldsRMN.querySelectorAll("input").forEach((input) => {
-                            input.required = true;
-                        });
-                        
-                    }
-                    else{
+                        fieldsRMN.querySelectorAll("input").forEach(input => input.required = true);
+                    } else {
                         fieldsRMN.style.display = "none";
-                        fieldsRMN.querySelectorAll("input").forEach((input) => {
-                            input.required = false;
-                        });
+                        fieldsRMN.querySelectorAll("input").forEach(input => input.required = false);
                     }
-                })
+                });
 
-
-                if (!id_freightExists.checked){
-                    const id_freight_type = document.getElementById("id_freight_type");
-                    field_freight_type.style.display = 'none';
-                    fields_freight.style.display="none";
-
-                    fields_freight.querySelectorAll("input").forEach((input) => {
-                        input.required = false;
-                    });
-                }
-
-                id_freightExists.addEventListener("change",()=>{
-                    const fields_freight = document.getElementById("fields_freight");
-                    const field_freight_type = document.getElementById("field_freight_type");
-                    if (id_freightExists.checked){
+                id_freightExists.addEventListener("change", () => {
+                    if (id_freightExists.checked) {
                         field_freight_type.style.display = 'block';
-                        id_freight_type.addEventListener("change",()=>{
-    
-                            if(id_freight_type.value == "FOB"){
-
-                                fields_freight.style.display='block';
-                                fields_freight.querySelectorAll("input").forEach((input) => {
-                                    input.required = true;
-                                });
-
+                        id_freight_type.addEventListener("change", () => {
+                            if (id_freight_type.value == "FOB") {
+                                fields_freight.style.display = 'block';
+                                fields_freight.querySelectorAll("input").forEach(input => input.required = true);
+                            } else {
+                                fields_freight.style.display = 'none';
+                                fields_freight.querySelectorAll("input").forEach(input => input.required = false);
                             }
-                            else{
-                                fields_freight.style.display='none';
-                                fields_freight.querySelectorAll("input").forEach((input) => {
-
-                                    input.required = false;
-
-                                });
-                            }
-                        })
-                        
-                    }
-                    else{
-                        field_freight_type.style.display='none';
-                        fields_freight.style.display='none';
-                        
-                        fields_freight.querySelectorAll("input").forEach((input) => {
-                            input.required = false;
                         });
+                    } else {
+                        field_freight_type.style.display = 'none';
+                        fields_freight.style.display = 'none';
+                        fields_freight.querySelectorAll("input").forEach(input => input.required = false);
                     }
-                    })
-                })
+                });
 
-                const id_taxExists = document.getElementById('id_taxExists');
-                const fieldsTax = document.getElementById("fieldsTax");
+                id_taxExists.addEventListener("change", () => {
+                    if (id_taxExists.checked) {
+                        fieldsTax.style.display = "block";
+                        fieldsTax.querySelectorAll("input").forEach(input => input.required = true);
+                    } else {
+                        fieldsTax.style.display = "none";
+                        fieldsTax.querySelectorAll("input").forEach(input => input.required = false);
+                    }
+                });
+                
+                
+            }
+            else{
+                id_freightExists.onclick = ()=>false;
+                id_rmnExists.onclick = ()=>false;
+                id_taxExists.onclick = ()=>false;
+            }
+            
+            const form = document.getElementById("form");
+            form.addEventListener("submit", function(event) {
+                const othersPaymentPurpose = new Set();
 
-                if(!id_taxExists.checked){
-                    fieldsTax.style.display="none";
+                const installment = document.getElementById("installment"); // <-- Faltava definir isso
 
-                    fieldsTax.querySelectorAll("input").forEach((input) => {
-                        input.required = false;
-                    });
+                // CORRIGIDO: querySelectorAll precisa de colchetes e ^=/$= para atributos
+                const elements = installment.querySelectorAll("[id$='paymentPurpose']");
+                console.log("kkfk")
+                console.log(elements)
+                elements.forEach((element) => {
+                    console.log("kkeek")
+                    if (element.value === "Frete" || element.value === "Romaneio" || element.value === "Imposto") {
+                        console.log("entor")
+                        othersPaymentPurpose.add(element.value);
+                    }
+                });
+
+                const hasFreight = othersPaymentPurpose.has('Frete');
+                const hasRMN = othersPaymentPurpose.has('Romaneio');
+                const hasTax = othersPaymentPurpose.has('Imposto');
+
+                if((id_freight_type.value === "FOB" && !hasFreight) || (!id_freight_type.value === "FOB" && hasFreight)){
+                    alert('Frete foi selecionado, mas não foi gerado nas parcelas');
+                    event.preventDefault();
                 }
 
-                id_taxExists.addEventListener("change",()=>{
-                    if(id_taxExists.checked){
-                        fieldsTax.style.display="block";
+                if( (id_rmnExists.checked && !hasRMN) || (!id_rmnExists.checked && hasRMN ) ){
+                    alert('Romaneio foi selecionado, mas não foi gerado nas parcelas');
+                    event.preventDefault();
+                }
 
-                        fieldsTax.querySelectorAll("input").forEach((input) => {
-                            input.required = true;
-                        });
-                    }
-                    else{
-                        fieldsTax.style.display="none";
-
-                        fieldsTax.querySelectorAll("input").forEach((input) => {
-                            input.required = false;
-                        });
-                    }
-                })
+                if ((id_taxExists.checked && !hasTax) || (!id_taxExists.checked && hasTax )) {
+                    alert('Imposto foi selecionado, mas não foi gerado nas parcelas');
+                    event.preventDefault();
+                }
+                // event.preventDefault()
+            });
+            });
         </script>
+
         <!-- <script src="{% static 'js/clientSearch.js' %}"></script> -->
          <!-- pesquisa clientes -->
         <!-- <script src="{% static 'js/venda_item.js' %}"></script> -->
@@ -485,6 +500,8 @@
         <script src="{% static 'js/suggestions.js' %}"></script><!-- pesquisa clientes -->
         <script src="{% static 'js/suggestionsUpdate.js' %}"></script> 
         <script src="{% static 'js/error.js' %}"></script>
+        <script src="{% static 'js/block_fields_compras.js' %}"></script>
+
         <!-- <script src="{% static 'js/tax.js' %}"></script>  -->
         {% endblock %}     
     </main>

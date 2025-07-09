@@ -320,3 +320,17 @@ class ProductSearchForm(forms.Form):
     search = forms.CharField(max_length=100,required=False,label='Pesquisar Produto')
 
 
+class CompraReadOnlyForm(CompraForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name in self.fields:
+            if field_name != "situacao":
+                self.fields[field_name].widget.attrs['readonly'] = True
+
+class CompraItemReadOnlyForm(CompraItemForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name in self.fields:
+            if field_name != "situacao":
+                self.fields[field_name].widget.attrs['readonly'] = True
+
