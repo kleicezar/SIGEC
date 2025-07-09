@@ -82,9 +82,6 @@
                                 <th scope="col">
                                     Data da Venda
                                 </th>
-                                <th scope="col">
-                                    Situação
-                                </th>
                             </tr>
                         </thead>
 
@@ -106,7 +103,7 @@
                                     class="form-control mb-3 mt-3 row-xl-2" 
                                     required readonly>
                                 </td>
-                                <td>{{compra_form.situacao}}</td>
+                                {{compra_form.situacao.as_hidden}}
                             </tr>
                         </tbody>
                     </table>

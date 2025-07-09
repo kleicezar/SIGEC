@@ -1,5 +1,6 @@
 
 from datetime import datetime, timedelta
+from decimal import Decimal
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.forms import inlineformset_factory
@@ -8,7 +9,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
 from finance.forms import AccountsForm, PaymentMethodAccountsForm,PaymentMethodFormSet
-from finance.models import PaymentMethod_Accounts
+from finance.models import CaixaDiario, PaymentMethod_Accounts
+from service.services.wo_service import WorkOrderService
 from .forms import *
 from .models import *
 from django.http import JsonResponse
@@ -22,7 +24,6 @@ from django.db import transaction
 def workOrders_create(request):
     serviceItemFormSet  = inlineformset_factory(Vendaservice,VendaItemservice,form=VendaItemserviceForm,extra=1,can_delete=True)
     VendaItemFormSet = inlineformset_factory(Vendaservice, VendaItem, form=VendaItemForm, extra=1, can_delete=True)
-    # PaymentMethodserviceFormSet = inlineformset_factory(Vendaservice,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=1,can_delete=True)
     PaymentMethodAccountsFormSet = inlineformset_factory(Vendaservice,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=1,can_delete=True)
     
     if(request.method == 'POST'):
@@ -43,34 +44,46 @@ def workOrders_create(request):
 
             PaymentMethod_Accounts_FormSet.instance = service
             total_payment = 0
-            total_payment_with_credit = 0
-            for form in PaymentMethod_Accounts_FormSet:
-                # form.instance = service
+            valor_usado = request.POST.get('credit_value')
+            for form in PaymentMethod_Accounts_FormSet: 
                 if form.cleaned_data:
                     form.acc = False
                     valor = form.cleaned_data['value']
                     total_payment+=valor
-                    # valid_payments.append(form)
 
                     name_payment = form.cleaned_data["forma_pagamento"]
                     paymentWithCredit = PaymentMethod.objects.filter(
                         name_paymentMethod=name_payment,creditPermission=True
                     )
-                    if paymentWithCredit.exists():
-                        total_payment_with_credit+=valor
-                        form.instance.activeCredit=True
+                    
+                    if form.cleaned_data["activeCredit"]:
+                        creditos = Credit.objects.filter(person=venda.pessoa).order_by('id')
+                        restante_para_descontar = Decimal(valor_usado)
+                        if creditos:
+                            for credito in creditos:
+                                if restante_para_descontar <= 0:
+                                    break  # nada mais a descontar
 
+                                if credito.credit_value >= restante_para_descontar:
+                                    credito.credit_value -= restante_para_descontar
+                                    credito.save()
+                                    restante_para_descontar = Decimal('0')
+                                else:
+                                    restante_para_descontar -= credito.credit_value
+                                    credito.credit_value = Decimal('0')
+                                    credito.save()
+                                
             pessoa = service_form.cleaned_data["pessoa"]
 
-            creditLimit = pessoa.creditLimit
-            creditLimitAtual = creditLimit
-            creditLimitAtual -= total_payment_with_credit
 
-            if(total_payment==service.total_value + service.total_value_service) and ( (creditLimitAtual == creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual>=0) ):
-                pessoa.creditLimit = creditLimitAtual
+            if(total_payment==service.total_value + service.total_value_service) :
+               
                 pessoa.save()
 
-                service_form.save()
+                service.situacao = Situation.objects.filter(
+                    closure_level=Situation.CLOSURE_LEVEL_OPTIONS[0][0]
+                ).first()
+                service.save()
                 venda_item_formset.save()
                 service_item_formset.save()
 
@@ -86,8 +99,6 @@ def workOrders_create(request):
             if total_payment != service.total_value:
                 messages.warning(request,"Ação cancelada! O valor acumalado dos pagamentos é menor do que o valor acumulado dos prudutos.",extra_tags='workcreate_page')
 
-            if ((creditLimitAtual != creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual<0)):
-                messages.warning(request,"Ação Cancelada! O valor acumulado dos pagamentos é menor que o limite de crédito. ",extra_tags='workcreate_page')
         
         if not service_form.is_valid():
             print("Erro no serviceForm",service_form.errors)
@@ -127,11 +138,24 @@ def workOrders_create(request):
 def workOrders_update(request,pk):
 
     servico = get_object_or_404(Vendaservice, pk=pk)
-    ServiceItemFormSet  = inlineformset_factory(Vendaservice,VendaItemservice,form=VendaItemserviceForm,extra=0,can_delete=True)
-    VendaItemFormSet = inlineformset_factory(Vendaservice, VendaItem, form=VendaItemForm, extra=0, can_delete=True)
-    PaymentMethodAccountsFormSet = inlineformset_factory(Vendaservice,PaymentMethod_Accounts,form=PaymentMethodAccountsForm,extra=1,can_delete=True)
-    OlderPaymentMethodAccountsFormSet = inlineformset_factory(Vendaservice, PaymentMethod_Accounts, form=PaymentMethodAccountsForm, extra=0, can_delete=True)
 
+    sale,saleItem,payments,saleService = WorkOrderService().disabled_fields_based_on_situation(servico.situacao.pk,servico)
+    form_class_sale = sale[0]
+    permit_edition_sale = sale[1]
+
+    form_class_saleItem = saleItem[0]
+    permit_edition_saleItem = saleItem[1]
+
+    form_class_saleService = saleService[0]
+    permit_edition_saleService = saleService[1]
+
+    form_class_payments = payments[0]
+    permit_edition_payment = payments[1]
+
+    ServiceItemFormSet  = inlineformset_factory(Vendaservice,VendaItemservice,form=form_class_saleService,extra=0,can_delete=True)
+    VendaItemFormSet = inlineformset_factory(Vendaservice, VendaItem, form=form_class_saleItem, extra=0, can_delete=True)
+    PaymentMethodAccountsFormSet = inlineformset_factory(Vendaservice,PaymentMethod_Accounts,form=form_class_payments,extra=1,can_delete=True)
+    OlderPaymentMethodAccountsFormSet = inlineformset_factory(Vendaservice, PaymentMethod_Accounts, form=form_class_payments, extra=0, can_delete=True)
     if request.method == 'POST':
         # previous_url = request.session.get('previous_page','/')
         # print(request.POST)
@@ -142,7 +166,7 @@ def workOrders_update(request,pk):
         Older_PaymentMethod_Accounts_FormSet = OlderPaymentMethodAccountsFormSet(request.POST,instance=servico,prefix="older_paymentmethod_accounts_set")
         form_Accounts = AccountsForm(request.POST,instance=servico)
 
-        venda_item = VendaItem.objects.filter(venda=servico)
+        venda_item = VendaItem.objects.filter(servico=servico)
         ids_existentes_venda_itens = set(venda_item.values_list('id',flat=True))
         ids_enviados_venda_itens = set(
             int(value) for key, value in request.POST.items() 
@@ -152,7 +176,7 @@ def workOrders_update(request,pk):
         VendaItem.objects.filter(id__in=ids_para_excluir_venda_itens).delete()
         
 
-        venda_service_item = VendaItemservice.objects.filter(venda=servico)
+        venda_service_item = VendaItemservice.objects.filter(service=servico.id)
         ids_existentes_venda_service_itens = set(venda_service_item.values_list('id',flat=True))
         ids_enviados_vendas_service_itens = set(
              int(value) for key, value in request.POST.items() 
@@ -186,51 +210,73 @@ def workOrders_update(request,pk):
                 if form.instance.pk is not None:  
                     itens_para_deletar.append(form.instance)
 
-            pessoa = service_form.cleaned_data["pessoa"]
-            value_payments = PaymentMethod_Accounts.objects.filter(ordem_servico = servico.id,activeCredit = True)
-
-            for value_payment in value_payments:
-                pessoa.creditLimit += value_payment.value
-            pessoa.save()
+           
 
             total_payment = 0
-            total_payment_with_credit = 0
+            pessoa = service_form.cleaned_data["pessoa"]
+            credit = Credit.objects.filter(person=pessoa).order_by('-id').first()
+            value_payments = PaymentMethod_Accounts.objects.filter(venda = servico.id,activeCredit=True)
 
+            for value_payment in value_payments:
+                credit.credit_value += value_payment.value
+
+            if credit:
+                credit.save()
+            
             onlyOldPayments = False 
-            try:
+            valor_usado = request.POST.get('credit_value')
+            
+            value_new_form = request.POST.get('new_form','').lower()
+            has_new_form = value_new_form in ['true', '1', 'on', 'yes']
+
+            if has_new_form:
+                onlyOldPayments = False
                 for form in PaymentMethod_Accounts_FormSet:
-                    name_payment = form.cleaned_data["forma_pagamento"]
-                    paymentWithCredit = PaymentMethod.objects.filter(
-                        name_paymentMethod = name_payment,creditPermission=True
-                    )
-                    if form.cleaned_data:
-                        valor = form.cleaned_data['value']
-                        if not form.cleaned_data['DELETE']:
-                            if paymentWithCredit.exists():
-                                total_payment_with_credit+= form.cleaned_data["value"]
-                            total_payment+=valor
-            except TypeError:
-                onlyOldPayments = True
-                for form in Older_PaymentMethod_Accounts_FormSet:
-                    name_payment = form.cleaned_data["forma_pagamento"]
-                    paymentWithCredit = PaymentMethod.objects.filter(
-                        name_paymentMethod = name_payment,creditPermission=True
-                    )
-                    
                     if form.cleaned_data:
                         valor = form.cleaned_data['value']
                         if not form.cleaned_data["DELETE"] :
-                            if paymentWithCredit.exists():
-                                total_payment_with_credit +=form.cleaned_data["value"]
+                            total_payment += valor
+                        if form.cleaned_data["activeCredit"]:
+                            creditos = Credit.objects.filter(person=service.pessoa).order_by('id')
+                            restante_para_descontar = Decimal(valor_usado)
+
+                            for credito in creditos:
+                                if restante_para_descontar <= 0:
+                                    break
+
+                                if credito.credit_value >= restante_para_descontar:
+                                    credito.credit_value -= restante_para_descontar
+                                    credito.save()
+                                    restante_para_descontar = Decimal('0')
+                                else:
+                                    restante_para_descontar -= credito.credit_value
+                                    credito.credit_value = Decimal('0')
+                                    credito.save()
+            else:
+                onlyOldPayments = True
+                for form in Older_PaymentMethod_Accounts_FormSet:
+                    if form.cleaned_data:
+                        valor = form.cleaned_data['value']
+                        if not form.cleaned_data["DELETE"] :
                             total_payment += valor
 
-            creditLimit = pessoa.creditLimit
-            creditLimitAtual = creditLimit
-            creditLimitAtual-= total_payment_with_credit
+                        if form.cleaned_data["activeCredit"]:
+                            creditos = Credit.objects.filter(person=venda.pessoa).order_by('id')
+                            restante_para_descontar = Decimal(valor_usado)
 
-            if (total_payment == service.total_value + service.total_value_service) and ( (creditLimitAtual == creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual >= 0)):
-                pessoa.creditLimit = creditLimitAtual
-                pessoa.save()
+                            for credito in creditos:
+                                if restante_para_descontar <= 0:
+                                    break  # nada mais a descontar
+
+                                if credito.credit_value >= restante_para_descontar:
+                                    credito.credit_value -= restante_para_descontar
+                                    credito.save()
+                                    restante_para_descontar = Decimal('0')
+                                else:
+                                    restante_para_descontar -= credito.credit_value
+                                    credito.credit_value = Decimal('0')
+                                    credito.save()
+            if (total_payment == service.total_value + service.total_value_service):
 
                 service.save()
 
@@ -296,8 +342,6 @@ def workOrders_update(request,pk):
             if total_payment != service.total_value + service.total_value_service:
                 messages.warning(request,"Ação cancelada! O valor acumalado dos pagamentos é menor do que o valor acumulado dos prudutos.",extra_tags='workupdate_page')
             
-            if ((creditLimitAtual != creditLimit) or (creditLimitAtual != creditLimit and creditLimitAtual<0)):
-                messages.warning(request,"Ação Cancelada! O valor acumulado dos pagamentos é menor que o limite de crédito. ",extra_tags='workupdate_page')
             
             return redirect('workOrdersUpdate', pk=pk)
 
@@ -320,7 +364,7 @@ def workOrders_update(request,pk):
     form_Accounts = AccountsForm(instance=servico)
     Older_PaymentMethod_Accounts_FormSet = OlderPaymentMethodAccountsFormSet(queryset=servico.paymentmethod_accounts_set.all(),instance=servico,prefix='older_paymentmethod_accounts_set')
     PaymentMethod_Accounts_FormSet = PaymentMethodAccountsFormSet(queryset=PaymentMethod_Accounts.objects.none())
-    service_form = VendaserviceForm(instance=servico)
+    service_form = form_class_sale(instance=servico)
     venda_item_formset = VendaItemFormSet(queryset=servico.vendaitem_set.all(),instance=servico)
     service_item_formset = ServiceItemFormSet(queryset = servico.vendaitemservice_set.all(),instance=servico)
     
@@ -344,17 +388,26 @@ def workOrders_update(request,pk):
         'service_item_formset':service_item_formset,
         'form_payment_account':PaymentMethod_Accounts_FormSet,
         'venda_item_formset':venda_item_formset,
-        'older_form_payment_account':Older_PaymentMethod_Accounts_FormSet
-        # 'form_payment_account':payment_method_formset
+        'older_form_payment_account':Older_PaymentMethod_Accounts_FormSet,
+        'permition_edit_sale':permit_edition_sale,
+        'permition_edit_saleItem':permit_edition_saleItem,
+        'permition_edit_saleServiceItem':permit_edition_saleService,
+        'permition_edit_payments':permit_edition_payment
     }
 
     return render(request,'workOrdersUpdate.html',context) 
 
 @login_required
 def workOrder(request):
+    situations = Situation.objects.filter(is_Active = True)
+    options_situations = Situation.CLOSURE_LEVEL_OPTIONS
     context = {
-        'workOrders':Vendaservice.objects.all()
+        'workOrders':Vendaservice.objects.all(),
+        'situations':situations,
+        'options_situations':options_situations
     }
+
+   
     return render(request,'workOrders_list.html',context)
 
 @login_required
@@ -405,3 +458,31 @@ def get_service_id(request):
     )
     resultados_json = list(resultados.values('id','name_service'))
     return JsonResponse({'servico':resultados_json})
+
+
+def mudar_situacao_service(request,pk):
+    nova_situacao = request.POST.get('opcao')
+    situationObject = get_object_or_404(Situation,pk=nova_situacao)
+    venda = get_object_or_404(Vendaservice,pk=pk)
+    venda.situacao = situationObject
+    if situationObject.closure_level == Situation.CLOSURE_LEVEL_OPTIONS[1][0] or situationObject.closure_level[3][0]:
+        user = CaixaDiario.objects.filter(
+            Q(usuario_responsavel=request.user) & 
+            Q(is_Active=1)
+            )
+        
+        if user.exists():
+            messages.error(request, f"Já Existe um Caixa aberto para {request.user.username}")
+
+        else:
+            payment_value = PaymentMethod_Accounts.objects.filter(venda=venda.id).first()
+            
+            caixa = CaixaDiario.save(commit=False)
+            caixa.usuario_responsavel = request.user
+            caixa.is_Active = 1
+            caixa.saldo_inicial = payment_value
+            caixa.saldo_final = caixa.saldo_inicial
+            caixa.save()
+            messages.success(request, 'Caixa Aberto Com Sucesso')
+    venda.save()    
+    return redirect('venda_list')

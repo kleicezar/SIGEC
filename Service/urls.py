@@ -7,7 +7,7 @@ urlpatterns = [
     path('wo/update/<int:pk>/',workOrders_update,name='workOrdersUpdate'),
     path('wo/delete/<int:pk>/',workOrders_delete,name='workOrdersDelete'),
     path('wo/',workOrder,name='workOrders_list'),
-    
+    path('wo/mudar_situacao_wo/<int:pk>/',mudar_situacao_service,name='buscar_situacao_wo'),
     path('buscar_servicos/',service_search,name='buscar_servicos'),
     path('get_service_id/',get_service_id,name='get_service_id')
 ]

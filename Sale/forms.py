@@ -65,13 +65,13 @@ class VendaForm(forms.ModelForm):
         self.fields['pessoa'].queryset = Person.objects.filter(isClient=True)
         # self.fields['situacao'].queryset = Situation.objects.filter(is_Active=True)
 
-        closure_level = Situation.CLOSURE_LEVEL_OPTIONS[1][0]
+        # closure_level = Situation.CLOSURE_LEVEL_OPTIONS[1][0]
 
-        if self.instance.pk and self.instance.situacao == closure_level:
-            self.fields['situacao'].choices = [
-                choice for choice in self.fields['situacao'].choices
-                if choice[0] == closure_level
-        ]
+        # if self.instance.pk and self.instance.situacao == closure_level:
+        #     self.fields['situacao'].choices = [
+        #         choice for choice in self.fields['situacao'].choices
+        #         if choice[0] == closure_level
+        # ]
 
 class VendaFormUpdate(VendaForm):
     class Meta:

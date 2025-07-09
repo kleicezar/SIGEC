@@ -5,10 +5,17 @@ from sale.models import VendaItem
 from .models import *
 
 class VendaserviceForm(forms.ModelForm):
+    apply_credit = forms.BooleanField(
+        required=False,
+        label='Aplicar Crédito',
+        widget=forms.CheckboxInput(attrs={
+            'onclick':'return false;'
+        })
+    )
 
     class Meta:
         model = Vendaservice
-        fields = ['data_da_venda', 'pessoa', 'situacao', 'observacao_pessoas', 'observacao_sistema', 'total_value','product_total','discount_total','service_total','discount_total_service','total_value_service']
+        fields = ['data_da_venda', 'pessoa', 'situacao', 'observacao_pessoas', 'observacao_sistema', 'total_value','product_total','discount_total','service_total','discount_total_service','total_value_service','apply_credit','value_apply_credit']
         widgets = {
             'pessoa':forms.TextInput(attrs={
                 'class':'form-control row-xl-5',
@@ -190,3 +197,23 @@ class PaymentMethodVendaForm(forms.ModelForm):
                 'min':0
             })
         }
+
+class WorkOrdersReadOnlyForm(VendaserviceForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name in self.fields:
+            if field_name != "situacao":
+                self.fields[field_name].widget.attrs['readonly'] = True
+
+class WorkOrdersItensReadOnlyForm(VendaItemForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['readonly'] = True
+
+
+class WorkOrdersItensServicesReadOnly(VendaItemserviceForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+                field.widget.attrs['readonly'] = True

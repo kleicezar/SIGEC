@@ -80,9 +80,9 @@
                                 <th scope="col">
                                     Data da Venda
                                 </th>
-                                <th scope="col">
+                                <!-- <th scope="col">
                                     Situação
-                                </th>
+                                </th> -->
                             </tr>
                         </thead>
 
@@ -106,7 +106,7 @@
                                         </div>
                                     </div> -->
                                 </td>
-                                <td>{{service_form.situacao}}</td>
+                                <td>{{service_form.situacao.as_hidden}}</td>
                             </tr>
                             
                         </tbody>
@@ -341,7 +341,7 @@
                     </template>
 
                    
-                    <button id="item" type="button" onclick="addItemservice()" class="btn btn-outline-success mb-5 z-2">Adicionar Item</button>
+                    <button id="item" type="button" onclick="addItemService()" class="btn btn-outline-success mb-5 z-2">Adicionar Item</button>
                 
                   
                     <table class="table mt-3">
@@ -377,6 +377,15 @@
 
                     <!-- Formas de Pagamento -->
                     <h6 class="mt-5 mb-3">Formas de Pagamento</h6>
+                    {{service_form.apply_credit.label}}
+                    {{service_form.apply_credit}}
+
+                    <div id="credit" style="display: none;">
+                        {{service_form.value_apply_credit.label}}
+                        <!-- <br> -->
+                        {{service_form.value_apply_credit}}
+                    </div>
+
                     {% include 'parcela.html' %}
                     <!-- <button type="button" onclick="addPaymentMethod()" class="btn btn-outline-success mb-5">Adicionar Forma de Pagamento</button> -->
                     
@@ -433,6 +442,40 @@
             });
 
         </script> -->
+          <script>
+            const credit_apply = document.getElementById("id_apply_credit");
+            const credit = document.getElementById("credit");
+            credit_apply.addEventListener("click",()=>{
+                if(credit_apply.onclick == null && credit_apply.checked){
+                credit.style.display = "block";
+                }
+                else{
+                    credit.style.display = "none";
+                }
+            });
+
+            const form = document.getElementById("form");
+            form.addEventListener("submit", function(event) {
+                    const activeCredit = new Set();
+                    const id_apply_credit = document.getElementById("id_apply_credit");
+                    const installment = document.getElementById("installment"); // <-- Faltava definir isso
+        
+                    const elements = installment.querySelectorAll("[id$='activeCredit']");
+                    let has_credit = false;
+                    elements.forEach((element) => {
+                        if (element.checked){
+                            has_credit = true;
+                        }
+                    });
+
+                    if (id_apply_credit.checked && !has_credit) {
+                        alert('Crédito foi selecionado, mas não foi gerado nas parcelas');
+                        event.preventDefault();
+                    }
+                  
+                });
+            
+        </script>
         <script src="{% static 'js/alertInstallments.js' %}"></script>
         {% endblock %}     
     </main>

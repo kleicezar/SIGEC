@@ -6,6 +6,7 @@ from purchase.models import Product
 
     
 class Vendaservice(models.Model):
+    apply_credit = models.BooleanField(default=False,verbose_name='Crédito Aplicado')   
     pessoa = models.ForeignKey(Person,on_delete=models.CASCADE,verbose_name="Pessoa")
     data_da_venda = models.DateTimeField(verbose_name="Data da Venda" )
     observacao_pessoas = models.TextField(verbose_name="Observações sobre as Pessoas",blank=True,null=True)
@@ -15,6 +16,7 @@ class Vendaservice(models.Model):
     total_value = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Total", blank=True, null=True)
     product_total = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Total de Produtos")
     discount_total = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Total de Descontos de Produtos")
+    value_apply_credit = models.DecimalField(max_digits=10,decimal_places=2,verbose_name='Valor do Crédito Aplicado',null=True,blank=True,default=0)
 
     service_total = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Total de Servicos")
     discount_total_service = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Total de Descontos")

@@ -66,6 +66,44 @@
                             {% csrf_token %}
                             <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
                         </form>
+
+                        <form method="POST" action="{% url 'buscar_situacao_wo' pk=workOrder.pk %}">
+                                {% csrf_token %}
+                                {% with current_level=workOrder.situacao.closure_level %}
+                                    {% if current_level == 'Trancamento Total' %}
+                                        <!-- Bloqueado -->
+                                        <select disabled>
+                                            <option selected>{{ workOrder.situacao.name_Situation }}</option>
+                                        </select>
+                                        <input type="hidden" name="opcao" value="{{ workOrder.situacao.pk }}">
+                                    {% else %}
+                                        <select name="opcao" onchange="this.form.submit()">
+                                            {% for situation in situations %}
+                                                {% with target_level=situation.closure_level %}
+                                                    {% if current_level == 'Situação Aberta' %}
+                                                        <!-- Pode mudar para qualquer uma -->
+                                                        <option value="{{ situation.pk }}" {% if situation.pk == workOrder.situacao.pk %}selected{% endif %}>
+                                                            {{ situation.name_Situation }}
+                                                        </option>
+                                                    {% elif current_level == 'Trancamento Parcial' %}
+                                                        {% if target_level == 'Trancamento Total' or target_level == 'Situação Concluída' or target_level == current_level %}
+                                                            <option value="{{ situation.pk }}" {% if situation.pk == workOrder.situacao.pk %}selected{% endif %}>
+                                                                {{ situation.name_Situation }}
+                                                            </option>
+                                                        {% endif %}
+                                                    {% elif current_level == 'Situação Concluída' %}
+                                                        {% if target_level == 'Trancamento Total' or target_level == current_level %}
+                                                            <option value="{{ situation.pk }}" {% if situation.pk == workOrder.situacao.pk %}selected{% endif %}>
+                                                                {{ situation.name_Situation }}
+                                                            </option>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endwith %}
+                                            {% endfor %}
+                                        </select>
+                                    {% endif %}
+                                {% endwith %}
+                            </form>
                         {% comment %} <button>Deletar</button> {% endcomment %}
                         {% comment %} <button>Mais</button> {% endcomment %}
                         

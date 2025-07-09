@@ -119,7 +119,7 @@ def mudar_situacao(request,pk):
         
         if user.exists():
             messages.error(request, f"Já Existe um Caixa aberto para {request.user.username}")
-            return redirect('Cash_list')
+
         else:
             payment_value = PaymentMethod_Accounts.objects.filter(venda=venda.id).first()
             

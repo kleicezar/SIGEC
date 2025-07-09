@@ -130,7 +130,6 @@ def compras_list(request):
 @login_required
 @transaction.atomic
 def compras_create(request):
-
     def calculateValuePayments(paymentForm):
         total_by_purpose = {} 
         for form in paymentForm:
@@ -202,7 +201,9 @@ def compras_create(request):
             valueTotalProduct = total_by_purpose['Produto']
 
             if valueTotalProduct == compra.total_value:
-
+                compra.situacao = Situation.objects.filter(
+                    closure_level=Situation.CLOSURE_LEVEL_OPTIONS[0][0]
+                ).first()
                 compra.save()
                 compra_item_formset.save()
                 savePayments(PaymentMethod_Accounts_FormSet)
@@ -222,8 +223,13 @@ def compras_create(request):
                         rmn.save()
 
                 if compra_form.cleaned_data['freightExists']:
-                    valueTotalFreight = total_by_purpose['Frete']
-                    if valueTotalFreight == frete_form.cleaned_data['valueFreight']:
+                    if frete_form.cleaned_data['freight_type'] == 'FOB':
+                        valueTotalFreight = total_by_purpose['Frete']
+                        if valueTotalFreight == frete_form.cleaned_data['valueFreight']:
+                            frete= frete_form.save(commit=False)
+                            frete.compra = compra
+                            frete.save()
+                    else:
                         frete= frete_form.save(commit=False)
                         frete.compra = compra
                         frete.save()
@@ -378,7 +384,7 @@ def compras_update(request, pk):
         Older_PaymentMethod_Accounts_FormSet = Older_PaymentMethod_Accounts_Formset(request.POST,instance=compra,prefix="older_paymentmethod_accounts_set")
 
         frete_instance = compra.frete_set.first()
-        frete_form = FreteForm(request.POST,instance=compra)
+        frete_form = FreteForm(request.POST,instance=frete_instance)
 
         rmn_instance = compra.pickinglist_set.first()
         rmn_form = RomaneioForm(request.POST,instance=rmn_instance)

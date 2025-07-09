@@ -47,7 +47,11 @@
           
                 <form method="post">
                     {% csrf_token %}
-                
+
+                    <input id="permition_sale" type="hidden" value="{{permition_edit_sale}}">
+                    <input id="permition_saleItem" type="hidden" value="{{permition_edit_saleItem}}">
+                    <input id="permitionsaleServiceItem" type="hidden" value="{{permition_edit_saleServiceItem}}">
+                    <input id="permition_payment" type="hidden" value="{{permition_edit_payments}}">
                     <!-- Formulário de Venda -->
                     <h6 class="mt-5 mb-3">Dados do Serviço</h6>
                     <!-- {{ service_form.as_p }} -->
@@ -82,9 +86,9 @@
                                 <th scope="col">
                                     Data da Venda
                                 </th>
-                                <th scope="col">
+                                <!-- <th scope="col">
                                     Situação
-                                </th>
+                                </th> -->
                             </tr>
                         </thead>
 
@@ -106,7 +110,7 @@
                                         class="form-control mb-3 mt-3 row-xl-2" 
                                         required id="id_data_da_venda" readonly>
                                 </td>
-                                <td>{{service_form.situacao}}</td>
+                                <td>{{service_form.situacao.as_hidden}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -290,7 +294,7 @@
                             </div>
                     </div>
                     
-                    <button id="item" type="button" onclick="addItemservice()" class="btn btn-outline-success mb-5 z-2">Adicionar Item</button>
+                    <button id="itemService" type="button" onclick="addItemService()" class="btn btn-outline-success mb-5 z-2">Adicionar Item</button>
                     <template id="empty-service-template">
                         <tr>
                             <td>
@@ -391,6 +395,8 @@
         <!-- <script src="{% static 'js/order.js' %}"></script>  pesquisa clientes -->
         <script src="{% static 'js/venda_item.js' %}"></script> <!-- pesquisa produtos em vendas-->
         <script src="{% static 'js/error.js' %}"></script>
+        <script src="{% static 'js/block_fields_service.js' %}"></script>
+
         {% endblock %}     
     </main>
 </body>
