@@ -32,7 +32,7 @@
                     {% csrf_token %}
                 
                     <div class="col d-flex mb-5 gap-4 mt-5">
-                        <a href="{% url 'listTables' %}">
+                        <a href="{% url 'listTableProduct' %}">
                             <button type="button" class="btn btn-voltar">
                                 <i class="fas fa-arrow-left"></i> 
                             </button>
@@ -82,12 +82,14 @@
                             <td>{{formset.person.label}}</td>
                         </tr>
                         <td>{{ form.person.label }}</td>
+                        {% comment %}
                         {% for form in formset %}
-                        <tr>
+                        <!-- <tr>
                             <td>{{ form.person }}</td>
                             <td>{{ form.DELETE }}</td>
-                        </tr>
+                        </tr> -->
                         {% endfor %}
+                        {% endcomment %}
                     </table>
                     
                     <table class="table">
@@ -111,11 +113,14 @@
                     <template id="empty-form-template">
                         <tr>
                             <td id="form-client" class="">
-                                {{formset.person.as_hidden}}
+                                {{ formset.empty_form.person }}
+                                {% comment %}
+                                .as_hidden
+                                {% endcomment %}
                                 <div>
                                     <input type="text" class="row form-control mb-3 mt-3" id="idSearch" onkeyup="showSuggetions(this)" required>
-                                    <div id="suggestions" class="suggetions">
-                                        
+                                        <div id="suggestions" class="suggestions">
+
                                     </div>
                                 </div>
                             </td>

@@ -85,7 +85,7 @@ function showSuggetions(input){
                     });
                 });
         }
-       
+      
     }
     else{
         suggetionsBox.style.display = "none";
@@ -362,3 +362,35 @@ serviceInputs.forEach(serviceInput=>{
 })
 
 
+function Person(input){
+    let container_td = input.closest('td');
+    const container = document.getElementById('form-client'); // Onde os forms são inseridos
+    let select =  document.getElementById('id_persongroupNomeGrupoPessoasQuantidade_set-__prefix__-person')
+    let suggetionsBox = container_td.querySelector('.suggetions');
+    let id_client = container_td.querySelector('[name="pessoa"]')
+    if(input.value.length >=1 && input.value.trim() !==""){
+        const query = input.value;
+
+        fetch(`/buscar_pessoas/?query=${encodeURIComponent(query)}`)
+        .then(response => {
+            if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
+                return response.json();
+            } else {
+                throw new Error('Response is not JSON');
+            }
+        })
+        .then(data => {
+            suggetionsBox.innerHTML = "";
+            data.clientes.forEach(cliente => {
+                let newSuggest = document.createElement("div");
+                newSuggest.innerHTML = `${cliente.id} - ${cliente.name}`
+                suggetionsBox.appendChild(newSuggest);
+                newSuggest.onclick = function(){
+                    id_client.value = cliente.id;
+                    input.value = `${cliente.id} - ${cliente.name}`
+                    suggetionsBox.style.display = "none";
+                }
+            })
+        })
+    }
+}

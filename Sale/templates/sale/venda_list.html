@@ -91,6 +91,12 @@
                             <a href="{% url 'venda_update' pk=venda.pk %}">
                                 <button class="btn" style="background-color: #117027;color: white;" >Editar</button>
                             </a>
+                            {% comment %}
+                            <form action="{% url 'cupom' pk=venda.pk %}" method="POST" style="display:inline-block;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
+                            </form>
+                            {% endcomment %}
                             <form action="{% url 'venda_delete' pk=venda.pk %}" method="POST" style="display:inline-block;">
                                 {% csrf_token %}
                                 <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
@@ -146,6 +152,7 @@
         </div> 
         {% endblock %}
         {% block scripts %}
+        <script type="text/javascript" src="{% static 'js/cupom.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
         <script src="{% static 'js/search_sale.js' %}"></script>
         {% endblock %}

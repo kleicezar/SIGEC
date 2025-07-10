@@ -317,9 +317,20 @@ class ProductSearchForm(forms.Form):
     search = forms.CharField(max_length=100,required=False,label='Pesquisar Produto')
  
 
-class PersonGroupForm(forms.ModelForm):
+class NomeGrupoPessoasForm(forms.ModelForm):
     class Meta:
-        model = PersonGroup
+        model = NomeGrupoPessoas
+        fields= ['name_group']
+        widget= {
+        'name_group' :forms.TextInput(attrs={
+                'class':'form-control row-2',
+                'required':'required'
+            })
+        }
+
+class ProductGroupForm(forms.ModelForm):
+    class Meta:
+        model = ProductGroup
         fields= ['name_group']
         widget= {
         'name_group' :forms.TextInput(attrs={
@@ -328,35 +339,36 @@ class PersonGroupForm(forms.ModelForm):
             })
         }
      
-class PersonGroupMembershipForm(forms.ModelForm):
+class NomeGrupoPessoasQuantidadeForm(forms.ModelForm):
     class Meta:
-        model = PersonGroupMembership
+        model = NomeGrupoPessoasQuantidade
         fields= ['person']
-        widget= {
-        'person' :forms.Select(attrs={
-                'class':'form-control row-2',
-                'required':'required'
+        widgets = {  
+            'person': forms.TextInput(attrs={
+                'class': '',
+                'name': 'pessoa',
+                'required': 'required'
             }),
         }
      
-class ProductGroupForm(forms.ModelForm):
-    class Meta:
-        model = ProductGroup
-        fields= ['product', 'name_group', 'customized_price']
-        widget= {
-            'product': forms.TextInput(attrs={
-                'class':'form-control row-2',
-                'required':'required'
-            }),
-            'name_group':forms.TextInput(attrs={
-                'class':'form-control row-2',
-                'required':'required'
-            }),
-            'customized_price':forms.NumberInput(attrs={
-                'class':'form-control row-2',
-                'required':'required'
-            }),
-        }
+# class ProductGroupForm(forms.ModelForm):
+#     class Meta:
+#         model = ProductGroup
+#         fields= ['product', 'name_group', 'customized_price']
+#         widget= {
+#             'product': forms.TextInput(attrs={
+#                 'class':'form-control row-2',
+#                 'required':'required'
+#             }),
+#             'name_group':forms.TextInput(attrs={
+#                 'class':'form-control row-2',
+#                 'required':'required'
+#             }),
+#             'customized_price':forms.NumberInput(attrs={
+#                 'class':'form-control row-2',
+#                 'required':'required'
+#             }),
+#         }
 
 class ProductPriceForm(forms.ModelForm):
     class Meta:
@@ -372,4 +384,4 @@ class ProductPriceForm(forms.ModelForm):
                 'required':'required'
             }),
         }
-    
+     

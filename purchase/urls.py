@@ -21,8 +21,15 @@ urlpatterns = [
     path('expedition_product/<int:pk>/',expedition_product,name='expedition_product'),
     path('update_product_quantity/<int:pk>',update_product_quantity,name="update_product_quantity"),
     
-    path('tables/', listTables, name='listTables'),
-    path('tableForm/', tableForm, name='TableForm'),
-    path('table/upt/<int:id_table>/', updateTable, name='updateTable'),
-    path('table/dlt/<int:id_table>/', deleteTable, name='deleteTable'),
+    path('tablePerson/', listTablePerson, name='listTablePerson'),
+    path('tablePersonForm/', tableForm, name='TableForm'),
+    path('tablePerson/get/<int:id_table>/', getTable, name='getTable'),
+    path('tablePerson/upt/<int:id_table>/', updateTable, name='updateTable'),
+    path('tablePerson/dlt/<int:id_table>/', deleteTable, name='deleteTable'),
+    
+    path('tableProduct/', listTableProduct, name='listTableProduct'),
+    # path('tableProductForm/', tableProductForm, name='tableProductForm'),
+    # path('tableProduct/get/<int:id_table>/', getTableProduct, name='getTableProduct'),
+    # path('tableProduct/upt/<int:id_table>/', updateTableProduct, name='updateTableProduct'),
+    # path('tableProduct/dlt/<int:id_table>/', deleteTableProduct, name='deleteTableProduct'),
 ]
