@@ -20,7 +20,7 @@ from .models import *
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponse
-from finance.models import  CaixaDiario, PaymentMethod_Accounts
+from finance.models import  CaixaDiario, CashMovement, PaymentMethod_Accounts
 from finance.forms import  PaymentMethodAccountsForm, AccountsForm
 from django.db import transaction
 
@@ -153,7 +153,7 @@ def compras_create(request):
         for form in paymentForm:
             conta = form.save(commit=False)  # cria o objeto sem salvar ainda
             conta.compra = compra            # agora sim associa corretamente
-            conta.acc = True
+            conta.acc = None
             conta.save() 
 
     CompraItemFormSet = inlineformset_factory(Compra, CompraItem, form=CompraItemForm, extra=1, can_delete=True)
@@ -297,7 +297,7 @@ def compras_update(request, pk):
                 if purpose:  # Só processa se tiver propósito
                     total_by_purpose[purpose] = total_by_purpose.get(purpose, 0) + value
 
-                form.instance.acc = True  # Atualiza o campo acc
+                form.instance.acc = None  # Atualiza o campo acc
 
         return total_by_purpose
     
@@ -313,7 +313,7 @@ def compras_update(request, pk):
                     old_instance.expirationDate = new_instance.expirationDate
                     old_instance.days = new_instance.days
                     old_instance.value = new_instance.value
-                    old_instance.acc = True
+                    old_instance.acc = None
 
                     old_instance.save()
 
@@ -323,7 +323,7 @@ def compras_update(request, pk):
 
                 for form in paymentForm:
                     form_instance = form.instance
-                    form_instance.acc = True
+                    form_instance.acc = None
                     # form_instance.save()
                 paymentForm.save()
 
@@ -338,7 +338,7 @@ def compras_update(request, pk):
                     old_instance.expirationDate = new_instance.expirationDate
                     old_instance.days = new_instance.days
                     old_instance.value = new_instance.value
-                    old_instance.acc = True
+                    old_instance.acc = None
 
                     old_instance.save()
 
@@ -351,7 +351,7 @@ def compras_update(request, pk):
             # Atualiza acc para True mesmo se só estiver usando os formulários antigos
             for old_form in olderPaymentForm:
                 old_instance = old_form.instance
-                old_instance.acc = True
+                old_instance.acc = None
                 # old_instance.save()
                 
             olderPaymentForm.save()
@@ -1020,23 +1020,28 @@ def mudar_situacao_compra(request,pk):
     compra = get_object_or_404(Compra,pk=pk)
     compra.situacao = situationObject
     if situationObject.closure_level == Situation.CLOSURE_LEVEL_OPTIONS[1][0] or situationObject.closure_level[3][0]:
-        user = CaixaDiario.objects.filter(
+        caixa = CaixaDiario.objects.filter(
             Q(usuario_responsavel=request.user) & 
             Q(is_Active=1)
-            )
+            ).first()
+        if caixa:
+            payment_accounts = PaymentMethod_Accounts.objects.filter(compra=compra)
+            for payment_account in payment_accounts:
+                payment_account.acc = True
+                payment_account.save()
+                
+                CashMovement.objects.create(
+                    cash = caixa,
+                    accounts_in_cash = payment_account,
+                    forma_pagamento = payment_account.forma_pagamento,
+                    categoria = "Compra",
+                    
+                )
         
-        if user.exists():
-            messages.error(request, f"Já Existe um Caixa aberto para {request.user.username}")
-
+            # messages.success(request, 'Caixa Aberto Com Sucesso')
+            compra.save() 
+            return redirect('compras_list')
         else:
-            payment_value = PaymentMethod_Accounts.objects.filter(compra=compra.id).first()
-            
-            caixa = CaixaDiario.save(commit=False)
-            caixa.usuario_responsavel = request.user
-            caixa.is_Active = 1
-            caixa.saldo_inicial = payment_value
-            caixa.saldo_final = caixa.saldo_inicial
-            caixa.save()
-            messages.success(request, 'Caixa Aberto Com Sucesso')
-    compra.save()    
-    return redirect('venda_list')
+            messages.error(request,'Caixa com este usuário não está aberto!')
+            return redirect('compras_list')
+    

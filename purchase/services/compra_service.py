@@ -2,7 +2,7 @@
 
 from config.models import Situation
 from finance.forms import PaymentMethodAccountsForm, PaymentMethodAccountsReadOnlyForm
-from purchase.forms import CompraForm, CompraItemForm, CompraItemReadOnlyForm
+from purchase.forms import CompraForm, CompraItemForm, CompraItemReadOnlyForm, CompraReadOnlyForm
 
 
 class CompraService:

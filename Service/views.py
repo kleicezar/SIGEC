@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
 from finance.forms import AccountsForm, PaymentMethodAccountsForm,PaymentMethodFormSet
-from finance.models import CaixaDiario, PaymentMethod_Accounts
+from finance.models import CaixaDiario, CashMovement, PaymentMethod_Accounts
 from service.services.wo_service import WorkOrderService
 from .forms import *
 from .models import *
@@ -47,7 +47,7 @@ def workOrders_create(request):
             valor_usado = request.POST.get('credit_value')
             for form in PaymentMethod_Accounts_FormSet: 
                 if form.cleaned_data:
-                    form.acc = False
+                    form.acc = None
                     valor = form.cleaned_data['value']
                     total_payment+=valor
 
@@ -466,23 +466,29 @@ def mudar_situacao_service(request,pk):
     venda = get_object_or_404(Vendaservice,pk=pk)
     venda.situacao = situationObject
     if situationObject.closure_level == Situation.CLOSURE_LEVEL_OPTIONS[1][0] or situationObject.closure_level[3][0]:
-        user = CaixaDiario.objects.filter(
+        caixa = CaixaDiario.objects.filter(
             Q(usuario_responsavel=request.user) & 
             Q(is_Active=1)
-            )
+            ).first()
+        if caixa:
+            payment_accounts = PaymentMethod_Accounts.objects.filter(venda=venda)
+            for payment_account in payment_accounts:
+                payment_account.acc = False
+                payment_account.save()
+                
+                CashMovement.objects.create(
+                    cash = caixa,
+                    accounts_in_cash = payment_account,
+                    forma_pagamento = payment_account.forma_pagamento,
+                    categoria = "Serviço",
+                    
+                )
         
-        if user.exists():
-            messages.error(request, f"Já Existe um Caixa aberto para {request.user.username}")
-
+            # messages.success(request, 'Caixa Aberto Com Sucesso')
+            venda.save() 
+            return redirect('venda_list')
         else:
-            payment_value = PaymentMethod_Accounts.objects.filter(venda=venda.id).first()
-            
-            caixa = CaixaDiario.save(commit=False)
-            caixa.usuario_responsavel = request.user
-            caixa.is_Active = 1
-            caixa.saldo_inicial = payment_value
-            caixa.saldo_final = caixa.saldo_inicial
-            caixa.save()
-            messages.success(request, 'Caixa Aberto Com Sucesso')
-    venda.save()    
+            messages.error(request,'Caixa com este usuário não está aberto!')
+            return redirect('venda_list')
+        
     return redirect('venda_list')

@@ -119,6 +119,9 @@ def mudar_situacao(request,pk):
         if caixa:
             payment_accounts = PaymentMethod_Accounts.objects.filter(venda=venda)
             for payment_account in payment_accounts:
+                payment_account.acc = False
+                payment_account.save()
+
                 CashMovement.objects.create(
                     cash = caixa,
                     accounts_in_cash = payment_account,
@@ -164,7 +167,7 @@ def venda_create(request):
             valor_usado = request.POST.get('credit_value')
             for form in PaymentMethod_Accounts_FormSet: 
                 if form.cleaned_data:
-                    form.acc = False
+                    form.acc = None
                     valor = form.cleaned_data['value']
                     total_payment+=valor
 
@@ -519,30 +522,32 @@ def client_search(request):
     return JsonResponse({'clientes': clients})
 
 def supplier_search(request):
-    query = request.GET.get('query', '') 
+    query = request.GET.get('query', '')
     resultados = Person.objects.filter(
         (
-        Q(id__icontains=query) | 
-        Q(id_FisicPerson_fk__name__icontains=query) | 
-        Q(id_ForeignPerson_fk__name_foreigner__icontains=query) | 
-        Q(id_LegalPerson_fk__fantasyName__icontains=query)
-        ) & Q(isSupllier = True)
+            Q(id__icontains=query) | 
+            Q(id_FisicPerson_fk__name__icontains=query) | 
+            Q(id_ForeignPerson_fk__name_foreigner__icontains=query) | 
+            Q(id_LegalPerson_fk__fantasyName__icontains=query)
+        ) & Q(isSupllier=True)
     ).order_by('id')[:5]
 
-    if not resultados:
-        return JsonResponse({'clientes': [], 'message': 'Nenhum cliente encontrado.'})
+    # sempre devolva a chave 'fornecedores'
+    fornecedores = []
+    for supplier in resultados:
+        name = (
+            supplier.id_FisicPerson_fk.name if supplier.id_FisicPerson_fk else 
+            supplier.id_ForeignPerson_fk.name_foreigner if supplier.id_ForeignPerson_fk else 
+            supplier.id_LegalPerson_fk.fantasyName if supplier.id_LegalPerson_fk else 
+            'Nome não disponível'
+        )
+        fornecedores.append({'id': supplier.id, 'name': name})
 
-    suppliers = [
-        {
-            'id': supplier.id,
-            'name': (
-                    supplier.id_FisicPerson_fk.name if supplier.id_FisicPerson_fk else 
-                    (supplier.id_ForeignPerson_fk.name_foreigner if supplier.id_ForeignPerson_fk else 
-                    (supplier.id_LegalPerson_fk.fantasyName if supplier.id_LegalPerson_fk else 'Nome não disponível')))
-        }
-        for supplier in resultados
-    ]
-    return JsonResponse({'fornecedores': suppliers})
+    return JsonResponse({
+        'fornecedores': fornecedores,
+        'message': 'Nenhum fornecedor encontrado.' if not fornecedores else ''
+    })
+
 @login_required
 def get_product_id(request):
     query = request.GET.get('query','')

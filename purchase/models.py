@@ -31,7 +31,7 @@ class Compra(models.Model):
     product_total =  models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Total de Produtos")
     discount_total = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="Total de Descontos")
     fornecedor = models.ForeignKey(Person, on_delete=models.SET_NULL, null=True, verbose_name="Fornecedor")
-    situacao = models.ForeignKey(Situation, on_delete=models.SET_NULL, null=True, verbose_name="Situação")
+    situacao = models.ForeignKey(Situation, on_delete=models.SET_NULL, null=True, blank=True,verbose_name="Situação")
     is_active = models.BooleanField(default=True, verbose_name='Está Ativo')  # está ativo
 
     observation_product =  models.TextField(verbose_name='Observação sobre Produtos',null=True,blank=True)
@@ -40,9 +40,10 @@ class Compra(models.Model):
     freightExists = models.BooleanField(default=False,verbose_name='Frete')
     taxExists = models.BooleanField(default=False,verbose_name='Imposto')
 
+
     def __str__(self):
-        ...
-        # return f"Compra {self.id} por }"
+    # Exemplo: se você tiver um campo `numero` ou `id`
+        return f"Compra #{self.id}"  
 class Frete(models.Model):
     FREIGHT_CHOICES = [
         ('FOB','FOB'),
@@ -50,8 +51,8 @@ class Frete(models.Model):
     ]
     compra = models.ForeignKey(Compra,on_delete=models.SET_NULL, null=True, blank=True)
     freight_type = models.CharField(choices=FREIGHT_CHOICES,max_length=3,verbose_name='Tipo de Frete',null=True, blank=True)
-    valueFreight = models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor do Frete')
-    numberOfInstallmentsFreight = models.IntegerField(verbose_name='Número de Parcelas')
+    valueFreight = models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor do Frete',null=True,blank=True)
+    numberOfInstallmentsFreight = models.IntegerField(verbose_name='Número de Parcelas',blank=True,null=True)
     observation_freight = models.TextField(verbose_name='Observação sobre Frete',null=True,blank=True)
 class Tax(models.Model):
     compra = models.ForeignKey(Compra,on_delete=models.SET_NULL, null=True, blank=True)

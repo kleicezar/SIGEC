@@ -165,8 +165,12 @@ class PaymentMethod_Accounts(models.Model):
         blank=True
     )
     acc = models.BooleanField(
-        verbose_name='Tipo de Conta'
+        verbose_name='Tipo de Conta',
+        default=None,
+        null=True,
+        blank=True
     )
+
 
     activeCredit = models.BooleanField(
     default=False,

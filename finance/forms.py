@@ -203,11 +203,11 @@ class BasePaymentMethodAccountsForm(forms.ModelForm):
             }),
             'value': forms.NumberInput(attrs={
                 'class': 'form-control row',
-                'min': 0
+                'min': 0.01
             }),
             'value_old': forms.NumberInput(attrs={
                 'class': 'form-control row',
-                'min': 0
+                'min': 0.01
             }),
             'interest': forms.NumberInput(attrs={
                 'class': 'form-control row',

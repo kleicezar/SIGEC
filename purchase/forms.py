@@ -98,7 +98,7 @@ class CompraForm(forms.ModelForm):
                     'type': 'datetime-local'
                 }),
                 'situacao':forms.Select(attrs={
-                    'class':'form-select row mb-3 mt-3'
+                    'class':'form-select row mb-3 mt-3',
                 }),
                 'total_value':forms.TextInput(attrs={
                     'class':'form-control mb-3 mt-3 row-5',
@@ -126,6 +126,7 @@ class CompraForm(forms.ModelForm):
         if self.instance and self.instance.pk:
             self.fields['data_da_compra'].initial = self.instance.data_da_compra
             self.fields['data_da_compra'].widget.attrs['readonly'] = True
+            self.fields['situacao'].required = False
     
 class CompraItemForm(forms.ModelForm):
     STATUS_CHOICES = [
