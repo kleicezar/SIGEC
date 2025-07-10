@@ -71,18 +71,7 @@
                     <tr>
                         <td>{{ compra.id }}</td>
                         <td>{{ compra.fornecedor }}</td>
-                        <td>{{ compra.situacao }}</td>
-                        <td>
-                            <!-- <a href="{% url 'compras_update' pk=compra.pk %}">Editar</a>
-                            <a href="{% url 'compras_delete' pk=compra.pk %}"class="delete-button" data-id="{{ Position.id }}" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</a> -->
-                            <a href="{% url 'compras_update' pk=compra.pk %}">
-                                <button class="btn" style="background-color: #117027;color: white;">Editar</button>
-                            </a>
-                            <form action="{% url 'compras_delete' pk=compra.pk %}" method="POST" style="display:inline-block;">
-                                {% csrf_token %}
-                                <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
-                            </form>
-                            <form method="POST" action="{% url 'buscar_situacao_compra' pk=compra.pk %}">
+                        <td><form method="POST" action="{% url 'buscar_situacao_compra' pk=compra.pk %}">
                                 {% csrf_token %}
                                 {% with current_level=compra.situacao.closure_level %}
                                     {% if current_level == 'Trancamento Total' %}
@@ -119,6 +108,18 @@
                                     {% endif %}
                                 {% endwith %}
                             </form>
+                        </td>
+                        <td>
+                            <!-- <a href="{% url 'compras_update' pk=compra.pk %}">Editar</a>
+                            <a href="{% url 'compras_delete' pk=compra.pk %}"class="delete-button" data-id="{{ Position.id }}" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</a> -->
+                            <a href="{% url 'compras_update' pk=compra.pk %}">
+                                <button class="btn" style="background-color: #117027;color: white;">Editar</button>
+                            </a>
+                            <form action="{% url 'compras_delete' pk=compra.pk %}" method="POST" style="display:inline-block;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
+                            </form>
+                            
                         </td>
                     </tr>
                     {% endfor %}
