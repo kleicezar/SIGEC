@@ -144,11 +144,9 @@
                             <a href="{% url 'venda_update' pk=venda.pk %}">
                                 <button class="btn" style="background-color: #117027;color: white;" >Editar</button>
                             </a>
+                            <button type="button" class="btn btn-secondary" onclick="imprimirCupom({{ venda.id }})">Imprimir</button>
                             {% comment %}
-                            <form action="{% url 'cupom' pk=venda.pk %}" method="POST" style="display:inline-block;">
-                                {% csrf_token %}
-                                <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
-                            </form>
+                            <button onclick="imprimirCupom({{ venda.id }})">Imprimir Cupom</button>
                             {% endcomment %}
                             <form action="{% url 'venda_delete' pk=venda.pk %}" method="POST" style="display:inline-block;">
                                 {% csrf_token %}
