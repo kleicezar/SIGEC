@@ -319,6 +319,7 @@ class ProductSearchForm(forms.Form):
     search = forms.CharField(max_length=100,required=False,label='Pesquisar Produto')
  
 
+
 class NomeGrupoPessoasForm(forms.ModelForm):
     class Meta:
         model = NomeGrupoPessoas
@@ -329,6 +330,7 @@ class NomeGrupoPessoasForm(forms.ModelForm):
                 'required':'required'
             })
         }
+
 
 class ProductGroupForm(forms.ModelForm):
     class Meta:
@@ -399,4 +401,5 @@ class ProductPriceForm(forms.ModelForm):
                 'required':'required'
             }),
         }
+     
      

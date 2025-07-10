@@ -936,7 +936,7 @@ def return_product(request, pk):
 
 
 # @permission_required('purchase.view_product', raise_exception=True)
-@login_required
+
 def listTablePerson(request):
     sort = request.GET.get('sort')
     direction = request.GET.get('dir', 'asc')
@@ -986,6 +986,22 @@ def listTablePerson(request):
 
 #     return render(request, 'purchase/tableForm.html', context={'form':form_person})
 
+# @login_required
+# def tableForm(request):
+#     if request.method == "POST":
+#         form_person = NomeGrupoPessoasForm(request.POST)
+#         formset = NomeGrupoPessoasQuantidadeForm(request.POST)
+#         product = ProductGroup.objects.create()
+#         if form_person.is_valid(): #and formset.is_valid():
+#             grupo = form_person.save()
+#             return redirect('listTableProduct')  # redirecione como desejar
+#     else:
+#         form_person = NomeGrupoPessoasForm()
+#         formset = NomeGrupoPessoasQuantidadeForm()
+#         # formset = NomeGrupoPessoasQuantidadeFormSet()
+
+#     return render(request, 'purchase/tableForm.html', context={'form':form_person})
+
 @login_required
 def tableForm(request):
     NomeGrupoPessoasQuantidadeFormSet = inlineformset_factory(NomeGrupoPessoas, NomeGrupoPessoasQuantidade, fields=['person'], extra=1, can_delete=True)
@@ -1000,13 +1016,23 @@ def tableForm(request):
             if formset_products and formset_products.is_valid():
                 for products in formset_products:
                     pass
+        form = NomeGrupoPessoasForm(request.POST)
+        formset = NomeGrupoPessoasQuantidadeFormSet(request.POST)
+        formset_products = ProductGroupFormSet(request.POST) 
+        if form.is_valid() and formset.is_valid(): #and formset.is_valid():
+            if formset_products and formset_products.is_valid():
+                for products in formset_products:
+                    pass
             grupo = form.save()
             membros = formset.save(commit=False)
             for membro in membros:
                 membro.group = grupo
                 membro.save()
             return redirect('listTableProduct')  # redirecione como desejar
+            return redirect('listTableProduct')  # redirecione como desejar
     else:
+        form = NomeGrupoPessoasForm()
+        formset = NomeGrupoPessoasQuantidadeFormSet()
         form = NomeGrupoPessoasForm()
         formset = NomeGrupoPessoasQuantidadeFormSet()
 
@@ -1035,9 +1061,20 @@ def getTable(request, id_table):
     return render(request, 'purchase/tableForm.html', context={'form':form})
 
 @login_required
+def getTable(request, id_table):
+    NomeGrupoPessoasQuantidadeFormSet = inlineformset_factory(NomeGrupoPessoas, NomeGrupoPessoasQuantidade, fields=['person'], extra=1, can_delete=True)
+
+    if request.method == "POST":
+        pass
+    else:
+        pass        #coloca os formularios aq 
+    return render(request, 'purchase/tableForm.html', context={'form':form})
+
+@login_required
 def deleteTable(request, id_table):
     table = get_object_or_404(ProductGroup, id_table)
     table.delete()
+    redirect('listTableProduct')
     redirect('listTableProduct')
 
 @login_required

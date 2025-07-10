@@ -264,31 +264,31 @@ def buscar_clientes(request):
     }
     return JsonResponse(response_data)
 
+
 @login_required
 @transaction.atomic
 def update_client(request, id_client):
     # Buscar o cliente e os dados relacionados
-    
-    try:
-        person = Person.objects.get(id=id_client)
-        fisicPerson = FisicPerson.objects.get(id=person.id_FisicPerson_fk)
-        legalPerson = LegalPerson.objects.get(id=person.id_LegalPerson_fk)
-        foreigner = ForeignPerson.objects.get(id=person.id_ForeignPerson_fk)
-        address = Address.objects.get(id=person.id_address_fk)
-        usuario = User.objects.get(id=person.id_user_fk)
-        # Identifica o tipo atual e o endereço 
-        if fisicPerson:
-            selected_form = "Pessoa Fisica"
-        elif legalPerson:
-            selected_form = "Pessoa Juridica"
-        elif foreigner:
-            selected_form = "Estrangeiro"
-        else:
-            selected_form = ""
-            address = None
+    person = get_object_or_404(Person, id=id_client)
 
-    except Person.DoesNotExist:
-        return redirect('Client')
+    # As FKs já retornam as instâncias ou None
+    fisicPerson = person.id_FisicPerson_fk
+    legalPerson = person.id_LegalPerson_fk
+    foreigner   = person.id_ForeignPerson_fk
+    address     = person.id_address_fk
+    usuario     = person.id_user_fk
+
+    # Identifica o tipo atual
+    if fisicPerson:
+        selected_form = "Pessoa Fisica"
+    elif legalPerson:
+        selected_form = "Pessoa Juridica"
+    elif foreigner:
+        selected_form = "Estrangeiro"
+    else:
+        selected_form = ""
+        address = None
+
     if request.method == "POST":
         log = log_db(request, action='u' ,type='01')
         print('\n\n\n passou pelo log principal\n\n\n')
@@ -374,13 +374,13 @@ def update_client(request, id_client):
             person.save()
             messages.success(request, "Cliente atualizado com sucesso.", extra_tags="successClient")
             return redirect('Client')
-
     else:
-        form_address = AddressForm(instance=address)
-        form_fisicPerson = FisicPersonForm(instance=fisicPerson)
-        form_legalPerson = LegalPersonModelForm(instance=legalPerson)
-        form_foreigner = ForeignerModelForm(instance=foreigner)
-        form_Person = PersonForm(instance=person)
+        # Popula formulários com as instâncias carregadas
+        form_address      = AddressForm(instance=address)
+        form_fisicPerson  = FisicPersonForm(instance=fisicPerson)
+        form_legalPerson  = LegalPersonModelForm(instance=legalPerson)
+        form_foreigner    = ForeignerModelForm(instance=foreigner)
+        form_Person       = PersonForm(instance=person)
 
     context = {
         'form_address': form_address,
@@ -389,11 +389,9 @@ def update_client(request, id_client):
         'form_foreigner': form_foreigner,
         'form_Person': form_Person,
         'selected_form': selected_form,
-        'type':'update'
+        'type': 'update'
     }
-
     return render(request, 'registry/Clientform.html', context)
-
 
 @login_required
 @transaction.atomic
