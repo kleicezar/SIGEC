@@ -57,7 +57,7 @@ def workOrders_create(request):
                     )
                     
                     if form.cleaned_data["activeCredit"]:
-                        creditos = Credit.objects.filter(person=venda.pessoa).order_by('id')
+                        creditos = Credit.objects.filter(person=service.pessoa).order_by('id')
                         restante_para_descontar = Decimal(valor_usado)
                         if creditos:
                             for credito in creditos:
