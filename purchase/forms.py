@@ -313,15 +313,28 @@ class TaxForm(forms.ModelForm):
                 raise forms.ValidationError("Para Imposto, os valores devem ser maiores que zero.")
         return cleaned_data
 
+
 class ProductSearchForm(forms.Form):
     search = forms.CharField(max_length=100,required=False,label='Pesquisar Produto')
  
+class CompraReadOnlyForm(CompraForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['readonly'] = True
+
+    
+class CompraItemReadOnlyForm(CompraItemForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['readonly'] = True
 
 class PersonGroupForm(forms.ModelForm):
     class Meta:
-        model = PersonGroup
+        model = NomeGrupoPessoas
         fields= ['name_group']
-        widget= {
+        widget = {
         'name_group' :forms.TextInput(attrs={
                 'class':'form-control row-2',
                 'required':'required'
@@ -330,7 +343,7 @@ class PersonGroupForm(forms.ModelForm):
      
 class PersonGroupMembershipForm(forms.ModelForm):
     class Meta:
-        model = PersonGroupMembership
+        model = NomeGrupoPessoasQuantidade
         fields= ['person']
         widget= {
         'person' :forms.Select(attrs={
@@ -341,14 +354,14 @@ class PersonGroupMembershipForm(forms.ModelForm):
      
 class ProductGroupForm(forms.ModelForm):
     class Meta:
-        model = ProductGroup
-        fields= ['product', 'name_group', 'customized_price']
+        model = AllProductGroup
+        fields= ['product', 'group_name', 'customized_price']
         widget= {
             'product': forms.TextInput(attrs={
                 'class':'form-control row-2',
                 'required':'required'
             }),
-            'name_group':forms.TextInput(attrs={
+            'group_name':forms.TextInput(attrs={
                 'class':'form-control row-2',
                 'required':'required'
             }),

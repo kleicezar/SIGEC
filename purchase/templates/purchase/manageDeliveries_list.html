@@ -1,167 +1,80 @@
 {% extends 'login/menu.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-    <head>  
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        {% block css %}
-        <link rel="stylesheet" href="{% static 'css/Table.css' %}">
-        <link rel="stylesheet" href="{% static 'css/error.css' %}">
-        {% endblock  %}
-        <title>Formulário</title>
-    </head>
-    <body>
-        {% block content %}
-        {% if type == "Pendente" %}
-            <div class='content'>
-            {% if messages %}
-                {% for message in messages %}
-                    {% if "delivery_page" in message.tags %}
-                    <div class="modal"> 
-                        <header class="mHeader">
-                            <p>Falha ao entregar produto</p>
-                        </header>
-                    
-                        <div class="alert {{ message.tags }} mBody">
-                            <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur, illum atque. Doloremque, dolor ipsum labore numquam quaerat doloribus, incidunt provident suscipit maiores dicta animi, itaque at reiciendis exercitationem assumenda odit?</p> -->
-                        {{ message }}
 
-                        </div>
-                
-                        <footer>
-                            <button id="mBtn" class="mButton" type="button" onclick="closeModal(this)">Fechar</button>
-                        </footer>
-                    </div>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-                <div class="container">
-                    <div class="form-group">
-                        <form method="GET" action="{% url 'Client' %}">
-                            {% csrf_token %}
-                            <div>
-                                {{ form.as_p }}
-                                <!-- <button type="submit">Pesquisar</button> -->
-                            </div>
-                        </form>
-                    </div>
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/Table.css' %}">
+<link rel="stylesheet" href="{% static 'css/error.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="content">
+
+    {# Mensagens condicionais (erro na expedição) #}
+    {% if messages %}
+        {% for message in messages %}
+            {% if "delivery_page" in message.tags %}
+            <div class="modal">
+                <header class="mHeader">
+                    <p>Falha ao entregar produto</p>
+                </header>
+                <div class="alert {{ message.tags }} mBody">
+                    {{ message }}
                 </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Id da Ordem</th>
-                            <th>Id da VendaVenda</th>
-                            <th>Descrição</th>
-                            <th>Quantidade</th>
-                            <th>Id do Produto</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for product in all_products_with_status %}
-                        <tr>
-                            {% if product.idVendaServico %}
-                            <td>{{ product.idVendaServico }}</td>
-                            {% else %}
-                            <td></td>
-                            {% endif %}
-
-                            {% if product.idVenda %}
-                            <td>{{ product.idVenda }}</td>
-                            {% else %}
-                            <td></td>
-                            {% endif %}
-                            <td>{{ product.descricao }}</td>
-                            <td>{{ product.quantidade }}</td>
-                            <td id="idProduct">{{product.idProduto}}</td>
-                            <td>
-                                <a href="{% url 'expedition_product' pk=product.idVendaItem %}">
-                                    <button class="btn" style="background-color: #117027;color: white;" >Expedir</button>
-                                </a>
-                               
-                                
-                            </td>
-                            
-                        
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div> 
-        {% elif type == "Entregue" %}
-        <div class='content'>
-            {% if messages %}
-                {% for message in messages %}
-                    {% if "delivery_page" in message.tags %}
-                    <div class="modal"> 
-                        <header class="mHeader">
-                            <p>Falha ao entregar produto</p>
-                        </header>
-                    
-                        <div class="alert {{ message.tags }} mBody">
-                            <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur, illum atque. Doloremque, dolor ipsum labore numquam quaerat doloribus, incidunt provident suscipit maiores dicta animi, itaque at reiciendis exercitationem assumenda odit?</p> -->
-                        {{ message }}
-
-                        </div>
-                
-                        <footer>
-                            <button id="mBtn" class="mButton" type="button" onclick="closeModal(this)">Fechar</button>
-                        </footer>
-                    </div>
-                    {% endif %}
-                {% endfor %}
+                <footer>
+                    <button id="mBtn" class="mButton" type="button" onclick="closeModal(this)">Fechar</button>
+                </footer>
+            </div>
             {% endif %}
-                <div class="container">
-                    <div class="form-group">
-                        <form method="GET" action="{% url 'Client' %}">
-                            {% csrf_token %}
-                            <div>
-                                {{ form.as_p }}
-                                <!-- <button type="submit">Pesquisar</button> -->
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Id da Ordem</th>
-                            <th>Id da VendaVenda</th>
-                            <th>Descrição</th>
-                            <th>Quantidade</th>
-                            <th>Id do Produto</th>
-                            <th>Status</th>
-                        
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for product in all_products_with_status %}
-                        <tr>
-                            <td>{{ product.idOS }}</td>
-                            <td>{{ product.idVenda }}</td>
-                            <td>{{ product.descricao }}</td>
-                            <td>{{ product.quantidade }}</td>
-                            <td id="idProduct">{{product.idProduto}}</td>
-                            <td>
-                                <a href="{% url 'return_product' pk=product.id %}">
-                                    <button class="btn" style="background-color: #117027;color: white;" >Devolver</button>
-                                </a>
-                               
-                                
-                            </td>
-                            </tr>
-                            {% endfor %}
-                           
-                    </tbody>
-                </table>
-            </div> 
-        {% endif %}
-        <!-- <script type="text/javascript" src="{% static 'js/script.js' %}"></script> -->
-        <script  src="{% static 'js/statusProducts.js' %}"></script>
-        <script src="{% static 'js/error.js' %}"></script>
+        {% endfor %}
+    {% endif %}
 
-        {% endblock %}
-        
-    </body>
-</html>
+    {# Filtro opcional (ex: cliente) #}
+    <div class="container">
+        <div class="form-group">
+            <form method="GET" action="{% url 'Client' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+            </form>
+        </div>
+    </div>
+
+    <!-- <h2>{{ type }} Produtos</h2> -->
+    <table>
+        <thead>
+            <tr>
+                <th>Id da Ordem</th>
+                <th>Id da Venda</th>
+                <th>Descrição</th>
+                <th>Quantidade</th>
+                <th>Id do Produto</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in all_products_with_status %}
+            <tr>
+                <td>{{ product.idVendaServico|default:"-" }}</td>
+                <td>{{ product.idVenda|default:"-" }}</td>
+                <td>{{ product.descricao }}</td>
+                <td>{{ product.quantidade }}</td>
+                <td>{{ product.idProduto }}</td>
+                <td>
+                    {% if type == "Pendente" %}
+                        <a href="{% url 'expedition_product' pk=product.idVendaItem %}">
+                            <button class="btn" style="background-color: #117027; color: white;">Expedir</button>
+                        </a>
+                    {% elif type == "Entregue" %}
+                        <a href="{% url 'return_product' pk=product.id %}">
+                            <button class="btn" style="background-color: #117027; color: white;">Devolver</button>
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script src="{% static 'js/statusProducts.js' %}"></script>
+<script src="{% static 'js/error.js' %}"></script>
+{% endblock %}

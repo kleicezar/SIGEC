@@ -36,13 +36,22 @@
                                         <div class="card-body">
                                             <h5 class="card-title">Expedição de Produto</h5>
                                             {{vendaItemForm.product.as_hidden}}
-                                            {% if vendaItemForm.venda %}
+                                            {% if vendaItemForm.instance.venda %}
                                             <div class="mt-4">
                                                 <label for="" class="p-2">
                                                     {{vendaItemForm.venda.label_tag}}
                                                 </label>
                                                 <div class="p-2 ">
                                                     {{vendaItemForm.venda}}
+                                                </div> 
+                                            </div>
+                                            {% elif vendaItemForm.instance.servico %}
+                                            <div class="mt-4">
+                                                <label for="" class="p-2">
+                                                    {{vendaItemForm.servico.label_tag}}
+                                                </label>
+                                                <div class="p-2 ">
+                                                    {{vendaItemForm.servico}}
                                                 </div> 
                                             </div>
                                             {% endif %}

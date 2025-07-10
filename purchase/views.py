@@ -30,25 +30,25 @@ from django.db import transaction
 def productsWithStatus_list(request):
 
     vendasItens = VendaItem.objects.filter(
-        Q(status = 'Pendente')
-    )
-    # workOrders = VendaItemWS.objects.filter(
-    #     Q(status = 'Pendente')
-    # )
+    Q(status='Pendente') &
+    (Q(venda__is_active=True) | Q(servico__is_active=True))
+)
+
     status_options = ["Pendente", "Entregue"]
 
     all_products_with_status = [
         {
             'idVenda': vendaItem.venda.id if vendaItem.venda else None,
             'idVendaServico':vendaItem.servico.id if vendaItem.servico else None,
-            'idProduto':vendaItem.product.id,
-            'idVendaItem':vendaItem.id,
-            'descricao': vendaItem.product.description, 
-            'quantidade': vendaItem.quantidade, 
-            'status': vendaItem.status
-        } for vendaItem in vendasItens
+            'idProduto': vendaItem.product.id if vendaItem.product else None,
+            'idVendaItem': vendaItem.id,
+            'descricao': vendaItem.product.description if vendaItem.product else '',
+            'quantidade': vendaItem.quantidade,
+            'status': vendaItem.status,
+            'id': vendaItem.id
+        }
+        for vendaItem in vendasItens
     ]
-    # messages.warning(request,'TESTE',extra_tags='delivery_page')
     return render(request, 'purchase/manageDeliveries_list.html', {
         'all_products_with_status': all_products_with_status,
         "status_options": status_options,
@@ -783,18 +783,27 @@ def get_product_id(request):
     return JsonResponse({'produto':resultados_json})
 
 def returnProducts_list(request):
+   
     vendasItens = VendaItem.objects.filter(
-        Q(status = 'Entregue') &
-        Q(current_quantity__gt = 0)
+        ~Q(current_quantity=F('quantidade')),
+        Q(venda__is_active=True) | Q(servico__is_active=True)
     )
-    # workOrders = VendaItemWS.objects.filter(
-    #     Q(status='Entregue')
-    # )
 
     all_products_with_status = [
-        {'idVenda': vendaItem.venda.id,'idProduto':vendaItem.product.id,'idVendaItem':vendaItem.id,'descricao': vendaItem.product.description, 'quantidade': vendaItem.quantidade, 'status': vendaItem.status,'id':vendaItem.id} for vendaItem in vendasItens
-    ] 
+        {
+            'idVenda': vendaItem.venda.id if vendaItem.venda else None,
+            'idVendaServico':vendaItem.servico.id if vendaItem.servico else None,
+            'idProduto': vendaItem.product.id if vendaItem.product else None,
+            'idVendaItem': vendaItem.id,
+            'descricao': vendaItem.product.description if vendaItem.product else '',
+            'quantidade': vendaItem.quantidade,
+            'status': vendaItem.status,
+            'id': vendaItem.id
+        }
+        for vendaItem in vendasItens
+    ]
     status_options = ["Pendente", "Entregue"]
+
 
     return render(request,'purchase/manageDeliveries_list.html',
         {
@@ -843,37 +852,53 @@ def return_product(request, pk):
         query = request.POST.get('query', 0)
         direction = request.POST.get('direction', '')
 
-        print("direction:", direction)
-        print("query:", query)
-
         if vendaItemDevolutedForm.is_valid():
-            devolvida = vendaItemDevolutedForm.cleaned_data['quantidade']
-            # vendaItem.quantidade -= devolvida
-            # if vendaItem.quantidade >=1:
-            #     vendaItem.save()
-            # else:
-            #     vendaItem.delete()
+            quantidade_devolver = vendaItemDevolutedForm.cleaned_data['quantidade_devolver']
 
-            print("Formulário válido")
+            # Atualiza a quantidade disponível do produto (estoque, por exemplo)
+            produto = vendaItem.product
+            produto.current_quantity += quantidade_devolver  # ou produto.stock += quantidade_devolver
+            produto.save()
+
+            # Atualiza o item da venda para refletir que essa parte foi devolvida
+            vendaItem.current_quantity += quantidade_devolver
+            vendaItem.save()
+
             if direction == '1':
-                print("Direção = 1")
-                
-                print(f"Nova quantidade: {vendaItem.quantidade}")
-                
-                pessoa = vendaItem.venda.pessoa
+                if vendaItem.venda:
+
+                    pessoa = vendaItem.venda.pessoa
+                else:
+                    pessoa = vendaItem.servico.pessoa
                 Credit.objects.create(
                     person=pessoa,
                     credit_data=datetime.now(),
                     credit_value=float(query)
                 )
             else:
-                # 'Devolução do Produto {product.name} com o valor {product.value} da venda {sale.id}'
+                # Determinar origem (venda ou serviço)
+                if vendaItem.venda:
+                    origem_id = vendaItem.venda.id
+                    pessoa = vendaItem.venda.pessoa
+                    origem_tipo = "venda"
+                elif vendaItem.servico:
+                    origem_id = vendaItem.servico.id
+                    pessoa = vendaItem.servico.pessoa
+                    origem_tipo = "serviço"
+                else:
+                    origem_id = 'desconhecido'
+                    pessoa = 'desconhecida'
+                    origem_tipo = "origem desconhecida"
+
+                # Construir a sessão com base na origem correta
                 request.session['dados_temp'] = {
-                'description': f'Devolução do Produto "{vendaItem.product.description}" de quantidade {vendaItem.quantidade} com o valor total R$ {vendaItem.price_total} da venda de id {vendaItem.venda.id}',
-                'person': f'{vendaItem.venda.pessoa}',
-                'totalValue':query
+                    'description': f'Devolução do Produto "{produto.description}" de quantidade {quantidade_devolver} com o valor total R$ {vendaItem.price_total} da {origem_tipo} de id {origem_id}',
+                    'person': str(pessoa),
+                    'totalValue': query
                 }
-                return redirect('Accounts_Create')
+
+            return redirect('Accounts_Create')
+
         else:
             print("Erro no formulário:", vendaItemDevolutedForm.errors)
     else:
@@ -895,12 +920,27 @@ def return_product(request, pk):
 
 
 # @permission_required('purchase.view_product', raise_exception=True)
+
+
+
+# def listTables(request):
+
+#     tables = ProductGroup.objects.all()
+
+#     context = {
+#         'tables': tables
+#     }
+
+#     return render(request, 'purchase/table_list.html', context)
+
+
+# @permission_required('purchase.view_product', raise_exception=True)
 @login_required
 def listTables(request):
     sort = request.GET.get('sort')
     direction = request.GET.get('dir', 'asc')
    
-    productgroup = PersonGroup.objects.all()
+    productgroup = NomeGrupoPessoas.objects.all()
     
     paginator = Paginator(productgroup,20)
     page_number = request.GET.get('page')
@@ -930,7 +970,7 @@ def listTables(request):
 
 @login_required
 def tableForm(request):
-    PersonGroupMembershipFormSet = inlineformset_factory(PersonGroup, PersonGroupMembership, fields=['person'], extra=1, can_delete=True)
+    PersonGroupMembershipFormSet = inlineformset_factory(NomeGrupoPessoas, NomeGrupoPessoasQuantidade, fields=['person'], extra=1, can_delete=True)
 
     if request.method == "POST":
         form = PersonGroupForm(request.POST)
@@ -971,3 +1011,32 @@ def InactiveTable(request, id_table):
     table = ProductGroup.objects.filter(id=id_table)
     table.is_active = 0
     redirect('listTables')
+
+    
+@login_required
+def mudar_situacao_compra(request,pk):
+    nova_situacao = request.POST.get('opcao')
+    situationObject = get_object_or_404(Situation,pk=nova_situacao)
+    compra = get_object_or_404(Compra,pk=pk)
+    compra.situacao = situationObject
+    if situationObject.closure_level == Situation.CLOSURE_LEVEL_OPTIONS[1][0] or situationObject.closure_level[3][0]:
+        user = CaixaDiario.objects.filter(
+            Q(usuario_responsavel=request.user) & 
+            Q(is_Active=1)
+            )
+        
+        if user.exists():
+            messages.error(request, f"Já Existe um Caixa aberto para {request.user.username}")
+
+        else:
+            payment_value = PaymentMethod_Accounts.objects.filter(compra=compra.id).first()
+            
+            caixa = CaixaDiario.save(commit=False)
+            caixa.usuario_responsavel = request.user
+            caixa.is_Active = 1
+            caixa.saldo_inicial = payment_value
+            caixa.saldo_final = caixa.saldo_inicial
+            caixa.save()
+            messages.success(request, 'Caixa Aberto Com Sucesso')
+    compra.save()    
+    return redirect('venda_list')

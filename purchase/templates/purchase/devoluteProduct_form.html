@@ -31,9 +31,9 @@
                 <div class="row">
                     <div class="mb-3 col">
                         <label class="form-label">
-                            {{ vendaItemForm.quantidade.label }}
+                            {{ vendaItemForm.quantidade_devolver.label }}
                         </label>
-                        {{ vendaItemForm.quantidade }}
+                        {{ vendaItemForm.quantidade_devolver }}
                     </div>
                     <div class="mb-3 col">
                         <label class="form-label">
@@ -72,7 +72,7 @@
 </div>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        const quantidade = document.getElementById('id_quantidade');
+        const quantidade = document.getElementById('id_quantidade_devolver');
         const value_total = document.getElementById('id_price_total');
         const query = document.getElementById('query');
 

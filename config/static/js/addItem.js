@@ -351,26 +351,31 @@ function attachSuggestionListeners() {
     });
 }
 
-function addPerson() {
-  const container = document.getElementById('itens-container'); // onde os forms vão ser inseridos
-  const totalInput = document.querySelector('input[name$="-TOTAL_FORMS"]'); // input gerado por {{ formset.management_form }}
+
+document.addEventListener("DOMContentLoaded", function () {
+  
+    window.addPerson = function() {
+  const container = document.getElementById('itens-container');
+  const totalInput = document.querySelector('input[name$="-TOTAL_FORMS"]');
   const totalForms = parseInt(totalInput.value, 10);
   const template = document.getElementById('empty-form-template');
-  const clone = template.content.cloneNode(true); // clona o conteúdo do <template>
 
-  // Atualiza todos os name/id no clone (campos hidden + inputs) com o novo índice
-  clone.querySelectorAll('[name], [id]').forEach(el => {
-    if (el.name) {
-      el.name = el.name.replace(/form-\d+-/, `form-${totalForms}-`);
-    }
-    if (el.id) {
-      el.id = el.id.replace(/form-\d+-/, `form-${totalForms}-`);
-    }
+  // Clona o template para novo form
+  const clone = template.content.cloneNode(true);
+
+  // Atualiza índices no clone (name e id) para evitar conflito (exemplo básico)
+  clone.querySelectorAll('input, label').forEach(el => {
+    if(el.name) el.name = el.name.replace('__prefix__', totalForms);
+    if(el.id) el.id = el.id.replace('__prefix__', totalForms);
+    if(el.htmlFor) el.htmlFor = el.htmlFor.replace('__prefix__', totalForms);
   });
 
-  // Adiciona o novo formulário clonado ao container
+  // Adiciona o clone dentro do container
   container.appendChild(clone);
 
-  // Atualiza o TOTAL_FORMS para avisar o Django que tem mais um form
+  // Incrementa total de forms para Django
   totalInput.value = totalForms + 1;
-}
+};
+
+
+})

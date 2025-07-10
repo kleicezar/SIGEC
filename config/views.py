@@ -311,9 +311,9 @@ def ActiveChartOfAccounts(request, id_chartOfAccounts):
     return render(request, 'config/ChartOfAccounts.html', context)
 
 @login_required
-def Service(request):
+def service(request):
     context = {
-        'services':service.objects.all()
+        'services':Service.objects.all()
     }
     return render(request,'config/service.html',context)
     # return HttpResponse("Olá, esta é a minha nova app Django!")

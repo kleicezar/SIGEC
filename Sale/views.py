@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from datetime import datetime, timedelta
 # from registry.forms import SearchForm
 from finance.forms import AccountsForm, PaymentMethodAccountsForm, PaymentMethodAccountsReadOnlyForm
-from finance.models import CaixaDiario, PaymentMethod_Accounts
+from finance.models import CaixaDiario, CashMovement, PaymentMethod_Accounts
 from sale.services.sale_service import VendaService
 from .forms import *
 from .models import *
@@ -112,26 +112,28 @@ def mudar_situacao(request,pk):
     venda = get_object_or_404(Venda,pk=pk)
     venda.situacao = situationObject
     if situationObject.closure_level == Situation.CLOSURE_LEVEL_OPTIONS[1][0] or situationObject.closure_level[3][0]:
-        user = CaixaDiario.objects.filter(
+        caixa = CaixaDiario.objects.filter(
             Q(usuario_responsavel=request.user) & 
             Q(is_Active=1)
-            )
+            ).first()
+        if caixa:
+            payment_accounts = PaymentMethod_Accounts.objects.filter(venda=venda)
+            for payment_account in payment_accounts:
+                CashMovement.objects.create(
+                    cash = caixa,
+                    accounts_in_cash = payment_account,
+                    forma_pagamento = payment_account.forma_pagamento,
+                    categoria = "venda",
+                    
+                )
         
-        if user.exists():
-            messages.error(request, f"Já Existe um Caixa aberto para {request.user.username}")
-
+            # messages.success(request, 'Caixa Aberto Com Sucesso')
+            venda.save() 
+            return redirect('venda_list')
         else:
-            payment_value = PaymentMethod_Accounts.objects.filter(venda=venda.id).first()
-            
-            caixa = CaixaDiario.save(commit=False)
-            caixa.usuario_responsavel = request.user
-            caixa.is_Active = 1
-            caixa.saldo_inicial = payment_value
-            caixa.saldo_final = caixa.saldo_inicial
-            caixa.save()
-            messages.success(request, 'Caixa Aberto Com Sucesso')
-    venda.save()    
-    return redirect('venda_list')
+            messages.error(request,'Caixa com este usuário não está aberto!')
+            return redirect('venda_list')
+    
 
 @login_required
 @transaction.atomic 
@@ -151,7 +153,8 @@ def venda_create(request):
 
             venda = venda_form.save(commit=False)
            
-
+            venda.situacao  = Situation.objects.filter(closure_level = Situation.CLOSURE_LEVEL_OPTIONS[1][0]).first()
+            
             venda_item_formset.instance = venda
             venda_item_formset.save(commit=False)
 

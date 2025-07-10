@@ -96,6 +96,61 @@ function showSuggetions(input){
     }
 }
 
+function showSuggetionsPerson(input) {
+  const container_td = input.closest('div'); // container do input atual
+  let id_client = container_td.querySelector("[name$='person']"); // input hidden que armazena id da pessoa
+  let suggestionsBox = container_td.querySelector('.suggetions'); // container para mostrar as sugestões
+
+  // Limpa sugestões e oculta caso input vazio ou muito curto
+  if (!input.value || input.value.trim().length < 1) {
+    suggestionsBox.innerHTML = "";
+    suggestionsBox.style.display = "none";
+    return;
+  }
+
+  const query = input.value.trim();
+
+  fetch(`/buscar_pessoas/?query=${encodeURIComponent(query)}`)
+    .then(response => {
+      // Verifica se a resposta é JSON
+      const contentType = response.headers.get('Content-Type');
+      if (response.ok && contentType && contentType.includes('application/json')) {
+        return response.json();
+      } else {
+        throw new Error('Response is not JSON');
+      }
+    })
+    .then(data => {
+      suggestionsBox.innerHTML = "";
+      suggestionsBox.style.display = "block"; // mostra sugestões
+
+      if (!data.clientes || data.clientes.length === 0) {
+        suggestionsBox.innerHTML = "<div>Nenhum resultado encontrado</div>";
+        return;
+      }
+
+      data.clientes.forEach(cliente => {
+        let newSuggest = document.createElement("div");
+        newSuggest.classList.add("suggestion-item"); // opcional para estilizar
+
+        newSuggest.textContent = `${cliente.id} - ${cliente.name}`;
+
+        newSuggest.onclick = function () {
+          id_client.value = cliente.id;
+          input.value = `${cliente.id} - ${cliente.name}`;
+          suggestionsBox.style.display = "none";
+        };
+
+        suggestionsBox.appendChild(newSuggest);
+      });
+    })
+    .catch(err => {
+      console.error("Erro ao buscar pessoas:", err);
+      suggestionsBox.innerHTML = "<div>Erro ao carregar sugestões</div>";
+      suggestionsBox.style.display = "block";
+    });
+}
+
 let preco_data;
 function showSuggetionsProducts(input){
 
@@ -191,8 +246,7 @@ const itemsContainerService = document.getElementById("itens-container-service")
 function calcularPreco(input) {
     let row = input.closest("tr"); 
     const itemForms = itemsContainerService.querySelectorAll("table .itens tr");
-    console.log('novo')
-    console.log(itemForms)
+
     let desconto = row.cells[2].querySelector("input").value || 0;
 
     let precoFinal = preco_data - (preco_data*(desconto/100))
@@ -206,11 +260,13 @@ const totalValueInput = document.getElementById("id_total_value");
 const totalValueField = document.getElementById("id_total_value_service");
 document.addEventListener('DOMContentLoaded',()=>{
    
-
-    if(!totalValueInput.value){
-        totalValueInput.value = 0;
+    if(totalValueInput){
+        if(!totalValueInput.value){
+            totalValueInput.value = 0;
+        }
     }
-
+    
+    
     if (totalValueField){
         if(!totalValueField.value){
             totalValueField.value = 0;

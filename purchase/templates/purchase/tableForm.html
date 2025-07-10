@@ -1,145 +1,83 @@
 {% extends "login/menu.html" %}
 {% load bootstrap4 %}
+{% load widget_tweaks %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% block css %}
-        <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
-        <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.min.css' %}">
-        <link rel="stylesheet" href="{% static 'css/custom-styles.css' %}">
-    {% endblock %}
-    <title>{% if table.pk %}Editar{% else %}Criar{% endif %} Tabela</title>
-    {% bootstrap_css %}
-    <style>
-        input[readonly] {
-            background-color: #e9ecef; /* Cinza claro */
-            color: #6c757d; /* Texto cinza escuro */
-            cursor: not-allowed; /* Cursor indicando que não é editável */
-        }
-    </style>
-    
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  {% block css %}
+  <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/custom-styles.css' %}">
+  {% endblock %}
+  <title>{% if table.pk %}Editar{% else %}Criar{% endif %} Tabela</title>
+  {% bootstrap_css %}
+  <style>
+    input[readonly] {
+      background-color: #e9ecef;
+      color: #6c757d;
+      cursor: not-allowed;
+    }
+  </style>
 </head>
 <body>
-    <main>
-        {% bootstrap_messages %}
-        {% block content %}
-        <div class="content">
-            <div class="container-fluid justify-content-center align-items-center">
-                <form method="post" id="form">
-                    {% csrf_token %}
-                
-                    <div class="col d-flex mb-5 gap-4 mt-5">
-                        <a href="{% url 'listTables' %}">
-                            <button type="button" class="btn btn-voltar">
-                                <i class="fas fa-arrow-left"></i> 
-                            </button>
-                        </a>    
-                       <h4 class="c-adapted">{% if table.pk %}Editar{% else %}Criar{% endif %} Tabela</h4>
-                    </div>
-                    <!-- Formulário de Compra -->
-                    <h6>Dados da Tabela</h6>
-                    
-                    {% if messages %}
-                        {% for message in messages %}
-                            {% if "shoppingcreate_page" in message.tags %}
-                            <div class="modal"> 
-                                <header class="mHeader">
-                                    <p>Falha ao salvar Compra</p>
-                                </header>
-                            
-                                <div class="alert {{ message.tags }} mBody">
-                                    <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur, illum atque. Doloremque, dolor ipsum labore numquam quaerat doloribus, incidunt provident suscipit maiores dicta animi, itaque at reiciendis exercitationem assumenda odit?</p> -->
-                                {{ message }}
+  <main>
+    {% bootstrap_messages %}
+    {% block content %}
+    <div class="content container pt-4">  <!-- container pra respeitar menu fixo e espaçamento -->
+      <!-- Nav tabs -->
+      <ul class="nav nav-tabs" id="formTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active" id="group-tab" data-bs-toggle="tab" href="#group" role="tab" aria-controls="group" aria-selected="true">Grupo</a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link" id="pessoas-tab" data-bs-toggle="tab" href="#pessoas" role="tab" aria-controls="pessoas" aria-selected="false">Pessoas</a>
+        </li>
+      </ul>
 
-                                </div>
-                        
-                                <footer>
-                                    <button id="mBtn" class="mButton" type="button" onclick="closeModal(this)">Fechar</button>
-                                </footer>
-                            </div>
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
+      <!-- Tab panes -->
+      <div class="tab-content pt-3" id="formTabsContent">
+        <div class="tab-pane fade show active" id="group" role="tabpanel" aria-labelledby="group-tab">
+          <div class="mb-3">
+            <label for="{{ form.name_group.id_for_label }}" class="form-label">{{ form.name_group.label }}</label>
+            {{ form.name_group|add_class:"form-control" }}
+          </div>
+        </div>
 
-
-                    {% comment %}
-                    {% endcomment %}
-
-                    
-                    <table>
-                        <tr>
-                            <td>{{form.name_group.label}}</td>
-                        </tr>
-                        <tr>
-                            <td>{{form.name_group}}</td>
-                        </tr>
-                        
-                        {{ formset.management_form }}
-                        <tr>
-                            <td>{{formset.person.label}}</td>
-                        </tr>
-                        <td>{{ form.person.label }}</td>
-                        {% for form in formset %}
-                        <tr>
-                            <td>{{ form.person }}</td>
-                            <td>{{ form.DELETE }}</td>
-                        </tr>
-                        {% endfor %}
-                    </table>
-                    
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">
-                                    Pessoa
-                                </th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            
-                          
-                        </tbody>
-                    </table>
-                    <div id="itens-container">      
-                        
-                        
-                    </div>
-                    <template id="empty-form-template">
-                        <tr>
-                            <td id="form-client" class="">
-                                {{formset.person.as_hidden}}
-                                <div>
-                                    <input type="text" class="row form-control mb-3 mt-3" id="idSearch" onkeyup="showSuggetions(this)" required>
-                                    <div id="suggestions" class="suggetions">
-                                        
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </template>
-                    <button id="item" type="button" onclick="addPerson()" class="btn btn-outline-success mb-5">Adicionar Pessoa</button>
-
-                    <div class="row">
-                        <div class="col mt-5 text-end">
-                            <button  type="submit" class="btn bg-adapted" id="submitButton">Enviar</button>
-                        </div>
-                    </div>
-                </form>
-                
+        <div class="tab-pane fade" id="pessoas" role="tabpanel" aria-labelledby="pessoas-tab">
+          {{ formset.management_form }}
+          <div id="itens-container" class="mt-3 itens">
+            {% for form in formset %}
+            <div class="item-form mb-3">
+              <input type="hidden" name="{{ form.person.name }}" value="{{ form.person.value }}">
+              <label class="form-label">Pessoa</label>
+                <input type="text" class="form-control" onkeyup="showSuggetionsPerson(this)" required>
+                <div class="suggetions"></div>
+              {{ form.DELETE }}
             </div>
-        </div>  
+            {% endfor %}
+          </div>
 
-        <script src="{% static 'js/addItem.js' %}" defer></script>
-        <script src="{% static 'js/suggestions.js' %}"></script><!-- pesquisa clientes -->
-        <script src="{% static 'js/error.js' %}"></script>
-        <!-- <script src="{% static 'js/alertInstallments.js' %}"></script> -->
-        <!-- <script src="{% static 'js/clientSearch.js' %}"></script>  pesquisa clientes -->
-        {% comment %} <script src="{% static 'js/compra_item.js' %}"></script> <!-- pesquisa produtos em compras --> {% endcomment %}
-        {% endblock %}     
-    </main>
+          <template id="empty-form-template">
+            <div class="item-form mb-3">
+              <input type="hidden" name="form-__prefix__-person" id="id_form-__prefix__-person">
+              <label class="form-label">Pessoa</label>
+              <input type="text" class="form-control" onkeyup="showSuggetionsPerson(this)" required>
+              <div class="suggetions"></div>
+            </div>
+          </template>
+
+          <button type="button" class="btn btn-outline-success mt-3" onclick="addPerson()">Adicionar Pessoa</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="{% static 'js/addItem.js' %}" defer></script>
+    <script src="{% static 'js/suggestions.js' %}"></script>
+    <script src="{% static 'js/error.js' %}"></script>
+    {% endblock %}
+  </main>
 </body>
 </html>

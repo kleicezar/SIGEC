@@ -97,17 +97,18 @@ document.addEventListener('DOMContentLoaded', function() {
     if(serviceInput.value != ''){
         console.log('Fetching service data');
         const query = serviceInput.value;
-        console.log(query);
         fetch(`/get_service_id/?query=${encodeURIComponent(query)}`)
         .then(response => {
             if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
                 return response.json();
             } else {
-                throw new Error('Response is not JSON');
+                throw new Error('Response is not JSON');    
             }
         })
         .then(data=>{
-            textInput.value = `${data.servico[0].id} - ${data.servico[0].name_Service}`;
+            console.log("olllll")
+            console.log(data.servico[0].id,data.servico[0].name_service)
+            textInput.value = `${data.servico[0].id} - ${data.servico[0].name_service}`;
         });
 
     }

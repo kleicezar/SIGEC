@@ -1,6 +1,7 @@
 from django import forms
 
 from purchase.models import Product
+from sale.forms import VendaItemForm
 from sale.models import VendaItem
 from .models import *
 
@@ -95,7 +96,7 @@ class VendaItemserviceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['technician'].queryset = Person.objects.filter(isTechnician = True)
-        self.fields['service'].queryset = service.objects.all()
+        self.fields['service'].queryset = Service.objects.all()
         self.fields['preco'].widget.attrs['readonly'] = True
 
     # def clean(self):
@@ -106,60 +107,7 @@ class VendaItemserviceForm(forms.ModelForm):
     #         cleaned_data['total'] = preco_unitario * quantidade
     #     return cleaned_data
     
-class VendaItemForm(forms.ModelForm):
-    STATUS_CHOICES = [
-        ('Pendente', 'Pendente'),
-        ('Entregue','Entregue')
-    ]
 
-    status = forms.ChoiceField(
-        choices=STATUS_CHOICES,
-        widget=forms.Select(attrs={'class': 'form-control mt-3 row-5 mb-3', 'disabled': True}),
-        # initial='NE',
-        required=False
-    )
-    class Meta:
-        model = VendaItem
-        fields = ['product', 'quantidade', 'preco_unitario','discount','price_total','status']
-        widgets = {
-            'product':forms.TextInput(attrs={
-                'class':'form-control row-2 ',
-                'required':'required'
-            }),
-            'quantidade':forms.TextInput(attrs={
-                'class':'form-control row mt-3 mb-3',
-                'oninput':'calcularPrecoProduto(this)',
-                'required':'required'
-            }),
-            'preco_unitario':forms.TextInput(attrs={
-                'class':'form-control row mt-3 mb-3',
-                'oninput':'calcularPrecoProduto(this)',
-                'required':'required'
-            }),
-            'discount':forms.TextInput(attrs={
-                'class':'form-control row mt-3 mb-3',
-                'oninput':'calcularPrecoProduto(this)',
-                'required':'required'
-            }),
-            'price_total':forms.TextInput(attrs={
-                'class':'form-control row mt-3 mb-3',
-                'oninput':'calcularPrecoProduto(this)',
-                'required':'required'
-            })
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['product'].queryset = Product.objects.all()
-        self.fields['price_total'].widget.attrs['readonly'] = True
-
-    def clean(self):
-        cleaned_data = super().clean()
-        preco_unitario = cleaned_data.get('preco_unitario')
-        quantidade = cleaned_data.get('quantidade')
-        if preco_unitario and quantidade:
-            cleaned_data['total'] = preco_unitario * quantidade
-        return cleaned_data
 
 class VendaServiceFormUpdate(VendaserviceForm):
     class Meta:

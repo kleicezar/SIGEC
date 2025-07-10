@@ -110,7 +110,7 @@ class VendaItemFormExpedition(forms.ModelForm):
     # )
     class Meta:
         model = VendaItem
-        fields = ['product','venda','current_quantity']
+        fields = ['product','venda','current_quantity','servico']
         widgets = {
             'current_quantity': forms.NumberInput(attrs={
                 'class': 'form-control row mt-3 mb-3',
@@ -123,6 +123,12 @@ class VendaItemFormExpedition(forms.ModelForm):
                     'class':'form-control row',
                     'readonly':'readonly'
                 }
+            ),
+            'servico':forms.TextInput(
+                attrs={
+                    'class':'form-contorl row',
+                    'readonly':'readonly'
+                }
             )
             
             
@@ -131,7 +137,7 @@ class VendaItemFormExpedition(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance and self.instance.pk:
-            max_value = self.instance.quantidade
+            max_value = self.instance.current_quantity
             self.fields['current_quantity'].max_value = max_value
             self.fields['current_quantity'].widget.attrs['max'] = max_value
             self.fields['current_quantity'].min_value = 1
@@ -179,8 +185,9 @@ class VendaItemForm(forms.ModelForm):
     def save(self, commit = ...):
         vendaItem = super().save(commit=False)
         vendaItem.current_quantity = vendaItem.quantidade
+    
         if commit:
-            vendaItem.save()
+            vendaItem.save()    
         return vendaItem
     
 class VendaFormSet(forms.BaseFormSet):
@@ -214,42 +221,38 @@ class PaymentMethodVendaForm(forms.ModelForm):
 
 
 class ReturnVendaItemForm(forms.ModelForm):
+    quantidade_devolver = forms.IntegerField(
+        label='Quantidade a devolver',
+        min_value=1,
+        required=True,
+        widget=forms.NumberInput(attrs={'class': 'form-control'})
+    )
+
     class Meta:
         model = VendaItem
-        fields = ['product','quantidade','preco_unitario','price_total']
+        fields = ['product', 'preco_unitario', 'price_total', 'quantidade_devolver']
         widgets = { 
-            'product':forms.Select(attrs={
-                'class':'form-select row',
-            }),
-            'quantidade':forms.NumberInput(attrs={
-                'class':'form-control row-xl-2'
-            }),
-            'preco_unitario':forms.NumberInput(attrs={
-                'class':'form-control row',
-                'readonly':'readonly'
-            }),
-            'price_total':forms.NumberInput(
-                attrs={
-                    'class':'form-control row',
-                    'readonly':'readonly'
-                }
-            )
+            'product': forms.Select(attrs={'class':'form-select row'}),
+            
+            'preco_unitario': forms.NumberInput(attrs={'class':'form-control row', 'readonly':'readonly'}),
+            'price_total': forms.NumberInput(attrs={'class':'form-control row', 'readonly':'readonly'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         if self.instance and self.instance.pk:
-            max_qtd = self.instance.quantidade
-
-            # Aplica a limitação no frontend
-            self.fields['quantidade'].widget.attrs.update({
+            max_qtd = self.instance.current_quantity
+            print(max_qtd)
+            self.fields['quantidade_devolver'].widget.attrs.update({
                 'max': max_qtd,
                 'min': 1,
-                'type': 'number'
+                'type': 'number',
             })
-            max_qtd = self.instance.quantidade
-            self.fields['quantidade'].validators.append(MaxValueValidator(max_qtd))
+            self.fields['quantidade_devolver'].validators.append(MaxValueValidator(max_qtd))
+            self.fields['quantidade_devolver'].validators.append(MinValueValidator(1))
+            # Definindo valor inicial como a diferença
+            self.fields['quantidade_devolver'].initial = max_qtd
 
 
 class VendaReadOnlyForm(VendaForm):

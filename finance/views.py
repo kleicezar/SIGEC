@@ -722,12 +722,15 @@ def deletePayment_Accounts(request,id):
     PaymentMethod_Accounts.objects.filter(id=id).delete()
     return JsonResponse({"message": "Pagamento deletado com sucesso!"}, status=200)
 
+from django.db.models import Q
+
 def cashFlow(request):
-    # dados = request.session.pop('dados_temp')
-    algumaCoisa = 10
-    algumaCoisa = 10
+    cashMovement = CashMovement.objects.filter(
+        Q(cash__usuario_responsavel=request.user)
+    )
+    
     context = {
-        'get':algumaCoisa
+        'CashMovement': cashMovement
     }
     return render(request, 'finance/cashFlow.html', context)
 

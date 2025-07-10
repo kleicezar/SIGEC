@@ -191,7 +191,7 @@ class CaixaDiario(models.Model): #abertura de caixa
     is_Active = models.BooleanField()
 
     def __str__(self):
-        return f"Caixa {self.data} - Saldo Final: R${self.saldo_final:.2f}"
+        return f"Caixa {self.criado_em} - Saldo Final: R${self.saldo_final:.2f}"
 
 class CashMovement(models.Model):  # transações do caixa diario
     # TIPO_MOVIMENTACAO = [
@@ -226,7 +226,7 @@ class CashMovement(models.Model):  # transações do caixa diario
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.accounts_in_cash.description} - R${self.accounts_in_cash.totalValue:.2f}"
+        return f"{self.categoria} -"
 
 class FechamentoCaixa(models.Model):  # fechamento do caixa
     caixa = models.OneToOneField(CaixaDiario, on_delete=models.CASCADE)

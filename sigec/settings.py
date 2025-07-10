@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'login',
     'service',
     'auditlog',
+    'widget_tweaks'
 ]
 
 MIDDLEWARE = [
