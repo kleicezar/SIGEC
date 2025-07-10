@@ -18,6 +18,9 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Case, When, Value, CharField, F
+import platform
+from escpos.printer import Serial, Usb, Dummy, File
+import sys
 ### SALE
 
 @login_required
@@ -492,6 +495,31 @@ def venda_item_create(request, venda_pk):
     else:
         form = VendaItemForm()
     return render(request, 'sale/venda_item_form.html', {'form': form, 'venda': venda})
+
+@login_required
+def print_sale_CNF(request, pk):
+    venda = Venda.objects.get(id=pk)
+    pessoa = venda.pessoa
+    endereco = pessoa.id_address_fk
+    venda_item = VendaItem.objects.filter(venda=pk)
+    forma_pgto = PaymentMethod_Venda.objects.filter(venda=pk)
+    print(forma_pgto)
+    for i in forma_pgto:
+        print(i.forma_pagamento.name_paymentMethod)
+        print(i.expirationDate)
+        print(i.valor)
+    # sale = get_object_or_404(Venda, venda_pk=pk )
+    sale  = 'sale'
+
+    context={
+        'venda': venda,
+        'pessoa': pessoa,
+        'endereco': endereco,
+        'venda_item': venda_item,
+        'forma_pgto': forma_pgto
+        }
+
+    return render(request, 'sale/sale.html', context)
 
 @login_required
 def client_search(request):

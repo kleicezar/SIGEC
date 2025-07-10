@@ -318,20 +318,8 @@ class TaxForm(forms.ModelForm):
 class ProductSearchForm(forms.Form):
     search = forms.CharField(max_length=100,required=False,label='Pesquisar Produto')
  
-class CompraReadOnlyForm(CompraForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.widget.attrs['readonly'] = True
 
-    
-class CompraItemReadOnlyForm(CompraItemForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.widget.attrs['readonly'] = True
-
-class PersonGroupForm(forms.ModelForm):
+class NomeGrupoPessoasForm(forms.ModelForm):
     class Meta:
         model = NomeGrupoPessoas
         fields= ['name_group']
@@ -341,36 +329,61 @@ class PersonGroupForm(forms.ModelForm):
                 'required':'required'
             })
         }
+
+class ProductGroupForm(forms.ModelForm):
+    class Meta:
+        model = ProductGroup
+        fields= ['name_group']
+        widget= {
+        'name_group' :forms.TextInput(attrs={
+                'class':'form-control row-2',
+                'required':'required'
+            })
+        }
      
-class PersonGroupMembershipForm(forms.ModelForm):
+class NomeGrupoPessoasQuantidadeForm(forms.ModelForm):
     class Meta:
         model = NomeGrupoPessoasQuantidade
         fields= ['person']
-        widget= {
-        'person' :forms.Select(attrs={
-                'class':'form-control row-2',
-                'required':'required'
+        widgets = {  
+            'person': forms.TextInput(attrs={
+                'class': '',
+                'name': 'pessoa',
+                'required': 'required'
             }),
         }
-     
-class ProductGroupForm(forms.ModelForm):
-    class Meta:
-        model = AllProductGroup
-        fields= ['product', 'group_name', 'customized_price']
-        widget= {
-            'product': forms.TextInput(attrs={
-                'class':'form-control row-2',
-                'required':'required'
-            }),
-            'group_name':forms.TextInput(attrs={
-                'class':'form-control row-2',
-                'required':'required'
-            }),
-            'customized_price':forms.NumberInput(attrs={
-                'class':'form-control row-2',
-                'required':'required'
-            }),
-        }
+
+class CompraReadOnlyForm(CompraForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['readonly'] = True
+
+class CompraItemReadOnlyForm(CompraItemForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['readonly'] = True
+
+
+# class ProductGroupForm(forms.ModelForm):
+#     class Meta:
+#         model = ProductGroup
+#         fields= ['product', 'name_group', 'customized_price']
+#         widget= {
+#             'product': forms.TextInput(attrs={
+#                 'class':'form-control row-2',
+#                 'required':'required'
+#             }),
+#             'name_group':forms.TextInput(attrs={
+#                 'class':'form-control row-2',
+#                 'required':'required'
+#             }),
+#             'customized_price':forms.NumberInput(attrs={
+#                 'class':'form-control row-2',
+#                 'required':'required'
+#             }),
+#         }
 
 class ProductPriceForm(forms.ModelForm):
     class Meta:
@@ -386,4 +399,4 @@ class ProductPriceForm(forms.ModelForm):
                 'required':'required'
             }),
         }
-    
+     

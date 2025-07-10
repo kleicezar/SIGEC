@@ -908,6 +908,7 @@ def return_product(request, pk):
         'vendaItemForm': vendaItemDevolutedForm
     })
 
+# def listTableProduct(request):
 # def listTables(request):
 
 #     tables = ProductGroup.objects.all()
@@ -936,10 +937,11 @@ def return_product(request, pk):
 
 # @permission_required('purchase.view_product', raise_exception=True)
 @login_required
-def listTables(request):
+def listTablePerson(request):
     sort = request.GET.get('sort')
     direction = request.GET.get('dir', 'asc')
    
+    productgroup = NomeGrupoPessoas.objects.all()
     productgroup = NomeGrupoPessoas.objects.all()
     
     paginator = Paginator(productgroup,20)
@@ -968,23 +970,45 @@ def listTables(request):
          }
     )
 
+# @login_required
+# def tableForm(request):
+#     if request.method == "POST":
+#         form_person = NomeGrupoPessoasForm(request.POST)
+#         formset = NomeGrupoPessoasQuantidadeForm(request.POST)
+#         product = ProductGroup.objects.create()
+#         if form_person.is_valid(): #and formset.is_valid():
+#             grupo = form_person.save()
+#             return redirect('listTableProduct')  # redirecione como desejar
+#     else:
+#         form_person = NomeGrupoPessoasForm()
+#         formset = NomeGrupoPessoasQuantidadeForm()
+#         # formset = NomeGrupoPessoasQuantidadeFormSet()
+
+#     return render(request, 'purchase/tableForm.html', context={'form':form_person})
+
 @login_required
 def tableForm(request):
+    NomeGrupoPessoasQuantidadeFormSet = inlineformset_factory(NomeGrupoPessoas, NomeGrupoPessoasQuantidade, fields=['person'], extra=1, can_delete=True)
+    ProductGroupFormSet = inlineformset_factory(ProductGroup, ProductPrice, fields=['product_group'], extra=1, can_delete=True)
     PersonGroupMembershipFormSet = inlineformset_factory(NomeGrupoPessoas, NomeGrupoPessoasQuantidade, fields=['person'], extra=1, can_delete=True)
 
     if request.method == "POST":
-        form = PersonGroupForm(request.POST)
-        formset = PersonGroupMembershipFormSet(request.POST)
-        if form.is_valid() and formset.is_valid():
+        form = NomeGrupoPessoasForm(request.POST)
+        formset = NomeGrupoPessoasQuantidadeFormSet(request.POST)
+        formset_products = ProductGroupFormSet(request.POST) 
+        if form.is_valid() and formset.is_valid(): #and formset.is_valid():
+            if formset_products and formset_products.is_valid():
+                for products in formset_products:
+                    pass
             grupo = form.save()
             membros = formset.save(commit=False)
             for membro in membros:
                 membro.group = grupo
                 membro.save()
-            return redirect('listTables')  # redirecione como desejar
+            return redirect('listTableProduct')  # redirecione como desejar
     else:
-        form = PersonGroupForm()
-        formset = PersonGroupMembershipFormSet()
+        form = NomeGrupoPessoasForm()
+        formset = NomeGrupoPessoasQuantidadeFormSet()
 
     return render(request, 'purchase/tableForm.html', context={'form':form,'formset':formset})
 
@@ -1001,15 +1025,81 @@ def updateTable(request, id_table):
     return render(request, 'purchase/tableForm.html', context={'form':form})
 
 @login_required
+def getTable(request, id_table):
+    NomeGrupoPessoasQuantidadeFormSet = inlineformset_factory(NomeGrupoPessoas, NomeGrupoPessoasQuantidade, fields=['person'], extra=1, can_delete=True)
+
+    if request.method == "POST":
+        pass
+    else:
+        pass        #coloca os formularios aq 
+    return render(request, 'purchase/tableForm.html', context={'form':form})
+
+@login_required
 def deleteTable(request, id_table):
     table = get_object_or_404(ProductGroup, id_table)
     table.delete()
-    redirect('listTables')
+    redirect('listTableProduct')
 
 @login_required
 def InactiveTable(request, id_table):
     table = ProductGroup.objects.filter(id=id_table)
     table.is_active = 0
+    redirect('listTableProduct')
+
+
+@login_required
+def listTableProduct(request):
+    sort = request.GET.get('sort')
+    direction = request.GET.get('dir', 'asc')
+   
+    productgroup = ProductGroup.objects.all()
+    
+    paginator = Paginator(productgroup,20)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+
+    page_items = list(page.object_list)
+
+    colunas = [
+        ('id','ID'),
+        ('name_group','Nome do Grupo'),
+    ]
+    if sort:
+        reverse = (direction == 'desc')
+        page_items = sorted(page_items,key=attrgetter(sort),reverse=reverse)
+
+    page.object_list = page_items
+
+    # products = Product.objects.filter(is_active=True)
+    return render(request, 'purchase/table_list.html', 
+        {
+            'colunas':colunas,
+            'tables': page,
+            'current_sort':sort,
+            'current_dir':direction
+         }
+    )
+
+@login_required
+def tableProductForm(request):
+    if request.method == "POST":
+        form_product = ProductGroupForm(request.POST)
+        if form_product.is_valid(): #and formset.is_valid():
+            form_product.save()
+            return redirect('listTableProduct')  # redirecione como desejar
+    else:
+        form_product = ProductGroupForm()
+
+    return render(request, 'purchase/tableForm.html', context={'form':form_product})
+
+def getTableProduct(request, id_tableProduct):
+    pass
+def updateTableProduct(request, id_tableProduct):
+    pass
+def deleteTableProduct(request, id_tableProduct):
+    pass
+
+ 
     redirect('listTables')
 
     
