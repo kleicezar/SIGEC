@@ -1,9 +1,16 @@
 function imprimirCupom(vendaId) {
-    const url = `/cupom/${vendaId}/`;  // URL que chama a view do Django
-    const janela = window.open(url, 'Impressão', 'width=300,height=600');
+    const url = `cupom/${vendaId}/`;
 
-    janela.onload = function () {
-        janela.print();
-        janela.onafterprint = () => janela.close();
-    };
+    const novaAba = window.open(url, '_blank');
+
+    if (novaAba) {
+        novaAba.focus();
+
+        novaAba.onload = function () {
+            novaAba.print();
+            // novaAba.onafterprint = () => novaAba.close();
+        };
+    } else {
+        alert("Por favor, permita pop-ups no navegador para imprimir o cupom.");
+    }
 }

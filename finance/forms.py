@@ -421,7 +421,6 @@ class CreditLimitForm(forms.ModelForm):
             })
         }
 
-
 class CaixaDiarioForm(forms.ModelForm):
     class Meta:
         model = CaixaDiario
@@ -434,3 +433,28 @@ class CaixaDiarioForm(forms.ModelForm):
             # 'usuario_responsavel': 'Responsável',
             'saldo_inicial': 'Saldo Inicial',
         }
+
+# class FechamentoCaixaForm(forms.ModelForm):
+#     class Meta:
+#         model = FechamentoCaixa
+#         fields = ['observacoes']
+#         widgets = {
+
+#         }
+#         labels = {
+#             # 'usuario_responsavel': 'Responsável',
+#             'closed_in': 'Saldo Inicial',
+#         }
+
+# class CancelamentoForm(forms.ModelForm):
+#     class Meta:
+#         model = Cancelamento
+#         fields = ['saldo_inicial']
+#         widgets = {
+#             'observacoes': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+#             # 'usuario_responsavel': forms.Select(attrs={'class': 'form-control'}),
+#         }
+#         labels = {
+#             # 'usuario_responsavel': 'Responsável',
+#             'closed_in': 'Saldo Inicial',
+#         }

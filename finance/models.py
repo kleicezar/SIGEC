@@ -240,6 +240,25 @@ class FechamentoCaixa(models.Model):  # fechamento do caixa
     def __str__(self):
         return f"Fechamento {self.caixa.data} - Responsável: {self.caixa.usuario_responsavel}"
 
+# class Cancelamento(models.Model):  # fechamento do caixa
+#     fechamento_caixa = models.OneToOneField(FechamentoCaixa, on_delete=models.SET_NULL)
+#     venda = models.OneToOneField(Venda, on_delete=models.SET_NULL)
+#     ordem_servico = models.OneToOneField(Vendaservice, on_delete=models.SET_NULL)
+#     motivo_cancelamento = models.TextField(blank=True, null=True)
+#     closed_in = models.DateTimeField(auto_now_add=True, verbose_name='fechado_em')
+#     usuario_responsavel = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+
+
+#     def __str__(self):
+#         if self.fechamento_cixa:
+#             return f"Cancelamento do caixa {self.fechamento_caixa.id} - feito pelo responsável: {self.usuario_responsavel}"
+#         elif self.venda:
+#             return f"Cancelamento da venda {self.venda.id} - feito pelo responsável: {self.usuario_responsavel}"
+#         elif self.ordem_serviço:
+#             return f"Cancelamento da ordem de serviço {self.ordem_servico.id} - feito pelo responsável: {self.usuario_responsavel}"
+#         else:
+#             return f"Cancelamento de nota avulsa"
+        
 
 auditlog.register(Accounts)
 auditlog.register(PaymentMethod_Accounts)

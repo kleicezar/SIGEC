@@ -289,6 +289,8 @@ def update_Accounts(request, id_Accounts):
         if payment_instance.compra:
             return updateAccounts_Shopping(request,payment_instance.id)
 
+@login_required
+@transaction.atomic 
 def updateAccounts_Shopping(request,id_Accounts):
     payment_instance = get_object_or_404(PaymentMethod_Accounts, id=id_Accounts)
     if request.method == "POST":
@@ -332,6 +334,8 @@ def updateAccounts_Shopping(request,id_Accounts):
     }
     return render(request, 'finance/AccountsPayformShoppingUpdate.html', context)
 
+@login_required
+@transaction.atomic 
 def updateAccounts_Sale(request,id_Accounts):
     print("passei")
     payment_instance = get_object_or_404(PaymentMethod_Accounts, id=id_Accounts)
@@ -379,6 +383,7 @@ def updateAccounts_Sale(request,id_Accounts):
         'tipo_conta':'Receber'
     }
     return render(request, 'finance/AccountsPayformSaleUpdate.html', context)
+
 # funcionando
 @login_required
 @transaction.atomic 
@@ -681,12 +686,15 @@ def Credit_Update(request,id_client):
         }
     return render(request,'finance/Creditform.html',context)
 
-
+@login_required
+@transaction.atomic 
 def CreditedClients_list(request):
     
     persons = Person.objects.all()
     return render(request,"finance/CreditedClients.html",{'persons':persons})
 
+@login_required
+@transaction.atomic 
 def Credit_list(request):
     credits = Credit.objects.all()
     colunas = [
@@ -700,7 +708,8 @@ def Credit_list(request):
         'colunas':colunas
     })
 
-
+@login_required
+@transaction.atomic 
 def Accounts_list(request,id_accounts):
     venda = Venda.objects.filter(pessoa=id_accounts)
     conta = Accounts.objects.filter(pessoa_id=id_accounts)
@@ -722,8 +731,74 @@ def deletePayment_Accounts(request,id):
     PaymentMethod_Accounts.objects.filter(id=id).delete()
     return JsonResponse({"message": "Pagamento deletado com sucesso!"}, status=200)
 
-from django.db.models import Q
+@login_required
+def Cash_list(request):
+    cash = CaixaDiario.objects.all().order_by('-id')
 
+    paginator = Paginator(cash, 20)  
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+
+    context = {
+        'cash': page,
+    }
+
+    return render(request, 'finance/cash_list.html', context)
+
+@login_required
+def Cash_registry(request):
+    if request.method == "POST":
+        cash = CaixaDiarioForm(request.POST)
+        user = CaixaDiario.objects.filter(
+            Q(usuario_responsavel=request.user) & 
+            Q(is_Active=1)
+            )
+        if user.exists():
+            messages.error(request, f"Já Existe um Caixa aberto para {request.user.username}")
+            return redirect('Cash_list')
+        if cash.is_valid():
+            caixa = cash.save(commit=False)
+            caixa.usuario_responsavel = request.user
+            caixa.is_Active = 1
+            caixa.saldo_final = caixa.saldo_inicial
+            cash.save()
+            messages.success(request, 'Caixa Aberto Com Sucesso')
+            return redirect('Cash_list')
+    else:
+        cash = CaixaDiarioForm()
+
+    context = {
+        'cash': cash,
+    }
+    return render(request, 'finance/cash_form.html', context)
+
+@login_required
+def Cash_Closeded(request, pk):
+    if request.method == "POST":
+        cash = CaixaDiarioForm(request.POST)
+        user = FechamentoCaixaForm.objects.create()
+        if user.exists():
+            messages.error(request, f"Já Existe um Caixa aberto para {request.user.username}")
+            return redirect('Cash_list')
+        if cash.is_valid():
+            caixa = cash.save(commit=False)
+            caixa.usuario_responsavel = request.user
+            caixa.is_Active = 1
+            caixa.saldo_final = caixa.saldo_inicial
+            cash.save()
+            messages.success(request, 'Caixa Aberto Com Sucesso')
+            return redirect('Cash_list')
+    else:
+        cash = CaixaDiarioForm()
+
+    context = {
+        'cash': cash,
+    }
+    return render(request, 'finance/cash_form.html', context)
+
+
+@login_required
+@transaction.atomic 
 def cashFlow(request):
     cashMovement = CashMovement.objects.filter(
         Q(cash__usuario_responsavel=request.user)
@@ -856,47 +931,6 @@ def cashFlow(request):
 #     }
 #     return render(request, 'finance/AccountsPayform.html', context)
 
-@login_required
-def Cash_list(request):
-    cash = CaixaDiario.objects.all().order_by('-id')
-
-    paginator = Paginator(cash, 20)  
-    page_number = request.GET.get('page')
-    page = paginator.get_page(page_number)
-
-    context = {
-        'cash': page,
-    }
-
-    return render(request, 'finance/cash_list.html', context)
-
-@login_required
-def Cash_registry(request):
-    if request.method == "POST":
-        cash = CaixaDiarioForm(request.POST)
-        user = CaixaDiario.objects.filter(
-            Q(usuario_responsavel=request.user) & 
-            Q(is_Active=1)
-            )
-        if user.exists():
-            messages.error(request, f"Já Existe um Caixa aberto para {request.user.username}")
-            return redirect('Cash_list')
-        if cash.is_valid():
-            caixa = cash.save(commit=False)
-            caixa.usuario_responsavel = request.user
-            caixa.is_Active = 1
-            caixa.saldo_final = caixa.saldo_inicial
-            cash.save()
-            messages.success(request, 'Caixa Aberto Com Sucesso')
-            return redirect('Cash_list')
-    else:
-        cash = CaixaDiarioForm()
-
-    context = {
-        'cash': cash,
-    }
-
-    return render(request, 'finance/cash_form.html', context)
 
 def credit_total(request):
     query = request.GET.get('query')

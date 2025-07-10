@@ -122,13 +122,13 @@
                                 </h5>
                             </a>
                         </li>
-                        <li>
+                        <!-- <li>
                             <a href="#">
                                 <h5>
                                     Relatorio de Produtos
                                 </h5>
                             </a>
-                        </li>
+                        </li> -->
                         <li>
                             <a href="{% url 'listTableProduct' %}">
                                 <h5>
@@ -159,7 +159,7 @@
                     </a>
                     <ul class="sub-menu">
                         <li><a href="{% url 'compras_list' %}"><h5>Registrar Compras</h5></a></li>
-                        <li><a href="#"><h5>Relatorio de Produtos Comprados</h5></a></li>
+                        <!-- <li><a href="#"><h5>Relatorio de Produtos Comprados</h5></a></li> -->
                     </ul>
                 </li>
                 {% endif %}
@@ -288,6 +288,7 @@
                     </ul>
                 </li>
                 {% endif %}
+                {% comment %}
                 {% if perms.config.view_situation or perms.config.view_paymentmethod or perms.config.view_chartofaccounts or perms.config.view_service or perms.auth.view_permission and perms.auth.view_group %}
                 <li>
                     <a href="#" class="toggle">
@@ -329,17 +330,10 @@
                                 <a href="{% url 'permitions_list' %}"><h5>Curva ABC</h5></a>
                             </li>
                         {% endif %}
-                        {% if perms.auth.view_users %}
-                            {% comment %}
-                            <li>
-                                <a href="{% url 'user_list' %}"><h5>Permissões</h5></a>
-                            </li>
-                            <a href="{% url 'user_list' %}"><h5>Permissões</h5></a>
-                            {% endcomment %}
-                        {% endif %}
                     </ul>
                 </li>
                 {% endif %}
+                {% endcomment %}
 
                 <li>
                     <a href="#" class="toggle">

@@ -3,6 +3,8 @@ from django.urls import path, include
 from .views import *
 
 urlpatterns = [
+
+    path('wo/nota/<int:pk>/',print_OS_CNF,name='nota_servico'),
     path('wo/create/',workOrders_create,name='workOrdersForm'),
     path('wo/update/<int:pk>/',workOrders_update,name='workOrdersUpdate'),
     path('wo/delete/<int:pk>/',workOrders_delete,name='workOrdersDelete'),

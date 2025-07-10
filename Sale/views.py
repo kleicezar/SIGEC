@@ -508,13 +508,6 @@ def print_sale_CNF(request, pk):
     endereco = pessoa.id_address_fk
     venda_item = VendaItem.objects.filter(venda=pk)
     forma_pgto = PaymentMethod_Venda.objects.filter(venda=pk)
-    print(forma_pgto)
-    for i in forma_pgto:
-        print(i.forma_pagamento.name_paymentMethod)
-        print(i.expirationDate)
-        print(i.valor)
-    # sale = get_object_or_404(Venda, venda_pk=pk )
-    sale  = 'sale'
 
     context={
         'venda': venda,

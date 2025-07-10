@@ -19,6 +19,25 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.db import transaction
 
+
+@login_required
+def print_OS_CNF(request, pk):
+    os = Vendaservice.objects.get(id=pk)
+    pessoa = os.pessoa
+    endereco = pessoa.id_address_fk
+    os_item = VendaItemservice.objects.filter(os=pk)
+    forma_pgto = PaymentMethod_Vendaservice.objects.filter(os=pk)
+
+    context={
+        'os': os,
+        'pessoa': pessoa,
+        'endereco': endereco,
+        'os_item': os_item,
+        'forma_pgto': forma_pgto
+        }
+
+    return render(request, 'os.html', context)
+
 @login_required
 @transaction.atomic 
 def workOrders_create(request):
