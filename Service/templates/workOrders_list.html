@@ -56,18 +56,7 @@
                     <td>{{ workOrder.id }}</td>
                     <td>{{ workOrder.pessoa }}</td>
                     <td>{{ workOrder.data_da_venda|date:"d/m/Y"  }}</td>
-                    <td>{{ workOrder.situacao}}</td>
-                    <td>{{ workOrder.is_active |yesno:"Sim,Não" }}</td>
-                    <td>
-                        <a href="{% url 'workOrdersUpdate' pk=workOrder.id %}">
-                            <button class="btn" style="background-color: #117027;color: white;">Editar</button>
-                        </a>
-                        <form action="{% url 'workOrdersDelete' pk=workOrder.id %}" method="POST" style="display:inline-block;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
-                        </form>
-
-                        <form method="POST" action="{% url 'buscar_situacao_wo' pk=workOrder.pk %}">
+                    <td> <form method="POST" action="{% url 'buscar_situacao_wo' pk=workOrder.pk %}">
                                 {% csrf_token %}
                                 {% with current_level=workOrder.situacao.closure_level %}
                                     {% if current_level == 'Trancamento Total' %}
@@ -104,6 +93,18 @@
                                     {% endif %}
                                 {% endwith %}
                             </form>
+                    </td>
+                    <td>{{ workOrder.is_active |yesno:"Sim,Não" }}</td>
+                    <td>
+                        <a href="{% url 'workOrdersUpdate' pk=workOrder.id %}">
+                            <button class="btn" style="background-color: #117027;color: white;">Editar</button>
+                        </a>
+                        <form action="{% url 'workOrdersDelete' pk=workOrder.id %}" method="POST" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
+                        </form>
+
+                       
                         {% comment %} <button>Deletar</button> {% endcomment %}
                         {% comment %} <button>Mais</button> {% endcomment %}
                         
