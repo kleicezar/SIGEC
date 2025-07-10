@@ -368,130 +368,182 @@
         <!-- {% include 'script.html' %} -->
         <script src="{% static 'js/addItem.js' %}" defer></script>
         <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const id_freightExists = document.getElementById("id_freightExists");
-            const id_valueFreight = document.getElementById("id_valueFreight");
-            const id_numberOfInstallmentsFreight = document.getElementById("id_numberOfInstallmentsFreight");
-            const fields_freight = document.getElementById("fields_freight");
-            const field_freight_type = document.getElementById("field_freight_type");
-            const id_freight_type = document.getElementById("id_freight_type");
+document.addEventListener("DOMContentLoaded", () => {
+    const id_freightExists = document.getElementById("id_freightExists");
+    const id_valueFreight = document.getElementById("id_valueFreight");
+    const id_numberOfInstallmentsFreight = document.getElementById("id_numberOfInstallmentsFreight");
+    const fields_freight = document.getElementById("fields_freight"); 
+    const field_freight_type = document.getElementById("field_freight_type");
+    const id_freight_type = document.getElementById("id_freight_type");
+    console.log(field_freight_type,'kkkfk')
+    const id_rmnExists = document.getElementById("id_rmnExists");
+    const fieldsRMN = document.getElementById("fieldsRMN");
 
-            const id_rmnExists = document.getElementById("id_rmnExists");
-            const fieldsRMN = document.getElementById("fieldsRMN");
+    const id_taxExists = document.getElementById("id_taxExists");
+    const fieldsTax = document.getElementById("fieldsTax");
 
-            const id_taxExists = document.getElementById("id_taxExists");
-            const fieldsTax = document.getElementById("fieldsTax");
+    const permition_payment = document.getElementById("permition_payment").value;
+    const permition_sale = document.getElementById("permition_sale").value;
 
-            const permition_payment = document.getElementById("permition_payment").value;
-            const permition_sale = document.getElementById("permition_sale").value;
+    // Inicializações
+    if (!id_rmnExists.checked) {
+        fieldsRMN.style.display = "none";
+        fieldsRMN.querySelectorAll("input").forEach(input => input.required = false);
+    }
 
-            // Inicializações
-            if (!id_rmnExists.checked) {
+    if (!id_freightExists.checked) {
+        field_freight_type.style.display = 'none';
+        fields_freight.style.display = "none";
+        fields_freight.querySelectorAll("input").forEach(input => input.required = false);
+    }
+
+    if (!id_taxExists.checked) {
+        fieldsTax.style.display = "none";
+        fieldsTax.querySelectorAll("input").forEach(input => input.required = false);
+    }
+
+    if (permition_payment !== 'False') {
+        id_rmnExists.addEventListener("change", () => {
+            if (id_rmnExists.checked) {
+                fieldsRMN.style.display = "block";
+                fieldsRMN.querySelectorAll("input").forEach(input => input.required = true);
+            } else {
                 fieldsRMN.style.display = "none";
                 fieldsRMN.querySelectorAll("input").forEach(input => input.required = false);
             }
+        });
 
-            if (!id_freightExists.checked) {
-                field_freight_type.style.display = 'none';
-                fields_freight.style.display = "none";
-                fields_freight.querySelectorAll("input").forEach(input => input.required = false);
+        if (id_freightExists.checked) {
+            console.log("ffda",field_freight_type.value)
+            if(id_freight_type.value != "FOB"){
+                // field_freight_type.style.display = "none"
+                
+                fields_freight.style.display = 'none'
             }
+            else{
+                field_freight_type.style.display ="block"
+            }
+            field_freight_type.style.display = 'block';
 
-            if (!id_taxExists.checked) {
+            
+            id_freight_type.addEventListener("change", () => {
+                if (id_freight_type.value === "FOB") {
+                    fields_freight.style.display = 'block';
+                    fields_freight.querySelectorAll("input").forEach(input => input.required = true);
+                } else {
+                    fields_freight.style.display = 'none';
+                    fields_freight.querySelectorAll("input").forEach(input => {
+                        input.required = false;
+                        input.value = 0;
+                    });
+                }
+            });
+        } else {
+            field_freight_type.style.display = 'none';
+            fields_freight.style.display = 'none';
+            fields_freight.querySelectorAll("input").forEach(input => {
+                input.required = false;
+                input.value = 0;
+            });
+        }
+
+        id_freightExists.addEventListener("change", () => {
+            if (id_freightExists.checked) {
+                field_freight_type.style.display = 'block';
+                id_freight_type.addEventListener("change", () => {
+                    if (id_freight_type.value === "FOB") {
+                        fields_freight.style.display = 'block';
+                        fields_freight.querySelectorAll("input").forEach(input => input.required = true);
+                    } else {
+                        fields_freight.style.display = 'none';
+                        fields_freight.querySelectorAll("input").forEach(input => {
+                            input.required = false;
+                            input.value = 0;
+                        });
+                    }
+                });
+            } else {
+                field_freight_type.style.display = 'none';
+                fields_freight.style.display = 'none';
+                fields_freight.querySelectorAll("input").forEach(input => {
+                    input.required = false;
+                    input.value = 0;
+                });
+            }
+        });
+
+        id_taxExists.addEventListener("change", () => {
+            if (id_taxExists.checked) {
+                fieldsTax.style.display = "block";
+                fieldsTax.querySelectorAll("input").forEach(input => input.required = true);
+            } else {
                 fieldsTax.style.display = "none";
                 fieldsTax.querySelectorAll("input").forEach(input => input.required = false);
             }
+        });
+    } else {
+        id_freightExists.onclick = () => false;
+        id_rmnExists.onclick = () => false;
+        id_taxExists.onclick = () => false;
+    }
 
-            // Só adiciona os listeners se permition_payment for diferente de 'False'
-            if (permition_payment !== 'False') {
+    const form = document.getElementById("form");
+    form.addEventListener("submit", function(event) {
+        const othersPaymentPurpose = new Set();
+        const new_form = document.getElementById("new_form");
+        let installment;
 
-                id_rmnExists.addEventListener("change", () => {
-                    if (id_rmnExists.checked) {
-                        fieldsRMN.style.display = "block";
-                        fieldsRMN.querySelectorAll("input").forEach(input => input.required = true);
-                    } else {
-                        fieldsRMN.style.display = "none";
-                        fieldsRMN.querySelectorAll("input").forEach(input => input.required = false);
-                    }
-                });
+        if (new_form.value === "0") {
+            installment = document.getElementById("old-payment-method-form");
+        } else {
+            installment = document.getElementById("installment");
+        }
 
-                id_freightExists.addEventListener("change", () => {
-                    if (id_freightExists.checked) {
-                        field_freight_type.style.display = 'block';
-                        id_freight_type.addEventListener("change", () => {
-                            if (id_freight_type.value == "FOB") {
-                                fields_freight.style.display = 'block';
-                                fields_freight.querySelectorAll("input").forEach(input => input.required = true);
-                            } else {
-                                fields_freight.style.display = 'none';
-                                fields_freight.querySelectorAll("input").forEach(input => input.required = false);
-                            }
-                        });
-                    } else {
-                        field_freight_type.style.display = 'none';
-                        fields_freight.style.display = 'none';
-                        fields_freight.querySelectorAll("input").forEach(input => input.required = false);
-                    }
-                });
+        const elements = installment.querySelectorAll("[id$='paymentPurpose']");
 
-                id_taxExists.addEventListener("change", () => {
-                    if (id_taxExists.checked) {
-                        fieldsTax.style.display = "block";
-                        fieldsTax.querySelectorAll("input").forEach(input => input.required = true);
-                    } else {
-                        fieldsTax.style.display = "none";
-                        fieldsTax.querySelectorAll("input").forEach(input => input.required = false);
-                    }
-                });
-                
-                
+        elements.forEach((element) => {
+            if (element.value === "Frete" || element.value === "Romaneio" || element.value === "Imposto") {
+                othersPaymentPurpose.add(element.value);
             }
-            else{
-                id_freightExists.onclick = ()=>false;
-                id_rmnExists.onclick = ()=>false;
-                id_taxExists.onclick = ()=>false;
-            }
-            
-            const form = document.getElementById("form");
-            form.addEventListener("submit", function(event) {
-                const othersPaymentPurpose = new Set();
+        });
 
-                const installment = document.getElementById("installment"); // <-- Faltava definir isso
+        const hasFreight = othersPaymentPurpose.has('Frete');
+        const hasRMN = othersPaymentPurpose.has('Romaneio');
+        const hasTax = othersPaymentPurpose.has('Imposto');
 
-                // CORRIGIDO: querySelectorAll precisa de colchetes e ^=/$= para atributos
-                const elements = installment.querySelectorAll("[id$='paymentPurpose']");
-                console.log("kkfk")
-                console.log(elements)
-                elements.forEach((element) => {
-                    console.log("kkeek")
-                    if (element.value === "Frete" || element.value === "Romaneio" || element.value === "Imposto") {
-                        console.log("entor")
-                        othersPaymentPurpose.add(element.value);
-                    }
-                });
+        if ((id_freight_type.value === "FOB" && !hasFreight)) {
+            alert('Frete foi selecionado incorretamente em relação às parcelas.');
+            event.preventDefault();
+        }
+        if((id_freight_type.value !== "FOB" && hasFreight)){
+            alert('Existe Frete tipo FOB gerado nas parcelas, mas a opção Frete tipo FOB não foi marcada');
+            event.preventDefault();
+        }
+        
 
-                const hasFreight = othersPaymentPurpose.has('Frete');
-                const hasRMN = othersPaymentPurpose.has('Romaneio');
-                const hasTax = othersPaymentPurpose.has('Imposto');
+        if ((id_rmnExists.checked && !hasRMN)) {
+            alert('Romaneio foi selecionado incorretamente em relação às parcelas.');
+            event.preventDefault();
+        }
 
-                if((id_freight_type.value === "FOB" && !hasFreight) || (!id_freight_type.value === "FOB" && hasFreight)){
-                    alert('Frete foi selecionado, mas não foi gerado nas parcelas');
-                    event.preventDefault();
-                }
+        if((!id_rmnExists.checked && hasRMN)){
+            alert('Existe Romaneio gerado nas parcelas, mas a opção Romaneio não foi marcada');
+            event.preventDefault();
+        }
 
-                if( (id_rmnExists.checked && !hasRMN) || (!id_rmnExists.checked && hasRMN ) ){
-                    alert('Romaneio foi selecionado, mas não foi gerado nas parcelas');
-                    event.preventDefault();
-                }
+        if ((id_taxExists.checked && !hasTax)) {
+            alert('Imposto foi selecionado incorretamente em relação às parcelas.');
+            event.preventDefault();
+        }
+        if((!id_taxExists.checked && hasTax)){
+            alert('Existe Imposto gerado nas parcelas, mas a opção Imposto não foi marcada');
+            event.preventDefault();
+        }
+    });
+});
+</script>
 
-                if ((id_taxExists.checked && !hasTax) || (!id_taxExists.checked && hasTax )) {
-                    alert('Imposto foi selecionado, mas não foi gerado nas parcelas');
-                    event.preventDefault();
-                }
-                // event.preventDefault()
-            });
-            });
-        </script>
+        
 
         <!-- <script src="{% static 'js/clientSearch.js' %}"></script> -->
          <!-- pesquisa clientes -->
