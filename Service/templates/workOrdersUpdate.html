@@ -45,7 +45,7 @@
                     <h4 class="c-adapted">Editar Ordem</h4>
                 </div>
           
-                <form method="post">
+                <form method="post" id="form">
                     {% csrf_token %}
 
                     <input id="permition_sale" type="hidden" value="{{permition_edit_sale}}">
@@ -359,6 +359,23 @@
 
                     <!-- Formas de Pagamento -->
                     <h6 class="mt-5 mb-3">Formas de Pagamento</h6>
+                    {{service_form.apply_credit.label}}
+                    {{service_form.apply_credit}}
+                    
+                    {% if service_form.apply_credit.value %}
+                        <div id="credit">
+                            {{service_form.value_apply_credit.label}}
+                            <br>
+                            {{service_form.value_apply_credit}}
+                        </div>  
+                    {% else %} 
+                        <div id="credit" style="display: none;">
+                            {{service_form.value_apply_credit.label}}
+                            <br>
+                            {{service_form.value_apply_credit}}
+                        </div>    
+                    {% endif %}
+
                     {% include 'parcela.html' %}
                     <!-- <button type="button" onclick="addPaymentMethod()" class="btn btn-outline-success mb-5">Adicionar Forma de Pagamento</button> -->
                     
@@ -396,7 +413,62 @@
         <script src="{% static 'js/venda_item.js' %}"></script> <!-- pesquisa produtos em vendas-->
         <script src="{% static 'js/error.js' %}"></script>
         <script src="{% static 'js/block_fields.js' %}"></script>
+        <script>
+            const credit_apply = document.getElementById("id_apply_credit");
+            const credit = document.getElementById("credit");
+            credit_apply.addEventListener("click",()=>{
+                if(credit_apply.onclick == null && credit_apply.checked){
+                    credit.style.display = "block";
+                }
+                else{
+                    credit.style.display = "none";
+                }
+            })
 
+            const form = document.getElementById("form");
+            
+            form.addEventListener("submit", function(event) {
+                
+                    const activeCredit = new Set();
+                    const id_apply_credit = document.getElementById("id_apply_credit");
+                    const new_form = document.getElementById("new_form");
+                    let installment;
+
+                    if (new_form.value === "0") {
+                        installment = document.getElementById("old-payment-method-form");
+                    } else {
+                        installment = document.getElementById("installment");
+                    }
+                    
+                    const elements = installment.querySelectorAll("[id$='activeCredit']");
+                    console.log(elements)
+                    let has_credit = false;
+                    elements.forEach((element) => {
+                        if (element.checked){
+                            has_credit = true;
+                        }
+                    });
+
+                    if (id_apply_credit.checked && !has_credit) {
+                        alert('Crédito foi selecionado, mas não foi gerado nas parcelas');
+                        event.preventDefault();
+                    }
+                   
+                    if (!id_apply_credit.checked && has_credit == true) {
+                        
+                        alert('Existe crédito gerado nas parcelas, mas a opção "Aplicar Crédito" não está marcada.');
+                        event.preventDefault();
+                    }
+                  
+                });
+            
+            // const id_situacao = document.getElementById("id_situacao");
+            // id_situacao.addEventListener("change",()=>{
+            //     const url = new URL(window.location.href);
+            //     url.searchParams.set('situation',id_situacao.value);
+            //     window.location.href = url.toString();
+            // })
+        </script>
         {% endblock %}     
     </main>
 </body>

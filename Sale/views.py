@@ -167,7 +167,8 @@ def venda_create(request):
             PaymentMethod_Accounts_FormSet.instance = venda
             total_payment = 0
             
-            valor_usado = request.POST.get('credit_value')
+            venda
+            
             for form in PaymentMethod_Accounts_FormSet: 
                 if form.cleaned_data:
                     form.acc = None
@@ -181,7 +182,7 @@ def venda_create(request):
                     
                     if form.cleaned_data["activeCredit"]:
                         creditos = Credit.objects.filter(person=venda.pessoa).order_by('id')
-                        restante_para_descontar = Decimal(valor_usado)
+                        restante_para_descontar = Decimal(venda.value_apply_credit)
                         if creditos:
                             for credito in creditos:
                                 if restante_para_descontar <= 0:
@@ -301,8 +302,10 @@ def venda_update(request, pk):
             total_payment = 0
             
             onlyOldPayments = False 
-            valor_usado = request.POST.get('credit_value')
+            # venda.value_apply_credit = request.POST.get('credit_value')
             
+            if not venda_form.cleaned_data['apply_credit']:
+                venda_form.cleaned_data['value_apply_credit'] = 0
             value_new_form = request.POST.get('new_form','').lower()
             has_new_form = value_new_form in ['true', '1', 'on', 'yes']
 
@@ -315,7 +318,7 @@ def venda_update(request, pk):
                             total_payment += valor
                         if form.cleaned_data["activeCredit"]:
                             creditos = Credit.objects.filter(person=venda.pessoa).order_by('id')
-                            restante_para_descontar = Decimal(valor_usado)
+                            restante_para_descontar = Decimal(venda.value_apply_credit)
 
                             for credito in creditos:
                                 if restante_para_descontar <= 0:
@@ -339,7 +342,7 @@ def venda_update(request, pk):
 
                         if form.cleaned_data["activeCredit"]:
                             creditos = Credit.objects.filter(person=venda.pessoa).order_by('id')
-                            restante_para_descontar = Decimal(valor_usado)
+                            restante_para_descontar = Decimal(venda.value_apply_credit)
 
                             for credito in creditos:
                                 if restante_para_descontar <= 0:
@@ -376,6 +379,7 @@ def venda_update(request, pk):
                             old_instance.expirationDate = new_instance.expirationDate
                             old_instance.days = new_instance.days
                             old_instance.value = new_instance.value
+                            old_instance.activeCredit = new_instance.activeCredit
 
                             old_instance.save()
 
@@ -394,6 +398,7 @@ def venda_update(request, pk):
                             old_instance.expirationDate = new_instance.expirationDate
                             old_instance.days = new_instance.days
                             old_instance.value = new_instance.value
+                            old_instance.activeCredit = new_instance.activeCredit
 
                             old_instance.save()
 

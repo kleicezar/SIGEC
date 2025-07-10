@@ -316,12 +316,22 @@
             })
 
             const form = document.getElementById("form");
+            
             form.addEventListener("submit", function(event) {
+                
                     const activeCredit = new Set();
                     const id_apply_credit = document.getElementById("id_apply_credit");
-                    const installment = document.getElementById("installment"); // <-- Faltava definir isso
-        
+                    const new_form = document.getElementById("new_form");
+                    let installment;
+
+                    if (new_form.value === "0") {
+                        installment = document.getElementById("old-payment-method-form");
+                    } else {
+                        installment = document.getElementById("installment");
+                    }
+                    
                     const elements = installment.querySelectorAll("[id$='activeCredit']");
+                    console.log(elements)
                     let has_credit = false;
                     elements.forEach((element) => {
                         if (element.checked){
@@ -331,6 +341,12 @@
 
                     if (id_apply_credit.checked && !has_credit) {
                         alert('Crédito foi selecionado, mas não foi gerado nas parcelas');
+                        event.preventDefault();
+                    }
+                   
+                    if (!id_apply_credit.checked && has_credit == true) {
+                        
+                        alert('Existe crédito gerado nas parcelas, mas a opção "Aplicar Crédito" não está marcada.');
                         event.preventDefault();
                     }
                   

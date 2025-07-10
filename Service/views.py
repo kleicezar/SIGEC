@@ -44,7 +44,7 @@ def workOrders_create(request):
 
             PaymentMethod_Accounts_FormSet.instance = service
             total_payment = 0
-            valor_usado = request.POST.get('credit_value')
+           
             for form in PaymentMethod_Accounts_FormSet: 
                 if form.cleaned_data:
                     form.acc = None
@@ -58,7 +58,7 @@ def workOrders_create(request):
                     
                     if form.cleaned_data["activeCredit"]:
                         creditos = Credit.objects.filter(person=service.pessoa).order_by('id')
-                        restante_para_descontar = Decimal(valor_usado)
+                        restante_para_descontar = Decimal(service.value_apply_credit)
                         if creditos:
                             for credito in creditos:
                                 if restante_para_descontar <= 0:
@@ -220,11 +220,13 @@ def workOrders_update(request,pk):
             for value_payment in value_payments:
                 credit.credit_value += value_payment.value
 
+            if not service_form.cleaned_data['apply_credit']:
+                service_form.cleaned_data['value_apply_credit'] = 0
             if credit:
                 credit.save()
             
             onlyOldPayments = False 
-            valor_usado = request.POST.get('credit_value')
+            # valor_usado = request.POST.get('credit_value')
             
             value_new_form = request.POST.get('new_form','').lower()
             has_new_form = value_new_form in ['true', '1', 'on', 'yes']
@@ -238,7 +240,7 @@ def workOrders_update(request,pk):
                             total_payment += valor
                         if form.cleaned_data["activeCredit"]:
                             creditos = Credit.objects.filter(person=service.pessoa).order_by('id')
-                            restante_para_descontar = Decimal(valor_usado)
+                            restante_para_descontar = Decimal(service.value_apply_credit)
 
                             for credito in creditos:
                                 if restante_para_descontar <= 0:
@@ -261,8 +263,8 @@ def workOrders_update(request,pk):
                             total_payment += valor
 
                         if form.cleaned_data["activeCredit"]:
-                            creditos = Credit.objects.filter(person=venda.pessoa).order_by('id')
-                            restante_para_descontar = Decimal(valor_usado)
+                            creditos = Credit.objects.filter(person=service.pessoa).order_by('id')
+                            restante_para_descontar = Decimal(service.value_apply_credit)
 
                             for credito in creditos:
                                 if restante_para_descontar <= 0:
@@ -305,7 +307,7 @@ def workOrders_update(request,pk):
                             old_instance.expirationDate = new_instance.expirationDate
                             old_instance.days = new_instance.days
                             old_instance.value = new_instance.value
-
+                            old_instance.activeCredit = new_instance.activeCredit
                             old_instance.save()
 
                             new_form.cleaned_data["DELETE"] = True
@@ -325,7 +327,7 @@ def workOrders_update(request,pk):
                             old_instance.expirationDate = new_instance.expirationDate
                             old_instance.days = new_instance.days
                             old_instance.value = new_instance.value
-
+                            old_instance.activeCredit = new_instance.activeCredit
                             old_instance.save()
 
                         # remover os formulários extras de Older_PaymentMethod_Accounts_FormSet
