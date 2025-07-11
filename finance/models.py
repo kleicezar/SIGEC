@@ -7,6 +7,7 @@ from config.models import ChartOfAccounts, PaymentMethod, Situation
 from django.utils import timezone
 from django.contrib.auth.models import User 
 from auditlog.registry import auditlog
+from auditlog.models import AuditlogHistoryField
 
 class Accounts(models.Model):
     INSTALLMENT_RANGE_CHOICES = [

@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
-from auditlog.registry import auditlog
 from functools import partial
+from auditlog.registry import auditlog
+from auditlog.models import AuditlogHistoryField
 
 class Address(models.Model):
     cep = models.CharField('CEP', max_length=10)

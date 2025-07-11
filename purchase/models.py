@@ -2,6 +2,7 @@ from django.db import models
 from registry.models import Person
 from config.models import Situation, PaymentMethod
 from auditlog.registry import auditlog
+from auditlog.models import AuditlogHistoryField
 
 class Product(models.Model):
     description = models.CharField(max_length=255, verbose_name='Descrição')  # descrição

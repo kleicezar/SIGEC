@@ -7,6 +7,7 @@ from django.dispatch import receiver
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import Permission
 from auditlog.registry import auditlog
+from auditlog.models import AuditlogHistoryField
 
 class Bank(models.Model):
     bank_name = models.CharField(verbose_name='Nome do Banco', max_length=250)
