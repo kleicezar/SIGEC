@@ -10,6 +10,11 @@ urlpatterns = [
     path('PayMtd/dlt/<int:id_paymentMethod>/', deletePaymentMethod, name='deletePaymentMethod'),
     path('payMtd/buscar_formaPagamento/',buscar_forma_pagamento,name='buscar_formaPagamento'),
 
+    path('Bank/', bank, name='Bank'),
+    path('Bankform/', BankForm, name='BankForm'),
+    path('Bank/upt/<int:id_bank>/', updateBank, name='updateBank'),
+    path('Bank/dlt/<int:id_bank>/', deleteBank, name='deleteBank'),
+
     path('Pst/', position, name='Position'),
     path('PstForm/', PositionForm, name='PositionForm'),
     path('Pst/upt/<int:id_position>/', updatePosition, name='updatePosition'),

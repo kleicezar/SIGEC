@@ -568,3 +568,73 @@ class SuperGroupUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateVi
         context = super().get_context_data(**kwargs)
         context['page_title'] = f'Editar Supergrupo: {self.object.name}'
         return context
+    
+@login_required
+def bank(request):
+    context = {
+        'Banks': Bank.objects.filter(is_Active=True)
+    }
+    return render(request, 'config/Bank.html', context)
+
+@login_required
+@transaction.atomic
+def BankForm(request):
+    if request.method == "GET":
+        if 'HTTP_REFERER' in request.META:
+            request.session['previous_page'] = request.META['HTTP_REFERER']
+        bankForm = BankModelForm()
+        context = {
+            'bank' : bankForm
+        }
+        return render(request, 'config/BankForm.html', context)
+    else:
+        bankForm = BankModelForm(request.POST)
+         # SALVA O LINK DA PAGINA ANTERIOR
+        previous_url = request.session.get('previous_page','/')
+        if bankForm.is_valid():
+
+            bankForm.save()
+            messages.success(request, "Banco cadastrado com sucesso.",extra_tags="successBank")
+            return redirect(previous_url)
+    context = {
+        'bank' : bankForm
+    }
+    return render(request, 'config/Bank.html', context)
+
+@login_required  
+@transaction.atomic  
+def updateBank(request, id_bank):
+    bank = get_object_or_404(Bank, id=id_bank)
+    if request.method == "GET":
+        bankForm = BankModelForm(instance=bank)
+
+        context = {
+            'Bank': bank,
+            'bank': bankForm
+        }
+        return render(request, 'config/BankForm.html',context)
+    elif request.method == "POST":
+        bankForm = BankModelForm(request.POST, instance=bank)
+        if bankForm.is_valid():
+            bankForm.save()
+            messages.success(request, "Forma de Pagamento atualizada com sucesso.",extra_tags="successPayment")
+            return redirect('Bank')
+    context = {
+        'Bank' : bankForm
+    }
+    return render(request, 'config/Bank.html', context)
+
+@login_required
+@transaction.atomic
+def deleteBank(request, id_bank):
+    bank = get_object_or_404(Bank, id=id_bank)
+    if request.method == "POST":
+        bank.is_Active = False
+        bank.save()
+        messages.success(request, "Forma de Pagamento deletada com sucesso.",extra_tags="successPayment")
+        return redirect('Bank')  
+    context = {
+        'bank': bank
+    }
+
+    return render(request, 'config/Bank.html', context)

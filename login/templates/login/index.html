@@ -11,7 +11,20 @@
     <title>INDEX</title>
 </head>
 <body>
-    {% block content %}{% endblock  %}
+    {% block content %}
+    <div class="content">
+        <div class="centralizado-wrapper">
+            <div class="centralizado">
+                <h2>Olá {{request.user}}</h2>
+                <p>Esta é a pagina inicial do sistema, esta mensagem é designada para cada usuario de maneira diferente, siga os passo a risca para o melhor uso do sistema.
+                </p>
+                {% if perms.registry.view_person %}
+                <p></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endblock  %}
     
     {% block script %}
     <script type="text/javascript" src="{% static 'js/menu.js' %}"></script>

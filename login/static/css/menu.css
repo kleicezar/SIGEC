@@ -300,3 +300,22 @@ body {
     background-color: #f4f4f4;
 }
 
+.centralizado {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    font-family: Arial, sans-serif;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.centralizado-wrapper {
+    display: flex;
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center;     /* Centraliza verticalmente */
+    min-height: calc(100vh - 70px); /* Altura da tela menos o header */
+    padding: 20px; /* Evita que cole nas bordas em telas menores */
+}

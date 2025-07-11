@@ -277,6 +277,11 @@
                                 <a href="{% url 'permitions_list' %}"><h5>Permissões</h5></a>
                             </li>
                         {% endif %}
+                        {% if perms.auth.view_bank %}
+                            <li>
+                                <a href="{% url 'Bank' %}"><h5>Bancos</h5></a>
+                            </li>
+                        {% endif %}
                         {% if perms.auth.view_users %}
                             {% comment %}
                             <li>

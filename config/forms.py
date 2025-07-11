@@ -55,7 +55,7 @@ class PaymentMethodModelForm(forms.ModelForm):
     
     class Meta:
         model = PaymentMethod
-        fields = ['name_paymentMethod','creditPermission', 'considerInCash']
+        fields = ['name_paymentMethod','creditPermission', 'considerInCash','bank']
         widgets = {
             'considerInCash' : forms.CheckboxInput(attrs={
                 'class':'form-check-input'
@@ -68,6 +68,19 @@ class PaymentMethodModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs): 
         super(PaymentMethodModelForm, self).__init__(*args, **kwargs)
         self.fields['name_paymentMethod'].widget.attrs.update({'class': 'label-text'})
+
+class BankModelForm(forms.ModelForm):
+    # ativo = forms.BooleanField(widget=forms.CheckboxInput(), required=False)
+    
+    class Meta:
+        model = Bank
+        fields = ['bank_name','agencia', 'conta']
+
+    def __init__(self, *args, **kwargs): 
+        super(BankModelForm, self).__init__(*args, **kwargs)
+        self.fields['bank_name'].widget.attrs.update({'class': 'label-text'})
+        self.fields['agencia'].widget.attrs.update({'class': 'label-text'})
+        self.fields['conta'].widget.attrs.update({'class': 'label-text'})
 
 class PositionModelForm(forms.ModelForm):
     class Meta:

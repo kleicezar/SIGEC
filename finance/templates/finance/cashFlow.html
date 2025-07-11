@@ -42,7 +42,44 @@
                     {% elif registry.accounts_in_cash.compra %}
                         <td>{{ registry.accounts_in_cash.compra.id }}</td>
                     {% endif %}
+                    {% comment %}
+                    FIXME:FAZER LISTAGEMD E VENDAS, ORDEM DE SERVIÇO, COMPRAS E ADICIONAR A
+                    URL NO TRECHO DO TEMPLATE ABAIXO
+
+                    {% if registry.categoria == 'venda' %}
+                    <td>
+                        <a href="">
+                            {{ registry.categoria }} Nº {{ registry.accounts_in_cash.venda.id }}</td>
+                        </a>
+                    {% elif registry.categoria == 'Compra' %}
+                    <td>
+                        <a href="">
+                            {{ registry.categoria }} Nº {{ registry.accounts_in_cash.compra.id }}
+                        </a>
+                    </td>
+                    {% elif registry.categoria == 'Serviço' %}
+                    <td>
+                        <a href="">
+                            {{ registry.categoria }} Nº {{ registry.accounts_in_cash.ordem_servico.id }}
+                        </a>
+                    </td>
+                    {% else %}
+                    <td>
+                        <a href="">
+                            {{ registry.accounts_in_cash.conta.description }}
+                        </a>
+                    </td>
+                    {% endif  %}
+                    {% endcomment %}
+                    {% if registry.categoria == 'venda' %}
+                    <td>{{ registry.categoria }} Nº {{ registry.accounts_in_cash.venda.id }}</td>
+                    {% elif registry.categoria == 'Compra' %}
+                    <td>{{ registry.categoria }} Nº {{ registry.accounts_in_cash.compra.id }}</td>
+                    {% elif registry.categoria == 'Serviço' %}
+                    <td>{{ registry.categoria }} Nº {{ registry.accounts_in_cash.ordem_servico.id }}</td>
+                    {% else %}
                     <td>{{ registry.accounts_in_cash.conta.description }}</td>
+                    {% endif  %}
                     <td>{{ registry.created_at}}</td>
                     <td>{{registry.accounts_in_cash.value}}</td>
                 </tr>
@@ -51,5 +88,5 @@
         </table>
         </div>
         {% endblock %}
-        </body>
-        </html>
+    </body>
+</html>

@@ -423,7 +423,7 @@ class CreditLimitForm(forms.ModelForm):
 
 class CaixaDiarioForm(forms.ModelForm):
     class Meta:
-        model = CaixaDiario
+        model = CaixaDiario 
         fields = ['saldo_inicial']
         widgets = {
             'saldo_inicial': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),

@@ -8,6 +8,16 @@ from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import Permission
 from auditlog.registry import auditlog
 
+class Bank(models.Model):
+    bank_name = models.CharField(verbose_name='Nome do Banco', max_length=250)
+    agencia =  models.CharField(verbose_name='Agencia do Banco', max_length=250, null=True, blank=True)
+    conta =  models.CharField(verbose_name='Conta', max_length=250, null=True, blank=True)
+    is_Active = models.BooleanField('ativo', default=True)
+    value_in_bank = models.IntegerField(verbose_name='valor arrecadado no banco',default=0)
+    
+    def __str__(self):
+        return self.bank_name
+
 class PaymentMethod(models.Model):
     # CONSIDERINCASH = [
     #     ('entrada', 'Entrada'),
@@ -16,10 +26,11 @@ class PaymentMethod(models.Model):
     # ]
     name_paymentMethod = models.CharField('Nome da Forma de Pagamento', max_length=50)
     creditPermission = models.BooleanField('creditPermission',default=False)
-    is_Active = models.BooleanField('ativo',default=True)
-    considerInCash = models.BooleanField('considerar em caixa', default=False, blank=True, null=True) 
-    # considerInCash = models.CharField('considerar em caixa',choices= CONSIDERINCASH, default=False, blank=True, null=True, max_length=50)
     is_Active = models.BooleanField('ativo',default=True) 
+    considerInCash = models.BooleanField('considerar em caixa', default=False, blank=True, null=True) 
+    bank = models.ForeignKey(Bank, on_delete=models.CASCADE, verbose_name='Banco que recebe a Forma de Pagamento')
+    # considerInCash = models.CharField('considerar em caixa',choices= CONSIDERINCASH, default=False, blank=True, null=True, max_length=50)
+    is_Active = models.BooleanField('ativo', default=True) 
 
     def __str__(self):
         return self.name_paymentMethod
@@ -248,6 +259,8 @@ class Info_logs(models.Model):
     info_now = models.CharField(max_length=255, null=True, blank=False, verbose_name="Informação atual")
     field = models.CharField(max_length=255, null=True, blank=False, verbose_name="nome do campo")
    
+
+
 auditlog.register(PaymentMethod)
 auditlog.register(ChartOfAccounts)
 auditlog.register(Situation)
