@@ -14,7 +14,7 @@ class Address(models.Model):
     city = models.CharField('cidade', max_length=100)
     uf = models.CharField('UF', max_length=2)
     country = models.CharField('país', max_length=100)
-
+    historico = AuditlogHistoryField()
     def __str__(self):
         return f"{self.road}, {self.number}, {self.city}"
 
@@ -23,6 +23,7 @@ class FisicPerson(models.Model):
     cpf = models.CharField('Cadastro de Pessoa Fisica - CPF', max_length=100)
     rg = models.CharField('Registro Geral - RG', max_length=100)
     dateOfBirth = models.CharField('Data de Aniversario', max_length=14)
+    historico = AuditlogHistoryField() 
 
     def __str__(self):
         return self.name
@@ -30,6 +31,7 @@ class FisicPerson(models.Model):
 class ForeignPerson(models.Model):
     name_foreigner = models.CharField('Nome', max_length=100)
     num_foreigner = models.CharField('Numero do Documento', max_length=100)
+    historico = AuditlogHistoryField()
 
     def __str__(self):
         return self.name_foreigner
@@ -43,6 +45,7 @@ class LegalPerson(models.Model):
     MunicipalRegistration = models.CharField('Inscrição Municipal', max_length=100)
     suframa = models.CharField('SUFRAMA', max_length=100)
     Responsible = models.CharField('Responsavel', max_length=100)
+    historico = AuditlogHistoryField()
 
     def __str__(self):
         return self.fantasyName
@@ -72,6 +75,8 @@ class Person(models.Model):
     id_ForeignPerson_fk = models.OneToOneField ('ForeignPerson', on_delete=models.SET_NULL,null=True, blank=True, db_column='id_ForeignPerson_fk')
     id_address_fk = models.OneToOneField ('Address', on_delete=models.CASCADE, db_column='id_address_fk')
     id_user_fk = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, db_column='id_user_fk')
+    
+    historico = AuditlogHistoryField()
 
     def __str__(self):
         if self.id_FisicPerson_fk != None:
@@ -87,7 +92,7 @@ class Credit(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE, verbose_name="pessoa_creditada")
     credit_data = models.DateTimeField(verbose_name='Data do Crédito')
     credit_value = models.IntegerField(default=0)
-
+    historico = AuditlogHistoryField()
 
 auditlog.register(Address)
 auditlog.register(FisicPerson)

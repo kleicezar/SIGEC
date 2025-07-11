@@ -21,7 +21,7 @@ class Product(models.Model):
     is_active = models.BooleanField(default=True, verbose_name='Está Ativo')  # está ativo
     supplier = models.ForeignKey(Person, on_delete=models.CASCADE, verbose_name='Fornecedor')  # fornecedor
     # product = models.ForeignKey(ProductGroup, on_delete=models.SET_NULL, verbose_name='Grupo de Produtos')
-
+    historico = AuditlogHistoryField()
 
     def __str__(self):
         return self.description  # retorna a descrição
@@ -40,7 +40,7 @@ class Compra(models.Model):
     rmnExists = models.BooleanField(default=False,verbose_name='Romaneio')
     freightExists = models.BooleanField(default=False,verbose_name='Frete')
     taxExists = models.BooleanField(default=False,verbose_name='Imposto')
-
+    historico = AuditlogHistoryField()
 
     def __str__(self):
     # Exemplo: se você tiver um campo `numero` ou `id`
@@ -55,17 +55,21 @@ class Frete(models.Model):
     valueFreight = models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor do Frete',null=True,blank=True)
     numberOfInstallmentsFreight = models.IntegerField(verbose_name='Número de Parcelas',blank=True,null=True)
     observation_freight = models.TextField(verbose_name='Observação sobre Frete',null=True,blank=True)
+    historico = AuditlogHistoryField()
+
 class Tax(models.Model):
     compra = models.ForeignKey(Compra,on_delete=models.SET_NULL, null=True, blank=True)
     valueTax =  models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor do Imposto')
     numberOfInstallmentsTax = models.IntegerField(verbose_name='Número de Parcelas')
     observation_tax = models.TextField(verbose_name='Observação sobre Imposto',null=True,blank=True)
+    historico = AuditlogHistoryField()
+
 class PickingList(models.Model):
     compra = models.ForeignKey(Compra,on_delete=models.SET_NULL, null=True, blank=True)
     valuePickingList = models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Valor do RMN')
     numberOfInstallmentsRMN = models.IntegerField(verbose_name='Número de Parcelas')
     observation_picking_list = models.TextField(verbose_name='Observação sobre Romaneio',null=True,blank=True)
-
+    historico = AuditlogHistoryField()
 class CompraItem(models.Model):
     compra = models.ForeignKey(Compra, on_delete=models.SET_NULL, null=True, verbose_name="Compra")
     produto = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, verbose_name="Produto")
@@ -74,6 +78,7 @@ class CompraItem(models.Model):
     discount = models.DecimalField(max_digits=5, decimal_places=2) # porcentagem aplicada no produto
     price_total = models.DecimalField(max_digits=10, decimal_places=2) # valor total do produto
     status = models.CharField(max_length=50,default='Pendente')
+    historico = AuditlogHistoryField()
 
     # Calcula o total automaticamente ao salvar a instância
     def save(self, *args, **kwargs):
@@ -85,23 +90,27 @@ class CompraItem(models.Model):
 
 class NomeGrupoPessoas(models.Model):
     name_group = models.CharField(max_length=255, verbose_name='Nome do Grupo')
+    historico = AuditlogHistoryField()
 
 class NomeGrupoPessoasQuantidade(models.Model):
     group = models.ForeignKey(NomeGrupoPessoas, on_delete=models.CASCADE, verbose_name='NomeGrupoPessoasQuantidades')
     person = models.ForeignKey(Person, on_delete=models.CASCADE, verbose_name='Pessoa')
+    historico = AuditlogHistoryField()
 
 class ProductGroup(models.Model):
     name_group = models.CharField(max_length=255, verbose_name='Nome do Grupo')
+    historico = AuditlogHistoryField()
 
 class AllProductGroup(models.Model):
     group_name = models.ForeignKey(ProductGroup, on_delete=models.CASCADE, verbose_name='NomeGrupoPessoasQuantidades')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Produtos')
     customized_price = models.IntegerField( verbose_name='Preço Customizado')
+    historico = AuditlogHistoryField()
 
 class ProductPrice(models.Model):
     person_group = models.ForeignKey(NomeGrupoPessoasQuantidade, on_delete=models.SET_NULL, null=True, verbose_name='Pessoa')
     product_group = models.ForeignKey(AllProductGroup, on_delete=models.CASCADE, verbose_name='Produtos')
-
+    historico = AuditlogHistoryField()
 
 #     RESTO DE CODIGO PARA USO FUTURO (DELETAREI EM BREVE)
 #     # person = models.ForeignKey(Person, on_delete=models.SET_NULL, verbose_name='Pessoa')

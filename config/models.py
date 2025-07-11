@@ -59,6 +59,7 @@ class ChartOfAccounts(models.Model):
         verbose_name='Natureza da Conta'
     )
     is_Active = models.BooleanField('ativo',default=True)
+    historico = AuditlogHistoryField()
 
     def save(self, *args, **kwargs):
         if not self.code:
@@ -104,14 +105,14 @@ class Situation(models.Model):
         default='Situação Concluída'
     )
     is_Active = models.BooleanField('ativo',default=True)
-
+    historico = AuditlogHistoryField()
     def __str__(self):
         return self.name_Situation
     
 class Position(models.Model): #desativado
     name_position = models.CharField('Nome do Cargo', max_length=25)
     is_Active = models.BooleanField('ativo',default=True)
-
+    
     def __str__(self):
         return self.name_position
  
@@ -119,7 +120,8 @@ class Service(models.Model):
     name_service = models.CharField('Nome do Serviço',max_length=500)
     is_Active = models.BooleanField('ativo',default=True)
     value_service = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor do Serviço", blank=True, null=True)
-    
+    historico = AuditlogHistoryField()
+
     def __str__(self):
         return self.name_service 
 
@@ -144,7 +146,7 @@ class SuperGroup(models.Model):
         help_text='Usuários que pertencem a este super grupo.',
         related_name='super_groups'  # Importante para evitar conflito com user.groups
     )
-
+    historico = AuditlogHistoryField()
     def __str__(self):
         return self.name
 
