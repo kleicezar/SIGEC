@@ -1005,7 +1005,7 @@ def listTablePerson(request):
 @login_required
 def tableForm(request):
     NomeGrupoPessoasQuantidadeFormSet = inlineformset_factory(NomeGrupoPessoas, NomeGrupoPessoasQuantidade, fields=['person'], extra=1, can_delete=True)
-    ProductGroupFormSet = inlineformset_factory(ProductGroup, ProductPrice, fields=['product_group'], extra=1, can_delete=True)
+    ProductGroupFormSet = inlineformset_factory(AllProductGroup, ProductPrice, fields=['product_group'], extra=1, can_delete=True)
     PersonGroupMembershipFormSet = inlineformset_factory(NomeGrupoPessoas, NomeGrupoPessoasQuantidade, fields=['person'], extra=1, can_delete=True)
 
     if request.method == "POST":
