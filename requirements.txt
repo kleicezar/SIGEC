@@ -1,7 +1,6 @@
 appdirs==1.4.4
 argcomplete==3.6.2
 asgiref==3.9.1
-auditlog==0.0.5
 beautifulsoup4==4.13.4
 Django==5.2.4
 django-auditlog==3.2.1
@@ -23,3 +22,5 @@ soupsieve==2.7
 sqlparse==0.5.3
 typing_extensions==4.14.1
 tzdata==2025.2
+django-widget-tweaks==1.5.0
+python-escpos==3.1
