@@ -331,48 +331,41 @@ function generateInstallments(){
                         parcela.appendChild(row_payment_puropose);
                     }
                     else if (input.name.includes("-expirationDate")) {
-                        // Calcula a data da parcela
-                        let days = (parseInt(days_installment_Range.value,10))
+                
+                        let days = parseInt(days_installment_Range.value, 10);
                         let new_date = startDate.setDate(startDate.getDate() + days);
-                        let final_date = new Date(new_date)
-                        input.value = `${final_date.getDate().toString().padStart(2, '0')}/${(final_date.getMonth() + 1).toString().padStart(2, '0')}/${final_date.getFullYear()} `  
-                        
-                        const divExpirationDate  = document.createElement('div');
-                        divExpirationDate.className = 'input-group date';
-                        divExpirationDate.setAttribute('data-provide','datepicker');
-                        divExpirationDate.id= "expiration_date";
+                        let final_date = new Date(new_date);
 
-                        const inputGroup = document.createElement("div");
-                        inputGroup.classList.add("input-group-addon");
+                        input.value = `${final_date.getDate().toString().padStart(2, '0')}/${(final_date.getMonth()+1).toString().padStart(2, '0')}/${final_date.getFullYear()}`;
+
+                   
+                        const divExpirationDate = document.createElement('div');
+                        divExpirationDate.className = 'input-group date';
+                        divExpirationDate.id = `expiration_date${counterId}`;
+
+                        const inputGroup = document.createElement('div');
+                        inputGroup.className = 'input-group-addon';
 
                         const span = document.createElement('span');
-                        span.className = "glyphicon glyphicon-th";
-                        
+                        span.className = 'glyphicon glyphicon-th';
+
                         inputGroup.appendChild(span);
+
                         divExpirationDate.appendChild(input);
                         divExpirationDate.appendChild(inputGroup);
 
                         row_expirationDate.appendChild(divExpirationDate);
                         parcela.appendChild(row_expirationDate);
-                    // CALCULO DE VALOR
-                    }else if (input.name.includes("-value")) {
-                        // Define o valor da parcela
-                        if (index == 0 && credito_aplicado){
-                            input.value = credit_value.value;
-                        }
-                        else if(index !=0 && credito_aplicado){
-                            input.value = item.valorParcelas[index-1];
-                        }
-                        else{
-                            input.value = item.valorParcelas[index];
-                        }
-                        
-                        row_value.appendChild(input);
-                        parcela.appendChild(row_value);
-                        
-                    //CALCULO DE DIAS
+
+                
+                        $(`#${divExpirationDate.id}`).datepicker({
+                            format: 'dd/mm/yyyy',
+                            autoclose: true,
+                            todayHighlight: true,
+                            language: 'pt-BR'
+                        });
                     }else if (input.name.includes("-days")) {
-                        // Define os dias entre as parcelas
+                   
                         input.value = days_installment_Range.value*(counterId + 1 -counter);
                         counter+=1;
                         row_days.appendChild(input)
