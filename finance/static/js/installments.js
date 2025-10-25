@@ -473,23 +473,19 @@ export function getCSRFToken() {
     return cookieValue;
 }
 
+
+
 const num_form = document.getElementById("new_form");
   const payment_older = document.getElementById("old-payment-method-form");
   const form = document.querySelector("form"); // Seleciona o primeiro form da página
 
   form.addEventListener("submit", (event) => {
-    // Se o formulário antigo existir, bloqueia
-    if (payment_older) {
-      event.preventDefault();
-      alert("Existe um formulário de pagamento antigo. Envio bloqueado.");
-      return;
+    
+    if (!payment_older) {
+      if (num_form.value !== "1") {
+        event.preventDefault();
+        alert("Gere as parcelas antes de enviar.");
+    }
     }
 
-    // Se o valor não for "1", bloqueia
-    if (num_form.value !== "1") {
-      event.preventDefault();
-      alert("Gere as parcelas antes de enviar.");
-    }
-
-    // Caso contrário, o form será enviado normalmente
   });

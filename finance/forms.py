@@ -2,6 +2,7 @@ from django import forms
 from .models import *
 from django.forms import BaseInlineFormSet
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
 class BaseAccountsForm(forms.ModelForm):
     """"
     Interface para formulários de contas. Define os campos usados.
@@ -60,7 +61,12 @@ class AccountsForm(BaseAccountsForm):
         widget=forms.Select(attrs={'class': 'form-control row'}),
         label="Intervalo de Parcelas"
     )
-
+    numberOfInstallments = forms.IntegerField(
+        min_value=1,
+        widget=forms.NumberInput(attrs={'class': 'form-control row'}),
+        required=True,
+        label="Número de Parcelas"
+    )
 
     class Meta(BaseAccountsForm.Meta):
         fields = [
@@ -94,13 +100,9 @@ class AccountsForm(BaseAccountsForm):
             'date_account': forms.TextInput(attrs={
                 'class': 'form-control mt-2  mask-date'
             }),
-            'numberOfInstallments': forms.NumberInput(attrs={
-                'class': 'form-control row',
-                'min': 1
-            }),
             'installment_Range': forms.Select(attrs={
                 'class': 'form-control row',
-                'min': 0
+                'min': 1
             }),
             'totalValue': forms.NumberInput(attrs={
                 'class': 'form-control row',
@@ -120,10 +122,11 @@ class AccountsForm(BaseAccountsForm):
             
             
         }
-
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['numberOfInstallments'].required = True 
+        self.fields['numberOfInstallments'].validators.append(MinValueValidator(1))
         self.fields['installment_Range'].required = True 
         self.fields['totalValue'].required = True 
         self.fields['date_init'].required = True
