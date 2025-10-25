@@ -142,6 +142,7 @@ def compras_create(request):
             if form.cleaned_data:
                 purpose = form.cleaned_data.get('paymentPurpose')
                 value = form.cleaned_data.get('value', 0)
+                print(f'valor - {value}')
                 if purpose:  # Só processa se tiver propósito
                     total_by_purpose[purpose] = total_by_purpose.get(purpose, 0) + value
 

@@ -364,7 +364,15 @@ function generateInstallments(){
                             todayHighlight: true,
                             language: 'pt-BR'
                         });
-                    }else if (input.name.includes("-days")) {
+                    }
+                    else if (input.name.includes("-value")) {
+                    // Define o valor da parcela
+                    input.value = valueOfinstallments[index];
+                    row_value.appendChild(input)
+                    parcela.appendChild(row_value)
+                    
+                    }
+                    else if (input.name.includes("-days")) {
                    
                         input.value = days_installment_Range.value*(counterId + 1 -counter);
                         counter+=1;
