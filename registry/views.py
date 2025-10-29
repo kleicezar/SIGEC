@@ -58,8 +58,8 @@ def Client_Create(request):
                 person.id_FisicPerson_fk = fisicPerson
                 
                 if person.email and person.password: 
-                    person.id_user_fk = u
-                    u = createUser(person.id_FisicPerson_fk.name, person.email, person.password)
+                    create = createUser(person.id_FisicPerson_fk.name, person.email, person.password)
+                    person.id_user_fk = create 
                     log_create_db(log, info_old=f'Cadastrou o Usuario {person.id_FisicPerson_fk.name}')
                 else:
                     log_create_db(log, info_old=f'Cadastrou a Pessoa {person.id_FisicPerson_fk.name}')
@@ -77,8 +77,8 @@ def Client_Create(request):
                 # person = form_Person.save(commit=False)
                 person.id_LegalPerson_fk = legalPerson
                 if person.email and person.password: 
-                    u = createUser(person.id_LegalPerson_fk.fantasyName, person.email, person.password)
-                    person.id_user_fk = u
+                    create = createUser(person.id_LegalPerson_fk.fantasyName, person.email, person.password)
+                    person.id_user_fk = create 
                     log_create_db(log, info_old=f'Cadastrou o Usuario {person.id_LegalPerson_fk.fantasyName}')
                 else:
                     log_create_db(log, info_old=f'Cadastrou a Pessoa {person.id_LegalPerson_fk.fantasyName}')
