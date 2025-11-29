@@ -17,7 +17,6 @@
         <main>
             {% bootstrap_messages %}
             {% block content %}
-            <div class='content'>
                 <div class='center col'>
                     <form action="." method='post' autocomplete='off' class="row">
                         {% csrf_token %}
@@ -45,12 +44,205 @@
                                             </div>
 
                                             <div class="mt-4">
-                                                <label for="" class="">
-                                                    {{Situation.closure_level.label_tag}}
-                                                </label>
+                                                <label for="">VENDAS</label>
                                                 <div class="p-2 ">
-                                                      {{Situation.closure_level}}
+                                                    {{permitions.V_data_da_venda.label_tag}}
+                                                    {{permitions.V_data_da_venda}}
                                                 </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_product_total.label_tag}}
+                                                    {{permitions.V_product_total}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_discount_total.label_tag}}
+                                                    {{permitions.V_discount_total}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_apply_credit.label_tag}}
+                                                    {{permitions.V_apply_credit}}
+                                                </div>
+                                            
+                                                <div class="p-2 ">
+                                                    {{permitions.V_value_apply_credit.label_tag}}
+                                                    {{permitions.V_value_apply_credit}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_product.label_tag}}
+                                                    {{permitions.V_product}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_quantidade.label_tag}}
+                                                    {{permitions.V_quantidade}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_preco_unitario.label_tag}}
+                                                    {{permitions.V_preco_unitario}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_discount.label_tag}}
+                                                    {{permitions.V_discount}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_price_total.label_tag}}
+                                                    {{permitions.V_price_total}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_forma_pagamento.label_tag}}
+                                                    {{permitions.V_forma_pagamento}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_expirationDate.label_tag}}
+                                                    {{permitions.V_expirationDate}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_valor.label_tag}}
+                                                    {{permitions.V_valor}}
+                                                </div>
+                                                
+                                                <label for="">Ordem de Serviço</label>
+                                                <div class="p-2 ">
+                                                    {{permitions.V_data_da_venda.label_tag}}
+                                                    {{permitions.V_data_da_venda}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_product_total.label_tag}}
+                                                    {{permitions.V_product_total}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_discount_total.label_tag}}
+                                                    {{permitions.V_discount_total}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_apply_credit.label_tag}}
+                                                    {{permitions.V_apply_credit}}
+                                                </div>
+                                            
+                                                <div class="p-2 ">
+                                                    {{permitions.V_value_apply_credit.label_tag}}
+                                                    {{permitions.V_value_apply_credit}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_product.label_tag}}
+                                                    {{permitions.V_product}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_quantidade.label_tag}}
+                                                    {{permitions.V_quantidade}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_preco_unitario.label_tag}}
+                                                    {{permitions.V_preco_unitario}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_discount.label_tag}}
+                                                    {{permitions.V_discount}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_price_total.label_tag}}
+                                                    {{permitions.V_price_total}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_forma_pagamento.label_tag}}
+                                                    {{permitions.V_forma_pagamento}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_expirationDate.label_tag}}
+                                                    {{permitions.V_expirationDate}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_valor.label_tag}}
+                                                    {{permitions.V_valor}}
+                                                </div>
+                                                
+                                                <label for="">Compras</label>
+                                                <div class="p-2 ">
+                                                    {{permitions.V_data_da_venda.label_tag}}
+                                                    {{permitions.V_data_da_venda}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_product_total.label_tag}}
+                                                    {{permitions.V_product_total}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_discount_total.label_tag}}
+                                                    {{permitions.V_discount_total}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_apply_credit.label_tag}}
+                                                    {{permitions.V_apply_credit}}
+                                                </div>
+                                            
+                                                <div class="p-2 ">
+                                                    {{permitions.V_value_apply_credit.label_tag}}
+                                                    {{permitions.V_value_apply_credit}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_product.label_tag}}
+                                                    {{permitions.V_product}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_quantidade.label_tag}}
+                                                    {{permitions.V_quantidade}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_preco_unitario.label_tag}}
+                                                    {{permitions.V_preco_unitario}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_discount.label_tag}}
+                                                    {{permitions.V_discount}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_price_total.label_tag}}
+                                                    {{permitions.V_price_total}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_forma_pagamento.label_tag}}
+                                                    {{permitions.V_forma_pagamento}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_expirationDate.label_tag}}
+                                                    {{permitions.V_expirationDate}}
+                                                </div>
+                                                
+                                                <div class="p-2 ">
+                                                    {{permitions.V_valor.label_tag}}
+                                                    {{permitions.V_valor}}
+                                                </div>
+                                                
+                                                
                                             </div>
                         
                                             <div class="p-4">
@@ -66,7 +258,6 @@
                         
                     </form>
                 </div>
-            </div>
             {% endblock %}
         </main>
         

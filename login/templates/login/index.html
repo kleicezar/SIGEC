@@ -12,7 +12,6 @@
 </head>
 <body>
     {% block content %}
-    <div class="content">
         <div class="centralizado-wrapper">
             <div class="centralizado">
                 <h2>Olá {{request.user}}</h2>
@@ -23,7 +22,6 @@
                 {% endif %}
             </div>
         </div>
-    </div>
     {% endblock  %}
     
     {% block script %}

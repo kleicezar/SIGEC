@@ -13,7 +13,6 @@
     </head>
     <body>
         {% block content %}
-        <div class='content'>
 
             <div class="position-absolute start-50">
                 <div class="">
@@ -103,9 +102,7 @@
                 {% if payments.has_next %}
                 <a href="{% url 'PaymentMethod' %}?page={{ paymentsMethod.next_page_number }}&query={{ query  }}">Proximo</a>
                 {% endif %}
-            </div>
-        </div> 
-        {% endblock %}
+                     {% endblock %}
 
         {% block scripts %}
         <script type="text/javascript" src="{% static 'js/script.js' %}"></script>

@@ -1,4 +1,4 @@
-    {% extends 'login/menu.html' %}
+{% extends 'login/menu.html' %}
 {% load bootstrap4 %}
 {% load static %}
 <!DOCTYPE html>
@@ -15,8 +15,6 @@
 </head>
 <body>
     {% block content %}
-    <div class="content">
-        
         <form method="POST">
             {% csrf_token %}
             <div class="col d-flex mb-5 gap-4 mt-5 ">
@@ -375,7 +373,6 @@
             </div>
             
         </form>
-    </div>
 
     <script src="{% static 'js/jquery-3.7.1.js' %}"></script>
     <script src="{% static 'js/jquery.mask.min.js' %}"></script>

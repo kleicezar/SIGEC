@@ -56,7 +56,6 @@
     };
 </script> -->
 <body data-selected-form="{{ selected_form }}">
-    <div class="content">
         <form method="POST">
             {% csrf_token %}
             
@@ -240,7 +239,6 @@
                 
             </div>
         </form>
-    </div>
 </body>
 <script src="{% static 'js/updateform.js' %}"></script>
 {% endblock %}

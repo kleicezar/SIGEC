@@ -21,6 +21,9 @@ header {
     justify-content: space-between; /* Espaça os itens entre a esquerda e a direita */
     align-items: center; /* Centraliza os itens verticalmente */
 }
+aside{
+    background-color: #140757;
+}
 div.header-main{
     justify-content: space-between;
 }
@@ -89,13 +92,13 @@ body {
 
 /* configuração do menu lateral*/
 .sidebar {
-    width: 250px;
+    /* width: 250px; */
     height: 100vh;
     background-color: #140757;
     color: white;
     position: fixed;
-    /* padding: 50px 20px 20px 20px; */
-    padding-top: 50px;
+    padding: 10px 20px 20px 20px;
+    /* padding-top: 50px; */
     transition: transform 0.3s ease;
     overflow-y: scroll; /* Ativa a rolagem vertical */
     scrollbar-width: thin;
@@ -154,8 +157,8 @@ body {
 }
 
 .sidebar ul li a i{
-    /* position: fixed;
-    z-index: -2; */
+    /* position: fixed; */
+    /* z-index: -2; */
     margin-left: end;
     /* z-index: 0; */
 }
@@ -319,3 +322,10 @@ body {
     min-height: calc(100vh - 70px); /* Altura da tela menos o header */
     padding: 20px; /* Evita que cole nas bordas em telas menores */
 }
+.material-symbols-outlined {
+        font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+    }

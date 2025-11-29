@@ -14,7 +14,6 @@
     </head>
     <body>
         {% block content %}
-        <div class='content'>
 
             <div class="position-absolute  start-50">
                 <div class="">
@@ -65,6 +64,9 @@
                         <th>ID</th>
                         <th>Situação Personalizada</th>
                         <th>Ativo</th>
+                        <th>salePerms</th>
+                        <th>purchasePerms</th>
+                        <th>servicePerms</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -74,6 +76,9 @@
                     <td>{{ Situation.id }}</td>
                     <td>{{ Situation.name_Situation }}</td>
                     <td>{{ Situation.is_Active|yesno:"Sim,Não" }}</td>
+                    <td>{{ Situation.salePerms }}</td>
+                    <td>{{ Situation.purchasePerms }}</td>
+                    <td>{{ Situation.servicePerms }}</td>
                     <td>
                         <!-- <a href="{% url 'updateSituation' id_situation=Situation.id %}">
                             <button>Editar</button>
@@ -95,7 +100,6 @@
                 {% endfor %}
                 </tbody>
             </table>
-        </div> 
      
         {% endblock %}
 

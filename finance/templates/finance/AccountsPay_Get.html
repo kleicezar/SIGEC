@@ -19,7 +19,6 @@
         <main >
             {% bootstrap_messages %}
             {% block content %}
-            <div class='content'>
                 <div id="messageContainer"></div>  <!-- Contêiner para a mensagem -->
                 <a href="{% url 'AccountsPayable' %}">
                     <button class="btn btn-voltar">Voltar</button>
@@ -104,7 +103,6 @@
                     </tbody>
                 </table>
             </div> 
-        </div>
         {% endblock %}
         </main>
         

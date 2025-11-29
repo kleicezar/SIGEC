@@ -16,7 +16,6 @@
     <main>
         {% bootstrap_messages %}
             {% block content %}
-            <div class='content'>
                 <table >
                     <thead>
                         <tr>
@@ -38,11 +37,11 @@
                         <td>{{ user.is_Active|yesno:"Sim,Não" }}</td>
                         <td>
                             {% comment %}
-                            <!-- <a href="{% url 'editperms' id=user.id %}"> -->
-                                <a href="{% url 'supergrupos' id=user.id %}">
-                                    <button class="btn" style="background-color: #117027;color: white;">Editar</button>
+                            <a href="{% url 'supergrupos' id=user.id %}">
+                            {% endcomment %}
+                            <a href="{% url 'editperms' id=user.id %}">
+                                    <button class="btn" style="background-color: #117027;color: white;">Permissões do Usuario</button>
                                 </a>
-                                {% endcomment %}
                             {% comment %}
                             <form action="{% url 'workOrdersDelete' pk=workOrder.id %}" method="POST" style="display:inline-block;">
                                 {% csrf_token %}
@@ -57,7 +56,6 @@
                     {% endfor %}
                     </tbody>
                 </table>
-            </div>
             {% endblock %}
     </main>
 <body>

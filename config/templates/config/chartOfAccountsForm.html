@@ -17,7 +17,6 @@
         <main>
             {% bootstrap_messages %}
             {% block content %}
-            <div class='content'>
                 <div class='center col'>
                     <form action="." method='post' autocomplete='off' class="row">
                         {% csrf_token %}
@@ -71,7 +70,6 @@
                         </div>          
                     </form>
                 </div>
-            </div>
             {% endblock %}
         </main>
         
