@@ -42,7 +42,7 @@ urlpatterns = [
 
     path('teste_permissao/', teste_permissao, name='teste_permissao'),
 
-    # path('editperms/<int:id>/', editperms, name='editperms'),
+    path('editperms/<int:id>/', editperms, name='editperms'),
     path('permslist/', permitions_list, name='permitions_list'),
 
     ###teste

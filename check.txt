@@ -16,3 +16,589 @@ Cargos (possivel desativação)
     Descrição
     ativo(oculto)
 
+
+-> troca de stilos de tela                                  2 semanas 
+-> resolver situação personalizada atrelada ao usuario      2 Semanas
+-> permisões para usuario                                   1 semana
+-> integrar com api sicoob                                  8 semanas
+-> integrar com api sefaz                                   8 Semanas
+-> arrumar geração de parcelas html, css e javascript       2 semanas
+
+total: 23 semanas 5,75 meses ~= 6 meses
+
+
+===============================================
+
+<body>
+    <header class="z-3">
+        <!-- <div class="header-main"> -->
+        <div class="logo-left">
+            <a class="image-button" href="{% url 'index' %}">
+                <div>
+                    <img class="logo" src="{% static 'images/logo.jpg'%}" alt="Eletro Cezar">
+                </div>
+            </a>
+            <button class="toggle-menu">
+
+                <i class="fa-solid fa-bars fa-2xl " style="color:white"></i>
+
+            </button>
+
+        </div>
+        <div class="header-user">
+            <button class="toggle-menu" id="buttonNotification">
+
+                <!-- Ícone com alerta -->
+                <div style="position: relative; display: inline-block;">
+                    <i class="fas fa-bell" id="notification-icon" style="font-size: 22px; color: white;"></i>
+
+                    <!-- Badge com ponto de exclamação -->
+                    <span id="notification-badge" class="notification-badge" style="">!</span>
+                </div>
+
+                <div class="notifications-container" id="notificationContainer">
+                    <!-- <div class="notification">21/05/2025 - Conta a Receber de ID 1 precisa ser paga!</div>
+                            <div class="notification">21/05/2025 - Conta a Receber de ID 1 precisa ser paga!</div> -->
+                </div>
+
+            </button>
+            <button class="toggle-menu" id="user-menu-button">
+                <div class="user-image">
+                    <img src="{% static 'images/user.png' %}" alt="foto do usuario">
+                </div>
+            </button>
+            <!-- Menu suspenso (inicialmente oculto) -->
+            <div class="user-dropdown-menu" id="user-dropdown-menu">
+                <ul>
+                    <!-- <li><a href="">Perfil</a></li> -->
+                    <!-- <li><a href="">Configurações</a></li> -->
+                    <li><a href="{% url 'logout' %}">Sair</a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- </div> -->
+    </header>
+    <div class="sidebar col-md-3 col-12 ">
+        <!-- <h2>Menu</h2> -->
+        <ul>
+            {% if perms.registry.view_fisicperson and perms.registry.view_foreignperson and
+            perms.registry.view_legalperson and perms.registry.view_person %}
+            <li>
+                <a href="#" class="toggle">
+
+                    <div class="page">
+                        <h3>Cadastros</h3>
+
+                        <i class="fa-solid fa-chevron-down arrow"></i>
+                    </div>
+                    <!-- <h3>Cadastros</h3> -->
+
+                </a>
+                <ul class="sub-menu">
+                    <li><a href="{% url 'Client' %}">
+                            <h5>Pessoas</h5>
+                        </a></li>
+                    <li><a href="{% url 'listTablePerson' %}">
+                            <h5>Inclusão de Pessoas em Tabelas</h5>
+                        </a></li>
+                    <!-- <li><a href="#"><h5>Tecnicos</h5></a></li> -->
+                </ul>
+            </li>
+            {% endif %}
+            {% if perms.purchase.view_product %}
+            <li>
+                <a href="#" class="toggle">
+
+                    <div class="page">
+
+                        <h3>Produtos</h3>
+                        <i class="fa-solid fa-chevron-down"></i>
+
+                    </div>
+
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a href="{% url 'Product' %}">
+                            <h5>
+                                Gerenciar Produtos
+                            </h5>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'manageProductDelivery' %}">
+                            <h5>
+                                Entrega de Produtos
+                            </h5>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'returnProducts_list' %}">
+                            <h5>
+                                Devolução de Produtos
+                            </h5>
+                        </a>
+                    </li>
+                    <!-- <li>
+                            <a href="#">
+                                <h5>
+                                    Relatorio de Produtos
+                                </h5>
+                            </a>
+                        </li> -->
+                    <li>
+                        <a href="{% url 'listTableProduct' %}">
+                            <h5>
+                                Tabela de Produtos
+                            </h5>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <h5>
+                                Inclusão de Produtos em Tabelas
+                            </h5>
+                        </a>
+                    </li>
+                    {% comment %}
+                    {% url '' %}
+                    {% endcomment %}
+                </ul>
+            </li>
+            {% endif %}
+            {% if perms.purchase.view_compra %}
+            <li>
+                <a href="#" class="toggle">
+                    <div class="page">
+                        <h3>Compras</h3>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                </a>
+                <ul class="sub-menu">
+                    <li><a href="{% url 'compras_list' %}">
+                            <h5>Registrar Compras</h5>
+                        </a></li>
+                    <!-- <li><a href="#"><h5>Relatorio de Produtos Comprados</h5></a></li> -->
+                </ul>
+            </li>
+            {% endif %}
+            {% if perms.sale.view_venda %}
+            <li>
+                <a href="#" class="toggle">
+
+                    <div class="page">
+
+                        <h3>Vendas</h3>
+                        <i class="fa-solid fa-chevron-down"></i>
+
+                    </div>
+
+                </a>
+                <ul class="sub-menu">
+                    <li><a href="{% url 'venda_list' %}">
+                            <h5>Registrar Pedidos</h5>
+                        </a></li>
+                    <!-- <li><a href="{% url 'venda_list' %}"><h5>Relatorio de Vendas</h5></a></li> -->
+                </ul>
+            </li>
+            {% endif %}
+            {% if perms.service.view_vendaservice %}
+            <li>
+                <a href="#" class="toggle">
+
+                    <div class="page">
+
+                        <h3>Ordem de Serviços (O.S.)</h3>
+                        <i class="fa-solid fa-chevron-down"></i>
+
+                    </div>
+                </a>
+                <ul class="sub-menu">
+
+                    <li><a href="{% url 'workOrders_list' %}">
+                            <h5>registrar Ordem de Serviço</h5>
+                        </a></li>
+                </ul>
+            </li>
+            {% endif %}
+            {% if perms.finance.view_accounts or perms.finance.view_caixadiario or perms.finance.view_cashmovement or
+            perms.finance.view_accounts and perms.finance.view_person %}
+            <li>
+                <a href="#" class="toggle">
+                    <div class="page">
+
+                        <h3>Financeiro</h3>
+                        <i class="fa-solid fa-chevron-down"></i>
+
+                    </div>
+
+                </a>
+                <ul class="sub-menu">
+                    {% if perms.finance.view_accounts and perms.finance.change_accounts %}
+                    <li>
+                        <a href="{% url 'AccountsPayable' %}">
+                            <h5>Contas a Pagar</h5>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'AccountsReceivable' %}">
+                            <h5>Contas a Receber</h5>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if perms.finance.view_cashmovement %}
+                    <li>
+                        <a href="{% url 'cashFlow' %}">
+                            <h5>Fluxo de Caixa</h5>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if perms.finance.view_caixadiario %}
+                    <li>
+                        <a href="{% url 'Cash_list' %}">
+                            <h5>Caixa</h5>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if perms.finance.view_accounts and perms.registry.view_person %}
+                    <li>
+                        <a href="{% url 'CreditedClients' %}">
+                            <h5>Credito</h5>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </li>
+            {% endif %}
+            {% if perms.config.view_situation or perms.config.view_paymentmethod or perms.config.view_chartofaccounts or
+            perms.config.view_service or perms.auth.view_permission and perms.auth.view_group %}
+            <li>
+                <a href="#" class="toggle">
+                    <div class="page">
+
+                        <h3>Configurações</h3>
+                        <i class="fa-solid fa-chevron-down"></i>
+
+                    </div>
+
+                </a>
+                <ul class="sub-menu">
+                    <!-- <li><a href="#"><h5>Usuarios</h5></a></li> -->
+                    {% if perms.config.view_situation %}
+                    <li>
+                        <a href="{% url 'Situation' %}">
+                            <h5>Situação</h5>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if perms.config.view_paymentmethod %}
+                    <li>
+                        <a href="{% url 'PaymentMethod' %}">
+                            <h5>Forma de Pagamento</h5>
+                        </a>
+                    </li>
+                    {% endif %}
+                    <!--     <li>
+                                <a href="{% url 'Position' %}"><h5>Cargos</h5></a>
+                            </li> -->
+                    {% if perms.config.view_chartofaccounts %}
+                    <li>
+                        <a href="{% url 'ChartofAccounts'%}">Plano de Contas</a>
+                    </li>
+                    {% endif %}
+                    {% if perms.config.view_service %}
+                    <li>
+                        <a href="{% url 'service' %}">
+                            <h5>Serviços</h5>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if perms.auth.view_permission and perms.auth.view_group %}
+                    <li>
+                        <a href="{% url 'permitions_list' %}">
+                            <h5>Permissões</h5>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if perms.auth.view_bank %}
+                    <li>
+                        <a href="{% url 'Bank' %}">
+                            <h5>Bancos</h5>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if perms.auth.view_users %}
+                    {% comment %}
+                    <li>
+                        <a href="{% url 'user_list' %}">
+                            <h5>Permissões</h5>
+                        </a>
+                    </li>
+                    <a href="{% url 'user_list' %}">
+                        <h5>Permissões</h5>
+                    </a>
+                    {% endcomment %}
+                    {% endif %}
+                </ul>
+            </li>
+            {% endif %}
+            {% comment %}
+            {% if perms.config.view_situation or perms.config.view_paymentmethod or perms.config.view_chartofaccounts or
+            perms.config.view_service or perms.auth.view_permission and perms.auth.view_group %}
+            <li>
+                <a href="#" class="toggle">
+                    <div class="page">
+
+                        <h3>Relatorios</h3>
+                        <i class="fa-solid fa-chevron-down"></i>
+
+                    </div>
+
+                </a>
+                <ul class="sub-menu">
+                    <!-- <li><a href="#"><h5>Usuarios</h5></a></li> -->
+                    {% if perms.config.view_situation %}
+                    <li>
+                        <a href="{% url 'Situation' %}">
+                            <h5>Produtos</h5>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if perms.config.view_paymentmethod %}
+                    <li>
+                        <a href="{% url 'PaymentMethod' %}">
+                            <h5>Vendas</h5>
+                        </a>
+                    </li>
+                    {% endif %}
+                    <!--     <li>
+                                <a href="{% url 'Position' %}"><h5>Cargos</h5></a>
+                            </li> -->
+                    {% if perms.config.view_chartofaccounts %}
+                    <li>
+                        <a href="{% url 'ChartofAccounts'%}">Ordens de Serviço</a>
+                    </li>
+                    {% endif %}
+                    {% if perms.config.view_service %}
+                    <li>
+                        <a href="{% url 'service' %}">
+                            <h5>Compras</h5>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if perms.auth.view_permission and perms.auth.view_group %}
+                    <li>
+                        <a href="{% url 'permitions_list' %}">
+                            <h5>Curva ABC</h5>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </li>
+            {% endif %}
+            {% endcomment %}
+
+            <li>
+                <a href="#" class="toggle">
+                    <div class="page">
+
+                        <h3>Logg</h3>
+                        <i class="fa-solid fa-chevron-down"></i>
+
+                    </div>
+
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a href="{% url 'log' %}">
+                            <h5>Log de Entrada</h5>
+                        </a>
+                    </li>
+                    {% comment %}
+                    <li>
+                        <a href="{% url 'log_purchase' %}">
+                            <h5>Log de Compras</h5>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'log_sale'%}">Log de Vendas</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'log_service'%}">Log de Ordens de Serviço</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'log_accounts'%}">Log de Contas</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'log_config'%}">Log de Configuração</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'log_permitions'%}">Log de Permissões</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'log_dlog'%}">Log de Logs</a>
+                    </li>
+                    {% endcomment %}
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <main>
+        <div class="content">
+            {% block content%}
+            {% endblock %}
+        </div>
+    </main>
+    {% block scripts %}
+    {% endblock %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/menu.js' %}"></script>
+</body>
+
+
+
+
+========================================================
+
+<!DOCTYPE html>
+<html class="light" lang="pt-br"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard - Sistema de Gerenciamento de Autopeças</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#1A1955",
+            "background-light": "#f0f2f5",
+            "background-dark": "#14131f",
+          },
+          fontFamily: {
+            "display": ["Manrope", "sans-serif"]
+          },
+          borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+
+</head>
+<body class="font-display">
+<div class="relative flex h-screen w-full flex-col bg-background-light dark:bg-background-dark group/design-root overflow-hidden">
+<header class="fixed top-0 left-0 z-30 flex h-16 w-full items-center justify-between bg-primary px-6 shadow-md">
+<div class="flex items-center gap-4">
+<div class="h-9 w-9 bg-center bg-no-repeat bg-contain" data-alt="Company logo for auto parts management system" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB-wxaVg7GHKTqZQQsJURT3yuccl5AWT46B5vd4DYv35x5jIgHOW1rq21n-1yWtckkk4uI-pQ9D8rT8QEJzkf5HwWSnHJGuaa_YdxT2sLxzlL5l8W-BvQuUlzCBG7_Hx_Pgobt7aGT9_SPJ-5fo6XpP_imsMk0DjYunp3AkHXDEP-J4lA2GlzWH8l0ePIxe7246lpTlWiQhxFVpdCmpseiagABhRzXAwv6KDaC0nuyMf6TePjHOO9uQxF4mqcL6zHBmokYkwjL0HAAS");'></div>
+<button class="text-white">
+<span class="material-symbols-outlined" data-icon="menu" data-size="28px" data-weight="regular">menu</span>
+</button>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-white">
+<span class="material-symbols-outlined" data-icon="notifications" data-size="24px" data-weight="regular">notifications</span>
+</button>
+<button class="h-9 w-9 rounded-full bg-slate-300">
+<span class="material-symbols-outlined text-primary" data-icon="person" data-size="24px" data-weight="regular">person</span>
+</button>
+</div>
+</header>
+<div class="flex h-full w-full pt-16">
+<aside class="flex h-full w-64 shrink-0 flex-col bg-primary text-white transition-all duration-300 ease-in-out">
+<nav class="flex-1 space-y-2 p-4">
+<div>
+<button class="flex w-full items-center justify-between rounded-md p-2 hover:bg-white/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</div>
+</button>
+</div>
+<div>
+<button class="flex w-full items-center justify-between rounded-md p-2 hover:bg-white/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">inventory_2</span>
+<span>Estoque</span>
+</div>
+<span class="material-symbols-outlined">expand_more</span>
+</button>
+</div>
+<div>
+<button class="flex w-full items-center justify-between rounded-md p-2 hover:bg-white/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span>Vendas</span>
+</div>
+<span class="material-symbols-outlined">expand_more</span>
+</button>
+</div>
+<div>
+<button class="flex w-full items-center justify-between rounded-md p-2 hover:bg-white/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">groups</span>
+<span>Clientes</span>
+</div>
+<span class="material-symbols-outlined">expand_more</span>
+</button>
+</div>
+<div>
+<button class="flex w-full items-center justify-between rounded-md p-2 hover:bg-white/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">bar_chart</span>
+<span>Relatórios</span>
+</div>
+<span class="material-symbols-outlined">expand_more</span>
+</button>
+</div>
+<div>
+<button class="flex w-full items-center justify-between rounded-md p-2 hover:bg-white/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">settings</span>
+<span>Configurações</span>
+</div>
+</button>
+</div>
+</nav>
+</aside>
+<main class="flex-1 overflow-y-auto bg-background-light p-8 dark:bg-background-dark">
+<h1 class="text-3xl font-bold text-primary dark:text-white">Dashboard</h1>
+<p class="mt-2 text-slate-600 dark:text-slate-400">Bem-vindo ao seu painel de gerenciamento.</p>
+<div class="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+<div class="rounded-xl bg-white p-6 shadow-lg dark:bg-slate-800">
+<div class="flex items-center justify-between">
+<h2 class="text-lg font-semibold text-primary dark:text-white">Vendas Totais</h2>
+<span class="material-symbols-outlined text-primary dark:text-slate-300">point_of_sale</span>
+</div>
+<p class="mt-4 text-4xl font-bold text-primary dark:text-white">R$ 12.345,67</p>
+</div>
+<div class="rounded-xl bg-white p-6 shadow-lg dark:bg-slate-800">
+<div class="flex items-center justify-between">
+<h2 class="text-lg font-semibold text-primary dark:text-white">Itens em Estoque</h2>
+<span class="material-symbols-outlined text-primary dark:text-slate-300">inventory</span>
+</div>
+<p class="mt-4 text-4xl font-bold text-primary dark:text-white">8.972</p>
+</div>
+<div class="rounded-xl bg-white p-6 shadow-lg dark:bg-slate-800">
+<div class="flex items-center justify-between">
+<h2 class="text-lg font-semibold text-primary dark:text-white">Novos Pedidos</h2>
+<span class="material-symbols-outlined text-primary dark:text-slate-300">shopping_bag</span>
+</div>
+<p class="mt-4 text-4xl font-bold text-primary dark:text-white">152</p>
+</div>
+<div class="rounded-xl bg-white p-6 shadow-lg dark:bg-slate-800">
+<div class="flex items-center justify-between">
+<h2 class="text-lg font-semibold text-primary dark:text-white">Clientes Ativos</h2>
+<span class="material-symbols-outlined text-primary dark:text-slate-300">person</span>
+</div>
+<p class="mt-4 text-4xl font-bold text-primary dark:text-white">1.204</p>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

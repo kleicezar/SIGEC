@@ -170,18 +170,21 @@ def situation(request):
 def SituationForm(request):
     if request.method == "GET":
         situationForm = SituationModelForm()
+        situation_perms = PermsForm()
         context = {
-            'Situation' : situationForm
+            'Situation' : situationForm,
+            'permitions': situation_perms
         }
         return render(request, 'config/SituationForm.html', context)
     else:
-        situationForm = SituationModelForm(request.POST)
+        situationForm = SituationForm(request.POST)
         if situationForm.is_valid():
             situationForm.save()
             messages.success(request, "Situação cadastrada com sucesso.",extra_tags='sucessSituation')
             return redirect('Situation')
     context = {
-        'Situation' : situationForm
+        'Situation' : situationForm,
+        'permitions': situation_perms
     }
     return render(request, 'config/Situation.html', context)
 
@@ -512,22 +515,24 @@ def select_permissions(request, id=id):
 
 def editperms(request, id=id):
     # Organizar permissões por modelo
+    user = get_object_or_404(User, id=id)
     content_types = ContentType.objects.all().order_by('app_label', 'model')
     grouped_permissions = {}
 
-    for ct in content_types:
-        perms = Permission.objects.filter(content_type=ct)
-        if perms.exists():
-            grouped_permissions[ct] = perms
+    # for ct in content_types:
+    #     perms = Permission.objects.filter(content_type=ct)
+    #     if perms.exists():
+    #         grouped_permissions[ct] = perms
 
     if request.method == 'POST':
         form = PermissionMultipleSelectForm(request.POST)
         if form.is_valid():
             selected_perms = form.cleaned_data['permissions']
-            request.user.user_permissions.set(selected_perms)
-            return render(request, 'success.html', {'perms': selected_perms})
+            user.user_permissions.set(selected_perms)
+            return redirect('permitions_list')#, {'perms': selected_perms}
     else:
-        form = PermissionMultipleSelectForm()
+        print(user.user_permissions.all())
+        form = PermissionMultipleSelectForm(initial={'permissions': user.user_permissions.all()})
 
     return render(request, 'config/PermitionsForm.html', {
         'form': form,
