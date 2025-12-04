@@ -4,6 +4,33 @@
     padding: 0; /* Remove espaçamentos internos de todos os elementos */
     box-sizing: border-box; /* Inclui bordas e padding nas dimensões */
 }
+/* Estilos para o menu principal */
+.toggle {
+    background-color: #1A1955; /* Cor de fundo do menu principal */
+    color: white; /* Cor do texto */
+}
+
+.sub-menu {
+    display: none; /* Inicialmente oculta */
+    
+}
+
+.sub-menu button {
+    padding: 8px 16px; /* Espacamento interno para os itens do submenu */
+    color: white; /* Cor do texto do submenu */
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+}
+
+.sub-menu button:hover {
+    background-color: #3a3a99; /* Cor de fundo ao passar o mouse */
+}
+
+.toggle:hover .sub-menu {
+    display: block; /* Exibe o submenu ao passar o mouse sobre o botão */
+}
 
 
 /* configuração do header (cabeçalho)*/
@@ -23,6 +50,9 @@ header {
 }
 aside{
     background-color: #140757;
+    overflow-y: scroll; /* Ativa a rolagem vertical */
+    scrollbar-width: thin;
+    scrollbar-color: #0a1d95;
 }
 div.header-main{
     justify-content: space-between;
