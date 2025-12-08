@@ -271,7 +271,7 @@ body {
 
 
 .content {
-    margin-left: 260px;
+    margin-left: 20px;
     padding: 70px 0px 0px 20px;
     transition: margin-left 0.3s ease;
 }

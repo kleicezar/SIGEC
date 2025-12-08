@@ -20,6 +20,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
+    <script type="text/javascript" src="{% static 'js/tailwind' %}"></script>
+
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -78,18 +80,19 @@
 
 
         <div class="flex h-full w-full pt-16">
-            <aside
-                class="flex h-full w-64 shrink-0 flex-col bg-primary text-white transition-all duration-300 ease-in-out display='none'">
-                <nav class="flex-1 space-y-2 p-4">
-
-                    <div>
-                        <button class="flex w-full items-center justify-between rounded-md p-2 hover:bg-white/10">
-                            <div class="flex items-center gap-3">
-                                <span class="material-symbols-outlined">dashboard</span>
-                                <span>Dashboard</span>
-                            </div>
-                        </button>
+            <aside class="flex h-full w-64 shrink-0 flex-col bg-primary text-white transition-all duration-300 ease-in-out">
+                <div class="p-4">
+                    <div class="aspect-square w-full rounded-lg bg-white bg-center bg-no-repeat bg-contain" data-alt="Eletro Cezar" style="background-image: url('{% static 'images/logo.png' %}');"></div>
                     </div>
+                    <nav class="flex-1 space-y-2 p-4 pt-0">
+                    <div>
+                    <button class="flex w-full items-center justify-between rounded-md bg-white/10 p-2">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined">dashboard</span>
+                            <span>Dashboard</span>
+                        </div>
+                    </button>
+                </div>
                     <div>
                         <button
                             class="toggle flex w-full items-center justify-between rounded-md p-2 hover:bg-white/10 retract">
