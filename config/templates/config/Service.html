@@ -12,7 +12,6 @@
     </head>
     <body>
         {% block content %}
-        <div class='content'>
             <div class="position-absolute start-50">
                 <div class="">
                     {% if messages %}
@@ -75,7 +74,6 @@
                 {% endfor %}
                 </tbody>
             </table>
-        </div> 
         {% endblock %}
         <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
     </body>

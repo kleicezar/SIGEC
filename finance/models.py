@@ -7,6 +7,7 @@ from config.models import ChartOfAccounts, PaymentMethod, Situation
 from django.utils import timezone
 from django.contrib.auth.models import User 
 from auditlog.registry import auditlog
+from auditlog.models import AuditlogHistoryField
 
 class Accounts(models.Model):
     INSTALLMENT_RANGE_CHOICES = [
@@ -65,6 +66,7 @@ class Accounts(models.Model):
         )
     is_active = models.BooleanField(default=True,verbose_name='Está Ativo')
     plannedAccount = models.BooleanField(default=False,verbose_name='Conta Prevista')
+    historico = AuditlogHistoryField()
 
 class PaymentMethod_Accounts(models.Model):
     INTEREST_CHOICES = [
@@ -185,6 +187,7 @@ class PaymentMethod_Accounts(models.Model):
         null=True,
         blank=True
     )
+    historico = AuditlogHistoryField()
 
 class CaixaDiario(models.Model): #abertura de caixa
     usuario_responsavel = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -193,6 +196,7 @@ class CaixaDiario(models.Model): #abertura de caixa
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
     is_Active = models.BooleanField()
+    historico = AuditlogHistoryField()
 
     def __str__(self):
         return f"Caixa {self.criado_em} - Saldo Final: R${self.saldo_final:.2f}"
@@ -228,6 +232,7 @@ class CashMovement(models.Model):  # transações do caixa diario
     )
     categoria = models.CharField(max_length=100) 
     created_at = models.DateTimeField(auto_now_add=True)
+    historico = AuditlogHistoryField()
 
     def __str__(self):
         return f"{self.categoria} -"
@@ -236,7 +241,8 @@ class FechamentoCaixa(models.Model):  # fechamento do caixa
     caixa = models.OneToOneField(CaixaDiario, on_delete=models.CASCADE)
     observacoes = models.TextField(blank=True, null=True)
     closed_in = models.DateTimeField(auto_now_add=True, verbose_name='fechado_em')
-
+    historico = AuditlogHistoryField()
+    
     def __str__(self):
         return f"Fechamento {self.caixa.data} - Responsável: {self.caixa.usuario_responsavel}"
 

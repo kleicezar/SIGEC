@@ -15,7 +15,6 @@
     </head>
     <body>
         {% block content %}
-        <div class='content'>
             <div class="position-absolute  start-50">
                 <div class="">
                     {% if messages %}
@@ -168,9 +167,7 @@
                     <a href="{% url 'AccountsPayable' %}?page={{ accounts.next_page_number }}&query={{ query  }}">Proximo</a>
                     {% endif %}
                 {% endif %}
-            </div>
-        </div> 
-        {% endblock %}
+                     {% endblock %}
         {% block scripts %}
         <script src="{% static 'js/search_client.js' %}"></script>
         <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>

@@ -142,6 +142,7 @@ def compras_create(request):
             if form.cleaned_data:
                 purpose = form.cleaned_data.get('paymentPurpose')
                 value = form.cleaned_data.get('value', 0)
+                print(f'valor - {value}')
                 if purpose:  # Só processa se tiver propósito
                     total_by_purpose[purpose] = total_by_purpose.get(purpose, 0) + value
 
@@ -1005,7 +1006,7 @@ def listTablePerson(request):
 @login_required
 def tableForm(request):
     NomeGrupoPessoasQuantidadeFormSet = inlineformset_factory(NomeGrupoPessoas, NomeGrupoPessoasQuantidade, fields=['person'], extra=1, can_delete=True)
-    ProductGroupFormSet = inlineformset_factory(ProductGroup, ProductPrice, fields=['product_group'], extra=1, can_delete=True)
+    ProductGroupFormSet = inlineformset_factory(AllProductGroup, ProductPrice, fields=['product_group'], extra=1, can_delete=True)
     PersonGroupMembershipFormSet = inlineformset_factory(NomeGrupoPessoas, NomeGrupoPessoasQuantidade, fields=['person'], extra=1, can_delete=True)
 
     if request.method == "POST":

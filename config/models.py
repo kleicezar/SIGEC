@@ -7,6 +7,7 @@ from django.dispatch import receiver
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import Permission
 from auditlog.registry import auditlog
+from auditlog.models import AuditlogHistoryField
 
 class Bank(models.Model):
     bank_name = models.CharField(verbose_name='Nome do Banco', max_length=250)
@@ -58,6 +59,7 @@ class ChartOfAccounts(models.Model):
         verbose_name='Natureza da Conta'
     )
     is_Active = models.BooleanField('ativo',default=True)
+    historico = AuditlogHistoryField()
 
     def save(self, *args, **kwargs):
         if not self.code:
@@ -90,27 +92,42 @@ class ChartOfAccounts(models.Model):
         return f'{self.code} - {self.name_ChartOfAccounts}'
     
 class Situation(models.Model):
-    CLOSURE_LEVEL_OPTIONS = [
-        ('Situação Aberta','Situação Aberta'),
-        ('Situação Concluída','Situação Concluída'),
-        ('Trancamento Parcial','Trancamento Parcial'),
-        ('Trancamento Total','Trancamento Total')
-    ]
+    # CLOSURE_LEVEL_OPTIONS = [
+    #     ('Situação Aberta','Situação Aberta'),
+    #     ('Situação Concluída','Situação Concluída'),
+    #     ('Trancamento Parcial','Trancamento Parcial'),
+    #     ('Trancamento Total','Trancamento Total')
+    # ]
+    # closure_level = models.CharField(
+    #     max_length=50,
+    #     choices=CLOSURE_LEVEL_OPTIONS,
+    #     default='Situação Concluída'
+    # )
     name_Situation = models.CharField('Nome da Situação', max_length=50)
-    closure_level = models.CharField(
-        max_length=50,
-        choices=CLOSURE_LEVEL_OPTIONS,
-        default='Situação Concluída'
-    )
+    salePerms = models.CharField('Permissoes ' \
+    '', max_length=50)
+    purchasePerms = models.CharField('Nome da Situação', max_length=50)
+    servicePerms = models.CharField('Nome da Situação', max_length=50)
+    # salePerms = models.CharField('Nome da Situação', max_length=50)
     is_Active = models.BooleanField('ativo',default=True)
+    historico = AuditlogHistoryField()
+    def __str__(self):
+        return self.name_Situation
 
+class Situation_new(models.Model):
+    name_Situation = models.CharField('Nome da Situação', max_length=100)
+    # salePerms = models.CharField('Permissoes de Venda ', max_length=300)
+    # purchasePerms = models.CharField('Permissoes de Compras', max_length=300)
+    # servicePerms = models.CharField('Permissoes de Ordens de Serviço', max_length=300)
+    is_Active = models.BooleanField('ativo',default=True)
+    historico = AuditlogHistoryField()
     def __str__(self):
         return self.name_Situation
     
 class Position(models.Model): #desativado
     name_position = models.CharField('Nome do Cargo', max_length=25)
     is_Active = models.BooleanField('ativo',default=True)
-
+    
     def __str__(self):
         return self.name_position
  
@@ -118,7 +135,8 @@ class Service(models.Model):
     name_service = models.CharField('Nome do Serviço',max_length=500)
     is_Active = models.BooleanField('ativo',default=True)
     value_service = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor do Serviço", blank=True, null=True)
-    
+    historico = AuditlogHistoryField()
+
     def __str__(self):
         return self.name_service 
 
@@ -143,7 +161,7 @@ class SuperGroup(models.Model):
         help_text='Usuários que pertencem a este super grupo.',
         related_name='super_groups'  # Importante para evitar conflito com user.groups
     )
-
+    historico = AuditlogHistoryField()
     def __str__(self):
         return self.name
 
@@ -266,5 +284,3 @@ auditlog.register(ChartOfAccounts)
 auditlog.register(Situation)
 auditlog.register(Service)
 auditlog.register(SuperGroup)
-
-

@@ -14,7 +14,6 @@
 </head>
 <body>
     {% block content %}
-    <div class="content">
         <form method="POST">
             {% csrf_token %}
             
@@ -113,7 +112,6 @@
             </div>
             
         </form>
-    </div>
 
     <template id="empty-payment-method-form">
         <div class="form-row" id='del' >

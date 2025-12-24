@@ -2,7 +2,7 @@
 {% load bootstrap4 %}
 {% load static %}
 
-<head>  
+    <head>  
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         {% block css %}
@@ -10,57 +10,67 @@
         {% endblock  %}
         {% block title %}
             <title>Editar de Permissões do Usuario {{users.username}}</title>
-        {% endblock %}
+            {% endblock %}
     </head>
-</body>
-<main>
-    {% bootstrap_messages %}
+    <body>  
+
+        {% bootstrap_messages %}
         {% block content %}
-            <h1>{{ page_title|default:"Gerenciar Supergrupo" }}</h1>
+        <h1>{{ page_title|default:"Gerenciar Supergrupo" }}</h1>
+        <form method="post">
+            {% csrf_token %}
+            
+            <div>
+                <label for="{{ form.permissions.id_for_label }}">{{ form.permissions.label }}</label>
+                    {{ form.permissions }}
+                </div>
 
-            <form method="post">
-                {% csrf_token %} {# Proteção CSRF, essencial! #}
-
-                {# Renderiza o formulário campo a campo para melhor controle com checkboxes #}
-                <div>
-                    <label for="{{ form.name.id_for_label }}">{{ form.name.label }}:</label><br>
-                    {{ form.name }}
-                    {% if form.name.help_text %}<small style="display: block;">{{ form.name.help_text }}</small>{% endif %}
-                    {% for error in form.name.errors %}<p style="color: red;">{{ error }}</p>{% endfor %}
-                </div>
-                <hr>
-                <div>
-                    <p><strong>{{ form.groups.label }}:</strong></p>
-                    {% if form.groups.help_text %}<small style="display: block;">{{ form.groups.help_text }}</small>{% endif %}
-                    <div style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
-                        {% for checkbox in form.groups %}
-                            <label for="{{ checkbox.id_for_label }}">
-                                {{ checkbox.tag }} {{ checkbox.choice_label }}
-                            </label><br>
-                        {% endfor %}
-                    </div>
-                    {% for error in form.groups.errors %}<p style="color: red;">{{ error }}</p>{% endfor %}
-                </div>
-                <hr>
-                <div>
-                    <p><strong>{{ form.members.label }}:</strong></p>
-                    {% if form.members.help_text %}<small style="display: block;">{{ form.members.help_text }}</small>{% endif %}
-                    <div style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
-                        {% for checkbox in form.members %}
-                            <label for="{{ checkbox.id_for_label }}">
-                                {{ checkbox.tag }} {{ checkbox.choice_label }}
-                            </label><br>
-                        {% endfor %}
-                    </div>
-                    {% for error in form.members.errors %}<p style="color: red;">{{ error }}</p>{% endfor %}
-                </div>
-                <hr>
-                <button type="submit">Salvar</button>
+                <!-- Botão para submeter o formulário -->
+                <button type="submit">Salvar Permissões</button>
             </form>
-
+            {% comment %}
+                <form method="post">
+                    {% csrf_token %} {# Proteção CSRF, essencial! #}
+                    
+                    {# Renderiza o formulário campo a campo para melhor controle com checkboxes #}
+                    <div>
+                        <label for="{{ form.name.id_for_label }}">{{ form.name.label }}:</label><br>
+                        {{ form.name }}
+                        {% if form.name.help_text %}<small style="display: block;">{{ form.name.help_text }}</small>{% endif %}
+                        {% for error in form.name.errors %}<p style="color: red;">{{ error }}</p>{% endfor %}
+                    </div>
+                    <hr>
+                    <div>
+                        <p><strong>{{ form.groups.label }}:</strong></p>
+                        {% if form.groups.help_text %}<small style="display: block;">{{ form.groups.help_text }}</small>{% endif %}
+                        <div style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+                            {% for checkbox in form.groups %}
+                                <label for="{{ checkbox.id_for_label }}">
+                                    {{ checkbox.tag }} {{ checkbox.choice_label }}
+                                </label><br>
+                            {% endfor %}
+                        </div>
+                        {% for error in form.groups.errors %}<p style="color: red;">{{ error }}</p>{% endfor %}
+                    </div>
+                    <hr>
+                    <div>
+                        <p><strong>{{ form.members.label }}:</strong></p>
+                        {% if form.members.help_text %}<small style="display: block;">{{ form.members.help_text }}</small>{% endif %}
+                        <div style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+                            {% for checkbox in form.members %}
+                                <label for="{{ checkbox.id_for_label }}">
+                                    {{ checkbox.tag }} {{ checkbox.choice_label }}
+                                </label><br>
+                            {% endfor %}
+                        </div>
+                        {% for error in form.members.errors %}<p style="color: red;">{{ error }}</p>{% endfor %}
+                    </div>
+                    <hr>
+                    <button type="submit">Salvar</button>
+                </form>
+            {% endcomment %}
             <p style="margin-top: 20px;">
                 <a href="{% url 'permitions_list' %}">Voltar para a lista</a>
             </p>
-        {% endblock %}
-    </main>
-<body>
+            {% endblock %}
+    </body>
