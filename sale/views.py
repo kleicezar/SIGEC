@@ -97,7 +97,7 @@ def venda_list(request):
         ('situacao','Situação'),
     ]
     situations = Situation.objects.filter(is_Active = True)
-    options_situations = Situation.CLOSURE_LEVEL_OPTIONS
+    # options_situations = Situation.CLOSURE_LEVEL_OPTIONS
     return render(request, 'sale/venda_list.html', {
         'colunas':colunas,
         'vendas': page,
@@ -105,7 +105,7 @@ def venda_list(request):
         'current_sort':sort,
         'current_dir':direction,
         'situations':situations,
-        'options_situations':options_situations
+        # 'options_situations':options_situations
         # 'form':form
         })
 

@@ -15,7 +15,7 @@ class Accounts(models.Model):
         ('20', 'A cada 20 dias'),
         ('23', 'A cada 23 dias'),
         ('28', 'A cada 28 dias'),
-        ('5', 'A cada 30 dias'),
+        ('5' , 'A cada 30 dias'),
     ]
 
     INSTALLMENT_RANGE_CHOICES_PLANNED_ACCOUNT = [
@@ -27,43 +27,17 @@ class Accounts(models.Model):
         ('6', 'A cada 6 meses'),
     ]
 
-    description = models.TextField(
-        verbose_name='Descrição da Conta',
-        null=False,
-        blank=False 
-        )
+    description = models.TextField(verbose_name='Descrição da Conta',null=False,blank=False )
     pessoa_id = models.ForeignKey(Person,on_delete=models.SET_NULL, null=True,verbose_name="Pessoa")
     chartOfAccounts = models.ForeignKey(ChartOfAccounts, on_delete=models.SET_NULL, null=True, verbose_name="Plano de Contas")
     documentNumber = models.PositiveIntegerField(verbose_name="Numero do Documento")
-    date_account = models.DateField(
-        verbose_name="Data da Conta"
-        )
+    date_account = models.DateField(verbose_name="Data da Conta")
     numberOfInstallments = models.PositiveIntegerField(verbose_name="Numero de Parcelas")
-    installment_Range = models.CharField(
-        max_length=20,
-        verbose_name="Intervalo de Parcelas",
-        default='este mês',
-        null=True,
-        blank=True
-    )
+    installment_Range = models.CharField(max_length=20,verbose_name="Intervalo de Parcelas",default='este mês',null=True,blank=True)
     date_init = models.DateField(verbose_name="Data de Inicio")
-    totalValue = models.DecimalField(
-        decimal_places=2, 
-        max_digits=10,
-        verbose_name="Valor Total"
-        )
-    peopleWatching = models.TextField(
-        verbose_name="Observações para a Pessoas",
-        blank=True,
-        null=True
-        )
-    
-    systemWatching = models.TextField(
-        verbose_name="Observações para o Sistema",
-        blank=True,
-        null=True
-
-        )
+    totalValue = models.DecimalField(decimal_places=2, max_digits=10,verbose_name="Valor Total")
+    peopleWatching = models.TextField(verbose_name="Observações para a Pessoas",blank=True,null=True)
+    systemWatching = models.TextField(verbose_name="Observações para o Sistema",blank=True,null=True)
     is_active = models.BooleanField(default=True,verbose_name='Está Ativo')
     plannedAccount = models.BooleanField(default=False,verbose_name='Conta Prevista')
     historico = AuditlogHistoryField()
@@ -84,109 +58,24 @@ class PaymentMethod_Accounts(models.Model):
         ('Imposto','Imposto'),
         ('Produto','Produto')
     ]
-    conta = models.ForeignKey(
-        Accounts,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name='id_Accounts'
-    )
-    venda = models.ForeignKey(Venda,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name='id_venda'
-    )
-  
-    compra = models.ForeignKey(Compra,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name='id_compra'
-    )
-    ordem_servico = models.ForeignKey(Vendaservice,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name='id_vendaservico'
-    )
-    forma_pagamento = models.ForeignKey(PaymentMethod,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name='Forma de Pagamento'
-    )
-    expirationDate = models.DateField(
-        max_length=50,
-        verbose_name='Data de Vencimento',
-        blank=True
-    )
-    days = models.IntegerField(             #dias entre as parcelas
-        verbose_name='Dias',
-        blank=True
-    ) 
-    value_old = models.DecimalField(        #valor original sem alterações
-        decimal_places=2,   
-        max_digits=8,
-        verbose_name='Valor da Conta:',
-        default = 0
-    )
-    value = models.DecimalField(decimal_places=2,
-        max_digits=8,
-        verbose_name='Valor Pago:',
-        blank=True
-    )  
-    interestType = models.CharField(
-        max_length=10, 
-        choices=INTEREST_CHOICES,
-        verbose_name="Tipo de Juros",
-        default='value',
-        null=True,
-        blank=True
-    )
-    interest = models.DecimalField(
-        decimal_places=2, 
-        max_digits=8, 
-        verbose_name='juros',
-        null=True,
-        blank=True
-    )
-    fineType = models.CharField(
-        max_length=10,
-        choices=FINE_CHOICES,
-        verbose_name="Tipo de Multa",
-        default='value',
-        null=True,
-        blank=True
-    )
-    fine = models.DecimalField(
-        decimal_places=2, 
-        max_digits=8, 
-        verbose_name='Multa R$',
-        null=True,
-        blank=True
-    )
-    acc = models.BooleanField(
-        verbose_name='Tipo de Conta',
-        default=None,
-        null=True,
-        blank=True
-    )
+    conta = models.ForeignKey(Accounts,on_delete=models.SET_NULL,null=True,blank=True,verbose_name='id_Accounts')
+    venda = models.ForeignKey(Venda,on_delete=models.SET_NULL,null=True,blank=True,verbose_name='id_venda')
+    compra = models.ForeignKey(Compra,on_delete=models.SET_NULL,null=True,blank=True,verbose_name='id_compra')
+    ordem_servico = models.ForeignKey(Vendaservice,on_delete=models.SET_NULL,null=True,blank=True,verbose_name='id_vendaservico')
+    forma_pagamento = models.ForeignKey(PaymentMethod,on_delete=models.SET_NULL,null=True,blank=True,verbose_name='Forma de Pagamento')
+    expirationDate = models.DateField(max_length=50,verbose_name='Data de Vencimento',blank=True)
+    days = models.IntegerField(verbose_name='Dias', blank=True ) #dias entre as parcelas  
+    value_old = models.DecimalField(decimal_places=2,max_digits=8,verbose_name='Valor da Conta:',default = 0) #valor original sem alterações
+    value = models.DecimalField(decimal_places=2,max_digits=8,verbose_name='Valor Pago:',blank=True)  
+    interestType = models.CharField(max_length=10, choices=INTEREST_CHOICES,verbose_name="Tipo de Juros",default='value',null=True,blank=True)
+    interest = models.DecimalField(decimal_places=2, max_digits=8, verbose_name='juros',null=True,blank=True)
+    fineType = models.CharField(max_length=10,choices=FINE_CHOICES,verbose_name="Tipo de Multa",default='value',null=True,blank=True)
+    fine = models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Multa R$',null=True,blank=True)
+    acc = models.BooleanField(verbose_name='Tipo de Conta',default=None,null=True,blank=True)
 
+    activeCredit = models.BooleanField(default=False,blank=True)
 
-    activeCredit = models.BooleanField(
-    default=False,
-    blank=True  
-    )
-
-    paymentPurpose = models.CharField(
-        max_length=10, 
-        choices=PAYMENT_PURPOSE_CHOICES,
-        verbose_name="Próposito do Pagamento",
-        default='Produto',
-        null=True,
-        blank=True
-    )
+    paymentPurpose = models.CharField(max_length=10, choices=PAYMENT_PURPOSE_CHOICES,verbose_name="Próposito do Pagamento",default='Produto',null=True,blank=True)
     historico = AuditlogHistoryField()
 
 class CaixaDiario(models.Model): #abertura de caixa

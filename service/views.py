@@ -421,7 +421,8 @@ def workOrders_update(request,pk):
 @login_required
 def workOrder(request):
     situations = Situation.objects.filter(is_Active = True)
-    options_situations = Situation.CLOSURE_LEVEL_OPTIONS
+    options_situations = 1
+    # options_situations = Situation.CLOSURE_LEVEL_OPTIONS
     context = {
         'workOrders':Vendaservice.objects.all(),
         'situations':situations,

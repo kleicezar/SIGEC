@@ -3,265 +3,525 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        {% block css %}
-            <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
-            <link rel="stylesheet" href="{% static 'css/custom-styles.css' %}">
-        {% endblock %}
-        <title>Formulário</title>
-        {% bootstrap_css %}
-    </head>
-    <body>
-        <main>
-            {% bootstrap_messages %}
-            {% block content %}
-                <div class='center col'>
-                    <form action="." method='post' autocomplete='off' class="row">
-                        {% csrf_token %}
-                        <div class="col d-flex gap-4 ">
-                            <a href="{% url 'Situation' %}">
-                                <button type="button" class="btn btn-voltar">
-                                    <i class="fas fa-arrow-left"></i> 
-                                </button>
-                            </a> 
-                        </div>
-                        <div class="container">
-                            <div class="row justify-content-center">
-                                <div class="col-lg-4 col-md-6 col-sm-8 col-10">
-                                    <div class="card text-center">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Situação Personalizada</h5>
-                        
-                                            <div class="mt-4">
-                                                <label for="" class="">
-                                                    {{Situation.name_Situation.label_tag}}
-                                                </label>
-                                                <div class="p-2 ">
-                                                      {{Situation.name_Situation}}
-                                                </div>
-                                            </div>
 
-                                            <div class="mt-4">
-                                                <label for="">VENDAS</label>
-                                                <div class="p-2 ">
-                                                    {{permitions.V_data_da_venda.label_tag}}
-                                                    {{permitions.V_data_da_venda}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_product_total.label_tag}}
-                                                    {{permitions.V_product_total}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_discount_total.label_tag}}
-                                                    {{permitions.V_discount_total}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_apply_credit.label_tag}}
-                                                    {{permitions.V_apply_credit}}
-                                                </div>
-                                            
-                                                <div class="p-2 ">
-                                                    {{permitions.V_value_apply_credit.label_tag}}
-                                                    {{permitions.V_value_apply_credit}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_product.label_tag}}
-                                                    {{permitions.V_product}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_quantidade.label_tag}}
-                                                    {{permitions.V_quantidade}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_preco_unitario.label_tag}}
-                                                    {{permitions.V_preco_unitario}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_discount.label_tag}}
-                                                    {{permitions.V_discount}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_price_total.label_tag}}
-                                                    {{permitions.V_price_total}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_forma_pagamento.label_tag}}
-                                                    {{permitions.V_forma_pagamento}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_expirationDate.label_tag}}
-                                                    {{permitions.V_expirationDate}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_valor.label_tag}}
-                                                    {{permitions.V_valor}}
-                                                </div>
-                                                
-                                                <label for="">Ordem de Serviço</label>
-                                                <div class="p-2 ">
-                                                    {{permitions.V_data_da_venda.label_tag}}
-                                                    {{permitions.V_data_da_venda}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_product_total.label_tag}}
-                                                    {{permitions.V_product_total}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_discount_total.label_tag}}
-                                                    {{permitions.V_discount_total}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_apply_credit.label_tag}}
-                                                    {{permitions.V_apply_credit}}
-                                                </div>
-                                            
-                                                <div class="p-2 ">
-                                                    {{permitions.V_value_apply_credit.label_tag}}
-                                                    {{permitions.V_value_apply_credit}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_product.label_tag}}
-                                                    {{permitions.V_product}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_quantidade.label_tag}}
-                                                    {{permitions.V_quantidade}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_preco_unitario.label_tag}}
-                                                    {{permitions.V_preco_unitario}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_discount.label_tag}}
-                                                    {{permitions.V_discount}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_price_total.label_tag}}
-                                                    {{permitions.V_price_total}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_forma_pagamento.label_tag}}
-                                                    {{permitions.V_forma_pagamento}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_expirationDate.label_tag}}
-                                                    {{permitions.V_expirationDate}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_valor.label_tag}}
-                                                    {{permitions.V_valor}}
-                                                </div>
-                                                
-                                                <label for="">Compras</label>
-                                                <div class="p-2 ">
-                                                    {{permitions.V_data_da_venda.label_tag}}
-                                                    {{permitions.V_data_da_venda}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_product_total.label_tag}}
-                                                    {{permitions.V_product_total}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_discount_total.label_tag}}
-                                                    {{permitions.V_discount_total}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_apply_credit.label_tag}}
-                                                    {{permitions.V_apply_credit}}
-                                                </div>
-                                            
-                                                <div class="p-2 ">
-                                                    {{permitions.V_value_apply_credit.label_tag}}
-                                                    {{permitions.V_value_apply_credit}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_product.label_tag}}
-                                                    {{permitions.V_product}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_quantidade.label_tag}}
-                                                    {{permitions.V_quantidade}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_preco_unitario.label_tag}}
-                                                    {{permitions.V_preco_unitario}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_discount.label_tag}}
-                                                    {{permitions.V_discount}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_price_total.label_tag}}
-                                                    {{permitions.V_price_total}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_forma_pagamento.label_tag}}
-                                                    {{permitions.V_forma_pagamento}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_expirationDate.label_tag}}
-                                                    {{permitions.V_expirationDate}}
-                                                </div>
-                                                
-                                                <div class="p-2 ">
-                                                    {{permitions.V_valor.label_tag}}
-                                                    {{permitions.V_valor}}
-                                                </div>
-                                                
-                                                
-                                            </div>
-                        
-                                            <div class="p-4">
-                                                <button type="submit" class="btn  bg-adapted w-50">Cadastrar</button>   
-                                            </div>
-                        
-                                        </div>
-                                    </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block css %}
+    <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom-styles.css' %}">
+    {% endblock %}
+    <title>Formulário</title>
+    {% bootstrap_css %}
+</head>
+
+<body>
+
+    {% bootstrap_messages %}
+    {% block content %}
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+
+
+        <div class="flex-1 overflow-y-auto p-6 md:p-10 scroll-smooth">
+            <div class="max-w-[1600px] mx-auto">
+                <div class="mb-8 flex flex-col gap-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="flex flex-col gap-1">
+                            <h1 class="text-primary text-2xl md:text-3xl font-extrabold tracking-tight">Cadastro de
+                                Situações Personalizadas</h1>
+                            <p class="text-slate-500 text-sm md:text-base">Configure os campos visíveis para cada
+                                módulo do sistema de forma independente.</p>
+                        </div>
+                        <button
+                            class="flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-white shadow-md shadow-primary/20 hover:bg-primary/90 transition-all active:scale-95 text-sm font-bold tracking-wide min-w-[140px] flex-shrink-0">
+                            <span class="material-symbols-outlined text-[20px]">save</span>
+                            <span>Salvar Alterações</span>
+                        </button>
+                    </div>
+                    <div class="w-full max-w-xl">
+                        <label class="block text-sm font-bold text-[#121217] mb-2" for="customSituationName">Nome da
+                            Situação Personalizada</label>
+                        <input
+                            class="form-input block w-full rounded-lg border-slate-300 bg-white px-4 py-2.5 text-slate-900 placeholder-slate-400 focus:border-primary focus:ring-primary shadow-sm sm:text-sm"
+                            id="customSituationName" placeholder="Ex: Configuração Padrão Gerencial" type="text" />
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col h-full">
+                        <div
+                            class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 rounded-t-xl">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="h-10 w-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                                    <span class="material-symbols-outlined">shopping_cart</span>
                                 </div>
+                                <h2 class="text-lg font-bold text-[#121217]">Módulo de Vendas</h2>
+                            </div>
+                            <!-- <div class="relative group">
+                                <button class="text-slate-400 hover:text-primary transition-colors">
+                                    <span class="material-symbols-outlined">more_vert</span>
+                                </button>
+                            </div> -->
+                        </div>
+                        <div class="p-2 flex-1">
+                            <div class="flex flex-col max-h-80 overflow-y-auto
+                                scrollbar-thin
+                                scrollbar-thumb-blue-600
+                                scrollbar-track-slate-200
+                                scrollbar-thumb-rounded-full
+                                scrollbar-track-rounded-full
+                                pr-2" style="--checkbox-tick-svg: url('data:image/svg+xml,...');">
+                                {% for campo in form %}
+                                {% if campo.name in v_situation and campo.name != 'V_estagio_inicial' and campo.name != 'V_movement_storage' and campo.name != 'V_movement_accounts'%}
+                                <label
+                                    class="flex items-center justify-between w-full gap-3 p-3 hover:bg-slate-50 rounded-lg cursor-pointer transition-colors">
+                                    <span class="text-[#121217] text-sm font-medium">{{ campo.label }}</span>
+
+                                    <!-- Input invisível com peer -->
+                                    {{ campo }}
+
+                                    <!-- Switch visual -->
+                                    <div class="relative w-11 h-6 bg-gray-300 rounded-full
+                                            peer-focus:ring-2 peer-focus:ring-blue-400
+                                            peer-checked:bg-blue-600
+                                            after:content-[''] after:absolute after:top-0.5 after:left-0.5
+                                            after:w-5 after:h-5 after:bg-white after:rounded-full
+                                            after:transition-all peer-checked:after:translate-x-5">
+                                    </div>
+
+                                    <!-- Label textual -->
+
+                                </label>
+                                {% endif %}
+                                {% endfor %}
                             </div>
                         </div>
-                        
-                        
-                    </form>
+                        <div class="grid grid-cols-1 gap-3">
+                            <div
+                                class="mt-auto p-4 border-t border-slate-100 bg-slate-50/50 rounded-b-xl flex flex-col gap-4">
+                                <!-- Cabeçalho -->
+                                {% for campo in form %}
+                                {% if campo.name in v_situation and campo.name == "V_estagio_inicial" %}
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-sm font-medium text-[#121217]">{{ campo.label }}</span>
+                                        <span
+                                            class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors cursor-help text-lg">
+                                            help
+                                        </span>
+                                    </div>
+                                    
+
+                                    <div class="relative group">
+                                        <div
+                                            class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs p-3 bg-slate-800 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                                            Ao ativar, este módulo sinaliza o começo do fluxo de trabalho do processo.
+                                        </div>
+                                        <label class="toggle-switch">
+                                            {{ campo }}
+                                            <div
+                                                class="relative w-11 h-6 bg-slate-300 rounded-full peer-checked:bg-emerald-500 transition-colors
+                                                after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-5 after:h-5
+                                                after:bg-white after:rounded-full after:transition-transform peer-checked:after:translate-x-5">
+                                            </div>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                {% elif campo.name in v_situation and campo.name == "V_movement_storage" %}
+
+                                <!-- Item 1 -->    
+                                <label
+                                    class="flex items-center justify-between p-0 rounded-lg bg-white/60 border border-white hover:border-slate-200 transition cursor-pointer">
+                                    <span class="text-xs font-semibold text-slate-700">
+                                        {{ campo.label }}
+                                    </span>
+                                    {{ campo }}
+                                    <div
+                                        class="relative w-11 h-6 bg-slate-300 rounded-full peer-checked:bg-emerald-500 transition-colors
+                                                after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-5 after:h-5
+                                                after:bg-white after:rounded-full after:transition-transform peer-checked:after:translate-x-5">
+                                    </div>
+                                </label>
+                                {% elif campo.name in v_situation and campo.name == "V_movement_accounts" %}
+                                <!-- Item 2 -->
+                                <label
+                                    class="flex items-center justify-between p-0 rounded-lg bg-white/60 border border-white hover:border-slate-200 transition cursor-pointer">
+                                    <span class="text-xs font-semibold text-slate-700">
+                                        {{ campo.label }}
+                                    </span>
+                                    {{ campo }}
+                                    <div
+                                        class="relative w-11 h-6 bg-slate-300 rounded-full peer-checked:bg-emerald-500 transition-colors
+                                                after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-5 after:h-5
+                                                after:bg-white after:rounded-full after:transition-transform peer-checked:after:translate-x-5">
+                                    </div>
+                                </label>
+                                {% endif %}
+                                {% endfor %}
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col h-full">
+                        <div
+                            class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 rounded-t-xl">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="h-10 w-10 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center">
+                                    <span class="material-symbols-outlined">build</span>
+                                </div>
+                                <h2 class="text-lg font-bold text-[#121217]">Módulo de O.S.</h2>
+                            </div>
+                        </div>
+                        <div class="p-2 flex-1">
+                            <div class="flex flex-col max-h-80 overflow-y-auto
+                                        scrollbar-thin
+                                        scrollbar-thumb-blue-600
+                                        scrollbar-track-slate-200
+                                        scrollbar-thumb-rounded-full
+                                        scrollbar-track-rounded-full
+                                        pr-2" style="--checkbox-tick-svg: url('data:image/svg+xml,...');">
+                                {% for campo in form %}
+                                {% if campo.name in os_situation and campo.name != 'OS_estagio_inicial' and campo.name != 'OS_movement_storage' and campo.name != 'OS_movement_accounts'%}
+                                <label
+                                    class="flex items-center justify-between w-full gap-3 p-3 hover:bg-slate-50 rounded-lg cursor-pointer transition-colors">
+                                    <span class="text-[#121217] text-sm font-medium">{{ campo.label }}</span>
+
+                                    <!-- Input invisível com peer -->
+                                    {{ campo }}
+
+                                    <!-- Switch visual -->
+                                    <div class="relative w-11 h-6 bg-gray-300 rounded-full
+                                                peer-focus:ring-2 peer-focus:ring-blue-400
+                                                peer-checked:bg-blue-600
+                                                after:content-[''] after:absolute after:top-0.5 after:left-0.5
+                                                after:w-5 after:h-5 after:bg-white after:rounded-full
+                                                after:transition-all peer-checked:after:translate-x-5">
+                                    </div>
+
+                                    <!-- Label textual -->
+
+                                </label>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 gap-3">
+                            <div
+                                class="mt-auto p-4 border-t border-slate-100 bg-slate-50/50 rounded-b-xl flex flex-col gap-4">
+
+                                <!-- Cabeçalho -->
+                                {% for campo in form %}
+                                {% if campo.name in os_situation and campo.name == "OS_estagio_inicial" %}
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-sm font-medium text-[#121217]">{{ campo.label }}</span>
+                                        <span
+                                            class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors cursor-help text-lg">
+                                            help
+                                        </span>
+                                    </div>
+
+                                    <div class="relative group">
+                                        <div
+                                            class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs p-3 bg-slate-800 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                                            Ao ativar, este módulo sinaliza o começo do fluxo de trabalho do processo.
+                                        </div>
+                                        <label class="toggle-switch">
+                                            {{ campo }}
+                                            <div
+                                                class="relative w-11 h-6 bg-slate-300 rounded-full peer-checked:bg-emerald-500 transition-colors
+                                                        after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-5 after:h-5
+                                                        after:bg-white after:rounded-full after:transition-transform peer-checked:after:translate-x-5">
+                                            </div>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                {% elif campo.name in os_situation and campo.name == "OS_movement_storage" %}
+
+                                <!-- Item 1 -->
+                                <label
+                                    class="flex items-center justify-between p-0 rounded-lg bg-white/60 border border-white hover:border-slate-200 transition cursor-pointer">
+                                    <span class="text-xs font-semibold text-slate-700">
+                                        {{ campo.label }}
+                                    </span>
+                                    {{ campo }}
+                                    <div
+                                        class="relative w-11 h-6 bg-slate-300 rounded-full peer-checked:bg-emerald-500 transition-colors
+                                                after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-5 after:h-5
+                                                after:bg-white after:rounded-full after:transition-transform peer-checked:after:translate-x-5">
+                                    </div>
+                                </label>
+                                {% elif campo.name in os_situation and campo.name == "OS_movement_accounts" %}
+                                <!-- Item 2 -->
+                                <label
+                                    class="flex items-center justify-between p-0 rounded-lg bg-white/60 border border-white hover:border-slate-200 transition cursor-pointer">
+                                    <span class="text-xs font-semibold text-slate-700">
+                                        {{ campo.label }}
+                                    </span>
+                                    {{ campo }}
+                                    <div
+                                        class="relative w-11 h-6 bg-slate-300 rounded-full peer-checked:bg-emerald-500 transition-colors
+                                                after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-5 after:h-5
+                                                after:bg-white after:rounded-full after:transition-transform peer-checked:after:translate-x-5">
+                                    </div>
+                                </label>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col h-full">
+                        <div
+                            class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 rounded-t-xl">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="h-10 w-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                                    <span class="material-symbols-outlined">shopping_bag</span>
+                                </div>
+                                <h2 class="text-lg font-bold text-[#121217]">Módulo de Compras</h2>
+                            </div>
+                        </div>
+                        <div class="p-2 flex-1">
+                            <div class="flex flex-col max-h-80 overflow-y-auto
+                                        scrollbar-thin
+                                        scrollbar-thumb-blue-600
+                                        scrollbar-track-slate-200
+                                        scrollbar-thumb-rounded-full
+                                        scrollbar-track-rounded-full
+                                        pr-2" style="--checkbox-tick-svg: url('data:image/svg+xml,...');">
+                                {% for campo in form %}
+                                {% if campo.name in c_situation and campo.name != 'C_estagio_inicial' and campo.name != 'C_movement_storage' and campo.name != 'C_movement_accounts'%}
+                                <label
+                                    class="flex items-center justify-between w-full gap-3 p-3 hover:bg-slate-50 rounded-lg cursor-pointer transition-colors">
+                                    <span class="text-[#121217] text-sm font-medium">{{ campo.label }}</span>
+
+                                    <!-- Input invisível com peer -->
+                                    {{ campo }}
+
+                                    <!-- Switch visual -->
+                                    <div class="relative w-11 h-6 bg-gray-300 rounded-full
+                                                peer-focus:ring-2 peer-focus:ring-blue-400
+                                                peer-checked:bg-blue-600
+                                                after:content-[''] after:absolute after:top-0.5 after:left-0.5
+                                                after:w-5 after:h-5 after:bg-white after:rounded-full
+                                                after:transition-all peer-checked:after:translate-x-5">
+                                    </div>
+
+                                    <!-- Label textual -->
+
+                                </label>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 gap-3">
+                            <div
+                                class="mt-auto p-4 border-t border-slate-100 bg-slate-50/50 rounded-b-xl flex flex-col gap-4">
+
+                                <!-- Cabeçalho -->
+                                {% for campo in form %}
+                                {% if campo.name in c_situation and campo.name == "C_estagio_inicial" %}
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-sm font-medium text-[#121217]">{{ campo.label }}</span>
+                                        <span
+                                            class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors cursor-help text-lg">
+                                            help
+                                        </span>
+                                    </div>
+
+                                    <div class="relative group">
+                                        <div
+                                            class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs p-3 bg-slate-800 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                                            Ao ativar, este módulo sinaliza o começo do fluxo de trabalho do processo.
+                                        </div>
+                                        <label class="toggle-switch">
+                                            {{ campo }}
+                                            <div
+                                                class="relative w-11 h-6 bg-slate-300 rounded-full peer-checked:bg-emerald-500 transition-colors
+                                                        after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-5 after:h-5
+                                                        after:bg-white after:rounded-full after:transition-transform peer-checked:after:translate-x-5">
+                                            </div>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                {% elif campo.name in c_situation and campo.name == "C_movement_storage" %}
+
+                                <!-- Item 1 -->
+                                <label
+                                    class="flex items-center justify-between p-0 rounded-lg bg-white/60 border border-white hover:border-slate-200 transition cursor-pointer">
+                                    <span class="text-xs font-semibold text-slate-700">
+                                        {{ campo.label }}
+                                    </span>
+                                    {{ campo }}
+                                    <div
+                                        class="relative w-11 h-6 bg-slate-300 rounded-full peer-checked:bg-emerald-500 transition-colors
+                                                after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-5 after:h-5
+                                                after:bg-white after:rounded-full after:transition-transform peer-checked:after:translate-x-5">
+                                    </div>
+                                </label>
+                                {% elif campo.name in c_situation and campo.name == "C_movement_accounts" %}
+                                <!-- Item 2 -->
+                                <label
+                                    class="flex items-center justify-between p-0 rounded-lg bg-white/60 border border-white hover:border-slate-200 transition cursor-pointer">
+                                    <span class="text-xs font-semibold text-slate-700">
+                                        {{ campo.label }}
+                                    </span>
+                                    {{ campo }}
+                                    <div
+                                        class="relative w-11 h-6 bg-slate-300 rounded-full peer-checked:bg-emerald-500 transition-colors
+                                                after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-5 after:h-5
+                                                after:bg-white after:rounded-full after:transition-transform peer-checked:after:translate-x-5">
+                                    </div>
+                                </label>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col h-full">
+                        <div
+                            class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 rounded-t-xl">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="h-10 w-10 rounded-lg bg-red-50 text-red-600 flex items-center justify-center">
+                                    <span class="material-symbols-outlined">Paid</span>
+                                </div>
+                                <h2 class="text-lg font-bold text-[#121217]">Módulo de Contas</h2>
+                            </div>
+                        </div>
+                        <div class="p-2 flex-1">
+                            <div class="flex flex-col max-h-80 overflow-y-auto
+                                        scrollbar-thin
+                                        scrollbar-thumb-blue-600
+                                        scrollbar-track-slate-200
+                                        scrollbar-thumb-rounded-full
+                                        scrollbar-track-rounded-full
+                                        pr-2" style="--checkbox-tick-svg: url('data:image/svg+xml,...');">
+                                {% for campo in form %}
+                                {% if campo.name in acc_situation and campo.name != 'ACC_estagio_inicial' and campo.name != 'ACC_movement_storage' and campo.name != 'ACC_movement_accounts'%}
+                                <label
+                                    class="flex items-center justify-between w-full gap-3 p-3 hover:bg-slate-50 rounded-lg cursor-pointer transition-colors">
+                                    <span class="text-[#121217] text-sm font-medium">{{ campo.label }}</span>
+
+                                    <!-- Input invisível com peer -->
+                                    {{ campo }}
+
+                                    <!-- Switch visual -->
+                                    <div class="relative w-11 h-6 bg-gray-300 rounded-full
+                                                peer-focus:ring-2 peer-focus:ring-blue-400
+                                                peer-checked:bg-blue-600
+                                                after:content-[''] after:absolute after:top-0.5 after:left-0.5
+                                                after:w-5 after:h-5 after:bg-white after:rounded-full
+                                                after:transition-all peer-checked:after:translate-x-5">
+                                    </div>
+
+                                    <!-- Label textual -->
+
+                                </label>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 gap-3">
+                            <div
+                                class="mt-auto p-4 border-t border-slate-100 bg-slate-50/50 rounded-b-xl flex flex-col gap-4">
+
+                                <!-- Cabeçalho -->
+                                {% for campo in form %}
+                                {% if campo.name in acc_situation and campo.name == "ACC_estagio_inicial" %}
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-sm font-medium text-[#121217]">{{ campo.label }}</span>
+                                        <span
+                                            class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors cursor-help text-lg">
+                                            help
+                                        </span>
+                                    </div>
+
+                                    <div class="relative group">
+                                        <div
+                                            class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs p-3 bg-slate-800 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                                            Ao ativar, este módulo sinaliza o começo do fluxo de trabalho do processo.
+                                        </div>
+                                        <label class="toggle-switch">
+                                            {{ campo }}
+                                            <div
+                                                class="relative w-11 h-6 bg-slate-300 rounded-full peer-checked:bg-emerald-500 transition-colors
+                                                        after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-5 after:h-5
+                                                        after:bg-white after:rounded-full after:transition-transform peer-checked:after:translate-x-5">
+                                            </div>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                {% elif campo.name in acc_situation and campo.name == "ACC_movement_storage" %}
+
+                                <!-- Item 1 -->
+                                <label
+                                    class="flex items-center justify-between p-0 rounded-lg bg-white/60 border border-white hover:border-slate-200 transition cursor-pointer">
+                                    <span class="text-xs font-semibold text-slate-700">
+                                        {{ campo.label }}
+                                    </span>
+                                    {{ campo }}
+                                    <div
+                                        class="relative w-11 h-6 bg-slate-300 rounded-full peer-checked:bg-emerald-500 transition-colors
+                                                after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-5 after:h-5
+                                                after:bg-white after:rounded-full after:transition-transform peer-checked:after:translate-x-5">
+                                    </div>
+                                </label>
+                                {% elif campo.name in acc_situation and campo.name == "ACC_movement_accounts" %}
+                                <!-- Item 2 -->
+                                <label
+                                    class="flex items-center justify-between p-0 rounded-lg bg-white/60 border border-white hover:border-slate-200 transition cursor-pointer">
+                                    <span class="text-xs font-semibold text-slate-700">
+                                        {{ campo.label }}
+                                    </span>
+                                    {{ campo }}
+                                    <div
+                                        class="relative w-11 h-6 bg-slate-300 rounded-full peer-checked:bg-emerald-500 transition-colors
+                                                after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-5 after:h-5
+                                                after:bg-white after:rounded-full after:transition-transform peer-checked:after:translate-x-5">
+                                    </div>
+                                </label>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
-            {% endblock %}
-        </main>
-        
-        
-        <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
-    </body>
+            </div>
+            <div
+                class="mt-8 flex flex-col md:flex-row gap-6 p-6 rounded-xl bg-blue-50 border border-blue-100 items-start">
+                <div class="bg-blue-100 text-blue-700 p-2 rounded-lg flex-shrink-0">
+                    <span class="material-symbols-outlined">info</span>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <h3 class="text-blue-900 font-bold text-base">Sobre Campos Personalizados</h3>
+                    <p class="text-blue-800/80 text-sm leading-relaxed max-w-3xl">
+                        A desativação de campos ocultará essas informações apenas nos formulários de criação e
+                        edição.
+                        Os dados históricos já salvos não serão perdidos, mas não estarão visíveis até que o
+                        campo seja reativado.
+                        Certifique-se de que os campos obrigatórios para sua operação estejam sempre marcados.
+                    </p>
+                </div>
+            </div>
+        </div>
+        </div>
+    </main>
+
+    {% endblock %}
+    </main>
+
+
+    <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+</body>
+
 </html>

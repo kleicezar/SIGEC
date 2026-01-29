@@ -170,21 +170,32 @@ def situation(request):
 def SituationForm(request):
     if request.method == "GET":
         situationForm = SituationModelForm()
+
+        v_situation=['V_pessoa' ,'V_data_da_venda' ,'V_total_value' ,'V_discount_total','V_value_apply_credit','V_product' , 'V_quantidade', 'V_preco_unitario', 'V_discount', 'V_price_total', 'V_status', 'V_apply_credit', 'V_product_total', 'V_forma_pagamento', 'V_expirationDate', 'V_valor', 'V_observacao_pessoas', 'V_observacao_sistema', 'V_estagio_inicial', 'V_movement_storage', 'V_movement_accounts']
+        os_situation=['OS_pessoa', 'OS_apply_credit', 'OS_data_da_venda', 'OS_observacao_pessoas','OS_observacao_sistema','OS_total_value','OS_product_total','OS_discount_total','OS_value_apply_credit','OS_service_total','OS_discount_total_service','OS_total_value_service','OS_preco','OS_discount','OS_technician','OS_expirationDate','OS_valor','OS_quantidade','OS_preco_unitario','OS_discount','OS_price_total','OS_status','OS_estagio_inicial', 'OS_movement_storage', 'OS_movement_accounts']
+        c_situation=['C_fornecedor','C_description','C_product_code','C_barcode','C_unit_of_measure','C_brand','C_cost_of_product','C_selling_price','C_ncm','C_csosn','C_cfop','C_current_quantity','C_maximum_quantity','C_minimum_quantity','C_data_da_compra','C_total_value','C_product_total','C_discount_total','C_observation_product','C_freight_type','C_valueFreight','C_numberOfInstallmentsFreight','C_observation_freight','C_valueTax','C_numberOfInstallmentsTax','C_observation_tax','C_valuePickingList','C_numberOfInstallmentsRMN','C_observation_picking_list','C_quantidade','C_preco_unitario','C_discount','C_price_total','C_estagio_inicial', 'C_movement_storage', 'C_movement_accounts']
+        acc_situation=['ACC_description','ACC_pessoa_id', 'ACC_chartOfAccounts','ACC_documentNumber','ACC_date_account', 'ACC_numberOfInstallments','ACC_installment_Range',  'ACC_date_init', 'ACC_totalValue','ACC_peopleWatching','ACC_systemWatching','ACC_plannedAccount','ACC_venda', 'ACC_compra', 'ACC_ordem_servico', 'ACC_forma_pagamento','ACC_expirationDate','ACC_days','ACC_value_old','ACC_value', 'ACC_interestType','ACC_interest', 'ACC_fineType','ACC_fine', 'ACC_acc',  'ACC_activeCredit', 'ACC_paymentPurpose', 'ACC_estagio_inicial', 'ACC_movement_storage', 'ACC_movement_accounts']
+
+
+
         situation_perms = PermsForm()
         context = {
-            'Situation' : situationForm,
-            'permitions': situation_perms
+            'form': situationForm,
+            'v_situation': v_situation,
+            'os_situation': os_situation, 
+            'c_situation': c_situation,
+            'acc_situation': acc_situation,
         }
         return render(request, 'config/SituationForm.html', context)
     else:
-        situationForm = SituationForm(request.POST)
+        situationForm = SituationModelForm(request.POST)
         if situationForm.is_valid():
             situationForm.save()
             messages.success(request, "Situação cadastrada com sucesso.",extra_tags='sucessSituation')
             return redirect('Situation')
     context = {
-        'Situation' : situationForm,
-        'permitions': situation_perms
+        'form': situationForm,
+        'v_situation': v_situation,
     }
     return render(request, 'config/Situation.html', context)
 
@@ -263,25 +274,24 @@ def ChartOfAccountsForm(request):
 @transaction.atomic
 def updateChartOfAccounts(request, id_chartOfAccounts):
     chartOfAccounts = get_object_or_404(ChartOfAccounts, id=id_chartOfAccounts)
-    if request.method == "GET":
-        chartOfAccountsForm = ChartOfAccountsModelForm(instance=chartOfAccounts)
-
-        context = {
-            'chartOfAccounts': chartOfAccounts,
-            'ChartOfAccounts': chartOfAccountsForm
-        }
-        return render(request, 'config/ChartOfAccountsForm.html',context)
-    elif request.method == "POST":
+    if request.method == "POST":
         chartOfAccountsForm = ChartOfAccountsModelForm(request.POST, instance=chartOfAccounts)
         if chartOfAccountsForm.is_valid():
             chartOfAccounts.code = ''
             chartOfAccountsForm.save()
             messages.success(request, "Plano de Contas atualizado com sucesso.",extra_tags='successChartOfAccounts')
             return redirect('ChartofAccounts')
+    elif request.method == "GET":
+        chartOfAccountsForm = ChartOfAccountsModelForm(instance=chartOfAccounts)
+
+        context = {
+            'ChartOfAccounts': chartOfAccountsForm
+        }
+        return render(request, 'config/ChartOfAccountsForm.html',context)
     context = {
         'ChartOfAccounts' : chartOfAccountsForm
     }
-    return render(request, 'config/ChartOfAccounts.html', context)
+    return render(request,'config/ChartOfAccounts.html', context)
 
 @login_required
 @transaction.atomic
@@ -318,7 +328,7 @@ def service(request):
     context = {
         'services':Service.objects.all()
     }
-    return render(request,'config/service.html',context)
+    return render(request,'config/Service.html',context)
     # return HttpResponse("Olá, esta é a minha nova app Django!")
 
 @login_required
@@ -333,33 +343,29 @@ def serviceForm(request):
             messages.success(request, "Tipo de serviço cadastrado com sucesso.",extra_tags='successservice')
             return redirect('service')
         else: 
-            return render(request, 'config/serviceForm.html', {'form': service_form})
+            return render(request, 'config/ServiceForm.html', {'form': service_form})
     else:
         service_form = serviceModelForm()
         context = {
             'service':service_form
         }
-        return render(request,'config/serviceForm.html',context)
+        return render(request,'config/ServiceForm.html',context)
     
 @login_required
 @transaction.atomic      
-def updateservice(request,pk):
-    servico = get_object_or_404(service,pk=pk)
-    if request.method == "POST":
-        service_form = serviceModelForm(request.POST,instance=servico)
-        if service_form.is_valid():
-            service_form.save()
-            messages.success(request, "Tipo de serviço atualizado com sucesso.",extra_tags='successservice')
-            # return redirect('orderserviceForm')
-            return redirect('service')
+def updateservice(request, pk):
+    servico = get_object_or_404(Service, pk=pk)
 
-        print(service_form.errors)
+    if request.method == "POST":
+        form = serviceModelForm(request.POST, instance=servico)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Tipo de serviço atualizado com sucesso.")
+            return redirect('service')
     else:
-        service_form = serviceModelForm(instance=servico)
-        context = {
-            'service':service_form,
-        }
-        return render(request,'config/serviceForm.html',context)
+        form = serviceModelForm(instance=servico)
+
+    return render(request, 'config/ServiceForm.html', {'service': form})
 
 @login_required
 @transaction.atomic

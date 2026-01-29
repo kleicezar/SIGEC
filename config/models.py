@@ -103,14 +103,168 @@ class Situation(models.Model):
     #     choices=CLOSURE_LEVEL_OPTIONS,
     #     default='Situação Concluída'
     # )
-    name_Situation = models.CharField('Nome da Situação', max_length=50)
-    salePerms = models.CharField('Permissoes ' \
-    '', max_length=50)
-    purchasePerms = models.CharField('Nome da Situação', max_length=50)
-    servicePerms = models.CharField('Nome da Situação', max_length=50)
+    # salePerms = models.CharField('Permissoes ' \
+    # '', max_length=50)
+    # purchasePerms = models.CharField('Nome da Situação', max_length=50)
+    # servicePerms = models.CharField('Nome da Situação', max_length=50)
+
     # salePerms = models.CharField('Nome da Situação', max_length=50)
+    
+    name_Situation = models.CharField('Nome da Situação', max_length=50)
+ 
+    V_estagio_inicial = models.BooleanField('estagio inicial para venda',null=True,blank=True)
+    V_movement_storage  = models.BooleanField('Movimentar Estoque',null=True,blank=True)
+    V_movement_accounts = models.BooleanField('Movimentar Financeiro',null=True,blank=True)
+
+    OS_estagio_inicial = models.BooleanField('estagio inicial para ordem de servico',null=True,blank=True)
+    OS_movement_storage  = models.BooleanField('Movimentar Estoque',null=True,blank=True)
+    OS_movement_accounts = models.BooleanField('Movimentar Financeiro',null=True,blank=True)
+    
+    C_estagio_inicial = models.BooleanField('estagio inicial para compras',null=True,blank=True)
+    C_movement_storage  = models.BooleanField('Movimentar Estoque',null=True,blank=True)
+    C_movement_accounts = models.BooleanField('Movimentar Financeiro',null=True,blank=True)
+    
+    ACC_estagio_inicial = models.BooleanField('estagio inicial para contas',null=True,blank=True)
+    ACC_movement_storage  = models.BooleanField('Movimentar Estoque',null=True,blank=True)
+    ACC_movement_accounts = models.BooleanField('Movimentar Financeiro',null=True,blank=True)
+
+    V_pessoa = models.BooleanField('Nome do Cliente') 
+    V_data_da_venda = models.BooleanField('Data da Venda') 
+    V_total_value = models.BooleanField('Valor Total')
+    V_discount_total = models.BooleanField('Desconto Total')
+    V_value_apply_credit = models.BooleanField('Credito')
+    V_product = models.BooleanField('Produto') 
+    V_quantidade = models.BooleanField('Quantidade') 
+    V_preco_unitario = models.BooleanField('Preco Unitario') 
+    V_discount = models.BooleanField('Desconto') 
+    V_price_total = models.BooleanField('Total do Produto') 
+    V_status = models.BooleanField('Status')
+    V_apply_credit = models.BooleanField('Aplicar Credito')
+    V_product_total = models.BooleanField('Quantidade Total de Produtos') 
+    V_forma_pagamento = models.BooleanField('Forma de Pagamento') 
+    V_expirationDate = models.BooleanField('Data de Vencimento') 
+    V_valor = models.BooleanField('Valor da Parcela')
+    V_observacao_pessoas = models.BooleanField('Observacao visivel para clientes') 
+    V_observacao_sistema = models.BooleanField('Observacao do Sistema')
+
+    OS_apply_credit = models.BooleanField('Aplicar Credito') 
+    OS_pessoa = models.BooleanField('Nome do Cliente')
+    OS_data_da_venda = models.BooleanField('Data da Ordem de Serviço') 
+    OS_observacao_pessoas = models.BooleanField('Observacao visivel para clientes')
+    OS_observacao_sistema = models.BooleanField('Observacao do Sistema')
+    OS_total_value = models.BooleanField("Valor Total da Ordem de Serviço")
+    OS_product_total = models.BooleanField("Total de Produtos")
+    OS_discount_total = models.BooleanField("Total de Descontos de Produtos")
+    OS_value_apply_credit = models.BooleanField('Valor do Crédito Aplicado')
+    OS_service_total = models.BooleanField("Total de Servicos")
+    OS_discount_total_service = models.BooleanField("Total de Descontos")
+    OS_total_value_service = models.BooleanField("Valor Total do Serviço")
+    OS_preco = models.BooleanField("Preço Unitário")
+    OS_discount = models.BooleanField("Desconto")
+    OS_technician = models.BooleanField('Técnico Responsavel')
+    OS_expirationDate = models.BooleanField('Data de Vencimento')
+    OS_valor = models.BooleanField('Valor Pago:')
+    OS_quantidade = models.BooleanField("Quantidade do Produto")
+    OS_preco_unitario = models.BooleanField("Preço Unitário")
+    OS_discount = models.BooleanField("Desconto(%)")
+    OS_price_total = models.BooleanField("Valor Total")
+    OS_status = models.BooleanField('Pendente')
+
+    # C_
+
+    C_fornecedor = models.BooleanField('Nome do Fornecedor')  
+    C_description = models.BooleanField('Descrição')  
+    C_product_code = models.BooleanField('Código do Produto')
+    C_barcode = models.BooleanField('Código de Barras')
+    C_unit_of_measure = models.BooleanField('Unidade de Medida')
+    C_brand = models.BooleanField('Marca')
+    C_cost_of_product = models.BooleanField('Custo do Produto') 
+    C_selling_price = models.BooleanField('Preço de Venda')
+    C_ncm = models.BooleanField('NCM')  # NCM (Nomenclatura Comum do Mercosul
+    C_csosn = models.BooleanField('CSOSN')  # CSOSN (Código de Situação da Operação de Substituição Tributária
+    C_cfop = models.BooleanField('CFOP')  # CFOP (Código Fiscal de Operações e Prestações
+    C_current_quantity = models.BooleanField('Quantidade Atual')
+    C_maximum_quantity = models.BooleanField('Quantidade Máxima')
+    C_minimum_quantity = models.BooleanField('Quantidade Mínima')
+    C_data_da_compra = models.BooleanField('Data da Compra')
+    C_total_value = models.BooleanField("Total")
+    C_product_total =  models.BooleanField("Total de Produtos")
+    C_discount_total = models.BooleanField("Total de Descontos")
+    C_observation_product =  models.BooleanField('Observação sobre Produtos')
+    C_freight_type = models.BooleanField('Tipo de Frete')
+    C_valueFreight = models.BooleanField('Valor do Frete')
+    C_numberOfInstallmentsFreight = models.BooleanField('Número de Parcelas')
+    C_observation_freight = models.BooleanField('Observação sobre Frete')
+    C_valueTax =  models.BooleanField('Valor do Imposto')
+    C_numberOfInstallmentsTax = models.BooleanField('Número de Parcelas')
+    C_observation_tax = models.BooleanField('Observação sobre Imposto')
+    C_valuePickingList = models.BooleanField('Valor do RMN')
+    C_numberOfInstallmentsRMN = models.BooleanField('Número de Parcelas')
+    C_observation_picking_list = models.BooleanField('Observação sobre Romaneio')
+    C_quantidade = models.BooleanField("Quantidade do Produto")
+    C_preco_unitario = models.BooleanField("Preço Unitário")
+    C_discount = models.BooleanField("Desconto") # porcentagem aplicada no produto
+    C_price_total = models.BooleanField("Valor Total") # valor total do produto
+    
+    ACC_description = models.BooleanField('Descrição da Conta')
+    ACC_pessoa_id = models.BooleanField("Pessoa")
+    ACC_chartOfAccounts = models.BooleanField("Plano de Contas")
+    ACC_documentNumber = models.BooleanField("Numero do Documento")
+    ACC_date_account = models.BooleanField("Data da Conta")            
+    ACC_numberOfInstallments = models.BooleanField("Numero de Parcelas")
+    ACC_installment_Range = models.BooleanField("Intervalo de Parcelas")
+    ACC_date_init = models.BooleanField("Data de Inicio")
+    ACC_totalValue = models.BooleanField("Valor Total")
+    ACC_peopleWatching = models.BooleanField("Observações para a Pessoas")
+    ACC_systemWatching = models.BooleanField("Observações para o Sistema")
+    ACC_plannedAccount = models.BooleanField('Conta Prevista')
+    ACC_venda = models.BooleanField('id_venda')
+    ACC_compra = models.BooleanField('id_compra')
+    ACC_ordem_servico = models.BooleanField('id_vendaservico')
+    ACC_forma_pagamento = models.BooleanField('Forma de Pagamento')
+    ACC_expirationDate = models.BooleanField('Data de Vencimento')
+    ACC_days = models.BooleanField('Dias') #dias entre as parcelas  
+    ACC_value_old = models.BooleanField('Valor da Conta') #valor original sem alterações
+    ACC_value = models.BooleanField('Valor Pago')  
+    ACC_interestType = models.BooleanField("Tipo de Juros")
+    ACC_interest = models.BooleanField('juros')
+    ACC_fineType = models.BooleanField("Tipo de Multa")
+    ACC_fine = models.BooleanField('Multa R$')
+    ACC_acc = models.BooleanField('Tipo de Conta')
+    ACC_activeCredit = models.BooleanField("Usar Credito")
+    ACC_paymentPurpose = models.BooleanField("Próposito do Pagamento")
+
     is_Active = models.BooleanField('ativo',default=True)
     historico = AuditlogHistoryField()
+
+    # def save(self, *args, **kwargs):
+    #     if not self.code:
+    #         with transaction.atomic():  # evita conflito em ambiente concorrente
+    #             #se o plano de contas ja estiver uma linha pai 
+    #             if self.father:
+    #                 lastson = ChartOfAccounts.objects.filter(father=self.father).order_by('-code').first()
+    #                 if lastson:
+    #                     #cria uma lista que divide o plano de contas em subniveis
+    #                     newlastson = lastson.code.split(".")
+    #                     # pega o ultimo item da lista e incrementa adicionando 1 ao valor do item da lista
+    #                     # deixando ele sempre com 3 digitos
+    #                     newlastson[-1] = str(int(newlastson[-1]) + 1).zfill(3)
+    #                     self.code = '.'.join(newlastson)
+    #                 else: # se nao tiver nenhum filho é criado o primeiro
+    #                     self.code = f'{self.father.code}.001'
+    #             else: # se for a raiz do plano de contas
+    #                 roots = ChartOfAccounts.objects.filter(father__isnull=True)
+    #                 if roots.exists():
+    #                     # pega o ultimo codigo do plano de contas e adiciona '1' para o novo plano de contas
+    #                     last_code = roots.order_by('-code').first().code
+    #                     self.code = str(int(last_code) + 1)
+    #                 else:
+    #                     self.code = '1'
+
+    #     super().save(*args, **kwargs)
+
+
+
     def __str__(self):
         return self.name_Situation
 

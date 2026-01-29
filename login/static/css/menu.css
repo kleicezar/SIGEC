@@ -1,88 +1,126 @@
 /* tira todas as margens e espaços entre as notações*/
 * {
-    margin: 0;  /* Remove margens de todos os elementos */
-    padding: 0; /* Remove espaçamentos internos de todos os elementos */
-    box-sizing: border-box; /* Inclui bordas e padding nas dimensões */
+    margin: 0;
+    /* Remove margens de todos os elementos */
+    padding: 0;
+    /* Remove espaçamentos internos de todos os elementos */
+    box-sizing: border-box;
+    /* Inclui bordas e padding nas dimensões */
 }
 
 
 /* configuração do header (cabeçalho)*/
 header {
     position: fixed;
-    top: 0; /* Fixa no topo da página */
-    left: 0; /* Fixa à esquerda da página */
-    height:60px;
+    top: 0;
+    /* Fixa no topo da página */
+    left: 0;
+    /* Fixa à esquerda da página */
+    height: 60px;
     width: 100%;
     background-color: #140757;
     border: none;
     margin: 0;
-    z-index: 1; /* Garante que o header fique acima da sidebar */
-    display: flex; /* Alinha os itens do header em linha */
-    justify-content: space-between; /* Espaça os itens entre a esquerda e a direita */
-    align-items: center; /* Centraliza os itens verticalmente */
+    z-index: 1;
+    /* Garante que o header fique acima da sidebar */
+    display: flex;
+    /* Alinha os itens do header em linha */
+    justify-content: space-between;
+    /* Espaça os itens entre a esquerda e a direita */
+    align-items: center;
+    /* Centraliza os itens verticalmente */
 }
-aside{
+
+aside {
     background-color: #140757;
 }
-div.header-main{
+
+div.header-main {
     justify-content: space-between;
 }
-div.logo-left{
-    border: none; /* Remove bordas */
+
+div.logo-left {
+    border: none;
+    /* Remove bordas */
     width: 20%;
     display: flex;
     justify-content: left;
 }
+
 /* div.header-user{
      width: 100%; 
      display: flex;
     justify-content: flex-end; 
 }
 */
-img.logo{
+img.logo {
     height: 50px;
     width: 180px;
 }
-.image-button, .toggle-menu {
-    border: none; /* Remove bordas */
-    background: none; /* Remove fundo */
-    cursor: pointer; /* Muda o cursor ao passar o mouse */
+
+.image-button,
+.toggle-menu {
+    border: none;
+    /* Remove bordas */
+    background: none;
+    /* Remove fundo */
+    cursor: pointer;
+    /* Muda o cursor ao passar o mouse */
     height: 50px;
-    padding-right: 10px;   
+    padding-right: 10px;
 }
+
 .bar-container {
     display: flex;
-    flex-direction: column; /* Empilha as barras verticalmente */
-    align-items: center;    /* Centraliza as barras horizontalmente */
-    gap: 5px;              /* Espaçamento entre as barras */
-    height: 30px;          /* Altura total do contêiner (opcional) */
+    flex-direction: column;
+    /* Empilha as barras verticalmente */
+    align-items: center;
+    /* Centraliza as barras horizontalmente */
+    gap: 5px;
+    /* Espaçamento entre as barras */
+    height: 30px;
+    /* Altura total do contêiner (opcional) */
     padding-top: 2px;
 }
+
 .bar {
-    width: 50px;             /* Largura das barras */
-    height: 5px;             /* Altura das barras */
-    border: 3px solid white;  /* Borda para criar a aparência oca */
-    background-color: transparent; /* Fundo transparente */
-    border-radius: 5px;       /* Bordas arredondadas (opcional) */
+    width: 50px;
+    /* Largura das barras */
+    height: 5px;
+    /* Altura das barras */
+    border: 3px solid white;
+    /* Borda para criar a aparência oca */
+    background-color: transparent;
+    /* Fundo transparente */
+    border-radius: 5px;
+    /* Bordas arredondadas (opcional) */
 }
+
 .user-image {
     /* display: flex;
     justify-content: flex-end; */
     /* align-items: center; */
-    width: 25px; /* Defina o tamanho desejado */
-    height: 25px; /* Deve ser o mesmo que a largura para manter a proporção */
-    overflow: hidden; /* Esconde partes da imagem que saem do contêiner */
-    border-radius: 50%; /* Cria o formato circular */
+    width: 25px;
+    /* Defina o tamanho desejado */
+    height: 25px;
+    /* Deve ser o mesmo que a largura para manter a proporção */
+    overflow: hidden;
+    /* Esconde partes da imagem que saem do contêiner */
+    border-radius: 50%;
+    /* Cria o formato circular */
 }
 
 .user-image img {
-    width: 100%; /* Faz a imagem preencher o contêiner */
-    height: auto; /* Mantém a proporção da imagem */
+    width: 100%;
+    /* Faz a imagem preencher o contêiner */
+    height: auto;
+    /* Mantém a proporção da imagem */
 }
+
 /* corpo do resto da tela*/
 body {
     /* Teste para ver se o estilo aparece  */
-     background-color: white; 
+    background-color: white;
 }
 
 body {
@@ -98,29 +136,36 @@ body {
     color: white;
     position: fixed;
     padding: 10px 20px 20px 20px;
-    /* padding-top: 50px; */
+    padding-top: 60px;
     transition: transform 0.3s ease;
-    overflow-y: scroll; /* Ativa a rolagem vertical */
+    overflow-y: scroll;
+    /* Ativa a rolagem vertical */
     scrollbar-width: thin;
     scrollbar-color: #0a1d95;
 }
+
 .sidebar::-webkit-scrollbar {
-    width: 8px; /* Largura da barra de rolagem */
+    width: 8px;
+    /* Largura da barra de rolagem */
 }
 
 /* Estilo do "polegar" da barra de rolagem */
 .sidebar::-webkit-scrollbar-thumb {
-    background-color: #0a1d95;  /* Cor do "polegar" */
-    border-radius: 4px;     /* Arredondamento */
+    background-color: #0a1d95;
+    /* Cor do "polegar" */
+    border-radius: 4px;
+    /* Arredondamento */
 }
+
 /* Estilo da parte vazia da barra de rolagem */
 .sidebar::-webkit-scrollbar-track {
-    background: #140757; /* Cor do fundo da barra de rolagem */
+    background: #140757;
+    /* Cor do fundo da barra de rolagem */
 }
 
 /* Efeito ao passar o mouse sobre o "polegar" */
 .sidebar::-webkit-scrollbar-thumb:hover {
-    background: #0a1d95;  
+    background: #0a1d95;
     /* Cor ao passar o mouse */
 }
 
@@ -134,16 +179,18 @@ body {
     margin: 15px 0;
     /* background-color: red; */
     width: 100%;
-    
+
 }
 
-.page{
+.page {
     display: flex;
     justify-content: space-between;
     width: 100%;
 }
+
 .sidebar.hidden {
-    transform: translateX(-100%); /* Move o menu para fora da tela */
+    transform: translateX(-100%);
+    /* Move o menu para fora da tela */
 }
 
 .sidebar ul li a {
@@ -156,20 +203,22 @@ body {
     width: 100%;
 }
 
-.sidebar ul li a i{
+.sidebar ul li a i {
     /* position: fixed; */
     /* z-index: -2; */
     margin-left: end;
     /* z-index: 0; */
 }
-.sidebar ul li a:hover,.sub-menu li:hover {
-    background-color:#0b0433;
+
+.sidebar ul li a:hover,
+.sub-menu li:hover {
+    background-color: #0b0433;
     opacity: 0.5;
     transition: transform 0.3s ease;
 }
 
 
-.sidebar ul li a h3{
+.sidebar ul li a h3 {
     font-weight: normal;
     font-size: 16px;
 }
@@ -178,32 +227,37 @@ body {
 
 .sub-menu {
     /* background-color: red; */
-    display: none; /* Esconde as subopções por padrão */
+    display: none;
+    /* Esconde as subopções por padrão */
     /* padding-left: 20px; */
-     /* Indenta as subopções */
+    /* Indenta as subopções */
     /* margin-left: 20px; */
-     /* Logan : Move o submenu para a direita*/
+    /* Logan : Move o submenu para a direita*/
 }
-.sub-menu li a{
+
+.sub-menu li a {
     margin-left: 20px;
 }
-.sub-menu li a h5{
+
+.sub-menu li a h5 {
     font-size: 15px;
 
 }
 
 
 
-.rotate i{
+.rotate i {
     transform: rotate(180deg);
     margin-bottom: 5%;
 }
 
 /* Estilo do menu suspenso */
 .user-dropdown-menu {
-    display: none;  /* Inicialmente escondido */
+    display: none;
+    /* Inicialmente escondido */
     position: absolute;
-    top: 60px;  /* Ajuste a distância conforme necessário */
+    top: 60px;
+    /* Ajuste a distância conforme necessário */
     right: 20px;
     background-color: #fff;
     border: 1px solid #ccc;
@@ -225,9 +279,10 @@ body {
     display: block;
     padding: 8px 16px;
 }
+
 .user-dropdown-menu ul li a:hover {
-     background-color: #f4f4f4;
-     cursor: pointer;
+    background-color: #f4f4f4;
+    cursor: pointer;
 }
 
 
@@ -242,11 +297,13 @@ body {
 
 .content {
     margin-left: 260px;
-    padding: 70px 0px 0px 20px;
+    padding: 70px 20px 0px 20px;
     transition: margin-left 0.3s ease;
 }
+
 .content.expanded {
-    margin-left: 20px; /* Reduz a margem quando a sidebar está oculta */
+    margin-left: 20px;
+    /* Reduz a margem quando a sidebar está oculta */
 }
 
 /* li:has() */
@@ -257,17 +314,14 @@ body {
 
 /* EM BREVE ... */
 /* configuração para tela de celular*/
-@media (max-width:360) and (max-height:760) {
-    
-}
+@media (max-width:360) and (max-height:760) {}
+
 /* configuração para tela de tablet*/
-@media (max-width:810) and (max-height:1080) {
-    
-}
+@media (max-width:810) and (max-height:1080) {}
 
 
 
-.notification-badge{
+.notification-badge {
     display: none;
     position: absolute;
     top: -5px;
@@ -283,7 +337,7 @@ body {
     line-height: 16px;
 }
 
-.notifications-container{
+.notifications-container {
     position: absolute;
     background-color: white;
     border: 1px solid #ccc;
@@ -296,10 +350,12 @@ body {
     display: none;
     overflow-y: auto;
 }
-.notification{
+
+.notification {
     padding: 8px 16px;
 }
-.notification:hover{
+
+.notification:hover {
     background-color: #f4f4f4;
 }
 
@@ -309,7 +365,7 @@ body {
     padding: 40px;
     background-color: #f5f5f5;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     font-family: Arial, sans-serif;
     text-align: center;
     box-sizing: border-box;
@@ -317,15 +373,20 @@ body {
 
 .centralizado-wrapper {
     display: flex;
-    justify-content: center; /* Centraliza horizontalmente */
-    align-items: center;     /* Centraliza verticalmente */
-    min-height: calc(100vh - 70px); /* Altura da tela menos o header */
-    padding: 20px; /* Evita que cole nas bordas em telas menores */
+    justify-content: center;
+    /* Centraliza horizontalmente */
+    align-items: center;
+    /* Centraliza verticalmente */
+    min-height: calc(100vh - 70px);
+    /* Altura da tela menos o header */
+    padding: 20px;
+    /* Evita que cole nas bordas em telas menores */
 }
+
 .material-symbols-outlined {
-        font-variation-settings:
-            'FILL' 0,
-            'wght' 400,
-            'GRAD' 0,
-            'opsz' 24
-    }
+    font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+}

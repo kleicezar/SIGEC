@@ -2,113 +2,125 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
-    <head>  
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        {% block css %}
-        <meta name="csrf-token" content="{{ csrf_token }}">
-        <link rel="stylesheet" href="{% static 'css/Table.css' %}">
-        <link rel="stylesheet" href="{% static 'css/delete.css' %}">
-        {% endblock  %}
-        <title>Formulário</title>
-    </head>
-    <body>
-        {% block content %}
 
-            <div class="position-absolute  start-50">
-                <div class="">
-                    {% if messages %}
-                        {% for message in messages %}
-                            {% if "sucessSituation" in message.tags %}
-                            <div style="max-height: 50px; max-width: 400px;" class="successContainer"> 
-                                <div class="alert {{ message.tags }} alert-success ">
-                                    <strong>Sucesso!</strong>
-                                    <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur, illum atque. Doloremque, dolor ipsum labore numquam quaerat doloribus, incidunt provident suscipit maiores dicta animi, itaque at reiciendis exercitationem assumenda odit?</p> -->
-                                {{ message }}
-    
-                                </div>
-                        
-                                
-                            </div>
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block css %}
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <link rel="stylesheet" href="{% static 'css/Table.css' %}">
+    <link rel="stylesheet" href="{% static 'css/delete.css' %}">
+    {% endblock %}
+    <title>Formulário</title>
+</head>
+
+<body>
+    {% block content %}
+
+    <div class="position-absolute  start-50">
+        <div class="">
+            {% if messages %}
+            {% for message in messages %}
+            {% if "sucessSituation" in message.tags %}
+            <div style="max-height: 50px; max-width: 400px;" class="successContainer">
+                <div class="alert {{ message.tags }} alert-success ">
+                    <strong>Sucesso!</strong>
+                    <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur, illum atque. Doloremque, dolor ipsum labore numquam quaerat doloribus, incidunt provident suscipit maiores dicta animi, itaque at reiciendis exercitationem assumenda odit?</p> -->
+                    {{ message }}
+
                 </div>
+
+
             </div>
-            
-            
-            <div class="container">
-                <a href="{% url 'SituationForm' %}">
-                    <button class="btn btn-success">Cadastrar</button>
-                </a>
-                
-                <div class="form-group">
-                    <form method="GET" action="{% url 'Situation' %}">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="col">
-                                <label for="" class="">{{form.search.label}}</label>
-                                {{form.search}}
-                                <div class="col-sm-8" id="search_sale">
-                                    <input type="text" id="searchInput"  class="search-input" value="{{ request.GET.query }}" placeholder="Pesquisar situação(ões)"> 
-                                </div>
-                            </div>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+
+    <div class="container">
+        <a href="{% url 'SituationForm' %}">
+            <button class="btn btn-success">Cadastrar</button>
+        </a>
+
+        <div class="form-group">
+            <form method="GET" action="{% url 'Situation' %}">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col">
+                        <label for="" class="">{{form.search.label}}</label>
+                        {{form.search}}
+                        <div class="col-sm-8" id="search_sale">
+                            <input type="text" id="searchInput" class="search-input" value="{{ request.GET.query }}"
+                                placeholder="Pesquisar situação(ões)">
                         </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
-            <div id="messageContainer"></div>  
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Situação Personalizada</th>
-                        <th>Ativo</th>
-                        <th>salePerms</th>
-                        <th>purchasePerms</th>
-                        <th>servicePerms</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="results">
-                {% for Situation in Situations %}
-                <tr>
-                    <td>{{ Situation.id }}</td>
-                    <td>{{ Situation.name_Situation }}</td>
-                    <td>{{ Situation.is_Active|yesno:"Sim,Não" }}</td>
-                    <td>{{ Situation.salePerms }}</td>
-                    <td>{{ Situation.purchasePerms }}</td>
-                    <td>{{ Situation.servicePerms }}</td>
-                    <td>
-                        <!-- <a href="{% url 'updateSituation' id_situation=Situation.id %}">
+            </form>
+        </div>
+    </div>
+    <div id="messageContainer"></div>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Situação Personalizada</th>
+                <th>Ativo</th>
+                <th>salePerms</th>
+                <th>purchasePerms</th>
+                <th>servicePerms</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="results">
+            {% for Situation in Situations %}
+            <tr>
+                <td>{{ Situation.id }}</td>
+                <td>{{ Situation.name_Situation }}</td>
+                <td>{{ Situation.is_Active|yesno:"Sim,Não" }}</td>
+                <td>{{ Situation.salePerms }}</td>
+                <td>{{ Situation.purchasePerms }}</td>
+                <td>{{ Situation.servicePerms }}</td>
+                <td>
+                    <!-- <a href="{% url 'updateSituation' id_situation=Situation.id %}">
                             <button>Editar</button>
                         </a>
                         <button class="delete-button" data-id="{{ Situation.id }}">Deletar</button>
                         {% comment %} <a href="{% url 'deleteSituation' id_situation=Situation.id %}">
                             <button>Deletar</button>
                         </a> {% endcomment %} -->
-                        <a href="{% url 'updateSituation' id_situation=Situation.id %}">
-                            <button class="btn" style="background-color: #117027;color: white;">Editar</button>
-                        </a>
-                        <form action="{% url 'deleteSituation' id_situation=Situation.id %}" method="POST" style="display:inline-block;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
-                        </form>
-                        <!-- {% comment %} <button>Mais</button> {% endcomment %} -->
-                    </td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-     
-        {% endblock %}
+                    {% comment %} <a href="{% url 'updateSituation' id_situation=Situation.id %}">
+                        <button class="btn" style="background-color: #117027;color: white;">Editar</button>
+                    </a> {% endcomment %}
+                    <form action="{% url 'updateSituation' id_situation=Situation.id %}" method="POST"
+                        style="display:inline-block;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;"
+                            onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
+                    </form>
+                    <form action="{% url 'deleteSituation' id_situation=Situation.id %}" method="POST"
+                        style="display:inline-block;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;"
+                            onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
+                    </form>
+                    <!-- {% comment %} <button>Mais</button> {% endcomment %} -->
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-        {% block scripts %}
-        <script src="{% static 'js/error.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/
+    {% endblock %}
+
+    {% block scripts %}
+    <script src="{% static 'js/error.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/
         script.js' %}"></script>
-        <script src="{% static 'js/search_situation.js' %}"></script>
-        {% endblock %}
+    <script src="{% static 'js/search_situation.js' %}"></script>
+    {% endblock %}
 
-    </body>
-    </html>
+</body>
+
+</html>

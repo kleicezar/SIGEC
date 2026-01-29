@@ -59,10 +59,14 @@
                     <td>{{ service.value_service }}</td>
                     <td>{{ service.is_Active|yesno:"Sim,Não" }}</td>
                     <td>
-                      
+{% comment %}                       
                         <a href="{% url 'updateservice' pk=service.id %}">
                             <button class="btn" style="background-color: #117027;color: white;">Editar</button>
-                        </a>
+                        </a> {% endcomment %}
+                        <form action="{% url 'updateservice' pk=service.id %}" method="GET" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: rgb(16, 73, 139);color: white;" >editar</button>
+                        </form>
                         <form action="{% url 'deleteservice' pk=service.id %}" method="POST" style="display:inline-block;">
                             {% csrf_token %}
                             <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
